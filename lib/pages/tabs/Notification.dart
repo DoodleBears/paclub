@@ -12,34 +12,79 @@ class _NotificationPageState extends State<NotificationPage> {
     return ListView(
       children: <Widget>[
         ListTile(
-          title: Text("-"),
+          title: Text("Notification頁面測試中"),
         ),
         ListTile(
-          title: Text("--"),
+          title: Text("Notification頁面測試中"),
         ),
         ListTile(
-          title: Text("---"),
+          title: Text("Notification頁面測試中"),
         ),
         ListTile(
-          title: Text("----"),
+          title: Text("Notification頁面測試中"),
         ),
         ListTile(
-          title: Text("-----"),
+          title: Text("Notification頁面測試中"),
         ),
         ListTile(
-          title: Text("------"),
+          title: Text("Notification頁面測試中"),
         ),
         ListTile(
-          title: Text("-------"),
+          title: Text("Notification頁面測試中"),
         ),
         ListTile(
-          title: Text("--------"),
+          title: Text("Notification頁面測試中"),
         ),
         ListTile(
-          title: Text("---------"),
+          title: Text("Notification頁面測試中"),
         ),
         ListTile(
-          title: Text("----------"),
+          title: Text("Notification頁面測試中"),
+        ),
+        ListTile(
+          title: Text("Notification頁面測試中"),
+        ),
+        ListTile(
+          title: Text("Notification頁面測試中"),
+        ),
+        ListTile(
+          title: Text("Notification頁面測試中"),
+        ),
+        ListTile(
+          title: Text("Notification頁面測試中"),
+        ),
+        ListTile(
+          title: Text("Notification頁面測試中"),
+        ),
+        ListTile(
+          title: Text("Notification頁面測試中"),
+        ),
+        ListTile(
+          title: Text("Notification頁面測試中"),
+        ),
+        ListTile(
+          title: Text("Notification頁面測試中"),
+        ),
+        ListTile(
+          title: Text("Notification頁面測試中"),
+        ),
+        ListTile(
+          title: Text("Notification頁面測試中"),
+        ),
+        ListTile(
+          title: Text("Notification頁面測試中"),
+        ),
+        ListTile(
+          title: Text("Notification頁面測試中"),
+        ),
+        ListTile(
+          title: Text("Notification頁面測試中"),
+        ),
+        ListTile(
+          title: Text("Notification頁面測試中"),
+        ),
+        ListTile(
+          title: Text("Notification頁面測試中"),
         )
       ],
     );
