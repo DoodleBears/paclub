@@ -12,34 +12,94 @@ class _CardPageState extends State<CardPage> {
     return ListView(
       children: <Widget>[
         ListTile(
-          title: Text("1"),
+          title: Text("Card頁面測試中"),
         ),
         ListTile(
-          title: Text("2"),
+          title: Text("Card頁面測試中"),
         ),
         ListTile(
-          title: Text("3"),
+          title: Text("Card頁面測試中"),
         ),
         ListTile(
-          title: Text("4"),
+          title: Text("Card頁面測試中"),
         ),
         ListTile(
-          title: Text("5"),
+          title: Text("Card頁面測試中"),
         ),
         ListTile(
-          title: Text("6"),
+          title: Text("Card頁面測試中"),
         ),
         ListTile(
-          title: Text("7"),
+          title: Text("Card頁面測試中"),
         ),
         ListTile(
-          title: Text("8"),
+          title: Text("Card頁面測試中"),
         ),
         ListTile(
-          title: Text("9"),
+          title: Text("Card頁面測試中"),
         ),
         ListTile(
-          title: Text("10"),
+          title: Text("Card頁面測試中"),
+        ),
+        ListTile(
+          title: Text("Card頁面測試中"),
+        ),
+        ListTile(
+          title: Text("Card頁面測試中"),
+        ),
+        ListTile(
+          title: Text("Card頁面測試中"),
+        ),
+        ListTile(
+          title: Text("Card頁面測試中"),
+        ),
+        ListTile(
+          title: Text("Card頁面測試中"),
+        ),
+        ListTile(
+          title: Text("Card頁面測試中"),
+        ),
+        ListTile(
+          title: Text("Card頁面測試中"),
+        ),
+        ListTile(
+          title: Text("Card頁面測試中"),
+        ),
+        ListTile(
+          title: Text("Card頁面測試中"),
+        ),
+        ListTile(
+          title: Text("Card頁面測試中"),
+        ),
+        ListTile(
+          title: Text("Card頁面測試中"),
+        ),
+        ListTile(
+          title: Text("Card頁面測試中"),
+        ),
+        ListTile(
+          title: Text("Card頁面測試中"),
+        ),
+        ListTile(
+          title: Text("Card頁面測試中"),
+        ),
+        ListTile(
+          title: Text("Card頁面測試中"),
+        ),
+        ListTile(
+          title: Text("Card頁面測試中"),
+        ),
+        ListTile(
+          title: Text("Card頁面測試中"),
+        ),
+        ListTile(
+          title: Text("Card頁面測試中"),
+        ),
+        ListTile(
+          title: Text("Card頁面測試中"),
+        ),
+        ListTile(
+          title: Text("Card頁面測試中"),
         )
       ],
     );
