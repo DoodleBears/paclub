@@ -12,34 +12,79 @@ class _MessagePageState extends State<MessagePage> {
     return ListView(
       children: <Widget>[
         ListTile(
-          title: Text("a"),
+          title: Text("Message頁面測試中"),
         ),
         ListTile(
-          title: Text("b"),
+          title: Text("Message頁面測試中"),
         ),
         ListTile(
-          title: Text("c"),
+          title: Text("Message頁面測試中"),
         ),
         ListTile(
-          title: Text("d"),
+          title: Text("Message頁面測試中"),
         ),
         ListTile(
-          title: Text("e"),
+          title: Text("Message頁面測試中"),
         ),
         ListTile(
-          title: Text("f"),
+          title: Text("Message頁面測試中"),
         ),
         ListTile(
-          title: Text("g"),
+          title: Text("Message頁面測試中"),
         ),
         ListTile(
-          title: Text("h"),
+          title: Text("Message頁面測試中"),
         ),
         ListTile(
-          title: Text("i"),
+          title: Text("Message頁面測試中"),
         ),
         ListTile(
-          title: Text("j"),
+          title: Text("Message頁面測試中"),
+        ),
+        ListTile(
+          title: Text("Message頁面測試中"),
+        ),
+        ListTile(
+          title: Text("Message頁面測試中"),
+        ),
+        ListTile(
+          title: Text("Message頁面測試中"),
+        ),
+        ListTile(
+          title: Text("Message頁面測試中"),
+        ),
+        ListTile(
+          title: Text("Message頁面測試中"),
+        ),
+        ListTile(
+          title: Text("Message頁面測試中"),
+        ),
+        ListTile(
+          title: Text("Message頁面測試中"),
+        ),
+        ListTile(
+          title: Text("Message頁面測試中"),
+        ),
+        ListTile(
+          title: Text("Message頁面測試中"),
+        ),
+        ListTile(
+          title: Text("Message頁面測試中"),
+        ),
+        ListTile(
+          title: Text("Message頁面測試中"),
+        ),
+        ListTile(
+          title: Text("Message頁面測試中"),
+        ),
+        ListTile(
+          title: Text("Message頁面測試中"),
+        ),
+        ListTile(
+          title: Text("Message頁面測試中"),
+        ),
+        ListTile(
+          title: Text("Message頁面測試中"),
         )
       ],
     );
