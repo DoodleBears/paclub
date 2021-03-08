@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'tabs/Home.dart';
+
 import 'tabs/Card.dart';
+import 'tabs/Home.dart';
 import 'tabs/Message.dart';
 import 'tabs/Notification.dart';
 import 'tabs/User.dart';
@@ -8,13 +9,14 @@ import 'tabs/User.dart';
 class Tabs extends StatefulWidget {
   Tabs({Key key}) : super(key: key);
 
+  @override
   _TabsState createState() => _TabsState();
 }
 
 class _TabsState extends State<Tabs> {
   int _currentIndex = 0;
 
-  List _pageList = [
+  List<Widget> _pageList = [
     HomePage(),
     CardPage(),
     MessagePage(),
@@ -25,12 +27,12 @@ class _TabsState extends State<Tabs> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: this._pageList[this._currentIndex],
+      body: _pageList[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: this._currentIndex,
+        currentIndex: _currentIndex,
         onTap: (int index) {
           setState(() {
-            this._currentIndex = index;
+            _currentIndex = index;
           });
         },
         showSelectedLabels: true,
@@ -39,11 +41,11 @@ class _TabsState extends State<Tabs> {
         unselectedItemColor: Colors.white,
         type: BottomNavigationBarType.fixed,
         items: [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: "首頁"),
-          BottomNavigationBarItem(icon: Icon(Icons.lightbulb), label: "抽卡"),
-          BottomNavigationBarItem(icon: Icon(Icons.message), label: "私訊"),
-          BottomNavigationBarItem(icon: Icon(Icons.alarm), label: "提醒"),
-          BottomNavigationBarItem(icon: Icon(Icons.person), label: "個人")
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: '首頁'),
+          BottomNavigationBarItem(icon: Icon(Icons.lightbulb), label: '抽卡'),
+          BottomNavigationBarItem(icon: Icon(Icons.message), label: '私訊'),
+          BottomNavigationBarItem(icon: Icon(Icons.alarm), label: '提醒'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: '個人')
         ],
       ),
     );
