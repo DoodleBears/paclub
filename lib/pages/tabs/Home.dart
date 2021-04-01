@@ -130,7 +130,7 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () => _onFabClick,
+          onPressed: () => _OnFabClick,
           child: Icon(Icons.add),
         ),
       ),
@@ -138,4 +138,4 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-class _onFabClick {}
+class _OnFabClick {}
