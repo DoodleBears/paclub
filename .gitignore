@@ -45,3 +45,6 @@ app.*.symbols
 
 # Obfuscation related
 app.*.map.json
+
+# app_icon
+assets/icon/app_icon
