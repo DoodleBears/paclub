@@ -26,6 +26,8 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.0
+  # better log information https://pub.dev/packages/logger/install
+  logger: ^1.0.0
   # firebase
   firebase_core: ^1.0.2
   # Database
