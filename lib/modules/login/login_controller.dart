@@ -31,7 +31,7 @@ class LoginController extends GetxController {
     update();
   }
 
-  submit() async {
+  void submit() async {
     if (_username == null || _username.isEmpty) {
       toast('Email cannot be null');
       return;

@@ -22,5 +22,5 @@ class LoginRepository {
 
   // TODO: Repository 的注册功能
   Future<String> register(
-      String username, String password, String repassword) {}
+      String username, String password, String rePassword) {}
 }

@@ -49,7 +49,7 @@ class Body extends GetView<LoginController> {
                 // 传递 secure value 来控制是否显示密码
                 hidePassword: controller.hidePassword,
                 // 点击效果，点击眼睛(visibility) 切换密码显示和眼睛效果
-                onPressed: () => controller.changeSecure(),
+                onPressed: controller.changeSecure,
               );
             },
           ),
@@ -57,7 +57,7 @@ class Body extends GetView<LoginController> {
           // 登录按钮
           GetBuilder<LoginController>(
             builder: (controller) {
-              return RoundedButton(
+              return RoundedLoadingButton(
                 text: 'LOGIN',
                 // 点击后确认登录
                 onPressed: controller.submit,
@@ -76,7 +76,7 @@ class Body extends GetView<LoginController> {
           OrDivider(), // OR 的分割线
           SizedBox(height: 24),
           // 跳过登录，直接进入主页
-          RoundedButton(
+          RoundedLoadingButton(
             text: 'SKIP SIGN',
             onPressed: () => Get.offNamed(Routes.HOME),
             isLoading: false,

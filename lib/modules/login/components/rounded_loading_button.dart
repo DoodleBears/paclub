@@ -3,13 +3,13 @@ import 'package:get/get.dart';
 import 'package:paclub/theme/app_theme.dart';
 
 // 带有 loading 效果的 button，在触发网络请求时，会变成转圈模式
-class RoundedButton extends StatelessWidget {
+class RoundedLoadingButton extends StatelessWidget {
   final VoidCallback onPressed;
   final String text;
   final Color color, textColor;
   final bool isLoading;
 
-  const RoundedButton({
+  const RoundedLoadingButton({
     Key key,
     @required this.onPressed,
     @required this.text,
