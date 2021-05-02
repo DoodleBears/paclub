@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 class LoginRepository {
   Future<String> login(String username, String password) async {
     try {
+      // FirebaseAuth 提供的方式
       UserCredential userCredential =
           await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: username,
