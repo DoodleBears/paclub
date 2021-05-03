@@ -1,4 +1,8 @@
+import 'package:box_group/models/Note.dart';
+import 'package:box_group/models/NotesOperation.dart';
+import 'package:box_group/pages/add_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key}) : super(key: key);
@@ -25,117 +29,80 @@ class _HomePageState extends State<HomePage> {
             tabs: <Widget>[Tab(text: "熱門"), Tab(text: "追蹤")],
           ),
         ),
-        body: new TabBarView(
-          children: <Widget>[
-            RefreshIndicator(
-              onRefresh: getRefresh,
-              backgroundColor: Colors.blue,
-              color: Colors.black,
-              child: new ListView.builder(
-                itemCount: 500,
-                itemBuilder: (context, index) {
-                  return Container(
-                    child: Container(
-                      color: Colors.white,
-                      child: Card(
-                        color: Colors.pink[100],
-                        margin: EdgeInsets.all(15),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15)),
-                        clipBehavior: Clip.antiAlias,
-                        elevation: 10,
-                        child: new Container(
-                            height: 200,
-                            alignment: Alignment.center,
-                            padding: EdgeInsets.all(20),
-                            child: new ListTile(
-                              title: new Text(
-                                "Paclub Number $index",
-                                style: TextStyle(
-                                    fontSize: 25, fontWeight: FontWeight.bold),
-                              ),
-                              subtitle: new Text(
-                                "Little Subtitle Test $index and $index",
-                                maxLines: 1, //最多顯示行數
-                                overflow:
-                                    TextOverflow.ellipsis, //以...顯示沒顯示的文字,,
-                                style: TextStyle(fontSize: 15),
-                              ),
-                              leading: new Icon(
-                                Icons.account_box,
-                                size: 40,
-                                color: Colors.blue,
-                              ),
-                              trailing: new Icon(
-                                Icons.chevron_right,
-                                size: 40,
-                              ),
-                            )),
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-            RefreshIndicator(
-              onRefresh: getRefresh,
-              backgroundColor: Colors.blue,
-              color: Colors.black,
-              child: new ListView.builder(
-                itemCount: 500,
-                itemBuilder: (context, index) {
-                  return Container(
-                    child: Container(
-                      color: Colors.white,
-                      child: Card(
-                        color: Colors.orange[100],
-                        margin: EdgeInsets.all(15),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(15)),
-                        clipBehavior: Clip.antiAlias,
-                        elevation: 10,
-                        child: new Container(
-                            height: 200,
-                            alignment: Alignment.center,
-                            padding: EdgeInsets.all(20),
-                            child: new ListTile(
-                              title: new Text(
-                                "Paclub Number $index",
-                                style: TextStyle(
-                                    fontSize: 25, fontWeight: FontWeight.bold),
-                              ),
-                              subtitle: new Text(
-                                "Little Subtitle Test $index and $index",
-                                maxLines: 1, //最多顯示行數
-                                overflow:
-                                    TextOverflow.ellipsis, //以...顯示沒顯示的文字,,
-                                style: TextStyle(fontSize: 15),
-                              ),
-                              leading: new Icon(
-                                Icons.account_box,
-                                size: 40,
-                                color: Colors.blue,
-                              ),
-                              trailing: new Icon(
-                                Icons.chevron_right,
-                                size: 40,
-                              ),
-                            )),
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-          ],
+        body: Consumer<NotesOperation>(
+          builder: (context, NotesOperation data, child) {
+            return TabBarView(
+              children: <Widget>[
+                RefreshIndicator(
+                  onRefresh: getRefresh,
+                  backgroundColor: Colors.blue,
+                  color: Colors.black,
+                  child: ListView.builder(
+                      itemCount: data.getNotes.length,
+                      itemBuilder: (context, index) {
+                        return NotesCard(data.getNotes[index]);
+                      }),
+                ),
+                RefreshIndicator(
+                  onRefresh: getRefresh,
+                  backgroundColor: Colors.blue,
+                  color: Colors.black,
+                  child: ListView.builder(
+                      itemCount: data.getNotes.length,
+                      itemBuilder: (context, index) {
+                        return NotesCard(data.getNotes[index]);
+                      }),
+                ),
+              ],
+            );
+          },
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () => _onFabClick,
-          child: Icon(Icons.add),
+          onPressed: () {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => AddScreen()));
+          },
+          child: Icon(
+            Icons.add,
+            size: 30,
+            color: Colors.white,
+          ),
+          backgroundColor: Colors.lightBlue,
         ),
       ),
     );
   }
 }
 
-class _onFabClick {}
+class NotesCard extends StatelessWidget {
+  final Note note;
+
+  NotesCard(this.note);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.all(15),
+      padding: EdgeInsets.all(15),
+      height: 150,
+      decoration: BoxDecoration(
+          color: Colors.pink[100], borderRadius: BorderRadius.circular(15)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            note.title,
+            style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(
+            height: 5,
+          ),
+          Text(
+            note.description,
+            style: TextStyle(fontSize: 17),
+          )
+        ],
+      ),
+    );
+  }
+}
