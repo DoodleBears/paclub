@@ -16,12 +16,8 @@ class LoginRepository {
         return 'No user found for that email.';
       } else if (e.code == 'wrong-password') {
         return 'Wrong password';
-      }
+      } else if (e.code == '') {}
     }
     return 'login failed';
   }
-
-  // TODO: Repository 的注册功能
-  Future<String> register(
-      String username, String password, String rePassword) {}
 }

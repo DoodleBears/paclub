@@ -27,7 +27,8 @@ class MyApp extends StatelessWidget {
         'Click here to checkout more Logger utility https://pub.dev/packages/logger/example');
     return GetMaterialApp(
         theme: appThemeData,
-        defaultTransition: Transition.rightToLeft,
+        defaultTransition: Transition.native,
+        transitionDuration: Duration(milliseconds: 250),
         debugShowCheckedModeBanner: false,
         title: "Welcome to 盒群",
         initialBinding: LoginBinding(),

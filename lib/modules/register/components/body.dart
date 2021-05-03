@@ -1,17 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:paclub/modules/login/components/round_password_field.dart';
-import 'package:paclub/modules/login/components/rounded_loading_button.dart';
-import 'package:paclub/modules/login/components/rounded_input_field.dart';
-import 'package:paclub/modules/login/login_controller.dart';
+import 'package:paclub/modules/login/components/login_components.dart';
+import 'package:paclub/modules/register/register_controller.dart';
 import 'package:paclub/r.dart';
 import 'package:paclub/routes/app_pages.dart';
 import 'package:paclub/theme/app_theme.dart';
-import 'already_have_an_account_check.dart';
-import 'or_divider.dart';
 
-// 登录界面的 View 部分，使用 GetView<LoginController> 直接注入 Controller，
-class Body extends GetView<LoginController> {
+class Body extends GetView<RegisterController> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -41,24 +36,36 @@ class Body extends GetView<LoginController> {
             onChanged: controller.onUsernameChanged,
           ),
           // 密码输入
-          GetBuilder<LoginController>(
+          GetBuilder<RegisterController>(
             builder: (controller) {
               return RoundedPasswordField(
+                color: controller.isPasswordOK ? primaryLightColor : Colors.red,
                 // onchanged 会在 input 内容改变时触发 function 并传 string
                 onChanged: controller.onPasswordChanged,
-                // 传递 secure value 来控制是否显示密码
-                hidePassword: controller.hidePassword,
-                // 点击效果，点击眼睛(visibility) 切换密码显示和眼睛效果
-                onPressed: controller.changeSecure,
+                // 不显示眼睛（不允许显示密码）
+                allowHide: false,
+              );
+            },
+          ),
+          // 重复密码输入
+          GetBuilder<RegisterController>(
+            builder: (controller) {
+              return RoundedPasswordField(
+                color:
+                    controller.isRePasswordOK ? primaryLightColor : Colors.red,
+                // onchanged 会在 input 内容改变时触发 function 并传 string
+                onChanged: controller.onRePasswordChanged,
+                // 不显示眼睛（不允许显示密码）
+                allowHide: false,
               );
             },
           ),
           SizedBox(height: 20),
           // 登录按钮
-          GetBuilder<LoginController>(
+          GetBuilder<RegisterController>(
             builder: (controller) {
               return RoundedLoadingButton(
-                text: 'LOGIN',
+                text: 'SIGN UP',
                 // 点击后确认登录
                 onPressed: controller.submit,
                 // 在点击后触发loading效果，加载结束后再次触发，取消loading
@@ -69,17 +76,8 @@ class Body extends GetView<LoginController> {
           SizedBox(height: 12),
           // 跳转到注册界面
           AlreadHaveAnAccoutCheck(
-            login: true,
-            onTap: () => Get.toNamed(Routes.REGISTER),
-          ),
-          SizedBox(height: 24),
-          OrDivider(), // OR 的分割线
-          SizedBox(height: 24),
-          // 跳过登录，直接进入主页
-          RoundedLoadingButton(
-            text: 'SKIP SIGN',
-            onPressed: () => Get.offNamed(Routes.HOME),
-            isLoading: false,
+            login: false,
+            onTap: () => Get.offAllNamed(Routes.LOGIN),
           ),
         ],
       ),

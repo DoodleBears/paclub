@@ -8,17 +8,22 @@ import 'package:paclub/theme/app_theme.dart';
 class RoundedPasswordField extends StatelessWidget {
   final ValueChanged<String> onChanged;
   final bool hidePassword;
+  final bool allowHide;
   final VoidCallback onPressed;
+  final Color color;
   const RoundedPasswordField({
     Key key,
     this.onChanged,
-    this.hidePassword,
+    this.hidePassword = true,
     this.onPressed,
+    this.allowHide = true,
+    this.color,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return TextFieldContainer(
+      color: color ?? primaryLightColor,
       child: TextField(
         onChanged: onChanged,
         obscureText: hidePassword,
@@ -27,19 +32,21 @@ class RoundedPasswordField extends StatelessWidget {
           // 左侧icon
           icon: Icon(Icons.lock, color: accentColor),
           // 右侧icon
-          suffixIcon: IconButton(
-            // 去除点击效果
-            splashColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-            // 判断 hidePassword 的值来显示不同 icon
-            icon: hidePassword
-                ? Icon(Icons.visibility)
-                : Icon(Icons.visibility_off),
-            // 点击icon之后会让 Controller 改变 hidePassword 的 value
-            onPressed: onPressed,
-            enableFeedback: false,
-            color: accentColor,
-          ),
+          suffixIcon: allowHide
+              ? IconButton(
+                  // 去除点击效果
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  // 判断 hidePassword 的值来显示不同 icon
+                  icon: hidePassword
+                      ? Icon(Icons.visibility)
+                      : Icon(Icons.visibility_off),
+                  // 点击icon之后会让 Controller 改变 hidePassword 的 value
+                  onPressed: onPressed,
+                  enableFeedback: false,
+                  color: accentColor,
+                )
+              : null,
           border: InputBorder.none,
         ),
       ),

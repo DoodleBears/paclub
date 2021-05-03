@@ -15,7 +15,7 @@ abstract class Routes {
   static const LOGIN = '/login';
   static const HOME = '/home';
   static const PROFILE = '/profile';
-  static const SIGN_UP = '/sign_up';
+  static const REGISTER = '/register';
   static const TASK = '/task';
   static const TASK_ADD = '/task-add';
   static const TASK_EDIT = '/task-edit';
