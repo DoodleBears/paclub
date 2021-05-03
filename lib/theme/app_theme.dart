@@ -12,12 +12,19 @@ const primaryDarkColor = Color(0xFF9F7C53);
 // const secondaryTextColor = Color(0xFFF1E6FF);
 
 ThemeData get appThemeData => ThemeData(
-    primaryColor: primaryColor,
-    primaryColorLight: primaryLightColor,
-    scaffoldBackgroundColor: Colors.white,
-    accentColor: accentColor,
-    appBarTheme: appBarTheme,
-    textTheme: GoogleFonts.poppinsTextTheme());
+      primaryColor: primaryColor,
+      primaryColorLight: primaryLightColor,
+      scaffoldBackgroundColor: Colors.white,
+      accentColor: accentColor,
+      appBarTheme: appBarTheme,
+      textTheme: GoogleFonts.poppinsTextTheme(),
+      pageTransitionsTheme: PageTransitionsTheme(
+        builders: {
+          TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+          TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+        },
+      ),
+    );
 
 AppBarTheme get appBarTheme => AppBarTheme(
       backgroundColor: Colors.white,

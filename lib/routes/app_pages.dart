@@ -1,9 +1,11 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:paclub/modules/login/login_binding.dart';
 import 'package:paclub/modules/login/login_page.dart';
 import 'package:paclub/modules/register/register_binding.dart';
 import 'package:paclub/modules/register/register_page.dart';
 import 'package:paclub/pages/Tabs.dart';
+
 part './app_routes.dart';
 
 abstract class AppPages {
@@ -14,13 +16,15 @@ abstract class AppPages {
       name: Routes.LOGIN,
       page: () => LoginPage(),
       binding: LoginBinding(),
-      transition: Transition.leftToRight,
+      transition: Transition.rightToLeft,
+      curve: Curves.easeOut,
     ),
     GetPage(
       name: Routes.REGISTER,
       page: () => RegisterPage(),
       binding: RegisterBinding(),
       transition: Transition.rightToLeft,
+      curve: Curves.easeOut,
     ),
     GetPage(
       name: Routes.HOME,
