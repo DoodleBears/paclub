@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:paclub/functions/transitions.dart';
 import 'package:paclub/modules/login/login_binding.dart';
 import 'package:paclub/modules/login/login_page.dart';
 import 'package:paclub/modules/register/register_binding.dart';
@@ -16,19 +17,23 @@ abstract class AppPages {
       name: Routes.LOGIN,
       page: () => LoginPage(),
       binding: LoginBinding(),
-      transition: Transition.rightToLeft,
-      curve: Curves.easeOut,
+      // transition: Transition.rightToLeft,
+      // curve: Curves.easeInOutCubic,
+      customTransition: ShiftLeftTransitions(),
     ),
     GetPage(
       name: Routes.REGISTER,
       page: () => RegisterPage(),
       binding: RegisterBinding(),
-      transition: Transition.rightToLeft,
-      curve: Curves.easeOut,
+      // transition: Transition.rightToLeft,
+      // curve: Curves.easeInOutCubic,
+      customTransition: ShiftLeftTransitions(),
     ),
     GetPage(
       name: Routes.HOME,
       page: () => Tabs(),
+      // transition: Transition.downToUp,
+      // curve: Curves.easeOutCubic,
     ),
   ];
 }

@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:paclub/functions/transitions.dart';
 import 'package:paclub/modules/login/components/round_password_field.dart';
 import 'package:paclub/modules/login/components/rounded_loading_button.dart';
 import 'package:paclub/modules/login/components/rounded_input_field.dart';
 import 'package:paclub/modules/login/login_controller.dart';
+import 'package:paclub/modules/login/login_page.dart';
+import 'package:paclub/modules/register/register_page.dart';
+import 'package:paclub/pages/Tabs.dart';
+import 'package:paclub/pages/tabs/Home.dart';
 import 'package:paclub/r.dart';
 import 'package:paclub/routes/app_pages.dart';
 import 'package:paclub/theme/app_theme.dart';
@@ -60,7 +65,7 @@ class Body extends GetView<LoginController> {
               return RoundedLoadingButton(
                 text: 'LOGIN',
                 // 点击后确认登录
-                onPressed: controller.submit,
+                onPressed: () => controller.submit(context),
                 // 在点击后触发loading效果，加载结束后再次触发，取消loading
                 isLoading: controller.isLoading,
               );
@@ -70,6 +75,9 @@ class Body extends GetView<LoginController> {
           // 跳转到注册界面
           AlreadHaveAnAccoutCheck(
             login: true,
+            // onTap: () => Navigator.push(context,
+            //     ShiftLeftRoute(exitPage: this, enterPage: RegisterPage())),
+            // 使用getPage中预设的动画(app_pages.dart)
             onTap: () => Get.toNamed(Routes.REGISTER),
           ),
           SizedBox(height: 24),
@@ -78,7 +86,12 @@ class Body extends GetView<LoginController> {
           // 跳过登录，直接进入主页
           RoundedLoadingButton(
             text: 'SKIP SIGN',
-            onPressed: () => Get.offNamed(Routes.HOME),
+            // 使用自定义的动画，exit效果和enter效果与预设不同
+            onPressed: () => Navigator.pushReplacement(
+                context,
+                BelowDownTopHoldRoute(
+                    exitPage: LoginPage(), enterPage: Tabs())),
+            // onPressed: () => Get.offNamed(Routes.HOME),
             isLoading: false,
           ),
         ],

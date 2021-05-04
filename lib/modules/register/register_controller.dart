@@ -1,4 +1,9 @@
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:paclub/functions/transitions.dart';
+import 'package:paclub/modules/login/login_page.dart';
+import 'package:paclub/modules/register/register_page.dart';
+import 'package:paclub/pages/Tabs.dart';
 import 'package:paclub/repositories/register_repository.dart';
 import 'package:paclub/routes/app_pages.dart';
 import 'package:paclub/widgets/toast.dart';
@@ -41,7 +46,7 @@ class RegisterController extends GetxController {
     update();
   }
 
-  void submit() async {
+  void submit(BuildContext context) async {
     if (_username == null || _username.isEmpty) {
       toast('Email cannot be null');
       return;
@@ -71,7 +76,13 @@ class RegisterController extends GetxController {
     isLoading = false;
     update();
     if (registerInfo == 'register successed') {
-      Get.offAllNamed(Routes.HOME);
+      // Get.offAllNamed(Routes.HOME);
+      // 使用自定义的动画，exit效果和enter效果与预设不同
+      Navigator.pushAndRemoveUntil(
+        context,
+        BelowDownTopHoldRoute(exitPage: RegisterPage(), enterPage: Tabs()),
+        (Route<dynamic> route) => false,
+      );
     } else {
       toast(registerInfo);
     }

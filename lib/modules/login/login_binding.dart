@@ -6,6 +6,7 @@ import 'package:paclub/repositories/login_repository.dart';
 class LoginBinding implements Bindings {
   @override
   void dependencies() {
+    print('LoginBinding');
     Get.lazyPut(() => LoginRepository());
     Get.lazyPut<LoginController>(
       () => LoginController(),

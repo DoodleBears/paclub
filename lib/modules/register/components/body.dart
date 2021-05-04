@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:paclub/modules/login/components/login_components.dart';
 import 'package:paclub/modules/register/register_controller.dart';
 import 'package:paclub/r.dart';
-import 'package:paclub/routes/app_pages.dart';
 import 'package:paclub/theme/app_theme.dart';
 
 class Body extends GetView<RegisterController> {
@@ -67,17 +66,17 @@ class Body extends GetView<RegisterController> {
               return RoundedLoadingButton(
                 text: 'SIGN UP',
                 // 点击后确认登录
-                onPressed: controller.submit,
+                onPressed: () => controller.submit(context),
                 // 在点击后触发loading效果，加载结束后再次触发，取消loading
                 isLoading: controller.isLoading,
               );
             },
           ),
           SizedBox(height: 12),
-          // 跳转到注册界面
+          // 回到到登录界面
           AlreadHaveAnAccoutCheck(
             login: false,
-            onTap: () => Get.offAllNamed(Routes.LOGIN),
+            onTap: () => Get.back(),
           ),
         ],
       ),

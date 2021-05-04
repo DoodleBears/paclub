@@ -1,7 +1,12 @@
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:paclub/functions/transitions.dart';
+import 'package:paclub/pages/Tabs.dart';
 import 'package:paclub/repositories/login_repository.dart';
 import 'package:paclub/routes/app_pages.dart';
 import 'package:paclub/widgets/toast.dart';
+
+import 'login_page.dart';
 
 // LoginController交互对象: View(Login_page.dart), Repository(login_repository.dart)
 
@@ -31,7 +36,7 @@ class LoginController extends GetxController {
     update();
   }
 
-  void submit() async {
+  void submit(BuildContext context) async {
     if (_username == null || _username.isEmpty) {
       toast('Email cannot be null');
       return;
@@ -48,7 +53,10 @@ class LoginController extends GetxController {
     isLoading = false;
     update();
     if (loginInfo == 'login successed') {
-      Get.offAllNamed(Routes.HOME);
+      // Get.offAllNamed(Routes.HOME);
+      // 使用自定义的动画，exit效果和enter效果与预设不同
+      Navigator.pushReplacement(context,
+          BelowDownTopHoldRoute(exitPage: LoginPage(), enterPage: Tabs()));
     } else {
       toast(loginInfo);
     }

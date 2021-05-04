@@ -5,6 +5,7 @@ import 'package:paclub/repositories/register_repository.dart';
 class RegisterBinding implements Bindings {
   @override
   void dependencies() {
+    print('RegisterBinding');
     Get.lazyPut(() => RegisterRepository());
     Get.lazyPut<RegisterController>(
       () => RegisterController(),

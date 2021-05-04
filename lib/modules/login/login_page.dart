@@ -5,6 +5,7 @@ import 'components/body.dart';
 class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    print('LoginPage');
     return Scaffold(
       body: Body(),
     );
