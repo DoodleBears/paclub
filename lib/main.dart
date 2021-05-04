@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:paclub/modules/login/login_binding.dart';
 import 'package:paclub/routes/app_pages.dart';
 import 'package:logger/logger.dart';
-import 'functions/transitions.dart';
 import 'theme/app_theme.dart';
 
 var logger = Logger(
@@ -27,7 +26,6 @@ class MyApp extends StatelessWidget {
         'Click here to checkout more Logger utility https://pub.dev/packages/logger/example');
     return GetMaterialApp(
       theme: appThemeData,
-      // onGenerateRoute: RouteGenerator.generateRoute,
       // customTransition: RightToLeftTransitions(),
       // defaultTransition: Transition.native,
       transitionDuration: Duration(milliseconds: 350),

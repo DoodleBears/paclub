@@ -14,33 +14,3 @@ abstract class Routes {
   static const TASK_MOTHLY = '/task-mothly';
   static const TASK_DETAILS = '/task-details';
 }
-
-class RouteGenerator {
-  static Route<dynamic> generateRoute(RouteSettings settings) {
-    switch (settings.name) {
-      case Routes.LOGIN:
-        {
-          print(settings.name);
-          return ShiftLeftRoute(
-              exitPage: RegisterPage(), enterPage: LoginPage());
-          break;
-        }
-      case Routes.REGISTER:
-        {
-          print(settings.name);
-
-          return ShiftLeftRoute(
-              exitPage: LoginPage(), enterPage: RegisterPage());
-          break;
-        }
-      case Routes.HOME:
-        {
-          print(settings.name);
-
-          return ShiftLeftRoute(
-              exitPage: LoginPage(), enterPage: RegisterPage());
-          break;
-        }
-    }
-  }
-}

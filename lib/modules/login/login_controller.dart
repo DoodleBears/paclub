@@ -3,7 +3,6 @@ import 'package:get/get.dart';
 import 'package:paclub/functions/transitions.dart';
 import 'package:paclub/pages/Tabs.dart';
 import 'package:paclub/repositories/login_repository.dart';
-import 'package:paclub/routes/app_pages.dart';
 import 'package:paclub/widgets/toast.dart';
 
 import 'login_page.dart';

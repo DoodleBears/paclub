@@ -1,11 +1,9 @@
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:paclub/functions/transitions.dart';
-import 'package:paclub/modules/login/login_page.dart';
 import 'package:paclub/modules/register/register_page.dart';
 import 'package:paclub/pages/Tabs.dart';
 import 'package:paclub/repositories/register_repository.dart';
-import 'package:paclub/routes/app_pages.dart';
 import 'package:paclub/widgets/toast.dart';
 
 class RegisterController extends GetxController {
