@@ -8,63 +8,50 @@ class AddScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     String titleText;
     String descriptionText;
+
     return Scaffold(
       backgroundColor: Colors.lightBlue,
       appBar: AppBar(
         title: Text(
           'Notes',
-          style: TextStyle(color: Colors.black, fontSize: 40),
+          style: TextStyle(color: Colors.white, fontSize: 40),
         ),
         centerTitle: true,
         elevation: 0,
         backgroundColor: Colors.transparent,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(15),
+      body: Container(
+        margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            TextField(
-              decoration: InputDecoration(
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(50),
+            Container(
+              decoration: BoxDecoration(border: Border.all()),
+              child: TextField(
+                decoration: InputDecoration(
+                  hintText: 'Enter Title',
                 ),
-                hintText: "Enter Title",
-                hintStyle: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
+                onChanged: (value) {
+                  titleText = value;
+                },
               ),
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-              onChanged: (value) {
-                titleText = value;
-              },
             ),
             Divider(
               height: 10,
             ),
             Expanded(
-              child: TextField(
-                decoration: InputDecoration(
-                  border: InputBorder.none,
-                  hintText: "Enter Description",
-                  hintStyle: TextStyle(
-                    fontSize: 17,
-                    color: Colors.white,
+              child: Container(
+                decoration: BoxDecoration(border: Border.all()),
+                child: TextField(
+                  maxLines: null,
+                  expands: true,
+                  decoration: InputDecoration(
+                    hintText: 'Enter Description',
                   ),
+                  onChanged: (value) {
+                    descriptionText = value;
+                  },
                 ),
-                style: TextStyle(
-                  fontSize: 17,
-                  color: Colors.white,
-                ),
-                onChanged: (value) {
-                  descriptionText = value;
-                },
               ),
             ),
             TextButton(
@@ -74,14 +61,14 @@ class AddScreen extends StatelessWidget {
                 Navigator.pop(context);
               },
               style: TextButton.styleFrom(
-                backgroundColor: Colors.white,
+                backgroundColor: Colors.lightBlue,
               ),
               child: Text(
                 'Add Note',
                 style: TextStyle(
                     fontSize: 40,
                     fontWeight: FontWeight.bold,
-                    color: Colors.lightBlue),
+                    color: Colors.black),
               ),
             ),
           ],
