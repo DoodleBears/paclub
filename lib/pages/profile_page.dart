@@ -16,12 +16,13 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
+    print('Profile Page Build');
     final user = UserPreferences.getUser();
 
     return ThemeSwitchingArea(
       child: Builder(
         builder: (context) => Scaffold(
-          appBar: buildAppBar(context),
+          appBar: buildAppBar(context, user),
           body: ListView(
             physics: BouncingScrollPhysics(),
             children: [

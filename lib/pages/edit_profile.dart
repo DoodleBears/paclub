@@ -29,62 +29,65 @@ class _EditProfilePageState extends State<EditProfilePage> {
   }
 
   @override
-  Widget build(BuildContext context) => ThemeSwitchingArea(
-        child: Builder(
-          builder: (context) => Scaffold(
-            appBar: buildAppBar(context),
-            body: ListView(
-              padding: EdgeInsets.symmetric(horizontal: 32),
-              physics: BouncingScrollPhysics(),
-              children: [
-                ProfileWidget(
-                  imagePath: user.imagePath,
-                  isEdit: true,
-                  onClicked: () async {
-                    final image = await ImagePicker()
-                        .getImage(source: ImageSource.gallery);
+  Widget build(BuildContext context) {
+    print('Edit_Profile Page Build');
+    return ThemeSwitchingArea(
+      child: Builder(
+        builder: (context) => Scaffold(
+          appBar: buildAppBar(context, user),
+          body: ListView(
+            padding: EdgeInsets.symmetric(horizontal: 32),
+            physics: BouncingScrollPhysics(),
+            children: [
+              ProfileWidget(
+                imagePath: user.imagePath,
+                isEdit: true,
+                onClicked: () async {
+                  final image =
+                      await ImagePicker().getImage(source: ImageSource.gallery);
 
-                    if (image == null) return;
+                  if (image == null) return;
 
-                    final directory = await getApplicationDocumentsDirectory();
-                    final name = basename(image.path);
-                    final imageFile = File('${directory.path}/$name');
-                    final newImage =
-                        await File(image.path).copy(imageFile.path);
+                  // 依赖 path_provider，读取手机里的图片
+                  final directory = await getApplicationDocumentsDirectory();
+                  final name = basename(image.path);
+                  final imageFile = File('${directory.path}/$name');
+                  final newImage = await File(image.path).copy(imageFile.path);
 
-                    setState(() => user = user.copy(imagePath: newImage.path));
-                  },
-                ),
-                const SizedBox(height: 24),
-                TextFieldWidget(
-                  label: 'Full Name',
-                  text: user.name,
-                  onChanged: (name) => user = user.copy(name: name),
-                ),
-                const SizedBox(height: 24),
-                TextFieldWidget(
-                  label: 'Email',
-                  text: user.email,
-                  onChanged: (email) => user = user.copy(email: email),
-                ),
-                const SizedBox(height: 24),
-                TextFieldWidget(
-                  label: 'About',
-                  text: user.about,
-                  maxLines: 5,
-                  onChanged: (about) => user = user.copy(about: about),
-                ),
-                const SizedBox(height: 24),
-                ButtonWidget(
-                  text: 'Save',
-                  onClicked: () {
-                    UserPreferences.setUser(user);
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            ),
+                  setState(() => user = user.copy(imagePath: newImage.path));
+                },
+              ),
+              const SizedBox(height: 24),
+              TextFieldWidget(
+                label: 'Full Name',
+                text: user.name,
+                onChanged: (name) => user = user.copy(name: name),
+              ),
+              const SizedBox(height: 24),
+              TextFieldWidget(
+                label: 'Email',
+                text: user.email,
+                onChanged: (email) => user = user.copy(email: email),
+              ),
+              const SizedBox(height: 24),
+              TextFieldWidget(
+                label: 'About',
+                text: user.about,
+                maxLines: 5,
+                onChanged: (about) => user = user.copy(about: about),
+              ),
+              const SizedBox(height: 24),
+              ButtonWidget(
+                text: 'Save',
+                onClicked: () {
+                  UserPreferences.setUser(user);
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
           ),
         ),
-      );
+      ),
+    );
+  }
 }

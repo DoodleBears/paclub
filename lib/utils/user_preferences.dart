@@ -23,11 +23,15 @@ class UserPreferences {
     final json = jsonEncode(user.toJson());
 
     await _preferences.setString(_keyUser, json);
+    print('update user data');
   }
 
   static User getUser() {
     final json = _preferences.getString(_keyUser);
-
+    if (json == null)
+      print('now the user data is null');
+    else
+      print('now the user data is not null');
     return json == null ? myUser : User.fromJson(jsonDecode(json));
   }
 }

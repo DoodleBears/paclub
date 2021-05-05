@@ -1,11 +1,13 @@
 import 'package:animated_theme_switcher/animated_theme_switcher.dart';
+import 'package:box_group/models/user.dart';
 import 'package:box_group/themes.dart';
 import 'package:box_group/utils/user_preferences.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-AppBar buildAppBar(BuildContext context) {
-  final user = UserPreferences.getUser();
+AppBar buildAppBar(BuildContext context, User user) {
+  print('AppBar rebuild');
+  // final user = UserPreferences.getUser();
   final isDarkMode = user.isDarkMode;
   final icon = isDarkMode ? CupertinoIcons.sun_max : CupertinoIcons.moon_stars;
 

@@ -13,6 +13,7 @@ Future main() async {
   ]);
 
   await UserPreferences.init();
+  print('initialize user data');
 
   runApp(MyApp());
 }
