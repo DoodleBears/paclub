@@ -32,20 +32,43 @@ class RoundedLoadingButton extends StatelessWidget {
           // 去除 Button 默认的阴影
           shadowColor: Colors.transparent,
         ),
-        child: isLoading
-            ? FittedBox(
+        child: Stack(
+          alignment: AlignmentDirectional.center,
+          children: [
+            // [圆形进度条] 改变 Opacity 的动画
+            AnimatedOpacity(
+              // 当正在 loading 的时候, 进度条透明度设置为 1(显现), 否则为0(消失)
+              opacity: isLoading ? 1 : 0,
+              curve: Curves.easeInOutCubic,
+              duration: Duration(milliseconds: 300),
+              child: FittedBox(
                 fit: BoxFit.fitHeight,
+                // 圆形进度条
                 child: CircularProgressIndicator(
-                  strokeWidth: 6.0,
+                  // 设置为白色（保持不变的 Animation，一直为白色
+                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  // 进度条背后背景的颜色（圆圈底下的部分）
+                  // backgroundColor: Colors.grey[300],
+                  strokeWidth: 5.0,
                 ),
-              )
-            : Text(
+              ),
+            ),
+            // [LOGIN 文字] 改变 Opacity 的动画
+            AnimatedOpacity(
+              // 当正在 loading 的时候，文字的透明度设置为为0(消失), 否则为1(显现)
+              opacity: isLoading ? 0 : 1,
+              curve: Curves.easeInOutCubic,
+              duration: Duration(milliseconds: 300),
+              child: Text(
                 text,
                 style: TextStyle(
                   fontSize: 20.0,
                   color: textColor,
                 ),
               ),
+            ),
+          ],
+        ),
         onPressed: onPressed,
       ),
     );

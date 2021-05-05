@@ -182,7 +182,9 @@ class BelowDownTopHoldRoute extends PageRouteBuilder {
   BelowDownTopHoldRoute({this.exitPage, this.enterPage})
       : super(
           // super 是指套用 extends 继承的东西的参数，并对其中的个别做设置
+          // opaque: false,
           transitionDuration: const Duration(milliseconds: 450),
+          // barrierColor: Color(0xaa000000),
           pageBuilder: (
             BuildContext context,
             Animation<double> animation,
