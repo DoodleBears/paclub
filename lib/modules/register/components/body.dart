@@ -18,7 +18,7 @@ class Body extends GetView<RegisterController> {
             width: 100.0,
             fit: BoxFit.fitWidth,
           ),
-          SizedBox(height: 6),
+          const SizedBox(height: 6),
           Text(
             'Paclub',
             style: TextStyle(
@@ -27,7 +27,7 @@ class Body extends GetView<RegisterController> {
               fontSize: 24.0,
             ),
           ),
-          SizedBox(height: 40),
+          const SizedBox(height: 40),
           // 用户名和邮箱输入
           RoundedInputField(
             hintText: 'Your Email',
@@ -59,24 +59,31 @@ class Body extends GetView<RegisterController> {
               );
             },
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           // 登录按钮
           GetBuilder<RegisterController>(
             builder: (controller) {
               return RoundedLoadingButton(
                 text: 'SIGN UP',
                 // 点击后确认登录
-                onPressed: () => controller.submit(context),
+                onPressed: controller.isLoading
+                    ? () {}
+                    : () => controller.submit(context),
                 // 在点击后触发loading效果，加载结束后再次触发，取消loading
                 isLoading: controller.isLoading,
               );
             },
           ),
-          SizedBox(height: 12),
+          const SizedBox(height: 12),
           // 回到到登录界面
-          AlreadHaveAnAccoutCheck(
-            login: false,
-            onTap: () => Get.back(),
+          GetBuilder<RegisterController>(
+            builder: (controller) {
+              return AlreadHaveAnAccoutCheck(
+                login: false,
+                // 当点击注册后，发送网络请求，用户将无法出发产生界面变化的交互
+                onTap: controller.isLoading ? () {} : () => Get.back(),
+              );
+            },
           ),
         ],
       ),
