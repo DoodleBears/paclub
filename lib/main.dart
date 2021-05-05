@@ -1,17 +1,11 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:paclub/functions/transitions.dart';
 import 'package:paclub/modules/login/login_binding.dart';
 import 'package:paclub/routes/app_pages.dart';
-import 'package:logger/logger.dart';
+import 'package:paclub/widgets/logger.dart';
 import 'theme/app_theme.dart';
-
-var logger = Logger(
-  printer: PrettyPrinter(),
-);
-var loggerNoStack = Logger(
-  printer: PrettyPrinter(methodCount: 0),
-);
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -26,15 +20,34 @@ class MyApp extends StatelessWidget {
         'Click here to checkout more Logger utility https://pub.dev/packages/logger/example');
     return GetMaterialApp(
       theme: appThemeData,
-      // customTransition: RightToLeftTransitions(),
+      customTransition: TopLeftBelowleftTransitions(),
+      builder: (context, child) => Scaffold(
+        // Global GestureDetector that will dismiss the keyboard
+        body: GestureDetector(
+          onTap: () {
+            hideKeyboard(context); // 让用户可以点击其他地方取消 focus（聚焦），用来隐藏键盘
+          },
+          child: child,
+        ),
+      ),
       // defaultTransition: Transition.native,
       transitionDuration: Duration(milliseconds: 350),
       debugShowCheckedModeBanner: false,
-      title: "Welcome to 盒群",
-      initialBinding: LoginBinding(),
+      title: "盒群",
+      // initialBinding: LoginBinding(),
       getPages: AppPages.pages,
       initialRoute: Routes.LOGIN,
+      // debugShowMaterialGrid: true,
+      popGesture: true,
+
       // home: LoginPage()
     );
+  }
+}
+
+void hideKeyboard(BuildContext context) {
+  FocusScopeNode currentFocus = FocusScope.of(context);
+  if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
+    FocusManager.instance.primaryFocus.unfocus();
   }
 }

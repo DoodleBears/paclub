@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 // Coming(Enter), from (1, 0) to (0, 0)
 // Leaving(Exit), from (0, 0) to (-0.33, 0)
 // OFFSET:  BOTH CENTER to LEFT
-class RightToLeftTransitions extends CustomTransition {
+class TopLeftBelowleftTransitions extends CustomTransition {
   @override
   Widget buildTransition(
       BuildContext context,
@@ -182,7 +182,7 @@ class BelowDownTopHoldRoute extends PageRouteBuilder {
   BelowDownTopHoldRoute({this.exitPage, this.enterPage})
       : super(
           // super 是指套用 extends 继承的东西的参数，并对其中的个别做设置
-          transitionDuration: const Duration(milliseconds: 500),
+          transitionDuration: const Duration(milliseconds: 450),
           pageBuilder: (
             BuildContext context,
             Animation<double> animation,
