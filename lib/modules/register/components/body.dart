@@ -67,8 +67,13 @@ class Body extends GetView<RegisterController> {
                 text: 'SIGN UP',
                 // 点击后确认登录
                 onPressed: controller.isLoading
-                    ? () {}
-                    : () => controller.submit(context),
+                    ? () {
+                        print('没有功能');
+                      }
+                    : () {
+                        print('提交注册信息，开始进行账号注册');
+                        controller.submit(context);
+                      },
                 // 在点击后触发loading效果，加载结束后再次触发，取消loading
                 isLoading: controller.isLoading,
               );
@@ -81,7 +86,14 @@ class Body extends GetView<RegisterController> {
               return AlreadHaveAnAccoutCheck(
                 login: false,
                 // 当点击注册后，发送网络请求，用户将无法出发产生界面变化的交互
-                onTap: controller.isLoading ? () {} : () => Get.back(),
+                onTap: controller.isLoading
+                    ? () {
+                        print('没有功能');
+                      }
+                    : () {
+                        print('返回登录页面');
+                        Get.back();
+                      },
               );
             },
           ),

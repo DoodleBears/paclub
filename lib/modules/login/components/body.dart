@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:paclub/functions/transitions.dart';
 import 'package:paclub/modules/login/components/round_password_field.dart';
 import 'package:paclub/modules/login/components/rounded_loading_button.dart';
 import 'package:paclub/modules/login/components/rounded_input_field.dart';
 import 'package:paclub/modules/login/login_controller.dart';
-import 'package:paclub/modules/login/login_page.dart';
-import 'package:paclub/pages/Tabs.dart';
 import 'package:paclub/r.dart';
 import 'package:paclub/routes/app_pages.dart';
 import 'package:paclub/theme/app_theme.dart';
@@ -65,8 +62,13 @@ class Body extends GetView<LoginController> {
                 // 点击后确认登录
                 // 当点击登录后，发送网络请求，用户将无法出发产生界面变化的交互
                 onPressed: controller.isLoading
-                    ? () {}
-                    : () => controller.submit(context),
+                    ? () {
+                        print('没有功能');
+                      }
+                    : () {
+                        print('提交登录信息，开始进行登录验证');
+                        controller.submit(context);
+                      },
                 // 在点击后触发loading效果，加载结束后再次触发，取消loading
                 isLoading: controller.isLoading,
               );
@@ -83,8 +85,17 @@ class Body extends GetView<LoginController> {
                 // 当点击登录后，发送网络请求，用户将无法出发产生界面变化的交互
                 onTap: controller.isLoading
                     // 使用getPage中预设的动画(app_pages.dart)
-                    ? () {}
-                    : () => Get.toNamed(Routes.REGISTER),
+                    ? () {
+                        print('没有功能');
+                      }
+                    : () {
+                        print('前往注册页面');
+                        Get.toNamed(Routes.REGISTER);
+                      },
+                // : () => Navigator.push(
+                //     context,
+                //     TopLeftMaskBelowleftRoute(
+                //         exitPage: LoginPage(), enterPage: RegisterPage())),
               );
             },
           ),
@@ -100,13 +111,25 @@ class Body extends GetView<LoginController> {
                 // 使用自定义的动画，exit效果和enter效果与预设不同
                 onPressed: controller.isLoading
                     // 当点击登录后，发送网络请求，用户将无法出发产生界面变化的交互
-                    ? () {}
-                    : () => Navigator.pushReplacement(
-                        context,
-                        BelowDownTopHoldRoute(
-                            exitPage: LoginPage(), enterPage: Tabs())),
+                    ? () {
+                        print('没有功能');
+                      }
+                    : () {
+                        print('跳过登录，直接跳转到主页');
 
-                // onPressed: () => Get.offNamed(Routes.HOME),
+                        //** 希望被pop掉的页面有动画, 则用下面这2个 */
+                        /// 用 `Get.offNamed()` 相当于 `pushReplacementNamed`, 会有 pop 的动画, 因为实际操作是先pop了当前页面, 再push
+                        /// 用 `Get.offNamedUntil()`, 相当于 `pushNamedAndRemoveUntil`, 会有 pop 动画, 会 pop 掉n个页面, 在push
+                        //** 反之, 不要有动画 */
+                        /// `1.当只需要pop掉当前1个页面时` Get.offAndToNamed() 相当于 `popAndPushNamed()`, 只会让enter page执行enter动画, 实际操作是先push了新页面，等Push动画结束之后再Pop原本要pop的旧页面
+                        /// `2.当需要pop掉很n个页面时` 先用 Get.until(), 然后用 Get.toNamed() `下面的例子就是`
+                        // **Get.until(page, (route) => (route as GetPageRoute).routeName == Routes.HOME) 的话就是 pop 到 Home Page 就停下来(Home不会被Pop)
+                        // **这里写作 Get.until((route) => false), 就是全部回传false, 全部 pop 掉
+                        Get.until((route) => false);
+                        Get.toNamed(Routes.HOME);
+                        // Get.offNamedUntil(Routes.HOME, (route) => false);
+                      },
+
                 isLoading: false,
               );
             },
