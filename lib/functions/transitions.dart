@@ -1,10 +1,13 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
-// Coming(Enter), from (1, 0) to (0, 0)
-// Leaving(Exit), from (0, 0) to (-0.33, 0)
-// OFFSET:  BOTH CENTER to LEFT
-class TopLeftBelowleftTransitions extends CustomTransition {
+// **仿 Android 上 Twitter 式的界面 Transition 动画
+// Coming(Enter) push进来时执行的入场动画
+//    position: (1, 0) -> (0, 0), 位置从右往左 1个页面
+// Leaving(Exit) 被pop出去时执行的离场动画
+//    scale: (1.0) -> (0.9), 大小缩小成 0.9 倍大
+class TopLeftMaskBelowSmallTransitions extends CustomTransition {
   @override
   Widget buildTransition(
       BuildContext context,
@@ -13,28 +16,100 @@ class TopLeftBelowleftTransitions extends CustomTransition {
       Animation<double> animation, // coming page
       Animation<double> secondaryAnimation, // leaving page
       Widget child) {
-    return Align(
-      alignment: Alignment.center,
-      child: SlideTransition(
-        // coming page from right to center
-        position: Tween(begin: Offset(1.0, 0.0), end: Offset(0, 0))
-            .chain(CurveTween(curve: Curves.easeInOutCubic))
-            .animate(secondaryAnimation),
-        child: SlideTransition(
-          // leaving page from center to left
-          position: Tween(begin: Offset.zero, end: Offset(-0.33, 0))
-              .chain(CurveTween(curve: Curves.easeInOutCubic))
-              .animate(animation),
-          child: child,
+    return Stack(
+      children: <Widget>[
+        // 在中间加一层黑色的透明层
+        DarkCurtainFade(
+          animation: animation,
+          begin: 0.0,
+          end: 1.0,
+          color: Color(0xbb000000),
         ),
-      ),
+        SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(1.0, 0.0),
+            end: Offset.zero,
+          ).animate(
+            CurvedAnimation(
+              parent: animation,
+              curve: Curves.easeOutCubic,
+              reverseCurve: Curves.easeInCubic,
+            ),
+          ),
+          child: ScaleTransition(
+            scale: Tween<double>(begin: 1.0, end: 0.9).animate(
+              CurvedAnimation(
+                parent: secondaryAnimation,
+                curve: Curves.easeOutCubic,
+                reverseCurve: Curves.easeInCubic,
+              ),
+            ),
+            child: child,
+          ),
+        ),
+      ],
     );
   }
 }
 
-// Coming(Enter), from (1, 0) to (0, 0)
-// Leaving(Exit), from (0, 0) to (-1, 0)
-// OFFSET:  BOTH CENTER to LEFT
+/// **仿 iOS 上 Twitter 式的界面 Transition（视差效果）动画
+// Coming(Enter) push进来时执行的入场动画
+//    position: (1, 0) -> (0, 0), 位置从右往左 1个页面
+// Leaving(Exit) 被pop出去时执行的离场动画
+//    position: (0, 0) -> (-0.33, 0), 位置从左往右 1/3个页面
+
+class TopLeftMaskBelowLeftTransitions extends CustomTransition {
+  @override
+  Widget buildTransition(
+      BuildContext context,
+      Curve curve,
+      Alignment alignment,
+      Animation<double> animation, // coming page
+      Animation<double> secondaryAnimation, // leaving page
+      Widget child) {
+    return Stack(
+      children: <Widget>[
+        // 在中间加一层黑色的透明层
+        DarkCurtainFade(
+          animation: animation,
+          begin: 0.0,
+          end: 1.0,
+        ),
+        SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(1.0, 0.0),
+            end: Offset.zero,
+          ).animate(
+            CurvedAnimation(
+              parent: animation,
+              curve: Curves.easeOutCubic,
+              reverseCurve: Curves.easeInCubic,
+            ),
+          ),
+          child: SlideTransition(
+            position: Tween<Offset>(
+              begin: Offset.zero,
+              end: const Offset(-0.33, 0.0),
+            ).animate(
+              CurvedAnimation(
+                parent: secondaryAnimation,
+                curve: Curves.easeOutCubic,
+                reverseCurve: Curves.easeInCubic,
+              ),
+            ),
+            child: child,
+          ),
+        )
+      ],
+    );
+  }
+}
+
+/// **左右水平位移（无视差效果）动画
+// Coming(Enter) push进来时执行的入场动画
+//    position: (1, 0) -> (0, 0)
+// Leaving(Exit) 被pop出去时执行的离场动画
+//    positon: (0, 0) -> (-1.0, 0)
 class ShiftLeftTransitions extends CustomTransition {
   @override
   Widget buildTransition(
@@ -50,12 +125,12 @@ class ShiftLeftTransitions extends CustomTransition {
         // coming page from right to center
         position: Tween(begin: Offset(1.0, 0.0), end: Offset.zero)
             .chain(CurveTween(curve: Curves.easeInOutCubic))
-            .animate(secondaryAnimation),
+            .animate(animation),
         child: SlideTransition(
           // leaving page from center to left
           position: Tween(begin: Offset.zero, end: Offset(-1.0, 0.0))
               .chain(CurveTween(curve: Curves.easeInOutCubic))
-              .animate(animation),
+              .animate(secondaryAnimation),
           child: child,
         ),
       ),
@@ -63,172 +138,34 @@ class ShiftLeftTransitions extends CustomTransition {
   }
 }
 
-// TOP:     Coming(Enter) page, from (1, 0) to (0, 0)
-// BELOW:   Leaving(Exit) page, from (0, 0) to (-1, 0)
-// OFFSET:  BOTH CENTER to LEFT
-class ShiftLeftRoute extends PageRouteBuilder {
-  final Widget enterPage;
-  final Widget exitPage;
-  ShiftLeftRoute({this.exitPage, this.enterPage})
-      : super(
-          pageBuilder: (
-            BuildContext context,
-            Animation<double> animation,
-            Animation<double> secondaryAnimation,
-          ) {
-            return enterPage;
-          },
-          transitionsBuilder: (
-            BuildContext context,
-            Animation<double> animation,
-            Animation<double> secondaryAnimation,
-            Widget child,
-          ) {
-            return Stack(
-              children: <Widget>[
-                SlideTransition(
-                  position: Tween<Offset>(
-                    begin: const Offset(0.0, 0.0),
-                    end: const Offset(-1.0, 0.0),
-                  ).animate(
-                    CurvedAnimation(
-                      parent: secondaryAnimation,
-                      curve: Curves.easeInOutCubic,
-                      reverseCurve: Curves.easeInOutCubic,
-                    ),
-                  ),
-                  child: child,
-                ),
-                SlideTransition(
-                  position: Tween<Offset>(
-                    begin: const Offset(1.0, 0.0),
-                    end: Offset.zero,
-                  ).animate(
-                    CurvedAnimation(
-                      parent: animation,
-                      curve: Curves.easeInOutCubic,
-                      reverseCurve: Curves.easeInOutCubic,
-                    ),
-                  ),
-                  child: child,
-                )
-              ],
-            );
-          },
-        );
-}
+//** 黑色幕布：制造一个指定颜色的透明度渐变动画，如：从黑色半透明，到全透明，就能模拟 Twitter 的遮罩效果
+class DarkCurtainFade extends StatelessWidget {
+  const DarkCurtainFade({
+    Key key,
+    @required this.animation,
+    this.begin = 1.0,
+    this.end = 0.0,
+    this.color = const Color(0x88000000),
+  }) : super(key: key);
 
-// TOP:     Coming(Enter) page, from (1, 0) to (0, 0)
-// BELOW:   Leaving(Exit) page, from (0, 0) to (-0.33, 0)
-// OFFSET:  BOTH CENTER to LEFT
-class TopLeftBelowleftRoute extends PageRouteBuilder {
-  final Widget enterPage;
-  final Widget exitPage;
-  TopLeftBelowleftRoute({this.exitPage, this.enterPage})
-      : super(
-          pageBuilder: (
-            BuildContext context,
-            Animation<double> animation,
-            Animation<double> secondaryAnimation,
-          ) {
-            return enterPage;
-          },
-          transitionsBuilder: (
-            BuildContext context,
-            Animation<double> animation,
-            Animation<double> secondaryAnimation,
-            Widget child,
-          ) {
-            return Stack(
-              children: <Widget>[
-                SlideTransition(
-                  position: Tween<Offset>(
-                    begin: const Offset(0.0, 0.0),
-                    end: const Offset(-0.33, 0.0),
-                  ).animate(
-                    CurvedAnimation(
-                      parent: animation,
-                      curve: Curves.easeInOutCubic,
-                      reverseCurve: Curves.easeInOutCubic,
-                    ),
-                  ),
-                  child: exitPage,
-                ),
-                SlideTransition(
-                  position: Tween<Offset>(
-                    begin: const Offset(1.0, 0.0),
-                    end: Offset.zero,
-                  ).animate(
-                    CurvedAnimation(
-                      parent: animation,
-                      curve: Curves.easeInOutCubic,
-                      reverseCurve: Curves.easeInOutCubic,
-                    ),
-                  ),
-                  child: enterPage,
-                )
-              ],
-            );
-          },
-        );
-}
+  final Animation<double> animation;
+  final double begin;
+  final double end;
+  final Color color;
 
-// TOP:     Leaving(Exit) page, from (0, 0) to (1.0, 0)
-// BELOW:   Coming(Enter) page, from (0, 0) to (0, 0)
-// OFFSET:  TOP CENTER to DOWN, BELOW STAY
-class BelowDownTopHoldRoute extends PageRouteBuilder {
-  final Widget enterPage;
-  final Widget exitPage;
-  BelowDownTopHoldRoute({this.exitPage, this.enterPage})
-      : super(
-          // super 是指套用 extends 继承的东西的参数，并对其中的个别做设置
-          // opaque: false,
-          transitionDuration: const Duration(milliseconds: 450),
-          // barrierColor: Color(0xaa000000),
-          pageBuilder: (
-            BuildContext context,
-            Animation<double> animation,
-            Animation<double> secondaryAnimation,
-          ) {
-            return enterPage;
-          },
-          transitionsBuilder: (
-            BuildContext context,
-            Animation<double> animation,
-            Animation<double> secondaryAnimation,
-            Widget child,
-          ) {
-            // Stack 下方的children 呈现在越Top的child，会盖住Below下方的child
-            return Stack(
-              children: <Widget>[
-                SlideTransition(
-                  position: Tween<Offset>(
-                    begin: const Offset(0.0, 0.0),
-                    end: const Offset(0.0, 0.0),
-                  ).animate(
-                    CurvedAnimation(
-                      parent: animation,
-                      curve: Curves.easeInOutCubic,
-                      reverseCurve: Curves.easeInOutCubic,
-                    ),
-                  ),
-                  child: enterPage,
-                ),
-                SlideTransition(
-                  position: Tween<Offset>(
-                    begin: Offset.zero,
-                    end: const Offset(0.0, 1.0),
-                  ).animate(
-                    CurvedAnimation(
-                      parent: animation,
-                      curve: Curves.easeInOutCubic,
-                      reverseCurve: Curves.easeInOutCubic,
-                    ),
-                  ),
-                  child: exitPage,
-                )
-              ],
-            );
-          },
-        );
+  @override
+  Widget build(BuildContext context) {
+    return FadeTransition(
+      opacity: Tween<double>(begin: begin, end: end)
+          // .chain(CurveTween(curve: Curves.linear))
+          .animate(CurvedAnimation(
+        curve: Curves.easeOutCubic,
+        reverseCurve: Curves.easeInCubic,
+        parent: animation,
+      )),
+      child: Scaffold(
+        backgroundColor: color,
+      ),
+    );
+  }
 }

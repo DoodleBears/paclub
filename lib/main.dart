@@ -1,8 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:paclub/functions/transitions.dart';
-import 'package:paclub/modules/login/login_binding.dart';
 import 'package:paclub/routes/app_pages.dart';
 import 'package:paclub/widgets/logger.dart';
 import 'theme/app_theme.dart';
@@ -20,7 +18,7 @@ class MyApp extends StatelessWidget {
         'Click here to checkout more Logger utility https://pub.dev/packages/logger/example');
     return GetMaterialApp(
       theme: appThemeData,
-      customTransition: TopLeftBelowleftTransitions(),
+      // customTransition: TopLeftMaskBelowleftTransitions(),
       builder: (context, child) => Scaffold(
         // Global GestureDetector that will dismiss the keyboard
         body: GestureDetector(

@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:paclub/functions/transitions.dart';
 import 'package:paclub/modules/login/login_binding.dart';
@@ -20,6 +19,7 @@ abstract class AppPages {
       // transition: Transition.rightToLeft,
       // curve: Curves.easeInOutCubic,
       customTransition: ShiftLeftTransitions(),
+      // transitionDuration: const Duration(milliseconds: 250),
     ),
     GetPage(
       name: Routes.REGISTER,
@@ -28,10 +28,13 @@ abstract class AppPages {
       // transition: Transition.rightToLeft,
       // curve: Curves.easeInOutCubic,
       customTransition: ShiftLeftTransitions(),
+      // transitionDuration: const Duration(milliseconds: 250),
     ),
     GetPage(
       name: Routes.HOME,
       page: () => Tabs(),
+      customTransition: TopLeftMaskBelowLeftTransitions(),
+
       // transition: Transition.downToUp,
       // curve: Curves.easeOutCubic,
     ),
