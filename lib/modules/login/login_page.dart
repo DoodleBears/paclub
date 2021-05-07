@@ -6,7 +6,7 @@ import 'components/body.dart';
 class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    logger.i('渲染 —— LoginPage');
+    logger.d('渲染 —— LoginPage');
     return Scaffold(
       body: Body(),
     );

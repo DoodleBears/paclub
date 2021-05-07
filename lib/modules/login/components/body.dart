@@ -7,6 +7,7 @@ import 'package:paclub/modules/login/login_controller.dart';
 import 'package:paclub/r.dart';
 import 'package:paclub/routes/app_pages.dart';
 import 'package:paclub/theme/app_theme.dart';
+import 'package:paclub/widgets/logger.dart';
 import 'already_have_an_account_check.dart';
 import 'or_divider.dart';
 
@@ -63,10 +64,10 @@ class Body extends GetView<LoginController> {
                 // 当点击登录后，发送网络请求，用户将无法出发产生界面变化的交互
                 onPressed: controller.isLoading
                     ? () {
-                        print('没有功能');
+                        logger.i('当前处于Loading状态, Button被设置为无效');
                       }
                     : () {
-                        print('提交登录信息，开始进行登录验证');
+                        logger.i('Login 按钮被按下 —— 提交登录信息，开始进行登录验证');
                         controller.submit(context);
                       },
                 // 在点击后触发loading效果，加载结束后再次触发，取消loading
@@ -86,10 +87,10 @@ class Body extends GetView<LoginController> {
                 onTap: controller.isLoading
                     // 使用getPage中预设的动画(app_pages.dart)
                     ? () {
-                        print('没有功能');
+                        logger.i('当前处于Loading状态, Button被设置为无效');
                       }
                     : () {
-                        print('前往注册页面');
+                        logger.i('前往注册页面');
                         Get.toNamed(Routes.REGISTER);
                       },
                 // : () => Navigator.push(
@@ -112,10 +113,10 @@ class Body extends GetView<LoginController> {
                 onPressed: controller.isLoading
                     // 当点击登录后，发送网络请求，用户将无法出发产生界面变化的交互
                     ? () {
-                        print('没有功能');
+                        logger.i('当前处于Loading状态, Button被设置为无效');
                       }
                     : () {
-                        print('跳过登录，直接跳转到主页');
+                        logger.i('跳过登录，直接跳转到主页');
 
                         //** 希望被pop掉的页面有动画, 则用下面这2个 */
                         /// 用 `Get.offNamed()` 相当于 `pushReplacementNamed`, 会有 pop 的动画, 因为实际操作是先pop了当前页面, 再push

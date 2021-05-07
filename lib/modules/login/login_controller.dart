@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:paclub/main.dart';
 import 'package:paclub/repositories/login_repository.dart';
 import 'package:paclub/routes/app_pages.dart';
+import 'package:paclub/widgets/logger.dart';
 import 'package:paclub/widgets/toast.dart';
 
 // LoginController交互对象: View(Login_page.dart), Repository(login_repository.dart)
@@ -21,18 +23,19 @@ class LoginController extends GetxController {
 
   void onUsernameChanged(String username) {
     _username = username.trim();
-    print('当前用户名:' + _username);
+    debugPrint('当前用户名:' + _username);
   }
 
   void onPasswordChanged(String password) {
     _password = password.trim();
-    print('当前密码:' + _password);
+    debugPrint('当前密码:' + _password);
   }
 
   void changeSecure() {
     hidePassword = hidePassword ? false : true;
     update();
-    print('密码显隐状态: ' + (hidePassword ? '隐藏' : '显示' + _password));
+    debugPrint('密码显隐状态: ' +
+        (hidePassword ? '隐藏' : '显示, 密码为:' + (_password ?? 'null')));
   }
 
   void submit(BuildContext context) async {
@@ -59,12 +62,12 @@ class LoginController extends GetxController {
       /// `2.当需要pop掉很n个页面时` 先用 Get.until(), 然后用 Get.toNamed() `下面的例子就是`
       // **Get.until(page, (route) => (route as GetPageRoute).routeName == Routes.HOME) 的话就是 pop 到 Home Page 就停下来(Home不会被Pop)
       // **这里写作 Get.until((route) => false), 就是全部回传false, 全部 pop 掉
-      print('登录成功 —— 前往主页');
+      debugPrint('登录成功 —— 前往主页');
 
       Get.until((route) => false);
       Get.toNamed(Routes.HOME);
     } else {
-      print('登录失败: ' + loginInfo);
+      logger.i('登录失败: ' + loginInfo);
 
       toast(loginInfo);
     }

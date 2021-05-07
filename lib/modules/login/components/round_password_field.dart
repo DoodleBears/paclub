@@ -35,15 +35,17 @@ class RoundedPasswordField extends StatelessWidget {
           suffixIcon: allowHide
               ? IconButton(
                   // 去除点击效果
+                  tooltip: hidePassword ? '显示密码' : '隐藏密码',
                   splashColor: Colors.transparent,
                   highlightColor: Colors.transparent,
                   // 判断 hidePassword 的值来显示不同 icon
+
                   icon: hidePassword
                       ? Icon(Icons.visibility)
                       : Icon(Icons.visibility_off),
                   // 点击icon之后会让 Controller 改变 hidePassword 的 value
                   onPressed: onPressed,
-                  enableFeedback: false,
+                  // enableFeedback: false,
                   color: accentColor,
                 )
               : null,

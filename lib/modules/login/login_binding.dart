@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:paclub/modules/login/login_controller.dart';
 import 'package:paclub/repositories/login_repository.dart';
@@ -7,8 +8,8 @@ import 'package:paclub/widgets/logger.dart';
 class LoginBinding implements Bindings {
   @override
   void dependencies() {
-    logger.i('初始化依赖 —— LoginBinding');
-    print('初始化依赖 —— LoginBinding');
+    logger.d('初始化依赖 —— LoginBinding');
+    debugPrint('初始化依赖 —— LoginBinding');
 
     Get.lazyPut(() => LoginRepository());
     Get.lazyPut<LoginController>(

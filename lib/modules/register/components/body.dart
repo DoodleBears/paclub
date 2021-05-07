@@ -4,6 +4,7 @@ import 'package:paclub/modules/login/components/login_components.dart';
 import 'package:paclub/modules/register/register_controller.dart';
 import 'package:paclub/r.dart';
 import 'package:paclub/theme/app_theme.dart';
+import 'package:paclub/widgets/logger.dart';
 
 class Body extends GetView<RegisterController> {
   @override
@@ -68,10 +69,10 @@ class Body extends GetView<RegisterController> {
                 // 点击后确认登录
                 onPressed: controller.isLoading
                     ? () {
-                        print('没有功能');
+                        logger.i('当前处于Loading状态, Button被设置为无效');
                       }
                     : () {
-                        print('提交注册信息，开始进行账号注册');
+                        logger.i('提交注册信息，开始进行账号注册');
                         controller.submit(context);
                       },
                 // 在点击后触发loading效果，加载结束后再次触发，取消loading
@@ -88,10 +89,10 @@ class Body extends GetView<RegisterController> {
                 // 当点击注册后，发送网络请求，用户将无法出发产生界面变化的交互
                 onTap: controller.isLoading
                     ? () {
-                        print('没有功能');
+                        logger.i('当前处于Loading状态, Button被设置为无效');
                       }
                     : () {
-                        print('返回登录页面');
+                        logger.i('返回登录页面');
                         Get.back();
                       },
               );

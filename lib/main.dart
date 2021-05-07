@@ -14,8 +14,7 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    logger.d(
-        'Click here to checkout more Logger utility https://pub.dev/packages/logger/example');
+    logger.d('点击链接查看更多 logger 使用方式 https://pub.dev/packages/logger/example');
     return GetMaterialApp(
       theme: appThemeData,
       // customTransition: TopLeftMaskBelowleftTransitions(),
@@ -37,7 +36,7 @@ class MyApp extends StatelessWidget {
       initialRoute: Routes.LOGIN,
       // debugShowMaterialGrid: true,
       popGesture: true,
-
+      enableLog: false,
       // home: LoginPage()
     );
   }
@@ -47,5 +46,6 @@ void hideKeyboard(BuildContext context) {
   FocusScopeNode currentFocus = FocusScope.of(context);
   if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
     FocusManager.instance.primaryFocus.unfocus();
+    logger.d('隐藏键盘 Keyboard');
   }
 }

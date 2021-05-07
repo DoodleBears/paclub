@@ -13,7 +13,7 @@ class LoginRepository {
       );
       if (userCredential.user.email != null) return 'login successed';
     } on FirebaseAuthException catch (e) {
-      logger.d(e.code);
+      logger.d('Firebase Exception 错误码:' + e.code);
       if (e.code == 'user-not-found') return 'No user found for that email.';
       if (e.code == 'invalid-email') return 'email form isn\'t right';
       if (e.code == 'wrong-password') return 'Wrong password';
