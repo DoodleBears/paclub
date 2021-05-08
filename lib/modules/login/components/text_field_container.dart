@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:paclub/theme/app_theme.dart';
+import 'package:paclub/constants/constants.dart';
 
 // 用于 Email, Password 的输入，接受一个 child 作为 input_field
 class TextFieldContainer extends StatelessWidget {

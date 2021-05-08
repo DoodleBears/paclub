@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:paclub/constants/constants.dart';
 import 'package:paclub/modules/login/components/text_field_container.dart';
-import 'package:paclub/theme/app_theme.dart';
 
 // 圆角输入框，用于 (Email) 的输入
 class RoundedInputField extends StatelessWidget {

@@ -9,9 +9,7 @@ class RegisterBinding implements Bindings {
   void dependencies() {
     logger.d('初始化依赖 —— RegisterBinding');
     debugPrint('初始化依赖 —— RegisterBinding');
-    Get.lazyPut(() => RegisterRepository());
-    Get.lazyPut<RegisterController>(
-      () => RegisterController(),
-    );
+    Get.lazyPut<RegisterRepository>(() => RegisterRepository());
+    Get.lazyPut<RegisterController>(() => RegisterController());
   }
 }

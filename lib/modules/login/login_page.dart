@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:paclub/constants/colors.dart';
 import 'package:paclub/widgets/logger.dart';
 import 'components/body.dart';
 
@@ -9,6 +11,20 @@ class LoginPage extends StatelessWidget {
     logger.d('渲染 —— LoginPage');
     return Scaffold(
       body: Body(),
+      appBar: AppBar(
+        shadowColor: Colors.transparent,
+        centerTitle: true,
+        leading: IconButton(
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          icon: Icon(
+            Icons.arrow_back,
+            size: 28.0,
+          ),
+          color: accentColor,
+          onPressed: () => Get.back(),
+        ),
+      ),
     );
   }
 }

@@ -2,12 +2,17 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:paclub/routes/app_pages.dart';
+import 'package:paclub/utils/dependency_injection.dart';
 import 'package:paclub/widgets/logger.dart';
 import 'theme/app_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  // App 开启时就优先启动的各种, 如 Controller, Service(比如用于检测登录, 自动登录的)
+  // TODO: 完善初始化 DI
+  await DenpendencyInjection.init();
+
   runApp(MyApp());
 }
 
@@ -21,23 +26,19 @@ class MyApp extends StatelessWidget {
       builder: (context, child) => Scaffold(
         // Global GestureDetector that will dismiss the keyboard
         body: GestureDetector(
-          onTap: () {
-            hideKeyboard(context); // 让用户可以点击其他地方取消 focus（聚焦），用来隐藏键盘
-          },
+          onTap: () => hideKeyboard(context),
           child: child,
         ),
       ),
-      // defaultTransition: Transition.native,
       transitionDuration: Duration(milliseconds: 350),
       debugShowCheckedModeBanner: false,
       title: "盒群",
-      // initialBinding: LoginBinding(),
       getPages: AppPages.pages,
-      initialRoute: Routes.LOGIN,
-      // debugShowMaterialGrid: true,
+      initialRoute: Routes.SPLASH,
+      // initialBinding: LoginBinding(),
+      // home: LoginPage()
       popGesture: true,
       enableLog: false,
-      // home: LoginPage()
     );
   }
 }

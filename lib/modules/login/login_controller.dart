@@ -1,6 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:paclub/main.dart';
 import 'package:paclub/repositories/login_repository.dart';
 import 'package:paclub/routes/app_pages.dart';
 import 'package:paclub/widgets/logger.dart';
@@ -21,6 +21,14 @@ class LoginController extends GetxController {
   String _username;
   String _password;
 
+  set setUsername(String username) {
+    _username = username;
+  }
+
+  set setPassword(String password) {
+    _password = password;
+  }
+
   void onUsernameChanged(String username) {
     _username = username.trim();
     debugPrint('当前用户名:' + _username);
@@ -32,7 +40,7 @@ class LoginController extends GetxController {
   }
 
   void changeSecure() {
-    hidePassword = hidePassword ? false : true;
+    hidePassword = !hidePassword;
     update();
     debugPrint('密码显隐状态: ' +
         (hidePassword ? '隐藏' : '显示, 密码为:' + (_password ?? 'null')));
@@ -51,25 +59,15 @@ class LoginController extends GetxController {
     isLoading = true;
     update();
     // await Future.delayed(const Duration(seconds: 3));
-    String loginInfo = await repository.login(_username, _password);
+    User user = await repository.login(_username, _password);
     isLoading = false;
     update();
-    if (loginInfo == 'login successed') {
-      //** 希望被pop掉的页面有动画, 则用下面这1个 */
-      /// 用 Get.offNamed() 相当于 `pushReplacementNamed`, 会有 pop 的动画, 因为实际操作是先pop了当前页面, 再push
-      //** 反之, 不要有动画 */
-      /// `1.当只需要pop掉当前1个页面时` Get.offAndToNamed() 相当于 `popAndPushNamed()`, 只会让enter page执行enter动画, 实际操作是先push了新页面，等Push动画结束之后再Pop原本要pop的旧页面
-      /// `2.当需要pop掉很n个页面时` 先用 Get.until(), 然后用 Get.toNamed() `下面的例子就是`
-      // **Get.until(page, (route) => (route as GetPageRoute).routeName == Routes.HOME) 的话就是 pop 到 Home Page 就停下来(Home不会被Pop)
-      // **这里写作 Get.until((route) => false), 就是全部回传false, 全部 pop 掉
+    if (user != null) {
       debugPrint('登录成功 —— 前往主页');
+      logger.d(user);
 
       Get.until((route) => false);
       Get.toNamed(Routes.HOME);
-    } else {
-      logger.i('登录失败: ' + loginInfo);
-
-      toast(loginInfo);
     }
   }
 }

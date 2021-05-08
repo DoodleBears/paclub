@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:paclub/theme/app_theme.dart';
+import 'package:paclub/constants/constants.dart';
 
 // 在登录界面提供注册界面的跳转，反之亦然
 class AlreadHaveAnAccoutCheck extends StatelessWidget {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:paclub/theme/app_theme.dart';
+import 'package:paclub/constants/constants.dart';
 
 // 带有 loading 效果的 button，在触发网络请求时，会变成转圈模式
 class RoundedLoadingButton extends StatelessWidget {

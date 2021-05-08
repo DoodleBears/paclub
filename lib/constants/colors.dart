@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 // App主题，包含: 颜色，字体大小等
@@ -7,6 +8,9 @@ const accentDarkColor = Color(0xFF75A118);
 const primaryColor = Color(0xFFF0BF84);
 const primaryLightColor = Color(0xFFFCF4E9);
 const primaryDarkColor = Color(0xFF9F7C53);
+const black = Colors.black;
+const white = Colors.white;
+
 // const primaryTextColor = Color(0xFFF1E6FF);
 // const secondaryTextColor = Color(0xFFF1E6FF);
 

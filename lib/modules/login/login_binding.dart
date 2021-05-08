@@ -10,10 +10,7 @@ class LoginBinding implements Bindings {
   void dependencies() {
     logger.d('初始化依赖 —— LoginBinding');
     debugPrint('初始化依赖 —— LoginBinding');
-
-    Get.lazyPut(() => LoginRepository());
-    Get.lazyPut<LoginController>(
-      () => LoginController(),
-    );
+    Get.lazyPut<LoginRepository>(() => LoginRepository());
+    Get.lazyPut<LoginController>(() => LoginController());
   }
 }
