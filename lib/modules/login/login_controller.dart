@@ -20,6 +20,8 @@ class LoginController extends GetxController {
   String _username;
   String _password;
 
+  String get password => _password;
+
   @override
   void onInit() {
     logger.i('启用 LoginController');
@@ -55,6 +57,20 @@ class LoginController extends GetxController {
     update();
     debugPrint('密码显隐状态: ' +
         (hidePassword ? '隐藏' : '显示, 密码为:' + (_password ?? 'null')));
+  }
+
+  void signInWithGoogle() async {
+    isLoading = true;
+    update();
+    var userCredential = await authService.signInWithGoogle();
+    logger.i('Google Sign in, 用户ID: ' +
+        (userCredential == null ? 'null' : userCredential.user.uid));
+    if (userCredential != null) {
+      Get.until((route) => false);
+      Get.toNamed(Routes.HOME);
+    }
+    isLoading = false;
+    update();
   }
 
   void submit(BuildContext context) async {

@@ -1,6 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:paclub/modules/login/login_controller.dart';
 import 'package:paclub/routes/app_pages.dart';
+import 'package:paclub/widgets/loading_dialog.dart';
 import 'package:paclub/widgets/logger.dart';
 import 'package:paclub/widgets/toast.dart';
 
@@ -53,7 +57,7 @@ class AuthService extends GetxService {
     }
   }
 
-  //* 注册功能
+  //* Email 注册功能
   Future<bool> register(String email, String password) async {
     try {
       await _auth.createUserWithEmailAndPassword(
@@ -76,7 +80,7 @@ class AuthService extends GetxService {
     return false;
   }
 
-  //* 登录功能
+  //* Email 登录功能
   Future<bool> login(String email, String password) async {
     try {
       await _auth.signInWithEmailAndPassword(
@@ -97,11 +101,71 @@ class AuthService extends GetxService {
     return false;
   }
 
+  //* Google 登录功能
+  Future<UserCredential> signInWithGoogle() async {
+    try {
+      // Attempt to sign in the user in with Google
+      // Trigger the authentication flow, 调用Google认证
+      final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
+
+      // Obtain the auth details from the request, 等待用户完整Google授权的response
+      if (googleUser == null) return null;
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+      // Create a new credential, 创建一个证书
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      // Once signed in, return the UserCredential, 一旦登录成功, 回传用户证书
+      return await _auth.signInWithCredential(credential);
+      // TODO: 处理1个email 多种登录方式的情况
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'account-exists-with-different-credential') {
+        // The account already exists with a different credential
+        logger.w(e.code);
+        debugPrint(e.code);
+        String email = e.email;
+        AuthCredential pendingCredential = e.credential;
+
+        // Fetch a list of what sign-in methods exist for the conflicting user
+        List<String> userSignInMethods =
+            await _auth.fetchSignInMethodsForEmail(email);
+
+        // If the user has several sign-in methods,
+        // the first method in the list will be the "recommended" method to use.
+        if (userSignInMethods.first == 'password') {
+          // Prompt the user to enter their password
+          await Get.to(LoadingDialog());
+          // String password = ;
+          LoginController loginController = Get.find<LoginController>();
+          // Sign the user in to their account with the password
+          UserCredential userCredential =
+              await _auth.signInWithEmailAndPassword(
+            email: email,
+            password: loginController.password,
+          );
+
+          // Link the pending credential with the existing account
+          await userCredential.user.linkWithCredential(pendingCredential);
+
+          // Success! Go back to your application flow
+          // return goToApplication();
+        }
+
+        // Handle other OAuth providers...
+      }
+    }
+    return null;
+  }
+
   //* 登出功能
   Future<void> signOut() async {
     try {
       String uid = user.uid;
       await _auth.signOut();
+      await GoogleSignIn().signOut();
       logger.w('登出用户ID: ' + uid ?? 'null');
       Get.until((route) => false);
       Get.toNamed(Routes.AUTH);
