@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:paclub/functions/gesture.dart';
+import 'package:paclub/routes/app_binding.dart';
 import 'package:paclub/routes/app_pages.dart';
 import 'package:paclub/utils/dependency_injection.dart';
 import 'package:paclub/widgets/logger.dart';
@@ -12,6 +13,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   // App 开启时就优先启动的各种, 如 Controller, Service(比如用于检测登录, 自动登录的)
+  logger0.wtf('点击链接查看更多 logger 使用方式 https://pub.dev/packages/logger/example');
+
   await DenpendencyInjection.init();
 
   runApp(MyApp());
@@ -20,7 +23,6 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    logger.d('点击链接查看更多 logger 使用方式 https://pub.dev/packages/logger/example');
     return GetMaterialApp(
       theme: appThemeData,
       // customTransition: TopLeftMaskBelowleftTransitions(),
@@ -36,7 +38,7 @@ class MyApp extends StatelessWidget {
       title: '盒群',
       getPages: AppPages.pages,
       initialRoute: Routes.SPLASH,
-      // initialBinding: LoginBinding(),
+      initialBinding: AppBinding(),
       // home: LoginPage()
       popGesture: true,
       enableLog: false,

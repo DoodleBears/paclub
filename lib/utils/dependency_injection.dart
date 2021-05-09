@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
 import 'package:paclub/services/app_preference_service.dart';
-import 'package:paclub/services/auth_service.dart';
 import 'package:paclub/widgets/logger.dart';
 
 class DenpendencyInjection {
@@ -9,8 +8,5 @@ class DenpendencyInjection {
     //** AppPrefsController 用于管理全局设置(Global Setting)*/
     /// 如: `自动登录`, `黑夜模式`等
     await Get.putAsync(() => AppPrefsController().init());
-
-    // 开始触发自动登录
-    Get.put<AuthService>(AuthService());
   }
 }

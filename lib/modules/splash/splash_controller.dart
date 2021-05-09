@@ -13,7 +13,7 @@ class SplashController extends GetxController {
 
     await Future.delayed(Duration(seconds: 2));
     // 如果未登录就登录
-    if (authService.isLogin()) {
+    if (authService.isLogin(notify: false)) {
       logger.i('前往主页');
       Get.offNamed(Routes.HOME);
       // 如果已登录就去task页面

@@ -42,12 +42,12 @@ class LoginController extends GetxController {
 
   void onUsernameChanged(String username) {
     _username = username.trim();
-    debugPrint('当前用户名:' + _username);
+    // debugPrint('当前用户名:' + _username);
   }
 
   void onPasswordChanged(String password) {
     _password = password.trim();
-    debugPrint('当前密码:' + _password);
+    // debugPrint('当前密码:' + _password);
   }
 
   void changeSecure() {

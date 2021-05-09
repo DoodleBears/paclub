@@ -12,7 +12,6 @@ import 'package:paclub/widgets/toast.dart';
 class AuthService extends GetxService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final Rx<User> _user = Rx<User>(null);
-
   // 获得 user
   User get user => _user.value;
 
@@ -21,8 +20,14 @@ class AuthService extends GetxService {
   void onInit() {
     // 一旦 _auth 状态改变, _user 就会被重新赋值
     logger.i('初始化 AuthService');
+    _auth.authStateChanges().listen((User user) {
+      if (user == null) {
+        logger.i('User is currently signed out!');
+      } else {
+        logger.i('User is signed in!');
+      }
+    });
     _user.bindStream(_auth.authStateChanges());
-    logger0.i('user: ' + (user == null ? 'null' : user.email));
     super.onInit();
   }
 
@@ -33,10 +38,20 @@ class AuthService extends GetxService {
   }
 
   //* 判断是否登录
-  bool isLogin() {
-    logger0.i('user: ' + (user == null ? 'null' : user.email));
-    logger0.i('user: ' + (user == null ? 'null' : user.toString()));
-    return user == null ? false : true;
+  bool isLogin({bool notify = true, bool jump = false}) {
+    logger.i('user data: ' + (user == null ? 'null' : user.toString()));
+    if (user == null) {
+      // 是否跳出提示
+      if (notify) toast('请先登录');
+      // 是否要强制用户跳转到登录页面
+      if (jump) {
+        Get.until((route) => false);
+        Get.toNamed(Routes.AUTH);
+      }
+      return false;
+    } else {
+      return true;
+    }
   }
 
   //* 注册功能
@@ -91,7 +106,8 @@ class AuthService extends GetxService {
   Future<void> signOut() async {
     try {
       await _auth.signOut();
-      Get.offNamedUntil(Routes.AUTH, (route) => false);
+      Get.until((route) => false);
+      Get.toNamed(Routes.AUTH);
     } catch (e) {
       logger.w('Sign out 失败');
     }

@@ -133,23 +133,11 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
         ),
-        floatingActionButton: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            FloatingActionButton(
-              onPressed: () => _OnFabClick,
-              child: Icon(Icons.add),
-            ),
-            const SizedBox(height: 10.0),
-            FloatingActionButton(
-              onPressed: () => {authService.signOut()},
-              child: Icon(Icons.exit_to_app),
-            ),
-          ],
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => {authService.signOut()},
+          child: Icon(Icons.exit_to_app),
         ),
       ),
     );
   }
 }
-
-class _OnFabClick {}
