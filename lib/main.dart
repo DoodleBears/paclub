@@ -9,7 +9,7 @@ import 'package:paclub/utils/dependency_injection.dart';
 import 'package:paclub/widgets/logger.dart';
 import 'theme/app_theme.dart';
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   // App 开启时就优先启动的各种, 如 Controller, Service(比如用于检测登录, 自动登录的)

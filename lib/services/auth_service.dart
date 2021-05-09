@@ -13,21 +13,21 @@ class AuthService extends GetxService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final Rx<User> _user = Rx<User>(null);
   // 获得 user
-  User get user => _user.value;
+  User get user => _auth.currentUser;
 
   // 绑定 firebase 的 _auth, 以获得自动检测 User 状态的功能
   @override
   void onInit() {
     // 一旦 _auth 状态改变, _user 就会被重新赋值
     logger.i('初始化 AuthService');
+    _user.bindStream(_auth.authStateChanges());
     _auth.authStateChanges().listen((User user) {
       if (user == null) {
-        logger.i('User is currently signed out!');
+        logger.w('Firebase 检测到用户状态为: 未登录');
       } else {
-        logger.i('User is signed in!');
+        logger.w('用户登录: ' + (user == null ? 'null' : user.uid));
       }
     });
-    _user.bindStream(_auth.authStateChanges());
     super.onInit();
   }
 
@@ -39,7 +39,6 @@ class AuthService extends GetxService {
 
   //* 判断是否登录
   bool isLogin({bool notify = true, bool jump = false}) {
-    logger.i('user data: ' + (user == null ? 'null' : user.toString()));
     if (user == null) {
       // 是否跳出提示
       if (notify) toast('请先登录');
@@ -61,7 +60,6 @@ class AuthService extends GetxService {
         email: email,
         password: password,
       );
-      logger0.i('user: ' + _user.value.uid);
       return true;
     } on FirebaseAuthException catch (e) {
       logger.d(e.code);
@@ -81,13 +79,10 @@ class AuthService extends GetxService {
   //* 登录功能
   Future<bool> login(String email, String password) async {
     try {
-      // FirebaseAuth 提供的方式
       await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
-      // 登录成功, log 出 uid
-      logger0.i('user: ' + _user.value.uid);
       return true;
     } on FirebaseAuthException catch (e) {
       logger.d('Firebase Exception 错误码:' + e.code);
@@ -105,7 +100,9 @@ class AuthService extends GetxService {
   //* 登出功能
   Future<void> signOut() async {
     try {
+      String uid = user.uid;
       await _auth.signOut();
+      logger.w('登出用户ID: ' + uid ?? 'null');
       Get.until((route) => false);
       Get.toNamed(Routes.AUTH);
     } catch (e) {
