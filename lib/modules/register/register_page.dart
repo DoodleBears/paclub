@@ -11,7 +11,7 @@ class RegisterPage extends StatelessWidget {
     return WillPopScope(
       onWillPop: () async {
         logger.i('返回登录页面');
-        return true;
+        return !Navigator.of(context).userGestureInProgress;
       },
       child: Scaffold(
         appBar: AppBar(
@@ -25,7 +25,10 @@ class RegisterPage extends StatelessWidget {
               size: 28.0,
             ),
             color: accentColor,
-            onPressed: () => Get.back(),
+            onPressed: () {
+              logger.i('返回登录页面');
+              Get.back();
+            },
           ),
         ),
         body: Body(),

@@ -1,6 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
+import 'package:paclub/functions/gesture.dart';
 import 'package:paclub/routes/app_pages.dart';
 import 'package:paclub/utils/dependency_injection.dart';
 import 'package:paclub/widgets/logger.dart';
@@ -40,13 +42,5 @@ class MyApp extends StatelessWidget {
       popGesture: true,
       enableLog: false,
     );
-  }
-}
-
-void hideKeyboard(BuildContext context) {
-  FocusScopeNode currentFocus = FocusScope.of(context);
-  if (!currentFocus.hasPrimaryFocus && currentFocus.focusedChild != null) {
-    FocusManager.instance.primaryFocus.unfocus();
-    logger.d('隐藏键盘 Keyboard');
   }
 }
