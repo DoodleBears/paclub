@@ -8,31 +8,25 @@ class RegisterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     logger.d('渲染 —— RegisterPage');
-    return WillPopScope(
-      onWillPop: () async {
-        logger.i('返回登录页面');
-        return !Navigator.of(context).userGestureInProgress;
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          shadowColor: Colors.transparent,
-          centerTitle: true,
-          leading: IconButton(
-            splashColor: Colors.transparent,
-            highlightColor: Colors.transparent,
-            icon: Icon(
-              Icons.arrow_back,
-              size: 28.0,
-            ),
-            color: accentColor,
-            onPressed: () {
-              logger.i('返回登录页面');
-              Get.back();
-            },
+    return Scaffold(
+      appBar: AppBar(
+        shadowColor: Colors.transparent,
+        centerTitle: true,
+        leading: IconButton(
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          icon: Icon(
+            Icons.arrow_back,
+            size: 28.0,
           ),
+          color: accentColor,
+          onPressed: () {
+            logger.i('返回登录页面');
+            Get.back();
+          },
         ),
-        body: Body(),
       ),
+      body: Body(),
     );
   }
 }

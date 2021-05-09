@@ -33,12 +33,14 @@ abstract class AppPages {
       page: () => LoginPage(),
       binding: LoginBinding(),
       customTransition: ShiftLeftTransitions(),
+      popGesture: true,
     ),
     GetPage(
       name: Routes.REGISTER,
       page: () => RegisterPage(),
       binding: RegisterBinding(),
       customTransition: ShiftLeftTransitions(),
+      popGesture: true,
     ),
     GetPage(
       name: Routes.HOME,
