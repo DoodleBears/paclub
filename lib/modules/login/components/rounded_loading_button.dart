@@ -32,6 +32,7 @@ class RoundedLoadingButton extends StatelessWidget {
           // 去除 Button 默认的阴影
           shadowColor: Colors.transparent,
         ),
+        onPressed: onPressed,
         child: Stack(
           alignment: AlignmentDirectional.center,
           children: [
@@ -69,7 +70,6 @@ class RoundedLoadingButton extends StatelessWidget {
             ),
           ],
         ),
-        onPressed: onPressed,
       ),
     );
   }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class UserPage extends StatefulWidget {
   UserPage({Key key}) : super(key: key);
 
+  @override
   _UserPageState createState() => _UserPageState();
 }
 
@@ -12,64 +13,64 @@ class _UserPageState extends State<UserPage> {
     return ListView(
       children: <Widget>[
         ListTile(
-          title: Text("User頁面測試中"),
+          title: Text('User頁面測試中'),
         ),
         ListTile(
-          title: Text("User頁面測試中"),
+          title: Text('User頁面測試中'),
         ),
         ListTile(
-          title: Text("User頁面測試中"),
+          title: Text('User頁面測試中'),
         ),
         ListTile(
-          title: Text("User頁面測試中"),
+          title: Text('User頁面測試中'),
         ),
         ListTile(
-          title: Text("User頁面測試中"),
+          title: Text('User頁面測試中'),
         ),
         ListTile(
-          title: Text("User頁面測試中"),
+          title: Text('User頁面測試中'),
         ),
         ListTile(
-          title: Text("User頁面測試中"),
+          title: Text('User頁面測試中'),
         ),
         ListTile(
-          title: Text("User頁面測試中"),
+          title: Text('User頁面測試中'),
         ),
         ListTile(
-          title: Text("User頁面測試中"),
+          title: Text('User頁面測試中'),
         ),
         ListTile(
-          title: Text("User頁面測試中"),
+          title: Text('User頁面測試中'),
         ),
         ListTile(
-          title: Text("User頁面測試中"),
+          title: Text('User頁面測試中'),
         ),
         ListTile(
-          title: Text("User頁面測試中"),
+          title: Text('User頁面測試中'),
         ),
         ListTile(
-          title: Text("User頁面測試中"),
+          title: Text('User頁面測試中'),
         ),
         ListTile(
-          title: Text("User頁面測試中"),
+          title: Text('User頁面測試中'),
         ),
         ListTile(
-          title: Text("User頁面測試中"),
+          title: Text('User頁面測試中'),
         ),
         ListTile(
-          title: Text("User頁面測試中"),
+          title: Text('User頁面測試中'),
         ),
         ListTile(
-          title: Text("User頁面測試中"),
+          title: Text('User頁面測試中'),
         ),
         ListTile(
-          title: Text("User頁面測試中"),
+          title: Text('User頁面測試中'),
         ),
         ListTile(
-          title: Text("User頁面測試中"),
+          title: Text('User頁面測試中'),
         ),
         ListTile(
-          title: Text("User頁面測試中"),
+          title: Text('User頁面測試中'),
         )
       ],
     );

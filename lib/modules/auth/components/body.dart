@@ -30,7 +30,7 @@ class Body extends StatelessWidget {
                 fit: BoxFit.fitHeight,
               ),
             ),
-            const Expanded(child: const SizedBox()),
+            const Expanded(child: SizedBox()),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -46,13 +46,6 @@ class Body extends StatelessWidget {
                 Container(
                   width: double.infinity,
                   child: ElevatedButton(
-                    child: Text(
-                      '创建账号',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 22.0,
-                      ),
-                    ),
                     style: ElevatedButton.styleFrom(
                       shape: StadiumBorder(),
                       primary: accentColor,
@@ -60,11 +53,18 @@ class Body extends StatelessWidget {
                       shadowColor: Colors.transparent,
                     ),
                     onPressed: () => Get.toNamed(Routes.REGISTER),
+                    child: Text(
+                      '创建账号',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 22.0,
+                      ),
+                    ),
                   ),
                 ),
               ],
             ),
-            const Expanded(child: const SizedBox()),
+            const Expanded(child: SizedBox()),
             Row(
               children: [
                 Text(

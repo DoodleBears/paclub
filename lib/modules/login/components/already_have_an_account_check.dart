@@ -17,7 +17,7 @@ class AlreadHaveAnAccoutCheck extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          login ? "Don't have a Account？" : "Already have a Account ? ",
+          login ? "Don't have a Account？" : 'Already have a Account ? ',
           style: TextStyle(
             color: primaryDarkColor,
             fontSize: 14.0,
@@ -26,7 +26,7 @@ class AlreadHaveAnAccoutCheck extends StatelessWidget {
         GestureDetector(
           onTap: onTap,
           child: Text(
-            login ? 'Sign up' : "Sign in",
+            login ? 'Sign up' : 'Sign in',
             style: TextStyle(
               color: primaryDarkColor,
               fontWeight: FontWeight.bold,

@@ -4,7 +4,7 @@ import 'dart:async';
 ///
 /// [func]: 要执行的方法
 /// [delay]: 要迟延的时长
-const Duration defaultDelay = const Duration(milliseconds: 2000);
+const Duration defaultDelay = Duration(milliseconds: 2000);
 Function inputDebounce(Function func, [Duration delay = defaultDelay]) {
   Timer timer;
   Function target = () {
