@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
-import 'package:paclub/data/providers/login_provider.dart';
 import 'package:paclub/services/app_preference_service.dart';
+import 'package:paclub/services/auth_service.dart';
 import 'package:paclub/widgets/logger.dart';
 
 class DenpendencyInjection {
@@ -11,8 +11,6 @@ class DenpendencyInjection {
     await Get.putAsync(() => AppPrefsController().init());
 
     // 开始触发自动登录
-    // await Get.putAsync(() => AuthService().init());
-
-    Get.put(LoginProvider());
+    Get.put<AuthService>(AuthService());
   }
 }

@@ -1,8 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:paclub/repositories/login_repository.dart';
 import 'package:paclub/routes/app_pages.dart';
+import 'package:paclub/services/auth_service.dart';
 import 'package:paclub/widgets/logger.dart';
 import 'package:paclub/widgets/toast.dart';
 
@@ -12,7 +11,7 @@ import 'package:paclub/widgets/toast.dart';
 // feat_2: Toast信息提示，当用户的操作出现失败时，跳出提示
 // feat_3: 显示/隐藏 密码(visibility)
 class LoginController extends GetxController {
-  final LoginRepository repository = Get.find<LoginRepository>();
+  final AuthService authService = Get.find<AuthService>();
 
   // 等待登录后的回传
   bool isLoading = false;
@@ -20,6 +19,18 @@ class LoginController extends GetxController {
   bool hidePassword = true;
   String _username;
   String _password;
+
+  @override
+  void onInit() {
+    logger.i('启用 LoginController');
+    super.onInit();
+  }
+
+  @override
+  void onClose() {
+    logger.w('关闭 LoginController');
+    super.onClose();
+  }
 
   set setUsername(String username) {
     _username = username;
@@ -47,27 +58,29 @@ class LoginController extends GetxController {
   }
 
   void submit(BuildContext context) async {
-    if (_username == null || _username.isEmpty) {
-      toast('Email cannot be null');
-      return;
-    }
-
-    if (_password == null || _password.isEmpty) {
-      toast('Password cannot be null');
-      return;
-    }
+    // 非空检查等, 初步检查
+    if (check() == false) return;
     isLoading = true;
     update();
-    // await Future.delayed(const Duration(seconds: 3));
-    User user = await repository.login(_username, _password);
-    isLoading = false;
-    update();
-    if (user != null) {
-      debugPrint('登录成功 —— 前往主页');
-      logger.d(user);
-
+    if (await authService.login(_username, _password)) {
+      isLoading = false;
+      update();
       Get.until((route) => false);
       Get.toNamed(Routes.HOME);
     }
+    isLoading = false;
+    update();
+  }
+
+  bool check() {
+    if (_username == null || _username.isEmpty) {
+      toast('Email cannot be null');
+      return false;
+    }
+    if (_password == null || _password.isEmpty) {
+      toast('Password cannot be null');
+      return false;
+    }
+    return true;
   }
 }

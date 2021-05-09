@@ -12,7 +12,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   // App 开启时就优先启动的各种, 如 Controller, Service(比如用于检测登录, 自动登录的)
-  // TODO: 完善初始化 DI
   await DenpendencyInjection.init();
 
   runApp(MyApp());
@@ -34,7 +33,7 @@ class MyApp extends StatelessWidget {
       ),
       transitionDuration: Duration(milliseconds: 350),
       debugShowCheckedModeBanner: false,
-      title: "盒群",
+      title: '盒群',
       getPages: AppPages.pages,
       initialRoute: Routes.SPLASH,
       // initialBinding: LoginBinding(),
