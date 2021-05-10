@@ -6,7 +6,7 @@ import 'package:paclub/widgets/logger.dart';
 class LoginBinding implements Bindings {
   @override
   void dependencies() {
-    logger.d('初始化依赖 —— LoginBinding');
+    logger.i('[自动绑定]依赖注入 —— LoginBinding');
     Get.lazyPut<LoginController>(() => LoginController());
   }
 }

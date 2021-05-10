@@ -72,10 +72,10 @@ class Body extends GetView<RegisterController> {
                   // 点击后确认登录
                   onPressed: controller.isLoading
                       ? () {
-                          logger.i('当前处于Loading状态, Button被设置为无效');
+                          logger.d('当前处于Loading状态, Button被设置为无效');
                         }
                       : () {
-                          logger.i('提交注册信息，开始进行账号注册');
+                          logger.d('提交注册信息，开始进行账号注册');
                           controller.submit(context);
                         },
                   // 在点击后触发loading效果，加载结束后再次触发，取消loading

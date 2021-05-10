@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:paclub/widgets/logger.dart';
 
 import 'tabs/Card.dart';
 import 'tabs/Home.dart';
@@ -26,7 +27,7 @@ class _TabsState extends State<Tabs> {
 
   @override
   Widget build(BuildContext context) {
-    print('TabsPage');
+    logger.i('渲染 —— Tabs');
     return Scaffold(
       body: _pageList[_currentIndex],
       bottomNavigationBar: BottomNavigationBar(

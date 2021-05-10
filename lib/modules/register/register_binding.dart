@@ -5,7 +5,7 @@ import 'package:paclub/widgets/logger.dart';
 class RegisterBinding implements Bindings {
   @override
   void dependencies() {
-    logger.d('初始化依赖 —— RegisterBinding');
+    logger.i('[自动绑定]依赖注入 —— RegisterBinding');
     Get.lazyPut<RegisterController>(() => RegisterController());
   }
 }

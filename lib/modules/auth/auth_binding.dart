@@ -7,6 +7,6 @@ import 'package:paclub/widgets/logger.dart';
 class AuthBinding implements Bindings {
   @override
   void dependencies() {
-    logger.d('初始化依赖 —— AuthBinding');
+    logger.i('[自动绑定]依赖注入 —— AuthBinding');
   }
 }

@@ -8,7 +8,7 @@ import 'splash_controller.dart';
 class SplashBinding implements Bindings {
   @override
   void dependencies() {
-    logger.d('初始化依赖 —— SplashBinding');
+    logger.i('[自动绑定]依赖注入 —— SplashBinding');
     Get.put<SplashController>(SplashController());
   }
 }

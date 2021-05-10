@@ -7,7 +7,7 @@ import 'package:paclub/widgets/logger.dart';
 class RegisterPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    logger.d('渲染 —— RegisterPage');
+    logger.i('渲染 —— RegisterPage');
     return Scaffold(
       appBar: AppBar(
         shadowColor: Colors.transparent,

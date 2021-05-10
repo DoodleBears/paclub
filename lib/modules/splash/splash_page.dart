@@ -5,7 +5,7 @@ import 'package:paclub/widgets/logger.dart';
 class SplashPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    logger.d('渲染 —— SplashPage');
+    logger.i('渲染 —— SplashPage');
     return Scaffold(
       body: Body(),
     );
