@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:paclub/data/providers/internet_provider.dart';
 import 'package:paclub/modules/login/login_controller.dart';
 import 'package:paclub/routes/app_pages.dart';
 import 'package:paclub/widgets/loading_dialog.dart';
@@ -16,25 +19,28 @@ import 'package:paclub/widgets/toast.dart';
 class AuthService extends GetxService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final Rx<User> _user = Rx<User>(null);
+  final InternetProvider internetProvider = Get.find<InternetProvider>();
+
   // 获得 user
   User get user => _auth.currentUser;
 
-  // 绑定 firebase 的 _auth, 以获得自动检测 User 状态的功能
+  // 初始化 Service, 绑定监听 user 和 connectivity 状态
   @override
   void onInit() {
-    // 一旦 _auth 状态改变, _user 就会被重新赋值
+    super.onInit();
     logger.i('初始化 AuthService');
+    // 一旦 _auth 状态改变, _user 就会被重新赋值
     _user.bindStream(_auth.authStateChanges());
     _auth.authStateChanges().listen((User user) {
       if (user == null) {
-        logger.w('Firebase 检测到用户状态为: 未登录');
+        logger.d('Firebase 检测到用户状态为: 未登录');
       } else {
-        logger.w('用户登录: ' + (user == null ? 'null' : user.uid));
+        logger.d('用户登录: ' + (user == null ? 'null' : user.uid));
       }
     });
-    super.onInit();
   }
 
+  // 结束 Service, 关闭监听
   @override
   void onClose() {
     logger.w('关闭 authService');
@@ -44,68 +50,87 @@ class AuthService extends GetxService {
   //* 判断是否登录
   bool isLogin({bool notify = true, bool jump = false}) {
     if (user == null) {
-      // 是否跳出提示
-      if (notify) toast('请先登录');
+      if (notify) toast('请先登录'); // 是否跳出提示
       // 是否要强制用户跳转到登录页面
       if (jump) {
         Get.until((route) => false);
         Get.toNamed(Routes.AUTH);
       }
       return false;
-    } else {
-      return true;
     }
+    return true;
   }
 
   //* Email 注册功能
   Future<bool> register(String email, String password) async {
     try {
+      // 检查网络链接
+      if (await internetProvider.isConnected() == false) return false;
       await _auth.createUserWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+          email: email, password: password);
+      // 确认联网情况正常, 并完成后返回 true
       return true;
     } on FirebaseAuthException catch (e) {
-      logger.d(e.code);
-      if (e.code == 'weak-password') toast('weak password');
-      if (e.code == 'invalid-email') toast('email form isn\'t right');
-      if (e.code == 'email-already-in-use') toast('account already exists');
-      if (e.code == 'too-many-requests') {
-        toast('you have try too many times\nplease wait 30 secs');
-      }
-      if (e.code == 'unknown') toast('check your internet connection');
+      logger.d('eamil注册失败, 错误码:' + e.code);
+      toastRegisterError(e.code);
     } catch (e) {
       logger.e(e);
     }
     return false;
   }
 
+  void toastRegisterError(String code) {
+    if (code == 'weak-password') {
+      toast('weak password');
+    } else if (code == 'invalid-email') {
+      toast('email form isn\'t right');
+    } else if (code == 'email-already-in-use') {
+      toast('account already exists');
+    } else if (code == 'too-many-requests') {
+      toast('you have try too many times\nplease wait 30 secs');
+    } else if (code == 'unknown') {
+      toast('check your internet connection');
+    } else {
+      toast('register fail');
+    }
+  }
+
   //* Email 登录功能
   Future<bool> login(String email, String password) async {
     try {
-      await _auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
+      // 检查网络链接
+      if (await internetProvider.isConnected() == false) return false;
+      await _auth.signInWithEmailAndPassword(email: email, password: password);
+      // 确认联网情况正常, 并完成后返回 true
       return true;
     } on FirebaseAuthException catch (e) {
-      logger.d('Firebase Exception 错误码:' + e.code);
-      if (e.code == 'user-not-found') toast('No user found for that email.');
-      if (e.code == 'invalid-email') toast('email form isn\'t right');
-      if (e.code == 'wrong-password') toast('Wrong password');
-      if (e.code == 'too-many-requests') {
-        toast('you have try too many times\nplease wait 30 secs');
-      }
-      if (e.code == 'unknown') toast('check your internet connection');
+      logger.d('eamil登录失败, 错误码:' + e.code);
     }
     return false;
+  }
+
+  void toastLoginError(String code) {
+    if (code == 'user-not-found') {
+      toast('No user found for that email.');
+    } else if (code == 'invalid-email') {
+      toast('email form isn\'t right');
+    } else if (code == 'wrong-password') {
+      toast('Wrong password');
+    } else if (code == 'too-many-requests') {
+      toast('you have try too many times\nplease wait 30 secs');
+    } else if (code == 'unknown') {
+      toast('check your internet connection');
+    } else {
+      toast('Login failed');
+    }
   }
 
   //* Google 登录功能
   Future<UserCredential> signInWithGoogle() async {
     try {
-      // Attempt to sign in the user in with Google
-      // Trigger the authentication flow, 调用Google认证
+      // 检查网络连接
+      if (await internetProvider.isConnected() == false) return null;
+      // Attempt to sign in the user in with Google, 调用Google认证
       final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
 
       // Obtain the auth details from the request, 等待用户完整Google授权的response
@@ -166,7 +191,7 @@ class AuthService extends GetxService {
       String uid = user.uid;
       await _auth.signOut();
       await GoogleSignIn().signOut();
-      logger.w('登出用户ID: ' + uid ?? 'null');
+      logger.d('登出用户ID: ' + uid ?? 'null');
       Get.until((route) => false);
       Get.toNamed(Routes.AUTH);
     } catch (e) {
