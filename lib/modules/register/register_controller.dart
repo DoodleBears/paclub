@@ -52,8 +52,15 @@ class RegisterController extends GetxController {
     isLoading = true;
     update();
     if (await authService.register(_username, _password)) {
-      Get.until((route) => false);
-      Get.toNamed(Routes.HOME);
+      if (authService.user.emailVerified == false) {
+        toast('verification email already sent to: ' + authService.user.email);
+        authService.user.sendEmailVerification();
+        Get.until((route) => false);
+        Get.toNamed(Routes.LOGIN);
+      } else {
+        Get.until((route) => false);
+        Get.toNamed(Routes.HOME);
+      }
     }
     isLoading = false;
     update();

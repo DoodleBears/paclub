@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:paclub/routes/app_pages.dart';
@@ -19,6 +21,9 @@ class LoginController extends GetxController {
   bool hidePassword = true;
   String _username;
   String _password;
+  Timer timer;
+  int sendEmailCountDown = 0;
+  bool isNeedToResend = false;
 
   String get password => _password;
 
@@ -40,6 +45,30 @@ class LoginController extends GetxController {
 
   set setPassword(String password) {
     _password = password;
+  }
+
+  void setTimer() {
+    sendEmailCountDown = 60;
+    timer = Timer.periodic(const Duration(seconds: 1), (t) {
+      if (sendEmailCountDown != 0) {
+        sendEmailCountDown--;
+        update();
+      } else {
+        timer.cancel();
+        sendEmailCountDown = 0;
+        update();
+      }
+    });
+  }
+
+  Future<void> resendEmail() async {
+    try {
+      await authService.user.sendEmailVerification();
+      setTimer();
+      toast('email resend to ' + authService.user.email + ' successful');
+    } catch (e) {
+      logger.e(e.toString());
+    }
   }
 
   void onUsernameChanged(String username) {
@@ -79,10 +108,19 @@ class LoginController extends GetxController {
     isLoading = true;
     update();
     if (await authService.login(_username, _password)) {
-      isLoading = false;
-      update();
-      Get.until((route) => false);
-      Get.toNamed(Routes.HOME);
+      // isLoading = false;
+      // update();
+      logger.d('邮箱认证状态: ' + authService.user.emailVerified.toString());
+      if (authService.user.emailVerified == false) {
+        isNeedToResend = true;
+        update();
+        toast('you must verify the account before login');
+        toast('you can resend the email on top right corner');
+        setTimer();
+      } else {
+        Get.until((route) => false);
+        Get.toNamed(Routes.HOME);
+      }
     }
     isLoading = false;
     update();

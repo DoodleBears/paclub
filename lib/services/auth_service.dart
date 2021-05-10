@@ -19,6 +19,7 @@ import 'package:paclub/widgets/toast.dart';
 class AuthService extends GetxService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final Rx<User> _user = Rx<User>(null);
+
   final InternetProvider internetProvider = Get.find<InternetProvider>();
 
   // 获得 user
@@ -68,7 +69,7 @@ class AuthService extends GetxService {
       if (await internetProvider.isConnected() == false) return false;
       await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
-      // 确认联网情况正常, 并完成后返回 true
+      // 确认联网情况正常, 并完成注册后返回 true
       return true;
     } on FirebaseAuthException catch (e) {
       logger.d('eamil注册失败, 错误码:' + e.code);
@@ -101,10 +102,11 @@ class AuthService extends GetxService {
       // 检查网络链接
       if (await internetProvider.isConnected() == false) return false;
       await _auth.signInWithEmailAndPassword(email: email, password: password);
-      // 确认联网情况正常, 并完成后返回 true
+      // 确认联网情况正常, 并完成登录后返回 true
       return true;
     } on FirebaseAuthException catch (e) {
       logger.d('eamil登录失败, 错误码:' + e.code);
+      toastLoginError(e.code);
     }
     return false;
   }
