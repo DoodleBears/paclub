@@ -227,6 +227,9 @@ PODS:
     - Firebase/Firestore (= 7.11.0)
     - firebase_core
     - Flutter
+  - connectivity (0.0.1):
+    - Flutter
+    - Reachability
   - Firebase/Analytics (7.11.0):
     - Firebase/Core
   - Firebase/Auth (7.11.0):
@@ -425,12 +428,14 @@ PODS:
     - Flutter
   - PromisesObjC (1.2.12)
   - Protobuf (3.15.8)
+  - Reachability (3.2)
   - shared_preferences (0.0.1):
     - Flutter
   - Toast (4.0.0)
 
 DEPENDENCIES:
   - cloud_firestore (from `.symlinks/plugins/cloud_firestore/ios`)
+  - connectivity (from `.symlinks/plugins/connectivity/ios`)
   - firebase_analytics (from `.symlinks/plugins/firebase_analytics/ios`)
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
@@ -470,11 +475,14 @@ SPEC REPOS:
     - nanopb
     - PromisesObjC
     - Protobuf
+    - Reachability
     - Toast
 
 EXTERNAL SOURCES:
   cloud_firestore:
     :path: ".symlinks/plugins/cloud_firestore/ios"
+  connectivity:
+    :path: ".symlinks/plugins/connectivity/ios"
   firebase_analytics:
     :path: ".symlinks/plugins/firebase_analytics/ios"
   firebase_auth:
@@ -501,6 +509,7 @@ SPEC CHECKSUMS:
   AppAuth: 31bcec809a638d7bd2f86ea8a52bd45f6e81e7c7
   BoringSSL-GRPC: 8edf627ee524575e2f8d19d56f068b448eea3879
   cloud_firestore: 5dbb01f115c77f4380e2248852518f52830d631f
+  connectivity: c4130b2985d4ef6fd26f9702e886bd5260681467
   Firebase: c121feb35e4126c0b355e3313fa9b487d47319fd
   firebase_analytics: 620e8cc1705feb6b9c40b6127bea9b39e03e3970
   firebase_auth: e7065954aa2a7c8ef1a8502fba3009bcdd8fc91a
@@ -533,6 +542,7 @@ SPEC CHECKSUMS:
   path_provider: abfe2b5c733d04e238b0d8691db0cfd63a27a93c
   PromisesObjC: 3113f7f76903778cf4a0586bd1ab89329a0b7b97
   Protobuf: adb85cd18a15bd1a777c158af9fd6e612a0e6d69
+  Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   shared_preferences: af6bfa751691cdc24be3045c43ec037377ada40d
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
 
