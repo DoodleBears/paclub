@@ -17,32 +17,35 @@ class Body extends GetView<LoginController> {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            const SizedBox(height: 12),
+            SizedBox(
+              height: Get.height * 0.01,
+            ),
             Image.asset(
               R.appIcon, //使用Class调用内置图片地址
-              width: 100.0,
+              width: Get.height * 0.11,
               fit: BoxFit.fitWidth,
             ),
-            const SizedBox(height: 6),
+            SizedBox(height: Get.height * 0.006),
             Text(
               'Paclub',
               style: TextStyle(
                 color: accentColor,
                 fontWeight: FontWeight.bold,
-                fontSize: 24.0,
+                fontSize: Get.height * 0.03,
               ),
             ),
-            const SizedBox(height: 32),
-            // 用户名和邮箱输入
+            SizedBox(height: Get.height * 0.03), // 用户名和邮箱输入
             RoundedInputField(
-              hintText: 'Your Email',
+              hintText: 'Email',
               icon: Icons.person,
               onChanged: controller.onUsernameChanged,
             ),
             // 密码输入
+            SizedBox(height: 3 + Get.height * 0.02),
             GetBuilder<LoginController>(
               builder: (controller) {
                 return RoundedPasswordField(
+                  hinttext: 'Password',
                   // onchanged 会在 input 内容改变时触发 function 并传 string
                   onChanged: controller.onPasswordChanged,
                   // 传递 secure value 来控制是否显示密码
@@ -52,7 +55,7 @@ class Body extends GetView<LoginController> {
                 );
               },
             ),
-            const SizedBox(height: 20),
+            SizedBox(height: 3 + Get.height * 0.02),
             // 2个按钮
             Container(
               padding: EdgeInsets.symmetric(horizontal: Get.width * 0.1),
@@ -66,7 +69,8 @@ class Body extends GetView<LoginController> {
                         width: controller.isLoading
                             ? Get.width * 0.4
                             : Get.width * 0.8,
-                        text: 'LOGIN',
+                        // height: Get.pixelRatio * 16,
+                        text: 'Login',
                         // 当点击登录后, 发送网络请求, 用户将无法出发产生界面变化的交互
                         onPressed: controller.isLoading
                             ? () => logger.d('当前处于Loading状态, Button被设置为无效')
@@ -81,7 +85,9 @@ class Body extends GetView<LoginController> {
                       AnimatedContainer(
                         duration: const Duration(milliseconds: 800),
                         curve: Curves.linearToEaseOut,
-                        height: controller.isResendButtonShow ? 12 : 0,
+                        height: controller.isResendButtonShow
+                            ? context.height * 0.02
+                            : 0,
                         child: SizedBox.expand(),
                       ),
                       controller.isNeedToResend
@@ -96,6 +102,7 @@ class Body extends GetView<LoginController> {
                                   width: controller.countdown == 30
                                       ? Get.width * 0.4 // 缩短 时候的长度
                                       : Get.width * 0.8, // 正常 时候的长度
+                                  height: Get.height * 0.08,
                                   child: CountdownButton(
                                     onPressed: controller.countdown == 0
                                         ? () => controller.resendEmail(time: 30)
@@ -103,7 +110,7 @@ class Body extends GetView<LoginController> {
                                     countdown: controller.countdown,
                                     isLoading: controller.countdown == 30,
                                     icon: Icon(Icons.send),
-                                    text: 'resend',
+                                    text: 'Resend',
                                     time: 30,
                                   ),
                                 );
@@ -115,10 +122,11 @@ class Body extends GetView<LoginController> {
                 },
               ),
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: Get.height * 0.03),
             const OrDivider(), // OR 的分割线
-            const SizedBox(height: 24),
+            SizedBox(height: Get.height * 0.02),
             RoundedButton(
+              height: Get.height * 0.085,
               onPressed: () => controller.signInWithGoogle(),
               imageUrl: R.googleIcon,
               color: white,

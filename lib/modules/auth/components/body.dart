@@ -13,8 +13,8 @@ class Body extends StatelessWidget {
         height: double.infinity,
         alignment: Alignment.center,
         padding: EdgeInsets.only(
-          top: 16.0,
-          bottom: 30.0,
+          top: Get.width * 0.01,
+          bottom: Get.width * 0.08,
           left: Get.width * 0.07,
           right: Get.width * 0.07,
         ),
@@ -26,7 +26,7 @@ class Body extends StatelessWidget {
             Center(
               child: Image.asset(
                 R.appIcon, //使用Class调用内置图片地址
-                height: 40.0,
+                height: Get.width * 0.1,
                 fit: BoxFit.fitHeight,
               ),
             ),
@@ -38,18 +38,20 @@ class Body extends StatelessWidget {
                   '合群，和而不同。',
                   textAlign: TextAlign.left,
                   style: TextStyle(
-                    fontSize: 28.0,
+                    fontSize: Get.width * 0.07,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 24.0),
+                SizedBox(height: context.height * 0.02),
                 Container(
                   width: double.infinity,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      shape: StadiumBorder(),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(borderRadius)),
                       primary: accentColor,
-                      padding: EdgeInsets.symmetric(vertical: 5.0),
+                      padding: EdgeInsets.symmetric(
+                          vertical: context.height * 0.008),
                       shadowColor: Colors.transparent,
                     ),
                     onPressed: () => Get.toNamed(Routes.REGISTER),
@@ -57,7 +59,7 @@ class Body extends StatelessWidget {
                       '创建账号',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 22.0,
+                        fontSize: Get.width * 0.06,
                       ),
                     ),
                   ),
@@ -70,7 +72,7 @@ class Body extends StatelessWidget {
                 Text(
                   '已经有账号了? ',
                   style: TextStyle(
-                    fontSize: 14.0,
+                    fontSize: Get.width * 0.036,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -79,7 +81,7 @@ class Body extends StatelessWidget {
                   child: Text(
                     '登录',
                     style: TextStyle(
-                      fontSize: 14.0,
+                      fontSize: Get.width * 0.036,
                       color: accentColor,
                       fontWeight: FontWeight.bold,
                     ),

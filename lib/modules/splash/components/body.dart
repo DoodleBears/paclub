@@ -15,7 +15,7 @@ class Body extends GetView<SplashController> {
           children: [
             Image.asset(
               R.appIcon, //使用Class调用内置图片地址
-              width: 100.0,
+              width: Get.width * 0.22,
               fit: BoxFit.fitWidth,
             ),
           ],

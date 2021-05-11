@@ -16,7 +16,7 @@ class FadeInScaleContainer extends StatelessWidget {
     @required this.isScaleDown,
     @required this.child,
     this.width = double.infinity,
-    this.height = 60.0,
+    @required this.height,
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {

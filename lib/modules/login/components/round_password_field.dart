@@ -11,6 +11,7 @@ class RoundedPasswordField extends StatelessWidget {
   final bool allowHide;
   final VoidCallback onPressed;
   final Color color;
+  final String hinttext;
   const RoundedPasswordField({
     Key key,
     this.onChanged,
@@ -18,6 +19,7 @@ class RoundedPasswordField extends StatelessWidget {
     this.onPressed,
     this.allowHide = true,
     this.color,
+    this.hinttext,
   }) : super(key: key);
 
   @override
@@ -28,7 +30,7 @@ class RoundedPasswordField extends StatelessWidget {
         onChanged: onChanged,
         obscureText: hidePassword,
         decoration: InputDecoration(
-          hintText: 'Password',
+          hintText: hinttext,
           // 左侧icon
           icon: Icon(Icons.lock, color: accentColor),
           // 右侧icon

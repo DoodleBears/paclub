@@ -10,20 +10,23 @@ class RegisterPage extends StatelessWidget {
     logger.i('渲染 —— RegisterPage');
     return Scaffold(
       appBar: AppBar(
+        toolbarHeight: Get.height * 0.07,
         shadowColor: Colors.transparent,
         centerTitle: true,
-        leading: IconButton(
-          splashColor: Colors.transparent,
-          highlightColor: Colors.transparent,
-          icon: Icon(
-            Icons.arrow_back,
-            size: 28.0,
+        leading: FittedBox(
+          fit: BoxFit.contain,
+          alignment: Alignment.center,
+          child: Container(
+            padding: EdgeInsets.symmetric(vertical: Get.height * 0.015),
+            child: IconButton(
+              iconSize: 52.0,
+              splashColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+              icon: Icon(Icons.arrow_back),
+              color: accentColor,
+              onPressed: () => Get.back(),
+            ),
           ),
-          color: accentColor,
-          onPressed: () {
-            logger.i('返回登录页面');
-            Get.back();
-          },
         ),
       ),
       body: Body(),

@@ -25,8 +25,8 @@ class CountdownButton extends StatelessWidget {
     return TextButton(
       onPressed: onPressed,
       style: TextButton.styleFrom(
-        shape:
-            RoundedRectangleBorder(borderRadius: BorderRadius.circular(14.0)),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(borderRadius)),
         shadowColor: Colors.transparent,
         primary: countdown == 0 ? accentColor : Colors.grey[600],
         backgroundColor: countdown == 0 ? Colors.grey[100] : primaryLightColor,
@@ -62,7 +62,7 @@ class CountdownButton extends StatelessWidget {
                               : text + ' after ' + countdown.toString(),
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 16.0,
+                        fontSize: 20.0,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,

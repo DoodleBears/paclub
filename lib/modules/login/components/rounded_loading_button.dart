@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:paclub/constants/constants.dart';
 import 'package:paclub/widgets/opacity_change_container.dart';
 
@@ -8,8 +9,7 @@ class RoundedLoadingButton extends StatelessWidget {
   final String text;
   final Color color, textColor;
   final bool isLoading;
-  final double width;
-  final double height;
+  final double width, height;
 
   const RoundedLoadingButton({
     Key key,
@@ -19,7 +19,7 @@ class RoundedLoadingButton extends StatelessWidget {
     this.textColor = Colors.white,
     @required this.isLoading,
     @required this.width,
-    this.height = 60.0,
+    this.height,
   }) : super(key: key);
 
   @override
@@ -28,13 +28,15 @@ class RoundedLoadingButton extends StatelessWidget {
       curve: Curves.linearToEaseOut,
       duration: const Duration(milliseconds: 800),
       width: width,
-      height: height,
+      height: height ?? Get.height * 0.08,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(14.0)),
+              // RoundedRectangleBorder(borderRadius: BorderRadius.circular(14.0)),
+              RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(borderRadius)),
           primary: primaryColor,
-          padding: EdgeInsets.symmetric(vertical: 12.0),
+          padding: EdgeInsets.symmetric(vertical: Get.pixelRatio * 3),
           // 去除 Button 默认的阴影
           shadowColor: Colors.transparent,
         ),
@@ -60,11 +62,15 @@ class RoundedLoadingButton extends StatelessWidget {
             // [LOGIN 文字] 改变 Opacity 的动画, 不在 Loading 的时候显示
             OpacityChangeContainer(
               isShow: !isLoading,
-              child: Text(
-                text,
-                style: TextStyle(
-                  fontSize: 20.0,
-                  color: textColor,
+              child: FittedBox(
+                fit: BoxFit.contain,
+                child: Text(
+                  text,
+                  style: TextStyle(
+                    fontSize: 24.0,
+                    fontWeight: FontWeight.bold,
+                    color: textColor,
+                  ),
                 ),
               ),
             ),

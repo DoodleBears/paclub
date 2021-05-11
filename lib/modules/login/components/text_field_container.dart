@@ -15,13 +15,15 @@ class TextFieldContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 10),
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      width: context.width * 0.8,
+      // margin: EdgeInsets.symmetric(vertical: Get.height * 0.013),
+      padding: EdgeInsets.symmetric(horizontal: Get.pixelRatio * 5),
+      width: Get.width * 0.8,
+      height: 16 + Get.height * 0.07,
+      alignment: Alignment.center,
       decoration: BoxDecoration(
-          color: primaryLightColor,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(color: color, width: 2.0)),
+        color: primaryLightColor,
+        borderRadius: BorderRadius.circular(borderRadius),
+      ),
       child: child,
     );
   }

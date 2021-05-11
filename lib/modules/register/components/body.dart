@@ -14,32 +14,36 @@ class Body extends GetView<RegisterController> {
       child: SingleChildScrollView(
         child: Column(
           children: [
-            const SizedBox(height: 12),
+            SizedBox(
+              height: Get.height * 0.01,
+            ),
             Image.asset(
               R.appIcon, //使用Class调用内置图片地址
-              width: 100.0,
+              width: Get.width * 0.22,
               fit: BoxFit.fitWidth,
             ),
-            const SizedBox(height: 6),
+            SizedBox(height: Get.height * 0.006),
             Text(
               'Paclub',
               style: TextStyle(
                 color: accentColor,
                 fontWeight: FontWeight.bold,
-                fontSize: 24.0,
+                fontSize: Get.width * 0.06,
               ),
             ),
-            const SizedBox(height: 32),
+            SizedBox(height: Get.height * 0.03),
             // 用户名和邮箱输入
             RoundedInputField(
-              hintText: 'Your Email',
+              hintText: 'Email',
               icon: Icons.person,
               onChanged: controller.onUsernameChanged,
             ),
+            SizedBox(height: 3 + Get.height * 0.02),
             // 密码输入
             GetBuilder<RegisterController>(
               builder: (controller) {
                 return RoundedPasswordField(
+                  hinttext: 'Password',
                   color:
                       controller.isPasswordOK ? primaryLightColor : Colors.red,
                   // onchanged 会在 input 内容改变时触发 function 并传 string
@@ -49,10 +53,12 @@ class Body extends GetView<RegisterController> {
                 );
               },
             ),
+            SizedBox(height: 3 + Get.height * 0.02),
             // 重复密码输入
             GetBuilder<RegisterController>(
               builder: (controller) {
                 return RoundedPasswordField(
+                  hinttext: 'Repassword',
                   color: controller.isRePasswordOK
                       ? primaryLightColor
                       : Colors.red,
@@ -63,14 +69,16 @@ class Body extends GetView<RegisterController> {
                 );
               },
             ),
-            const SizedBox(height: 20),
-            // 登录按钮
+            SizedBox(height: 3 + Get.height * 0.02),
+
+            // 注册按钮
             GetBuilder<RegisterController>(
               builder: (controller) {
                 return RoundedLoadingButton(
+                  // height: 100.0 - Get.height * 0.08,
                   width:
                       controller.isLoading ? Get.width * 0.4 : Get.width * 0.8,
-                  text: 'SIGN UP',
+                  text: 'Sign Up',
                   // 点击后确认登录
                   onPressed: controller.isLoading
                       ? () {

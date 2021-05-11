@@ -19,7 +19,6 @@ import 'package:paclub/widgets/toast.dart';
 class AuthService extends GetxService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final Rx<User> _user = Rx<User>(null);
-
   final InternetProvider internetProvider = Get.find<InternetProvider>();
 
   // 获得 user
@@ -50,7 +49,6 @@ class AuthService extends GetxService {
 
   //* 判断是否登录
   bool isLogin({bool notify = true, bool jump = false}) {
-    if (user?.emailVerified == false) return false;
     if (user == null) {
       if (notify) toast('请先登录'); // 是否跳出提示, 默认值为true, 传入 false 则不toast
       // 是否要强制用户跳转到登录页面, jump 传入 true 则强制跳转
@@ -60,6 +58,7 @@ class AuthService extends GetxService {
       }
       return false;
     }
+    if (user?.emailVerified == false) return false;
     return true;
   }
 
