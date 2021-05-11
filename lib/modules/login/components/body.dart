@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:paclub/constants/constants.dart';
-import 'package:paclub/modules/login/components/login_components.dart';
-import 'package:paclub/modules/login/components/round_password_field.dart';
-import 'package:paclub/modules/login/components/rounded_loading_button.dart';
-import 'package:paclub/modules/login/components/rounded_input_field.dart';
+import 'package:paclub/modules/login/components/components.dart';
 import 'package:paclub/modules/login/login_controller.dart';
 import 'package:paclub/r.dart';
 import 'package:paclub/widgets/logger.dart';
+import 'package:paclub/widgets/widgets.dart';
 import 'or_divider.dart';
 
 // 登录界面的 View 部分，使用 GetView<LoginController> 直接注入 Controller，
@@ -65,13 +63,13 @@ class Body extends GetView<LoginController> {
                     children: [
                       // 登录按钮
                       RoundedLoadingButton(
+                        width: controller.isLoading
+                            ? Get.width * 0.4
+                            : Get.width * 0.8,
                         text: 'LOGIN',
-                        // 点击后确认登录
-                        // 当点击登录后，发送网络请求，用户将无法出发产生界面变化的交互
+                        // 当点击登录后, 发送网络请求, 用户将无法出发产生界面变化的交互
                         onPressed: controller.isLoading
-                            ? () {
-                                logger.d('当前处于Loading状态, Button被设置为无效');
-                              }
+                            ? () => logger.d('当前处于Loading状态, Button被设置为无效')
                             : () {
                                 logger.d('Login 按钮被按下 —— 提交登录信息，开始进行登录验证');
                                 controller.submit(context);
@@ -83,15 +81,33 @@ class Body extends GetView<LoginController> {
                       AnimatedContainer(
                         duration: const Duration(milliseconds: 800),
                         curve: Curves.linearToEaseOut,
-                        height: controller.isButtonShow ? 12 : 0,
+                        height: controller.isResendButtonShow ? 12 : 0,
                         child: SizedBox.expand(),
                       ),
                       controller.isNeedToResend
-                          ? FadeInScaleContainer(
-                              isShow: controller.isButtonShow,
-                              countdown: controller.sendEmailCountDown,
-                              time: 30,
-                              controller: controller,
+                          ? GetBuilder<LoginController>(
+                              builder: (controller) {
+                                // 用于渐变出现的 Container
+                                return FadeInScaleContainer(
+                                  isShow:
+                                      controller.isResendButtonShow, // 判断出现的条件
+                                  isScaleDown:
+                                      controller.countdown == 30, // 判定缩短的条件
+                                  width: controller.countdown == 30
+                                      ? Get.width * 0.4 // 缩短 时候的长度
+                                      : Get.width * 0.8, // 正常 时候的长度
+                                  child: CountdownButton(
+                                    onPressed: controller.countdown == 0
+                                        ? () => controller.resendEmail(time: 30)
+                                        : () {},
+                                    countdown: controller.countdown,
+                                    isLoading: controller.countdown == 30,
+                                    icon: Icon(Icons.send),
+                                    text: 'resend',
+                                    time: 30,
+                                  ),
+                                );
+                              },
                             )
                           : const SizedBox.shrink(),
                     ],

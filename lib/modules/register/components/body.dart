@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:paclub/constants/constants.dart';
-import 'package:paclub/modules/login/components/login_components.dart';
+import 'package:paclub/modules/login/components/components.dart';
 import 'package:paclub/modules/register/register_controller.dart';
 import 'package:paclub/r.dart';
 import 'package:paclub/widgets/logger.dart';
@@ -68,6 +68,8 @@ class Body extends GetView<RegisterController> {
             GetBuilder<RegisterController>(
               builder: (controller) {
                 return RoundedLoadingButton(
+                  width:
+                      controller.isLoading ? Get.width * 0.4 : Get.width * 0.8,
                   text: 'SIGN UP',
                   // 点击后确认登录
                   onPressed: controller.isLoading

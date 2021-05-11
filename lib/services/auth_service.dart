@@ -52,8 +52,8 @@ class AuthService extends GetxService {
   bool isLogin({bool notify = true, bool jump = false}) {
     if (user?.emailVerified == false) return false;
     if (user == null) {
-      if (notify) toast('请先登录'); // 是否跳出提示
-      // 是否要强制用户跳转到登录页面
+      if (notify) toast('请先登录'); // 是否跳出提示, 默认值为true, 传入 false 则不toast
+      // 是否要强制用户跳转到登录页面, jump 传入 true 则强制跳转
       if (jump) {
         Get.until((route) => false);
         Get.toNamed(Routes.AUTH);
@@ -66,7 +66,7 @@ class AuthService extends GetxService {
   //* Email 注册功能
   Future<bool> register(String email, String password) async {
     try {
-      // 检查网络链接
+      // 检查网络链接, 如果未联网(false), 提示user联网并取消register
       if (await internetProvider.isConnected() == false) return false;
       await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
@@ -81,6 +81,7 @@ class AuthService extends GetxService {
     return false;
   }
 
+  // 用来 toast register 相关的 error
   void toastRegisterError(String code) {
     if (code == 'weak-password') {
       toast('weak password');
@@ -100,7 +101,7 @@ class AuthService extends GetxService {
   //* Email 登录功能
   Future<bool> login(String email, String password) async {
     try {
-      // 检查网络链接
+      // 检查网络链接, 如果未联网(false), 提示user联网并取消 login
       if (await internetProvider.isConnected() == false) return false;
       await _auth.signInWithEmailAndPassword(email: email, password: password);
       // 确认联网情况正常, 并完成登录后返回 true
@@ -112,6 +113,7 @@ class AuthService extends GetxService {
     return false;
   }
 
+  // 用来 toast login 相关的 error
   void toastLoginError(String code) {
     if (code == 'user-not-found') {
       toast('No user found for that email.');
@@ -131,27 +133,26 @@ class AuthService extends GetxService {
   //* Google 登录功能
   Future<UserCredential> signInWithGoogle() async {
     try {
-      // 检查网络连接
+      // 检查网络链接, 如果未联网(false), 提示user联网并取消 login
       if (await internetProvider.isConnected() == false) return null;
-      // Attempt to sign in the user in with Google, 调用Google认证
+      // 调用Google登陆认证, 弹窗并等待用户选择账号
       final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
 
-      // Obtain the auth details from the request, 等待用户完整Google授权的response
+      // 等待用户完整Google授权的response, 如果用户取消, 则 googleUser 为 null
       if (googleUser == null) return null;
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
-      // Create a new credential, 创建一个证书
+      // 验证认证成功, 用 googleAuth 创建一个证书
       final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
 
-      // Once signed in, return the UserCredential, 一旦登录成功, 回传用户证书
+      // 使用该证书登陆 (可以是 Twitter, Google 等证书)
       return await _auth.signInWithCredential(credential);
-      // TODO: 处理1个email 多种登录方式的情况
     } on FirebaseAuthException catch (e) {
+      // TODO: 解决如果账号已经用 email 注册登陆后, 想用同一个 email 对应的 google account 登陆的情况
       if (e.code == 'account-exists-with-different-credential') {
-        // The account already exists with a different credential
         logger.w(e.code);
         debugPrint(e.code);
         String email = e.email;
@@ -192,6 +193,7 @@ class AuthService extends GetxService {
   Future<void> signOut() async {
     try {
       String uid = user.uid;
+      // sign out 每一种登陆方式
       await _auth.signOut();
       await GoogleSignIn().signOut();
       logger.d('登出用户ID: ' + uid ?? 'null');

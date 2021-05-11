@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:paclub/constants/constants.dart';
+import 'package:paclub/widgets/opacity_change_container.dart';
 
 // 带有 loading 效果的 button，在触发网络请求时，会变成转圈模式
 class RoundedLoadingButton extends StatelessWidget {
@@ -8,6 +8,8 @@ class RoundedLoadingButton extends StatelessWidget {
   final String text;
   final Color color, textColor;
   final bool isLoading;
+  final double width;
+  final double height;
 
   const RoundedLoadingButton({
     Key key,
@@ -16,6 +18,8 @@ class RoundedLoadingButton extends StatelessWidget {
     this.color = primaryColor,
     this.textColor = Colors.white,
     @required this.isLoading,
+    @required this.width,
+    this.height = 60.0,
   }) : super(key: key);
 
   @override
@@ -23,8 +27,8 @@ class RoundedLoadingButton extends StatelessWidget {
     return AnimatedContainer(
       curve: Curves.linearToEaseOut,
       duration: const Duration(milliseconds: 800),
-      width: isLoading ? Get.width * 0.4 : Get.width * 0.8,
-      height: 60.0,
+      width: width,
+      height: height,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           shape:
@@ -38,12 +42,9 @@ class RoundedLoadingButton extends StatelessWidget {
         child: Stack(
           alignment: AlignmentDirectional.center,
           children: [
-            // [圆形进度条] 改变 Opacity 的动画
-            AnimatedOpacity(
-              // 当正在 loading 的时候, 进度条透明度设置为 1(显现), 否则为0(消失)
-              opacity: isLoading ? 1 : 0,
-              curve: Curves.easeInOutCubic,
-              duration: Duration(milliseconds: 300),
+            // [圆形进度条] 改变 Opacity 的动画, 在 Loading 的时候显示
+            OpacityChangeContainer(
+              isShow: isLoading,
               child: FittedBox(
                 fit: BoxFit.fitHeight,
                 // 圆形进度条
@@ -56,12 +57,9 @@ class RoundedLoadingButton extends StatelessWidget {
                 ),
               ),
             ),
-            // [LOGIN 文字] 改变 Opacity 的动画
-            AnimatedOpacity(
-              // 当正在 loading 的时候，文字的透明度设置为为0(消失), 否则为1(显现)
-              opacity: isLoading ? 0 : 1,
-              curve: Curves.easeInOutCubic,
-              duration: Duration(milliseconds: 300),
+            // [LOGIN 文字] 改变 Opacity 的动画, 不在 Loading 的时候显示
+            OpacityChangeContainer(
+              isShow: !isLoading,
               child: Text(
                 text,
                 style: TextStyle(

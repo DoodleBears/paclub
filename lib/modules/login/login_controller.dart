@@ -22,10 +22,10 @@ class LoginController extends GetxController {
   bool hidePassword = true;
   String _username;
   String _password;
-  Timer timer;
-  int sendEmailCountDown = 0;
   bool isNeedToResend = false;
-  bool isButtonShow = false;
+  bool isResendButtonShow = false;
+  int countdown = 0;
+  Timer timer;
 
   String get password => _password;
 
@@ -50,20 +50,23 @@ class LoginController extends GetxController {
   }
 
   void setTimer() {
+    logger.d('timer was set');
+    update();
     timer = Timer.periodic(const Duration(seconds: 1), (t) {
-      if (sendEmailCountDown != 0) {
-        sendEmailCountDown--;
+      // logger0.d(countdown);
+      if (countdown != 0) {
+        countdown--;
         update();
       } else {
         timer.cancel();
-        sendEmailCountDown = 0;
+        countdown = 0;
         update();
       }
     });
   }
 
-  Future<void> resendEmail() async {
-    sendEmailCountDown = 30;
+  Future<void> resendEmail({int time = 30}) async {
+    countdown = time;
     update();
     logger.d('重送email');
     try {
@@ -72,7 +75,7 @@ class LoginController extends GetxController {
       setTimer();
       toast('email resend to\n' + authService.user.email);
     } catch (e) {
-      sendEmailCountDown = 0;
+      countdown = 0;
       update();
       logger.e(e.toString());
     }
@@ -119,10 +122,10 @@ class LoginController extends GetxController {
       if (authService.user.emailVerified == false) {
         isNeedToResend = true;
         update();
-        toast('Accept verification mail in\n' + authService.user.email,
+        toast('Check verification mail in\n' + authService.user.email,
             gravity: ToastGravity.CENTER);
         await Future.delayed(const Duration(seconds: 1));
-        isButtonShow = true;
+        isResendButtonShow = true;
         update();
       } else {
         Get.until((route) => false);

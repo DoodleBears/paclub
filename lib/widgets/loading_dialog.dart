@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:paclub/modules/login/components/login_components.dart';
+import 'package:paclub/modules/login/components/components.dart';
 import 'package:paclub/modules/login/login_controller.dart';
 
 class LoadingDialog extends GetView<LoginController> {
