@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:paclub/routes/app_pages.dart';
 import 'package:paclub/services/auth_service.dart';
@@ -24,6 +25,7 @@ class LoginController extends GetxController {
   Timer timer;
   int sendEmailCountDown = 0;
   bool isNeedToResend = false;
+  bool isButtonShow = false;
 
   String get password => _password;
 
@@ -48,7 +50,6 @@ class LoginController extends GetxController {
   }
 
   void setTimer() {
-    sendEmailCountDown = 60;
     timer = Timer.periodic(const Duration(seconds: 1), (t) {
       if (sendEmailCountDown != 0) {
         sendEmailCountDown--;
@@ -62,11 +63,17 @@ class LoginController extends GetxController {
   }
 
   Future<void> resendEmail() async {
+    sendEmailCountDown = 30;
+    update();
+    logger.d('重送email');
     try {
       await authService.user.sendEmailVerification();
+      // await Future.delayed(const Duration(seconds: 2));
       setTimer();
-      toast('email resend to ' + authService.user.email + ' successful');
+      toast('email resend to\n' + authService.user.email);
     } catch (e) {
+      sendEmailCountDown = 0;
+      update();
       logger.e(e.toString());
     }
   }
@@ -108,15 +115,15 @@ class LoginController extends GetxController {
     isLoading = true;
     update();
     if (await authService.login(_username, _password)) {
-      // isLoading = false;
-      // update();
       logger.d('邮箱认证状态: ' + authService.user.emailVerified.toString());
       if (authService.user.emailVerified == false) {
         isNeedToResend = true;
         update();
-        toast('you must verify the account before login');
-        toast('you can resend the email on top right corner');
-        setTimer();
+        toast('Accept verification mail in\n' + authService.user.email,
+            gravity: ToastGravity.CENTER);
+        await Future.delayed(const Duration(seconds: 1));
+        isButtonShow = true;
+        update();
       } else {
         Get.until((route) => false);
         Get.toNamed(Routes.HOME);

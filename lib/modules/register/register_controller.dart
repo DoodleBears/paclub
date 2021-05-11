@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:paclub/routes/app_pages.dart';
 import 'package:paclub/services/auth_service.dart';
@@ -53,9 +54,9 @@ class RegisterController extends GetxController {
     update();
     if (await authService.register(_username, _password)) {
       if (authService.user.emailVerified == false) {
-        toast('verification email already sent to: ' + authService.user.email);
+        toast('verification email already sent to:\n' + authService.user.email,
+            gravity: ToastGravity.SNACKBAR);
         authService.user.sendEmailVerification();
-        Get.until((route) => false);
         Get.toNamed(Routes.LOGIN);
       } else {
         Get.until((route) => false);

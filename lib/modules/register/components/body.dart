@@ -29,7 +29,7 @@ class Body extends GetView<RegisterController> {
                 fontSize: 24.0,
               ),
             ),
-            const SizedBox(height: 40),
+            const SizedBox(height: 32),
             // 用户名和邮箱输入
             RoundedInputField(
               hintText: 'Your Email',

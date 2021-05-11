@@ -17,36 +17,42 @@ class LoginPage extends GetView<LoginController> {
           appBar: AppBar(
             shadowColor: Colors.transparent,
             centerTitle: true,
-            actions: controller.isNeedToResend == true
-                ? [
-                    Container(
-                      margin: EdgeInsets.only(right: 10.0),
-                      padding: EdgeInsets.symmetric(vertical: 8.0),
-                      child: TextButton(
-                        onPressed: controller.sendEmailCountDown == 0
-                            ? () {
-                                controller.resendEmail();
-                              }
-                            : () {},
-                        style: TextButton.styleFrom(
-                          shadowColor: Colors.transparent,
-                          primary: controller.sendEmailCountDown == 0
-                              ? accentColor
-                              : Colors.grey[600],
-                          backgroundColor: controller.sendEmailCountDown == 0
-                              ? Colors.grey[100]
-                              : Colors.grey[300],
-                        ),
-                        child: Text(
-                          controller.sendEmailCountDown == 0
-                              ? 'resend'
-                              : controller.sendEmailCountDown.toString(),
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                      ),
-                    )
-                  ]
-                : [],
+            // actions: controller.isNeedToResend == true
+            //     ? [
+            //         Container(
+            //           margin: EdgeInsets.only(right: 10.0),
+            //           padding: EdgeInsets.symmetric(vertical: 8.0),
+            //           width: 80.0,
+            //           child: TextButton(
+            //             onPressed: controller.sendEmailCountDown == 0
+            //                 ? () {
+            //                     controller.resendEmail();
+            //                   }
+            //                 : () {},
+            //             style: TextButton.styleFrom(
+            //               shape: RoundedRectangleBorder(
+            //                   borderRadius: BorderRadius.circular(10.0)),
+            //               shadowColor: Colors.transparent,
+            //               primary: controller.sendEmailCountDown == 0
+            //                   ? accentColor
+            //                   : Colors.grey[600],
+            //               backgroundColor: controller.sendEmailCountDown == 0
+            //                   ? Colors.grey[100]
+            //                   : primaryLightColor,
+            //               // padding: EdgeInsets.symmetric(horizontal: 16.0),
+            //             ),
+            //             child: Text(
+            //               controller.sendEmailCountDown == 0
+            //                   ? 'resend'
+            //                   : controller.sendEmailCountDown.toString(),
+            //               style: TextStyle(
+            //                 fontWeight: FontWeight.bold,
+            //               ),
+            //             ),
+            //           ),
+            //         )
+            //       ]
+            //     : [],
             leading: IconButton(
               splashColor: Colors.transparent,
               highlightColor: Colors.transparent,

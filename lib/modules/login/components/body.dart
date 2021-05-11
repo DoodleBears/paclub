@@ -34,7 +34,7 @@ class Body extends GetView<LoginController> {
                 fontSize: 24.0,
               ),
             ),
-            const SizedBox(height: 40),
+            const SizedBox(height: 32),
             // 用户名和邮箱输入
             RoundedInputField(
               hintText: 'Your Email',
@@ -55,25 +55,49 @@ class Body extends GetView<LoginController> {
               },
             ),
             const SizedBox(height: 20),
-            // 登录按钮
-            GetBuilder<LoginController>(
-              builder: (controller) {
-                return RoundedLoadingButton(
-                  text: 'LOGIN',
-                  // 点击后确认登录
-                  // 当点击登录后，发送网络请求，用户将无法出发产生界面变化的交互
-                  onPressed: controller.isLoading
-                      ? () {
-                          logger.d('当前处于Loading状态, Button被设置为无效');
-                        }
-                      : () {
-                          logger.d('Login 按钮被按下 —— 提交登录信息，开始进行登录验证');
-                          controller.submit(context);
-                        },
-                  // 在点击后触发loading效果，加载结束后再次触发，取消loading
-                  isLoading: controller.isLoading,
-                );
-              },
+            // 2个按钮
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: Get.width * 0.1),
+              child: GetBuilder<LoginController>(
+                builder: (controller) {
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // 登录按钮
+                      RoundedLoadingButton(
+                        text: 'LOGIN',
+                        // 点击后确认登录
+                        // 当点击登录后，发送网络请求，用户将无法出发产生界面变化的交互
+                        onPressed: controller.isLoading
+                            ? () {
+                                logger.d('当前处于Loading状态, Button被设置为无效');
+                              }
+                            : () {
+                                logger.d('Login 按钮被按下 —— 提交登录信息，开始进行登录验证');
+                                controller.submit(context);
+                              },
+                        // 在点击后触发loading效果，加载结束后再次触发，取消loading
+                        isLoading: controller.isLoading,
+                      ),
+                      // 重送 resend 按钮
+                      AnimatedContainer(
+                        duration: const Duration(milliseconds: 800),
+                        curve: Curves.linearToEaseOut,
+                        height: controller.isButtonShow ? 12 : 0,
+                        child: SizedBox.expand(),
+                      ),
+                      controller.isNeedToResend
+                          ? FadeInScaleContainer(
+                              isShow: controller.isButtonShow,
+                              countdown: controller.sendEmailCountDown,
+                              time: 30,
+                              controller: controller,
+                            )
+                          : const SizedBox.shrink(),
+                    ],
+                  );
+                },
+              ),
             ),
             const SizedBox(height: 12),
             const OrDivider(), // OR 的分割线

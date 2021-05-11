@@ -50,6 +50,7 @@ class AuthService extends GetxService {
 
   //* 判断是否登录
   bool isLogin({bool notify = true, bool jump = false}) {
+    if (user?.emailVerified == false) return false;
     if (user == null) {
       if (notify) toast('请先登录'); // 是否跳出提示
       // 是否要强制用户跳转到登录页面

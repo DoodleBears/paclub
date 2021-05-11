@@ -20,8 +20,10 @@ class RoundedLoadingButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: Get.width * 0.8,
+    return AnimatedContainer(
+      curve: Curves.linearToEaseOut,
+      duration: const Duration(milliseconds: 800),
+      width: isLoading ? Get.width * 0.4 : Get.width * 0.8,
       height: 60.0,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
