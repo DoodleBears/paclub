@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:paclub/constants/constants.dart';
 import 'package:paclub/modules/login/components/components.dart';
@@ -142,7 +143,8 @@ class RegisterAccountBody extends GetView<RegisterAccountController> {
                                     Get.until((route) => false);
                                     Get.toNamed(Routes.HOME);
                                   } else {
-                                    toast('Verify your email first');
+                                    toast('Verify your account\nbefore login',
+                                        gravity: ToastGravity.CENTER);
                                   }
                                 }
                           : () async {

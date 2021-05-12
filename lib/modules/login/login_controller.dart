@@ -1,11 +1,14 @@
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:paclub/constants/constants.dart';
 import 'package:paclub/routes/app_pages.dart';
 import 'package:paclub/services/auth_service.dart';
 import 'package:paclub/widgets/logger.dart';
+import 'package:paclub/widgets/snackbar.dart';
 import 'package:paclub/widgets/toast.dart';
 
 // LoginController交互对象: View(Login_page.dart), Repository(login_repository.dart)
@@ -67,7 +70,16 @@ class LoginController extends GetxController {
       await authService.user.sendEmailVerification();
       // await Future.delayed(const Duration(seconds: 2));
       setTimer(time: countdown);
-      toast('email resend to\n' + authService.user.email);
+      snackbar(
+        title: 'Verify Your Account',
+        msg: 'verification email resend to:\n' + authService.user.email,
+        icon: Icon(
+          Icons.email,
+          color: accentColor,
+          size: Get.width * 0.08,
+        ),
+      );
+      // toast('email resend to\n' + authService.user.email);
     } catch (e) {
       countdown = 0;
       update();
@@ -119,8 +131,19 @@ class LoginController extends GetxController {
       if (authService.user.emailVerified == false) {
         isNeedToResend = true;
         update();
-        toast('Check verification mail in\n' + authService.user.email,
-            gravity: ToastGravity.CENTER);
+        snackbar(
+          title: 'Verify Your Account',
+          msg: 'Email send to ' +
+              authService.user.email +
+              '.\nyou cannot login without verification.',
+          icon: Icon(
+            Icons.email,
+            color: accentColor,
+            size: Get.width * 0.08,
+          ),
+        );
+        // toast('Check verification mail in\n' + authService.user.email,
+        //     gravity: ToastGravity.CENTER);
         await Future.delayed(const Duration(seconds: 1));
         isResendButtonShow = true;
         update();

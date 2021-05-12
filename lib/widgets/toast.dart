@@ -6,7 +6,7 @@ void toast(String loginInfo, {ToastGravity gravity = ToastGravity.BOTTOM}) {
     msg: loginInfo,
     toastLength: Toast.LENGTH_LONG,
     gravity: gravity,
-    timeInSecForIosWeb: 1,
-    fontSize: 16.0,
+    timeInSecForIosWeb: 2,
+    fontSize: 18.0,
   );
 }

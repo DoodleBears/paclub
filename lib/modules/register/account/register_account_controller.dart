@@ -1,10 +1,14 @@
 import 'dart:async';
 
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:paclub/constants/constants.dart';
 import 'package:paclub/routes/app_pages.dart';
 import 'package:paclub/services/auth_service.dart';
 import 'package:paclub/widgets/logger.dart';
+import 'package:paclub/widgets/snackbar.dart';
 import 'package:paclub/widgets/toast.dart';
 
 class RegisterAccountController extends GetxController {
@@ -88,7 +92,15 @@ class RegisterAccountController extends GetxController {
         function: () => authService.reload(),
         time: countdown,
       );
-      toast('email resend to\n' + authService.user.email);
+      snackbar(
+        title: 'Verify Your Account',
+        msg: 'verification email resend to:\n' + authService.user.email,
+        icon: Icon(
+          Icons.email,
+          color: accentColor,
+          size: Get.width * 0.08,
+        ),
+      );
     } catch (e) {
       countdown = 0;
       update();
@@ -105,7 +117,17 @@ class RegisterAccountController extends GetxController {
       isRegisterd = true;
       if (authService.user.emailVerified == false) {
         isEmailVerifyed = false;
-        toast('verification email already sent to:\n' + authService.user.email);
+        snackbar(
+          title: 'Verify Your Account',
+          msg: 'verification email already sent to:\n' + authService.user.email,
+          icon: Icon(
+            Icons.email,
+            color: accentColor,
+            size: Get.width * 0.08,
+          ),
+        );
+        // toast('verification email already sent to:\n' + authService.user.email,
+        //     gravity: ToastGravity.CENTER);
         authService.user.sendEmailVerification();
         // 启用Timer每1s刷新一次用户状态, 持续2min(120s)
         setTimer(
