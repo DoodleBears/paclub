@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:flutter/widgets.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:paclub/routes/app_pages.dart';
 import 'package:paclub/services/auth_service.dart';
@@ -87,7 +86,7 @@ class RegisterAccountController extends GetxController {
       await Future.delayed(const Duration(seconds: 2));
       setTimer(
         function: () => authService.reload(),
-        time: 60,
+        time: countdown,
       );
       toast('email resend to\n' + authService.user.email);
     } catch (e) {
@@ -106,8 +105,7 @@ class RegisterAccountController extends GetxController {
       isRegisterd = true;
       if (authService.user.emailVerified == false) {
         isEmailVerifyed = false;
-        toast('verification email already sent to:\n' + authService.user.email,
-            gravity: ToastGravity.SNACKBAR);
+        toast('verification email already sent to:\n' + authService.user.email);
         authService.user.sendEmailVerification();
         // 启用Timer每1s刷新一次用户状态, 持续2min(120s)
         setTimer(

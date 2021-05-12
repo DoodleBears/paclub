@@ -102,28 +102,21 @@ class RegisterAccountBody extends GetView<RegisterAccountController> {
                   children: [
                     AnimatedSizedbox(
                       height: controller.isResendButtonShow
-                          ? context.height * 0.02
+                          ? 3 + Get.height * 0.02
                           : 0,
                     ),
-                    controller.isNeedToResend
-                        ? GetBuilder<RegisterAccountController>(
-                            builder: (_) {
-                              // 用于渐变出现的 Container
-                              return FadeInCountdownButton(
-                                icon: Icon(Icons.send),
-                                isShow: controller.isResendButtonShow,
-                                height: Get.height * 0.08,
-                                onPressed: controller.countdown == 0
-                                    ? () => controller.resendEmail(time: 30)
-                                    : () {},
-                                text: 'Resend',
-                                countdown: controller.countdown,
-                                isLoading: controller.countdown == 30,
-                                time: 30,
-                              );
-                            },
-                          )
-                        : const SizedBox.shrink(),
+                    FadeInCountdownButton(
+                      icon: Icon(Icons.send),
+                      isShow: controller.isResendButtonShow,
+                      height: Get.height * 0.08,
+                      onPressed: controller.countdown == 0
+                          ? () => controller.resendEmail(time: 60)
+                          : () {},
+                      text: 'Resend',
+                      countdown: controller.countdown,
+                      isLoading: controller.countdown == 60,
+                      time: 60,
+                    ),
                   ],
                 );
               },
@@ -134,7 +127,7 @@ class RegisterAccountBody extends GetView<RegisterAccountController> {
                 return RoundedLoadingButton(
                   width:
                       controller.isLoading ? Get.width * 0.4 : Get.width * 0.8,
-                  text: controller.isRegisterd ? 'Next' : 'Sign Up',
+                  text: controller.isRegisterd ? 'Login' : 'Sign Up',
                   // 点击后确认登录
                   onPressed: controller.isLoading
                       ? () => logger.d('当前处于Loading状态, Button被设置为无效')
