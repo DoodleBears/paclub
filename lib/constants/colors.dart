@@ -9,6 +9,8 @@ const primaryColor = Color(0xFFF0BF84);
 const primaryLightColor = Color(0xFFFCF4E9);
 const primaryDarkColor = Color(0xFF9F7C53);
 const black = Colors.black;
+const grey100 = Color(0xFFF5F5F5);
+
 const white = Colors.white;
 
 // const primaryTextColor = Color(0xFFF1E6FF);

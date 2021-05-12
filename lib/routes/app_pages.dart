@@ -4,8 +4,10 @@ import 'package:paclub/modules/auth/auth_binding.dart';
 import 'package:paclub/modules/auth/auth_page.dart';
 import 'package:paclub/modules/login/login_binding.dart';
 import 'package:paclub/modules/login/login_page.dart';
-import 'package:paclub/modules/register/register_binding.dart';
-import 'package:paclub/modules/register/register_page.dart';
+import 'package:paclub/modules/register/account/register_account_binding.dart';
+import 'package:paclub/modules/register/account/register_account_page.dart';
+import 'package:paclub/modules/register/form/register_form_binding.dart';
+import 'package:paclub/modules/register/form/register_form_page.dart';
 import 'package:paclub/modules/splash/splash_binding.dart';
 import 'package:paclub/modules/splash/splash_page.dart';
 import 'package:paclub/pages/Tabs.dart';
@@ -36,9 +38,16 @@ abstract class AppPages {
       popGesture: true,
     ),
     GetPage(
-      name: Routes.REGISTER,
-      page: () => RegisterPage(),
-      binding: RegisterBinding(),
+      name: Routes.REGISTER_FORM,
+      page: () => RegisterFormPage(),
+      binding: RegisterFormBinding(),
+      customTransition: ShiftLeftTransitions(),
+      popGesture: true,
+    ),
+    GetPage(
+      name: Routes.REGISTER_ACCOUNT,
+      page: () => RegisterAccountPage(),
+      binding: RegisterAccountBinding(),
       customTransition: ShiftLeftTransitions(),
       popGesture: true,
     ),

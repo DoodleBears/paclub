@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:paclub/constants/constants.dart';
 import 'package:paclub/modules/login/components/text_field_container.dart';
 
@@ -11,6 +12,7 @@ class RoundedPasswordField extends StatelessWidget {
   final bool allowHide;
   final VoidCallback onPressed;
   final Color color;
+  final bool error;
   final String hinttext;
   const RoundedPasswordField({
     Key key,
@@ -20,17 +22,24 @@ class RoundedPasswordField extends StatelessWidget {
     this.allowHide = true,
     this.color,
     this.hinttext,
+    this.error,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return TextFieldContainer(
+      height: 16 + Get.height * 0.07,
       color: color ?? primaryLightColor,
+      error: error ?? false,
       child: TextField(
+        keyboardType: TextInputType.visiblePassword,
+        style: TextStyle(fontSize: Get.height * 0.022),
+        cursorHeight: Get.height * 0.033,
         onChanged: onChanged,
         obscureText: hidePassword,
         decoration: InputDecoration(
           hintText: hinttext,
+          hintStyle: TextStyle(fontSize: Get.height * 0.022),
           // 左侧icon
           icon: Icon(Icons.lock, color: accentColor),
           // 右侧icon

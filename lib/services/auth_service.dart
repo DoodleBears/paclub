@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:paclub/data/providers/internet_provider.dart';
 import 'package:paclub/modules/login/login_controller.dart';
+import 'package:paclub/modules/register/form/register_form_controller.dart';
 import 'package:paclub/routes/app_pages.dart';
 import 'package:paclub/widgets/loading_dialog.dart';
 import 'package:paclub/widgets/logger.dart';
@@ -23,6 +24,10 @@ class AuthService extends GetxService {
 
   // 获得 user
   User get user => _auth.currentUser;
+
+  void reload() {
+    user.reload();
+  }
 
   // 初始化 Service, 绑定监听 user 和 connectivity 状态
   @override
@@ -69,6 +74,13 @@ class AuthService extends GetxService {
       if (await internetProvider.isConnected() == false) return false;
       await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
+      logger.d('账号注册通过: $email');
+      RegisterFormController registerFormController =
+          Get.find<RegisterFormController>();
+
+      await user.updateProfile(displayName: registerFormController.name);
+      logger.d('更新账号信息成功, name是: ${registerFormController.name}');
+
       // 确认联网情况正常, 并完成注册后返回 true
       return true;
     } on FirebaseAuthException catch (e) {

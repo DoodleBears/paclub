@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:paclub/modules/auth/components/body.dart';
+import 'package:paclub/modules/auth/components/auth_body.dart';
 import 'package:paclub/widgets/logger.dart';
 
 class AuthPage extends StatelessWidget {
@@ -7,7 +7,7 @@ class AuthPage extends StatelessWidget {
   Widget build(BuildContext context) {
     logger.i('渲染 —— AuthPage');
     return Scaffold(
-      body: Body(),
+      body: AuthBody(),
     );
   }
 }

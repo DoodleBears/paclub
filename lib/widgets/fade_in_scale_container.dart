@@ -5,7 +5,6 @@ import 'package:paclub/widgets/opacity_change_container.dart';
 // * 创建一个
 class FadeInScaleContainer extends StatelessWidget {
   final bool isShow; // 判断出现的条件
-  final bool isScaleDown; // 判定缩短的条件
   final double width;
   final double height;
   final Widget child;
@@ -13,7 +12,6 @@ class FadeInScaleContainer extends StatelessWidget {
   const FadeInScaleContainer({
     Key key,
     @required this.isShow,
-    @required this.isScaleDown,
     @required this.child,
     this.width = double.infinity,
     @required this.height,

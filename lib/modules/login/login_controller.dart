@@ -24,6 +24,7 @@ class LoginController extends GetxController {
   String _password;
   bool isNeedToResend = false;
   bool isResendButtonShow = false;
+  bool isPasswordOK = true;
   int countdown = 0;
   Timer timer;
 
@@ -41,21 +42,14 @@ class LoginController extends GetxController {
     super.onClose();
   }
 
-  set setUsername(String username) {
-    _username = username;
-  }
-
-  set setPassword(String password) {
-    _password = password;
-  }
-
-  void setTimer() {
-    logger.d('timer was set');
+  void setTimer({Function function, int duration = 1, int time = 30}) {
+    logger.d('timer was set to: $countdown');
     update();
-    timer = Timer.periodic(const Duration(seconds: 1), (t) {
+    timer = Timer.periodic(Duration(seconds: duration), (t) {
       // logger0.d(countdown);
       if (countdown != 0) {
         countdown--;
+        if (function != null) function();
         update();
       } else {
         timer.cancel();
@@ -65,14 +59,14 @@ class LoginController extends GetxController {
     });
   }
 
-  Future<void> resendEmail({int time = 30}) async {
+  Future<void> resendEmail({int time = 60}) async {
     countdown = time;
     update();
     logger.d('重送email');
     try {
       await authService.user.sendEmailVerification();
       // await Future.delayed(const Duration(seconds: 2));
-      setTimer();
+      setTimer(time: countdown);
       toast('email resend to\n' + authService.user.email);
     } catch (e) {
       countdown = 0;
@@ -83,11 +77,14 @@ class LoginController extends GetxController {
 
   void onUsernameChanged(String username) {
     _username = username.trim();
+
     // debugPrint('当前用户名:' + _username);
   }
 
   void onPasswordChanged(String password) {
     _password = password.trim();
+    isPasswordOK = true;
+    update();
     // debugPrint('当前密码:' + _password);
   }
 
@@ -117,7 +114,7 @@ class LoginController extends GetxController {
     if (check() == false) return;
     isLoading = true;
     update();
-    if (await authService.login(_username, _password)) {
+    if (isPasswordOK = await authService.login(_username, _password)) {
       logger.d('邮箱认证状态: ' + authService.user.emailVerified.toString());
       if (authService.user.emailVerified == false) {
         isNeedToResend = true;
@@ -139,12 +136,14 @@ class LoginController extends GetxController {
   bool check() {
     if (_username == null || _username.isEmpty) {
       toast('Email cannot be null');
-      return false;
-    }
-    if (_password == null || _password.isEmpty) {
+      isPasswordOK = false;
+    } else if (_password == null || _password.isEmpty) {
       toast('Password cannot be null');
-      return false;
+      isPasswordOK = false;
+    } else {
+      isPasswordOK = true;
     }
-    return true;
+    update();
+    return isPasswordOK;
   }
 }

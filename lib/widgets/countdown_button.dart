@@ -48,24 +48,27 @@ class CountdownButton extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    countdown == 0
+                    countdown == 0 && icon != null
                         ? Container(
                             margin: EdgeInsets.only(right: 8.0),
                             child: icon,
                           )
                         : const SizedBox.shrink(),
-                    Text(
-                      countdown == 0
-                          ? text
-                          : countdown == time
-                              ? ''
-                              : text + ' after ' + countdown.toString(),
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20.0,
+                    FittedBox(
+                      fit: BoxFit.contain,
+                      child: Text(
+                        countdown == 0
+                            ? text
+                            : countdown == time
+                                ? '   '
+                                : text + ' after ' + countdown.toString(),
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 24.0,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),

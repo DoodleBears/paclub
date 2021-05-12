@@ -5,7 +5,7 @@ import 'package:paclub/constants/constants.dart';
 import 'package:paclub/r.dart';
 import 'package:paclub/routes/app_pages.dart';
 
-class Body extends StatelessWidget {
+class AuthBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -54,7 +54,7 @@ class Body extends StatelessWidget {
                           vertical: context.height * 0.008),
                       shadowColor: Colors.transparent,
                     ),
-                    onPressed: () => Get.toNamed(Routes.REGISTER),
+                    onPressed: () => Get.toNamed(Routes.REGISTER_FORM),
                     child: Text(
                       '创建账号',
                       style: TextStyle(

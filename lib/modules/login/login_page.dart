@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:paclub/constants/colors.dart';
 import 'package:paclub/modules/login/login_controller.dart';
 import 'package:paclub/widgets/logger.dart';
-import 'components/body.dart';
+import 'components/login_body.dart';
 
 // login 界面开始于这里，Body中用到的 components组件，在 lib/modules/login/components 内
 class LoginPage extends GetView<LoginController> {
@@ -13,7 +13,7 @@ class LoginPage extends GetView<LoginController> {
     return GetBuilder<LoginController>(
       builder: (controller) {
         return Scaffold(
-          body: Body(),
+          body: LoginBody(),
           appBar: AppBar(
             toolbarHeight: Get.height * 0.07,
             shadowColor: Colors.transparent,
