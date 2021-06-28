@@ -12,24 +12,32 @@ import 'package:paclub/widgets/loading_dialog.dart';
 import 'package:paclub/widgets/logger.dart';
 import 'package:paclub/widgets/toast.dart';
 
-// 提供用户所有信息的 Service, 之所以是 `extends GetxService`
-/// 是因为, 这是永恒存在于User使用期间的, 即整个App的使用期间的
-/// 无论是登录, 还是没有登录, 都需要用到他
-/// 【没登录时】：用它登录
-/// 【登录后用】：它会存住用户的资料, 以便登出, 点赞, 等各种跟User有关的操作
+// *  [文件说明]
+//    提供用户所有信息的 Service, 之所以是 `extends GetxService`
+//    是因为 Authentication 是永恒存在于 User 使用期间的, 即整个 App 存活期间的，直到app完全退出
+//    之所以 AuthService 要存活在整个生命周期中
+//    是因为我们当用户操作时需要处理到用户的信息（可能是浏览记录或是其他数据），所以要时刻检查用户状态
+// *  [使用场景]
+//    无论是登录, 还是没有登录, 都需要用到他
+//    [没登录时] : 用它登录
+//    [登录后用] : 它会存住用户的资料, 以便登出, 点赞, 等各种跟User有关的操作
 class AuthService extends GetxService {
+  // 获取 firebase 提供的 firebaseAuth object
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  // 宣告一个 User(Firebase提供的object) 的 stream 类型 object 来监控用户状态
   final Rx<User> _user = Rx<User>(null);
+  // 宣告 InternetProvider 来监控用户的网络状态
   final InternetProvider internetProvider = Get.find<InternetProvider>();
 
-  // 获得 user
+  // 获得 user, 使用 firebase 的
   User get user => _auth.currentUser;
 
+  // *  [重载用户] 当用户登陆或切换状态时候需要用到
   void reload() {
     user.reload();
   }
 
-  // 初始化 Service, 绑定监听 user 和 connectivity 状态
+  // *  [初始化 Service] 绑定监听 user 和 connectivity 状态
   @override
   void onInit() {
     super.onInit();
@@ -37,6 +45,7 @@ class AuthService extends GetxService {
     // 一旦 _auth 状态改变, _user 就会被重新赋值
     _user.bindStream(_auth.authStateChanges());
     _auth.authStateChanges().listen((User user) {
+      // 一旦用户丢失在线状态
       if (user == null) {
         logger.d('Firebase 检测到用户状态为: 未登录');
       } else {
@@ -45,14 +54,14 @@ class AuthService extends GetxService {
     });
   }
 
-  // 结束 Service, 关闭监听
+  // *  [结束 Service] 关闭监听 user 状态
   @override
   void onClose() {
     logger.w('关闭 authService');
     super.onClose();
   }
 
-  //* 判断是否登录
+  // *  [检测是否登陆]
   bool isLogin({bool notify = true, bool jump = false}) {
     if (user == null) {
       if (notify) toast('请先登录'); // 是否跳出提示, 默认值为true, 传入 false 则不toast
@@ -67,7 +76,7 @@ class AuthService extends GetxService {
     return true;
   }
 
-  //* Email 注册功能
+  // *  [Email 注册功能]
   Future<bool> register(String email, String password) async {
     try {
       // 检查网络链接, 如果未联网(false), 提示user联网并取消register
@@ -92,7 +101,7 @@ class AuthService extends GetxService {
     return false;
   }
 
-  // 用来 toast register 相关的 error
+  // *  [Email 注册错误的提示信息] 用来 toast register 相关的 error
   void toastRegisterError(String code) {
     if (code == 'weak-password') {
       toast('weak password');
@@ -109,11 +118,12 @@ class AuthService extends GetxService {
     }
   }
 
-  //* Email 登录功能
+  //*  [Email 登录功能]
   Future<bool> login(String email, String password) async {
     try {
       // 检查网络链接, 如果未联网(false), 提示user联网并取消 login
       if (await internetProvider.isConnected() == false) return false;
+      // 使用 Firebase 提供的[用Email登陆]方法
       await _auth.signInWithEmailAndPassword(email: email, password: password);
       // 确认联网情况正常, 并完成登录后返回 true
       return true;
@@ -124,7 +134,7 @@ class AuthService extends GetxService {
     return false;
   }
 
-  // 用来 toast login 相关的 error
+  // *  [Email 注册错误的提示信息] 用来 toast login 相关的 error
   void toastLoginError(String code) {
     if (code == 'user-not-found') {
       toast('No user found for that email.');
@@ -141,7 +151,7 @@ class AuthService extends GetxService {
     }
   }
 
-  //* Google 登录功能
+  // *  [使用Google账号登录功能]
   Future<UserCredential> signInWithGoogle() async {
     try {
       // 检查网络链接, 如果未联网(false), 提示user联网并取消 login
@@ -200,15 +210,18 @@ class AuthService extends GetxService {
     return null;
   }
 
-  //* 登出功能
+  // *  [登出功能]
   Future<void> signOut() async {
     try {
       String uid = user.uid;
-      // sign out 每一种登陆方式
+      // 登出以 Email 方式登陆的 User
       await _auth.signOut();
+      // 登出以 Google账号 方式登陆的User
       await GoogleSignIn().signOut();
-      logger.d('登出用户ID: ' + uid ?? 'null');
+      logger.d('登出用户ID: ' + uid ?? '未获取到登出用户ID');
+      // [清空所有页面] pop all the page in stack
       Get.until((route) => false);
+      // 跳转到 authentication 页面
       Get.toNamed(Routes.AUTH);
     } catch (e) {
       logger.w('Sign out 失败');
