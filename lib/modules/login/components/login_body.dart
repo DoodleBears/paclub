@@ -66,7 +66,7 @@ class LoginBody extends GetView<LoginController> {
                   verticalDirection: VerticalDirection.down,
                   children: [
                     //* 动画 Space
-                    AnimatedSizedbox(
+                    AnimatedSizedBox(
                       height: controller.isResendButtonShow
                           ? 3 + Get.height * 0.02
                           : 0,

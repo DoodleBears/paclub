@@ -101,7 +101,7 @@ class RegisterAccountBody extends GetView<RegisterAccountController> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   verticalDirection: VerticalDirection.up,
                   children: [
-                    AnimatedSizedbox(
+                    AnimatedSizedBox(
                       height: controller.isResendButtonShow
                           ? 3 + Get.height * 0.02
                           : 0,
