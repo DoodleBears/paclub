@@ -14,6 +14,6 @@ class AppBinding implements Bindings {
     Get.put<AuthService>(AuthService());
     //** AppPrefsController 用于管理全局设置(Global Setting)*/
     /// 如: `自动登录`, `黑夜模式`等
-    await Get.putAsync(() => AppPrefsController().init());
+    await Get.putAsync(() => AppPrefsService().init());
   }
 }
