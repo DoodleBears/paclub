@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:paclub/constants/constants.dart';
 import 'package:paclub/routes/app_pages.dart';
@@ -86,8 +85,9 @@ class RegisterAccountController extends GetxController {
     update();
     logger.d('register: 重送email');
     try {
-      // await authService.user.sendEmailVerification();
-      await Future.delayed(const Duration(seconds: 2));
+      await authService.user.sendEmailVerification();
+      // await Future.delayed(const Duration(seconds: 2));
+      // 触发一个 countdown 秒的倒计时，并不断调用 authService.reload() 以便用户完成验证时候接收到用户的登陆状态
       setTimer(
         function: () => authService.reload(),
         time: countdown,

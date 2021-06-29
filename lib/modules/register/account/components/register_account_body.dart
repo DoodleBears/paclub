@@ -11,6 +11,7 @@ import 'package:paclub/widgets/logger.dart';
 import 'package:paclub/widgets/toast.dart';
 import 'package:paclub/widgets/widgets.dart';
 
+// TODO: 将 countdown 的 60 秒变为常量宣告
 class RegisterAccountBody extends GetView<RegisterAccountController> {
   @override
   Widget build(BuildContext context) {
@@ -54,7 +55,7 @@ class RegisterAccountBody extends GetView<RegisterAccountController> {
               },
             ),
             SizedBox(height: 3 + Get.height * 0.02),
-            // 密码输入
+            // *  密码输入
             GetBuilder<RegisterAccountController>(
               builder: (_) {
                 return FadeInScaleContainer(
@@ -74,7 +75,7 @@ class RegisterAccountBody extends GetView<RegisterAccountController> {
               },
             ),
             SizedBox(height: 3 + Get.height * 0.02),
-            // 重复密码输入
+            // *  重复密码输入
             GetBuilder<RegisterAccountController>(
               builder: (_) {
                 return FadeInScaleContainer(
@@ -94,7 +95,7 @@ class RegisterAccountBody extends GetView<RegisterAccountController> {
             ),
             SizedBox(height: 3 + Get.height * 0.02),
 
-            //* 重送 resend 按钮
+            // *  重送 resend 按钮
             GetBuilder<RegisterAccountController>(
               builder: (_) {
                 return Column(
@@ -102,6 +103,7 @@ class RegisterAccountBody extends GetView<RegisterAccountController> {
                   verticalDirection: VerticalDirection.up,
                   children: [
                     AnimatedSizedBox(
+                      width: Get.width * 0.8,
                       height: controller.isResendButtonShow
                           ? 3 + Get.height * 0.02
                           : 0,
@@ -110,11 +112,15 @@ class RegisterAccountBody extends GetView<RegisterAccountController> {
                       icon: Icon(Icons.send),
                       isShow: controller.isResendButtonShow,
                       height: Get.height * 0.08,
+                      // onPressed 仅仅在倒计时为 0 的时候能重送 email, 否则无功能
+                      // 按下按钮后触发countdown更新，按钮无效化后进行网络请求
                       onPressed: controller.countdown == 0
                           ? () => controller.resendEmail(time: 60)
                           : () {},
                       text: 'Resend',
                       countdown: controller.countdown,
+                      // isLoading 的值一般和 倒计时设定的值一致，主要用于在联网请求的时候
+                      // 有 loading 动画，只有请求成功之后才开始倒计时
                       isLoading: controller.countdown == 60,
                       time: 60,
                     ),
@@ -122,7 +128,7 @@ class RegisterAccountBody extends GetView<RegisterAccountController> {
                 );
               },
             ),
-            // 注册按钮
+            // *  注册按钮
             GetBuilder<RegisterAccountController>(
               builder: (_) {
                 return RoundedLoadingButton(

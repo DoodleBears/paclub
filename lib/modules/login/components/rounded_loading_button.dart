@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:paclub/constants/constants.dart';
+import 'package:paclub/widgets/fade_in_scale_container.dart';
 import 'package:paclub/widgets/opacity_change_container.dart';
 
 // 带有 loading 效果的 button，在触发网络请求时，会变成转圈模式
@@ -17,18 +18,19 @@ class RoundedLoadingButton extends StatelessWidget {
     @required this.text,
     this.color = primaryColor,
     this.textColor = Colors.white,
-    @required this.isLoading,
-    @required this.width,
+    this.isLoading = false,
+    this.width,
     this.height,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedContainer(
-      curve: Curves.linearToEaseOut,
-      duration: const Duration(milliseconds: 800),
-      width: width,
+    return FadeInScaleContainer(
+      scaleDuration: const Duration(milliseconds: 800),
+      opacityDuration: const Duration(milliseconds: 800),
+      width: width ?? Get.width * 0.8,
       height: height ?? Get.height * 0.08,
+      isShow: true,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
           shape:

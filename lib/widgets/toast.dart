@@ -1,9 +1,10 @@
 import 'package:fluttertoast/fluttertoast.dart';
 
 // 用来 toast 信息
-void toast(String loginInfo, {ToastGravity gravity = ToastGravity.BOTTOM}) {
+// *  [使用方式] toast(文本内容, 可选{toast出现的位置,  )
+void toast(String message, {ToastGravity gravity = ToastGravity.BOTTOM}) {
   Fluttertoast.showToast(
-    msg: loginInfo,
+    msg: message,
     toastLength: Toast.LENGTH_LONG,
     gravity: gravity,
     timeInSecForIosWeb: 2,
