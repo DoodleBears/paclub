@@ -18,11 +18,11 @@ class FadeInScaleContainer extends StatelessWidget {
   final Curve opacityCurve; // 透明度变化的时长
 
   const FadeInScaleContainer({
-    Key key,
-    @required this.isShow,
-    @required this.child,
+    Key? key,
+    required this.isShow,
+    required this.child,
+    required this.height,
     this.width = double.infinity,
-    @required this.height,
     this.scaleDuration = const Duration(milliseconds: 1000),
     this.opacityDuration = const Duration(milliseconds: 500),
     this.scaleCurve = Curves.linearToEaseOut,

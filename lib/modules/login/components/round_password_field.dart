@@ -10,27 +10,27 @@ class RoundedPasswordField extends StatelessWidget {
   final ValueChanged<String> onChanged;
   final bool hidePassword;
   final bool allowHide;
-  final VoidCallback onPressed;
+  final VoidCallback? iconOnPressed;
   final Color color;
   final bool error;
-  final String hinttext;
+  final String? hinttext;
   const RoundedPasswordField({
-    Key key,
-    this.onChanged,
+    Key? key,
+    required this.onChanged,
+    this.iconOnPressed,
     this.hidePassword = true,
-    this.onPressed,
     this.allowHide = true,
-    this.color,
+    this.color = primaryLightColor,
+    this.error = false,
     this.hinttext,
-    this.error,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return TextFieldContainer(
       height: 16 + Get.height * 0.07,
-      color: color ?? primaryLightColor,
-      error: error ?? false,
+      color: color,
+      error: error,
       child: TextField(
         keyboardType: TextInputType.visiblePassword,
         style: TextStyle(fontSize: Get.height * 0.022),
@@ -55,7 +55,7 @@ class RoundedPasswordField extends StatelessWidget {
                       ? Icon(Icons.visibility)
                       : Icon(Icons.visibility_off),
                   // 点击icon之后会让 Controller 改变 hidePassword 的 value
-                  onPressed: onPressed,
+                  onPressed: iconOnPressed,
                   // enableFeedback: false,
                   color: accentColor,
                 )

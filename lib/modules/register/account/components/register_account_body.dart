@@ -48,7 +48,10 @@ class RegisterAccountBody extends GetView<RegisterAccountController> {
                   child: RoundedInputField(
                     textInputType: TextInputType.emailAddress,
                     hintText: 'Email',
-                    icon: Icons.person,
+                    icon: Icon(
+                      Icons.person,
+                      color: accentColor,
+                    ),
                     onChanged: controller.onUsernameChanged,
                   ),
                 );

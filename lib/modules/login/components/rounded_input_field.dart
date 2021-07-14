@@ -6,25 +6,26 @@ import 'package:paclub/functions/length_limit_textfield_formatter.dart';
 import 'package:paclub/modules/login/components/text_field_container.dart';
 
 // 圆角输入框，用于 (Email) 的输入
+// TODO: 把 height 和 width 改为 required
 class RoundedInputField extends StatelessWidget {
-  final String hintText;
-  final String labelText;
-  final double height;
-  final IconData icon;
   final TextInputType textInputType;
+  final ValueChanged<String> onChanged;
+  final String? labelText;
+  final String? hintText;
+  final double? height;
+  final Icon? icon;
   final int maxLines;
   final int maxLength;
-  final ValueChanged<String> onChanged;
   const RoundedInputField({
-    Key key,
+    Key? key,
+    required this.onChanged,
+    required this.textInputType,
     this.hintText,
     this.icon,
-    @required this.onChanged,
     this.height,
     this.maxLines = 1,
     this.labelText,
     this.maxLength = 50,
-    @required this.textInputType,
   }) : super(key: key);
 
   @override
@@ -42,8 +43,9 @@ class RoundedInputField extends StatelessWidget {
         onChanged: onChanged,
         maxLines: maxLines,
         decoration: InputDecoration(
-          icon: icon == null ? null : Icon(icon, color: accentColor),
-          hintText: labelText == null ? hintText : null,
+          // TODO: 看看这个 null 这么写对不对
+          icon: icon,
+          hintText: labelText ?? hintText,
           hintMaxLines: 20,
           labelText: labelText,
           labelStyle: TextStyle(color: accentColor),

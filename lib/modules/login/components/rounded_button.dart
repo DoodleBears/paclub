@@ -10,11 +10,11 @@ class RoundedButton extends StatelessWidget {
   final double height;
 
   const RoundedButton({
-    Key key,
-    @required this.onPressed,
-    @required this.imageUrl,
-    @required this.color,
-    @required this.height,
+    Key? key,
+    required this.onPressed,
+    required this.imageUrl,
+    required this.color,
+    required this.height,
   }) : super(key: key);
 
   @override

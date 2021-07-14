@@ -22,13 +22,13 @@ class LoginController extends GetxController {
   bool isLoading = false;
   // 默认隐藏密码
   bool hidePassword = true;
-  String _username;
-  String _password;
+  String _username = '';
+  String _password = '';
   bool isNeedToResend = false;
   bool isResendButtonShow = false;
   bool isPasswordOK = true;
   int countdown = 0;
-  Timer timer;
+  late Timer timer;
 
   String get password => _password;
 
@@ -44,7 +44,7 @@ class LoginController extends GetxController {
     super.onClose();
   }
 
-  void setTimer({Function function, int duration = 1, int time = 30}) {
+  void setTimer({Function? function, int duration = 1, int time = 30}) {
     logger.d('timer was set to: $countdown');
     update();
     timer = Timer.periodic(Duration(seconds: duration), (t) {
@@ -66,12 +66,13 @@ class LoginController extends GetxController {
     update();
     logger.d('重送email');
     try {
-      await authService.user.sendEmailVerification();
+      await authService.user?.sendEmailVerification();
       // await Future.delayed(const Duration(seconds: 2));
       setTimer(time: countdown);
       snackbar(
         title: 'Verify Your Account',
-        msg: 'verification email resend to:\n' + authService.user.email,
+        msg: 'verification email resend to:\n' +
+            (authService.user?.email ?? '未获得email'),
         icon: Icon(
           Icons.email,
           color: accentColor,
@@ -102,16 +103,14 @@ class LoginController extends GetxController {
   void changeSecure() {
     hidePassword = !hidePassword;
     update();
-    debugPrint('密码显隐状态: ' +
-        (hidePassword ? '隐藏' : '显示, 密码为:' + (_password ?? 'null')));
+    debugPrint('密码显隐状态: ' + (hidePassword ? '隐藏' : '显示, 密码为:' + _password));
   }
 
   void signInWithGoogle() async {
     isLoading = true;
     update();
     var userCredential = await authService.signInWithGoogle();
-    logger.i('Google Sign in, 用户ID: ' +
-        (userCredential == null ? 'null' : userCredential.user.uid));
+    logger.i('Google Sign in, 用户ID: ' + (userCredential?.user!.uid ?? 'null'));
     if (userCredential != null) {
       Get.until((route) => false);
       Get.toNamed(Routes.HOME);
@@ -126,23 +125,20 @@ class LoginController extends GetxController {
     isLoading = true;
     update();
     if (isPasswordOK = await authService.login(_username, _password)) {
-      logger.d('邮箱认证状态: ' + authService.user.emailVerified.toString());
-      if (authService.user.emailVerified == false) {
+      logger.d('邮箱认证状态: ' +
+          (authService.user?.emailVerified == true ? '已认证' : '未认证'));
+      if (authService.user?.emailVerified == false) {
         isNeedToResend = true;
         update();
         snackbar(
           title: 'Verify Your Account',
-          msg: 'Email send to ' +
-              authService.user.email +
-              '.\nyou cannot login without verification.',
+          msg: 'You cannot login without verification.',
           icon: Icon(
             Icons.email,
             color: accentColor,
             size: Get.width * 0.08,
           ),
         );
-        // toast('Check verification mail in\n' + authService.user.email,
-        //     gravity: ToastGravity.CENTER);
         await Future.delayed(const Duration(seconds: 1));
         isResendButtonShow = true;
         update();
@@ -156,10 +152,10 @@ class LoginController extends GetxController {
   }
 
   bool check() {
-    if (_username == null || _username.isEmpty) {
+    if (_username.isEmpty) {
       toast('Email cannot be null');
       isPasswordOK = false;
-    } else if (_password == null || _password.isEmpty) {
+    } else if (_password.isEmpty) {
       toast('Password cannot be null');
       isPasswordOK = false;
     } else {

@@ -16,9 +16,9 @@ class RegisterAccountController extends GetxController {
   // Loading Button 状态
   bool isLoading = false;
   // 判断密码相关
-  String _username;
-  String _password;
-  String _rePassword;
+  String _username = '';
+  String _password = '';
+  String _rePassword = '';
   bool isPasswordOK = true;
   bool isRePasswordOK = true;
   bool isRegisterd = false;
@@ -30,7 +30,7 @@ class RegisterAccountController extends GetxController {
   bool isResendButtonShow = false;
   // 重送 email 倒计时
   int countdown = 0;
-  Timer timer;
+  late Timer timer;
   // 判断是否是在填写 Profile 信息
   bool isProfile = true;
 
@@ -62,7 +62,7 @@ class RegisterAccountController extends GetxController {
     update();
   }
 
-  void setTimer({Function function, int duration = 1, int time = 30}) {
+  void setTimer({Function? function, int duration = 1, int time = 30}) {
     countdown = time;
     logger.d('timer was set to: $countdown');
     update();
@@ -70,7 +70,7 @@ class RegisterAccountController extends GetxController {
       // logger0.d(countdown);
       if (countdown != 0) {
         countdown--;
-        function();
+        if (function != null) function();
         update();
       } else {
         timer.cancel();
@@ -85,7 +85,7 @@ class RegisterAccountController extends GetxController {
     update();
     logger.d('register: 重送email');
     try {
-      await authService.user.sendEmailVerification();
+      await authService.user?.sendEmailVerification();
       // await Future.delayed(const Duration(seconds: 2));
       // 触发一个 countdown 秒的倒计时，并不断调用 authService.reload() 以便用户完成验证时候接收到用户的登陆状态
       setTimer(
@@ -94,7 +94,8 @@ class RegisterAccountController extends GetxController {
       );
       snackbar(
         title: 'Verify Your Account',
-        msg: 'verification email resend to:\n' + authService.user.email,
+        msg: 'verification email resend to:\n' +
+            (authService.user?.email ?? '未获得email'),
         icon: Icon(
           Icons.email,
           color: accentColor,
@@ -115,11 +116,12 @@ class RegisterAccountController extends GetxController {
     update();
     if (await authService.register(_username, _password)) {
       isRegisterd = true;
-      if (authService.user.emailVerified == false) {
+      if (authService.user?.emailVerified == false) {
         isEmailVerifyed = false;
         snackbar(
           title: 'Verify Your Account',
-          msg: 'verification email already sent to:\n' + authService.user.email,
+          msg: 'verification email already sent to:\n' +
+              (authService.user!.email!),
           icon: Icon(
             Icons.email,
             color: accentColor,
@@ -128,12 +130,12 @@ class RegisterAccountController extends GetxController {
         );
         // toast('verification email already sent to:\n' + authService.user.email,
         //     gravity: ToastGravity.CENTER);
-        authService.user.sendEmailVerification();
+        authService.user!.sendEmailVerification();
         // 启用Timer每1s刷新一次用户状态, 持续2min(120s)
         setTimer(
           function: () {
             authService.reload();
-            logger.d('刷新user状态');
+            // logger.d('刷新user状态');
           },
           time: 60,
         );
@@ -152,14 +154,14 @@ class RegisterAccountController extends GetxController {
 
   bool check() {
     bool check = true;
-    if (_username == null || _username.isEmpty) {
+    if (_username.isEmpty) {
       check = false;
       toast('Email cannot be null');
-    } else if (_password == null || _password.isEmpty) {
+    } else if (_password.isEmpty) {
       check = false;
       toast('Password cannot be null');
       isPasswordOK = false;
-    } else if (_rePassword == null || _rePassword.isEmpty) {
+    } else if (_rePassword.isEmpty) {
       check = false;
       toast('re-password cannot be null');
       isRePasswordOK = false;
@@ -190,8 +192,8 @@ class RegisterAccountController extends GetxController {
 
   void checkResendEmail() async {
     authService.reload();
-    logger.d('email 是否认证: ' + authService.user.emailVerified.toString());
-    if (authService.user.emailVerified) {
+    logger.d('email 是否认证: ' + authService.user!.emailVerified.toString());
+    if (authService.user!.emailVerified) {
       isResendButtonShow = false;
       isEmailVerifyed = true;
       update();

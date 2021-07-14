@@ -12,32 +12,35 @@ import 'countdown_button.dart';
 class FadeInCountdownButton extends StatelessWidget {
   final bool isShow; // 是否显示（当传入值从 0 变 1 的时候 button 淡入）
   final double height; // container 高度
+  final double? width; // container 宽度
   // 以下是给 countdown button 的参数，具体请到 countdown_button.dart 查看
   final bool isLoading;
   final int countdown;
   final int time;
-  final Icon icon;
+  final Icon? icon;
   final String text;
   final VoidCallback onPressed;
 
   const FadeInCountdownButton({
-    Key key,
-    @required this.isShow,
-    @required this.height,
-    @required this.onPressed,
-    @required this.text,
-    @required this.countdown,
-    @required this.time,
-    @required this.isLoading,
+    Key? key,
+    required this.isShow,
+    required this.height,
+    required this.onPressed,
+    required this.text,
+    required this.countdown,
+    required this.time,
+    required this.isLoading,
     this.icon,
+    this.width,
   }) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return FadeInScaleContainer(
       isShow: isShow, // 判断出现的条件
-      width: isLoading // loading 状态下 container 宽度不同
-          ? Get.width * 0.4
-          : Get.width * 0.8,
+      width: width ??
+          (isLoading // loading 状态下 container 宽度不同
+              ? Get.width * 0.4
+              : Get.width * 0.8),
       height: height,
       child: CountdownButton(
         onPressed: onPressed,

@@ -9,8 +9,11 @@ class AnimatedSizedBox extends StatelessWidget {
   final double height; // 在2个高度之间产生动画 (如：高度由10变为20)
   final double width; // 在2个宽度之间产生动画 (如：宽度由10变为20)
 
-  const AnimatedSizedBox({Key key, @required this.height, @required this.width})
-      : super(key: key);
+  const AnimatedSizedBox({
+    Key? key,
+    required this.height,
+    required this.width,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -8,7 +8,7 @@ import 'tabs/Notification.dart';
 import 'tabs/User.dart';
 
 class Tabs extends StatefulWidget {
-  Tabs({Key key}) : super(key: key);
+  Tabs({Key? key}) : super(key: key);
 
   @override
   _TabsState createState() => _TabsState();

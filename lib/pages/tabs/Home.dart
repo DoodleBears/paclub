@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:paclub/services/auth_service.dart';
 
 class HomePage extends StatefulWidget {
-  HomePage({Key key}) : super(key: key);
+  HomePage({Key? key}) : super(key: key);
   @override
   _HomePageState createState() => _HomePageState();
 }

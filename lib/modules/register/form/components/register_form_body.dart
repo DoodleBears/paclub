@@ -79,7 +79,6 @@ class RegisterFormBody extends GetView<RegisterFormController> {
             maxLines: 10,
             maxLength: 400,
             labelText: 'Bio',
-            // icon: Icons.person,
             onChanged: controller.onBioChanged,
           ),
         );
@@ -97,7 +96,10 @@ class RegisterFormBody extends GetView<RegisterFormController> {
           child: RoundedInputField(
             textInputType: TextInputType.name,
             hintText: 'Name',
-            icon: Icons.person,
+            icon: Icon(
+              Icons.person,
+              color: accentColor,
+            ),
             onChanged: controller.onNameChanged,
           ),
         );

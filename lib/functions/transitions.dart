@@ -12,8 +12,8 @@ class FadeInMaskBelowSmallTransitions extends CustomTransition {
   @override
   Widget buildTransition(
       BuildContext context,
-      Curve curve,
-      Alignment alignment,
+      Curve? curve,
+      Alignment? alignment,
       Animation<double> animation, // coming page
       Animation<double> secondaryAnimation, // leaving page
       Widget child) {
@@ -27,7 +27,7 @@ class FadeInMaskBelowSmallTransitions extends CustomTransition {
           ).animate(
             CurvedAnimation(
               parent: animation,
-              curve: Curves.easeOutCubic,
+              curve: curve ?? Curves.easeOutCubic,
               reverseCurve: Curves.easeInCubic,
             ),
           ),
@@ -35,10 +35,11 @@ class FadeInMaskBelowSmallTransitions extends CustomTransition {
             scale: Tween<double>(begin: 1.0, end: 0.9).animate(
               CurvedAnimation(
                 parent: secondaryAnimation,
-                curve: Curves.easeOutCubic,
+                curve: curve ?? Curves.easeOutCubic,
                 reverseCurve: Curves.easeInCubic,
               ),
             ),
+            alignment: alignment ?? Alignment.center,
             child: child,
           ),
         ),
@@ -58,8 +59,8 @@ class TopLeftMaskBelowSmallTransitions extends CustomTransition {
   @override
   Widget buildTransition(
       BuildContext context,
-      Curve curve,
-      Alignment alignment,
+      Curve? curve,
+      Alignment? alignment,
       Animation<double> animation, // coming page
       Animation<double> secondaryAnimation, // leaving page
       Widget child) {
@@ -116,8 +117,8 @@ class TopLeftBelowSmallTransitions extends CustomTransition {
   @override
   Widget buildTransition(
       BuildContext context,
-      Curve curve,
-      Alignment alignment,
+      Curve? curve,
+      Alignment? alignment,
       Animation<double> animation, // coming page
       Animation<double> secondaryAnimation, // leaving page
       Widget child) {
@@ -160,8 +161,8 @@ class TopLeftMaskBelowLeftTransitions extends CustomTransition {
   @override
   Widget buildTransition(
       BuildContext context,
-      Curve curve,
-      Alignment alignment,
+      Curve? curve,
+      Alignment? alignment,
       Animation<double> animation, // coming page
       Animation<double> secondaryAnimation, // leaving page
       Widget child) {
@@ -212,8 +213,8 @@ class ShiftLeftTransitions extends CustomTransition {
   @override
   Widget buildTransition(
       BuildContext context,
-      Curve curve,
-      Alignment alignment,
+      Curve? curve,
+      Alignment? alignment,
       Animation<double> animation, // coming page
       Animation<double> secondaryAnimation, // leaving page
       Widget child) {
@@ -239,19 +240,23 @@ class ShiftLeftTransitions extends CustomTransition {
 //** 黑色幕布：制造一个指定颜色的透明度渐变动画，如：从黑色半透明，到全透明，就能模拟 Twitter 的遮罩效果
 class DarkCurtainFade extends StatelessWidget {
   const DarkCurtainFade({
-    Key key,
-    @required this.animation,
+    Key? key,
+    required this.animation,
     this.begin = 1.0,
     this.end = 0.0,
     this.color = const Color(0x88000000),
     this.child,
+    this.curve = Curves.easeOutCubic,
+    this.reverseCurve = Curves.easeInCubic,
   }) : super(key: key);
 
   final Animation<double> animation;
   final double begin;
   final double end;
   final Color color;
-  final Widget child;
+  final Widget? child;
+  final Curve curve;
+  final Curve reverseCurve;
 
   @override
   Widget build(BuildContext context) {
@@ -259,8 +264,8 @@ class DarkCurtainFade extends StatelessWidget {
       opacity: Tween<double>(begin: begin, end: end)
           // .chain(CurveTween(curve: Curves.linear))
           .animate(CurvedAnimation(
-        curve: Curves.easeOutCubic,
-        reverseCurve: Curves.easeInCubic,
+        curve: curve,
+        reverseCurve: reverseCurve,
         parent: animation,
       )),
       child: Scaffold(

@@ -5,7 +5,7 @@ import 'package:paclub/widgets/toast.dart';
 
 class InternetProvider {
   String _connectionStatus = 'Unknown';
-  static InternetProvider _singleton;
+  static InternetProvider? _singleton;
   final Connectivity _connectivity = Connectivity();
 
   InternetProvider._() {
@@ -13,6 +13,8 @@ class InternetProvider {
     _connectivity.onConnectivityChanged.listen((_updateConnectionStatus) {
       logger.d('网络链接状态改变, 现在为: ' + _updateConnectionStatus.toString());
     });
+    // 初次连接状态检测
+    isConnected();
   }
 
   // 回传单例, 如果 _singleton 为 null 的话, _singleton = InternetProvider._();

@@ -39,7 +39,10 @@ class LoginBody extends GetView<LoginController> {
             RoundedInputField(
               textInputType: TextInputType.emailAddress,
               hintText: 'Email',
-              icon: Icons.person,
+              icon: Icon(
+                Icons.person,
+                color: accentColor,
+              ),
               onChanged: controller.onUsernameChanged,
             ),
             // 密码输入
@@ -54,7 +57,7 @@ class LoginBody extends GetView<LoginController> {
                   // 传递 secure value 来控制是否显示密码
                   hidePassword: controller.hidePassword,
                   // 点击效果，点击眼睛(visibility) 切换密码显示和眼睛效果
-                  onPressed: controller.changeSecure,
+                  iconOnPressed: controller.changeSecure,
                 );
               },
             ),

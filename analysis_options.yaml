@@ -1,8 +1,0 @@
-include: package:pedantic/analysis_options.yaml
-
-analyzer:
-  exclude: [build/**]
-linter:
-  rules:
-    unawaited_futures: false
-    omit_local_variable_types: false

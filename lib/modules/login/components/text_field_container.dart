@@ -9,10 +9,10 @@ class TextFieldContainer extends StatelessWidget {
   final bool error;
   final double height;
   TextFieldContainer({
-    Key key,
-    this.child,
-    this.color,
-    @required this.height,
+    Key? key,
+    required this.child,
+    required this.height,
+    this.color = primaryLightColor,
     this.error = false,
   }) : super(key: key);
 
@@ -25,7 +25,7 @@ class TextFieldContainer extends StatelessWidget {
       height: height,
       alignment: Alignment.center,
       decoration: BoxDecoration(
-        color: color ?? primaryLightColor,
+        color: color,
         borderRadius: BorderRadius.circular(borderRadius),
         border: error ? Border.all(width: 2.0, color: Colors.red) : null,
       ),

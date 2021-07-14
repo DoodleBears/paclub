@@ -4,7 +4,7 @@ import 'package:paclub/modules/login/components/components.dart';
 import 'package:paclub/modules/login/login_controller.dart';
 
 class LoadingDialog extends GetView<LoginController> {
-  const LoadingDialog({Key key}) : super(key: key);
+  const LoadingDialog({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

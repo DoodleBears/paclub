@@ -11,12 +11,12 @@ import 'package:paclub/widgets/opacity_change_container.dart';
 //    如重送验证email，为了防止用户频繁重送而设置一个间隔时间
 class CountdownButton extends StatelessWidget {
   const CountdownButton({
-    Key key,
-    @required this.time, //  倒计时时长
-    @required this.text, // 文字 + after 倒计时时间（如：resend after 30)
-    @required this.onPressed, //  button 按下的 function
-    @required this.countdown, //  当前倒计时数字
-    @required this.isLoading, //  loading判断条件
+    Key? key,
+    required this.time, //  倒计时时长
+    required this.text, // 文字 + after 倒计时时间（如：resend after 30)
+    required this.onPressed, //  button 按下的 function
+    required this.countdown, //  当前倒计时数字
+    required this.isLoading, //  loading判断条件
     this.icon, // button 上的 icon (会在文字左侧)
   }) : super(key: key);
 
@@ -24,7 +24,7 @@ class CountdownButton extends StatelessWidget {
   final String text;
   final VoidCallback onPressed;
   final bool isLoading;
-  final Icon icon;
+  final Icon? icon;
 
   @override
   Widget build(BuildContext context) {

@@ -10,12 +10,12 @@ class RoundedLoadingButton extends StatelessWidget {
   final String text;
   final Color color, textColor;
   final bool isLoading;
-  final double width, height;
+  final double? width, height;
 
   const RoundedLoadingButton({
-    Key key,
-    @required this.onPressed,
-    @required this.text,
+    Key? key,
+    required this.onPressed,
+    required this.text,
     this.color = primaryColor,
     this.textColor = Colors.white,
     this.isLoading = false,

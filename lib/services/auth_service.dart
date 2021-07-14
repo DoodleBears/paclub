@@ -5,10 +5,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:paclub/data/providers/internet_provider.dart';
-import 'package:paclub/modules/login/login_controller.dart';
 import 'package:paclub/modules/register/form/register_form_controller.dart';
 import 'package:paclub/routes/app_pages.dart';
-import 'package:paclub/widgets/loading_dialog.dart';
 import 'package:paclub/widgets/logger.dart';
 import 'package:paclub/widgets/toast.dart';
 
@@ -25,16 +23,16 @@ class AuthService extends GetxService {
   // 获取 firebase 提供的 firebaseAuth object
   final FirebaseAuth _auth = FirebaseAuth.instance;
   // 宣告一个 User(Firebase提供的object) 的 stream 类型 object 来监控用户状态
-  final Rx<User> _user = Rx<User>(null);
+  // late final Rx<User> _user;
   // 宣告 InternetProvider 来监控用户的网络状态
   final InternetProvider internetProvider = Get.find<InternetProvider>();
 
   // 获得 user, 使用 firebase 的
-  User get user => _auth.currentUser;
+  User? get user => _auth.currentUser;
 
   // *  [重载用户] 当用户登陆或切换状态时候需要用到
   void reload() {
-    user.reload();
+    user!.reload();
   }
 
   // *  [初始化 Service] 绑定监听 user 和 connectivity 状态
@@ -43,13 +41,13 @@ class AuthService extends GetxService {
     super.onInit();
     logger.i('初始化 AuthService');
     // 一旦 _auth 状态改变, _user 就会被重新赋值
-    _user.bindStream(_auth.authStateChanges());
-    _auth.authStateChanges().listen((User user) {
+    // _user.bindStream(_auth.authStateChanges());
+    _auth.authStateChanges().listen((User? user) {
       // 一旦用户丢失在线状态
       if (user == null) {
         logger.d('Firebase 检测到用户状态为: 未登录');
       } else {
-        logger.d('用户登录: ' + (user == null ? 'null' : user.uid));
+        logger.d('用户登录: ' + user.uid);
       }
     });
   }
@@ -63,8 +61,11 @@ class AuthService extends GetxService {
 
   // *  [检测是否登陆]
   bool isLogin({bool notify = true, bool jump = false}) {
-    if (user == null) {
-      if (notify) toast('请先登录'); // 是否跳出提示, 默认值为true, 传入 false 则不toast
+    if (user == null || user!.emailVerified == false) {
+      if (notify) {
+        // 是否跳出提示, 默认值为true, 传入 false 则不toast
+        toast(user == null ? 'Please login first' : 'Please verify your email');
+      }
       // 是否要强制用户跳转到登录页面, jump 传入 true 则强制跳转
       if (jump) {
         Get.until((route) => false);
@@ -72,7 +73,6 @@ class AuthService extends GetxService {
       }
       return false;
     }
-    if (user?.emailVerified == false) return false;
     return true;
   }
 
@@ -87,7 +87,7 @@ class AuthService extends GetxService {
       RegisterFormController registerFormController =
           Get.find<RegisterFormController>();
 
-      await user.updateProfile(displayName: registerFormController.name);
+      await user!.updateDisplayName(registerFormController.name);
       logger.d('更新账号信息成功, name是: ${registerFormController.name}');
 
       // 确认联网情况正常, 并完成注册后返回 true
@@ -152,12 +152,12 @@ class AuthService extends GetxService {
   }
 
   // *  [使用Google账号登录功能]
-  Future<UserCredential> signInWithGoogle() async {
+  Future<UserCredential?> signInWithGoogle() async {
     try {
       // 检查网络链接, 如果未联网(false), 提示user联网并取消 login
       if (await internetProvider.isConnected() == false) return null;
       // 调用Google登陆认证, 弹窗并等待用户选择账号
-      final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
 
       // 等待用户完整Google授权的response, 如果用户取消, 则 googleUser 为 null
       if (googleUser == null) return null;
@@ -176,35 +176,6 @@ class AuthService extends GetxService {
       if (e.code == 'account-exists-with-different-credential') {
         logger.w(e.code);
         debugPrint(e.code);
-        String email = e.email;
-        AuthCredential pendingCredential = e.credential;
-
-        // Fetch a list of what sign-in methods exist for the conflicting user
-        List<String> userSignInMethods =
-            await _auth.fetchSignInMethodsForEmail(email);
-
-        // If the user has several sign-in methods,
-        // the first method in the list will be the "recommended" method to use.
-        if (userSignInMethods.first == 'password') {
-          // Prompt the user to enter their password
-          await Get.to(LoadingDialog());
-          // String password = ;
-          LoginController loginController = Get.find<LoginController>();
-          // Sign the user in to their account with the password
-          UserCredential userCredential =
-              await _auth.signInWithEmailAndPassword(
-            email: email,
-            password: loginController.password,
-          );
-
-          // Link the pending credential with the existing account
-          await userCredential.user.linkWithCredential(pendingCredential);
-
-          // Success! Go back to your application flow
-          // return goToApplication();
-        }
-
-        // Handle other OAuth providers...
       }
     }
     return null;
@@ -213,12 +184,12 @@ class AuthService extends GetxService {
   // *  [登出功能]
   Future<void> signOut() async {
     try {
-      String uid = user.uid;
+      String uid = user!.uid;
       // 登出以 Email 方式登陆的 User
       await _auth.signOut();
       // 登出以 Google账号 方式登陆的User
       await GoogleSignIn().signOut();
-      logger.d('登出用户ID: ' + uid ?? '未获取到登出用户ID');
+      logger.d('登出用户ID: ' + uid);
       // [清空所有页面] pop all the page in stack
       Get.until((route) => false);
       // 跳转到 authentication 页面

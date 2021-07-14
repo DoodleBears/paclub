@@ -14,9 +14,7 @@ class LengthLimitingTextFieldFormatterFixed extends TextInputFormatter {
     TextEditingValue oldValue,
     TextEditingValue newValue,
   ) {
-    if (maxLength != null &&
-        maxLength > 0 &&
-        newValue.text.characters.length > maxLength) {
+    if (maxLength > 0 && newValue.text.characters.length > maxLength) {
       // If already at the maximum and tried to enter even more, keep the old
       // value.
       if (oldValue.text.characters.length == maxLength) {

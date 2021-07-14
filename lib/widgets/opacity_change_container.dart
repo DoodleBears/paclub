@@ -11,9 +11,9 @@ class OpacityChangeContainer extends StatelessWidget {
   final Curve curve;
 
   const OpacityChangeContainer({
-    Key key,
-    @required this.child,
-    @required this.isShow,
+    Key? key,
+    required this.child,
+    required this.isShow,
     this.duration = const Duration(milliseconds: 500),
     this.curve = Curves.linearToEaseOut,
   }) : super(key: key);

@@ -63,8 +63,9 @@ flutter {
 
 dependencies {
     // Import the Firebase BoM
-    implementation platform('com.google.firebase:firebase-bom:27.1.0')
+    implementation platform('com.google.firebase:firebase-bom:28.2.1')
     
+    // https://developers.google.com/android/guides/setup
     implementation 'com.google.android.gms:play-services-location:18.0.0'
     // When using the BoM, you don't specify versions in Firebase library dependencies
 

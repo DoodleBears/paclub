@@ -7,8 +7,10 @@ import 'package:paclub/functions/transitions.dart';
 class ShiftLeftRoute extends PageRouteBuilder {
   final Widget enterPage;
   final Widget exitPage;
-  ShiftLeftRoute({this.exitPage, this.enterPage})
-      : super(
+  ShiftLeftRoute({
+    required this.exitPage,
+    required this.enterPage,
+  }) : super(
           pageBuilder: (
             BuildContext context,
             Animation<double> animation,
@@ -62,8 +64,10 @@ class ShiftLeftRoute extends PageRouteBuilder {
 class TopLeftMaskBelowleftRoute extends PageRouteBuilder {
   final Widget enterPage;
   final Widget exitPage;
-  TopLeftMaskBelowleftRoute({this.exitPage, this.enterPage})
-      : super(
+  TopLeftMaskBelowleftRoute({
+    required this.exitPage,
+    required this.enterPage,
+  }) : super(
           transitionDuration: const Duration(milliseconds: 500),
           reverseTransitionDuration: const Duration(milliseconds: 500),
           pageBuilder: (
@@ -124,8 +128,10 @@ class TopLeftMaskBelowleftRoute extends PageRouteBuilder {
 class BelowDownTopHoldRoute extends PageRouteBuilder {
   final Widget enterPage;
   final Widget exitPage;
-  BelowDownTopHoldRoute({this.exitPage, this.enterPage})
-      : super(
+  BelowDownTopHoldRoute({
+    required this.exitPage,
+    required this.enterPage,
+  }) : super(
           // super 是指套用 extends 继承的东西的参数，并对其中的个别做设置
           // opaque: false,
           transitionDuration: const Duration(milliseconds: 500),
