@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:paclub/modules/splash/splash_controller.dart';
 import 'package:paclub/r.dart';
 
-class Body extends GetView<SplashController> {
+class SplashBody extends GetView<SplashController> {
   @override
   Widget build(BuildContext context) {
     return Container(

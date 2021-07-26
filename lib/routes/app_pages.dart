@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:paclub/functions/transitions.dart';
 import 'package:paclub/modules/auth/auth_binding.dart';
 import 'package:paclub/modules/auth/auth_page.dart';
+import 'package:paclub/modules/main/tabs/tabs_binding.dart';
 import 'package:paclub/modules/login/login_binding.dart';
 import 'package:paclub/modules/login/login_page.dart';
 import 'package:paclub/modules/register/account/register_account_binding.dart';
@@ -10,7 +11,7 @@ import 'package:paclub/modules/register/form/register_form_binding.dart';
 import 'package:paclub/modules/register/form/register_form_page.dart';
 import 'package:paclub/modules/splash/splash_binding.dart';
 import 'package:paclub/modules/splash/splash_page.dart';
-import 'package:paclub/pages/Tabs.dart';
+import 'package:paclub/modules/main/tabs/tabs_page.dart';
 
 part './app_routes.dart';
 
@@ -53,6 +54,7 @@ abstract class AppPages {
     ),
     GetPage(
       name: Routes.HOME,
+      binding: TabsBinding(),
       page: () => Tabs(),
       customTransition: TopLeftMaskBelowLeftTransitions(),
     ),

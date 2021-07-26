@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:paclub/constants/constants.dart';
-import 'package:paclub/modules/register/form/components/register_form_body.dart';
+import 'package:paclub/modules/register/form/register_form_body.dart';
 import 'package:paclub/modules/register/form/register_form_controller.dart';
 import 'package:paclub/widgets/logger.dart';
 

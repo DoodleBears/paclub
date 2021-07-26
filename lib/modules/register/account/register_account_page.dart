@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:paclub/constants/constants.dart';
-import 'package:paclub/modules/register/account/components/register_account_body.dart';
+import 'package:paclub/modules/register/account/register_account_body.dart';
 import 'package:paclub/modules/register/account/register_account_controller.dart';
 import 'package:paclub/widgets/logger.dart';
 

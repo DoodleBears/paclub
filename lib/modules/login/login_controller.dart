@@ -22,15 +22,13 @@ class LoginController extends GetxController {
   bool isLoading = false;
   // 默认隐藏密码
   bool hidePassword = true;
-  String _username = '';
-  String _password = '';
+  String username = '';
+  String password = '';
   bool isNeedToResend = false;
   bool isResendButtonShow = false;
   bool isPasswordOK = true;
   int countdown = 0;
   late Timer timer;
-
-  String get password => _password;
 
   @override
   void onInit() {
@@ -88,22 +86,22 @@ class LoginController extends GetxController {
   }
 
   void onUsernameChanged(String username) {
-    _username = username.trim();
+    username = username.trim();
 
-    // debugPrint('当前用户名:' + _username);
+    // debugPrint('当前用户名:' + username);
   }
 
   void onPasswordChanged(String password) {
-    _password = password.trim();
+    password = password.trim();
     isPasswordOK = true;
     update();
-    // debugPrint('当前密码:' + _password);
+    // debugPrint('当前密码:' + password);
   }
 
   void changeSecure() {
     hidePassword = !hidePassword;
     update();
-    debugPrint('密码显隐状态: ' + (hidePassword ? '隐藏' : '显示, 密码为:' + _password));
+    debugPrint('密码显隐状态: ' + (hidePassword ? '隐藏' : '显示, 密码为:' + password));
   }
 
   void signInWithGoogle() async {
@@ -124,7 +122,7 @@ class LoginController extends GetxController {
     if (check() == false) return;
     isLoading = true;
     update();
-    if (isPasswordOK = await authService.login(_username, _password)) {
+    if (isPasswordOK = await authService.login(username, password)) {
       logger.d('邮箱认证状态: ' +
           (authService.user?.emailVerified == true ? '已认证' : '未认证'));
       if (authService.user?.emailVerified == false) {
@@ -152,10 +150,10 @@ class LoginController extends GetxController {
   }
 
   bool check() {
-    if (_username.isEmpty) {
+    if (username.isEmpty) {
       toast('Email cannot be null');
       isPasswordOK = false;
-    } else if (_password.isEmpty) {
+    } else if (password.isEmpty) {
       toast('Password cannot be null');
       isPasswordOK = false;
     } else {
