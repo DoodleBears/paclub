@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "161942683104-lb16ej2fjb0ab2srpmiktuln9baodm3p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "club.paclubs.paclub",
+            "certificate_hash": "7d88c13fe370674ac2bf7b5033f8849ea5de3551"
+          }
+        },
+        {
           "client_id": "161942683104-tn63kshp3oo5hjtjdeg28s1qausnb3gc.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
