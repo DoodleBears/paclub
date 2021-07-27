@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:paclub/functions/transitions.dart';
 import 'package:paclub/modules/auth/auth_binding.dart';
@@ -14,6 +15,12 @@ import 'package:paclub/modules/splash/splash_page.dart';
 import 'package:paclub/modules/main/tabs/tabs_page.dart';
 
 part './app_routes.dart';
+
+double Function(BuildContext) gestureWidth(double width) {
+  // 当前屏幕宽度减去 给定的 width（一般width设置为比手指的宽度短一些
+  // 保证任何大小的屏幕，大拇指都可以从屏幕往右滑动而back
+  return (BuildContext context) => context.width - width;
+}
 
 abstract class AppPages {
   // A list of <GetPage> 来表示不同页面的 name、binding 和 route 信息等
@@ -35,22 +42,28 @@ abstract class AppPages {
       name: Routes.LOGIN,
       page: () => LoginPage(),
       binding: LoginBinding(),
-      customTransition: ShiftLeftTransitions(),
+      customTransition: ShiftLeftLinearTransitions(),
       popGesture: true,
+      gestureWidth: gestureWidth(170),
+      transitionDuration: const Duration(milliseconds: 200),
     ),
     GetPage(
       name: Routes.REGISTER_FORM,
       page: () => RegisterFormPage(),
       binding: RegisterFormBinding(),
-      customTransition: ShiftLeftTransitions(),
+      customTransition: ShiftLeftLinearTransitions(),
       popGesture: true,
+      gestureWidth: gestureWidth(170),
+      transitionDuration: const Duration(milliseconds: 200),
     ),
     GetPage(
       name: Routes.REGISTER_ACCOUNT,
       page: () => RegisterAccountPage(),
       binding: RegisterAccountBinding(),
-      customTransition: ShiftLeftTransitions(),
+      customTransition: ShiftLeftLinearTransitions(),
       popGesture: true,
+      gestureWidth: gestureWidth(170),
+      transitionDuration: const Duration(milliseconds: 200),
     ),
     GetPage(
       name: Routes.HOME,

@@ -209,7 +209,40 @@ class TopLeftMaskBelowLeftTransitions extends CustomTransition {
 //    position: (1, 0) -> (0, 0)
 // Leaving(Exit) 被pop出去时执行的离场动画
 //    positon: (0, 0) -> (-1.0, 0)
-class ShiftLeftTransitions extends CustomTransition {
+class ShiftLeftLinearTransitions extends CustomTransition {
+  @override
+  Widget buildTransition(
+      BuildContext context,
+      Curve? curve,
+      Alignment? alignment,
+      Animation<double> animation, // coming page
+      Animation<double> secondaryAnimation, // leaving page
+      Widget child) {
+    return Align(
+      alignment: Alignment.center,
+      child: SlideTransition(
+        // coming page from right to center
+        position: Tween(begin: Offset(1.0, 0.0), end: Offset.zero)
+            .chain(CurveTween(curve: Curves.linear))
+            .animate(animation),
+        child: SlideTransition(
+          // leaving page from center to left
+          position: Tween(begin: Offset.zero, end: Offset(-1.0, 0.0))
+              .chain(CurveTween(curve: Curves.linear))
+              .animate(secondaryAnimation),
+          child: child,
+        ),
+      ),
+    );
+  }
+}
+
+/// **左右水平位移（无视差效果）动画
+// Coming(Enter) push进来时执行的入场动画
+//    position: (1, 0) -> (0, 0)
+// Leaving(Exit) 被pop出去时执行的离场动画
+//    positon: (0, 0) -> (-1.0, 0)
+class ShiftLeftEaseTransitions extends CustomTransition {
   @override
   Widget buildTransition(
       BuildContext context,

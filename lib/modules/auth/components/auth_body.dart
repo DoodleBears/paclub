@@ -72,7 +72,7 @@ class AuthBody extends StatelessWidget {
                 Text(
                   '已经有账号了? ',
                   style: TextStyle(
-                    fontSize: Get.width * 0.036,
+                    fontSize: Get.width * 0.04,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -81,7 +81,7 @@ class AuthBody extends StatelessWidget {
                   child: Text(
                     '登录',
                     style: TextStyle(
-                      fontSize: Get.width * 0.036,
+                      fontSize: Get.width * 0.04,
                       color: accentColor,
                       fontWeight: FontWeight.bold,
                     ),
