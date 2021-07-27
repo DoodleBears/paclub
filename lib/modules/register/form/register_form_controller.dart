@@ -41,6 +41,8 @@ class RegisterFormController extends GetxController {
   @override
   void onClose() {
     logger.w('关闭 RegisterFormController');
+    page.close();
+    isNameOK.close();
     super.onClose();
   }
 
