@@ -36,14 +36,19 @@ class LoginBody extends GetView<LoginController> {
               ),
             ),
             SizedBox(height: Get.height * 0.03), // 用户名和邮箱输入
-            RoundedInputField(
-              textInputType: TextInputType.emailAddress,
-              hintText: 'Email',
-              icon: Icon(
-                Icons.person,
-                color: accentColor,
-              ),
-              onChanged: controller.onUsernameChanged,
+            GetBuilder<LoginController>(
+              builder: (_) {
+                return RoundedInputField(
+                  textInputType: TextInputType.emailAddress,
+                  error: controller.isEmailOK == false,
+                  hintText: 'Email',
+                  icon: Icon(
+                    Icons.person,
+                    color: accentColor,
+                  ),
+                  onChanged: controller.onUsernameChanged,
+                );
+              },
             ),
             // 密码输入
             SizedBox(height: 3 + Get.height * 0.02),
@@ -109,7 +114,7 @@ class LoginBody extends GetView<LoginController> {
                       ? () => logger.d('当前处于Loading状态, Button被设置为无效')
                       : () {
                           logger.d('Login 按钮被按下 —— 提交登录信息，开始进行登录验证');
-                          controller.submit(context);
+                          controller.loginSubmit(context);
                         },
                   // 在点击后触发loading效果，加载结束后再次触发，取消loading
                   isLoading: controller.isLoading,

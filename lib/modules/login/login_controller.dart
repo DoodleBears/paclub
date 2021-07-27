@@ -27,6 +27,8 @@ class LoginController extends GetxController {
   bool isNeedToResend = false;
   bool isResendButtonShow = false;
   bool isPasswordOK = true;
+  bool isEmailOK = true;
+  bool isStyleOK = true;
   int countdown = 0;
   late Timer timer;
 
@@ -59,6 +61,20 @@ class LoginController extends GetxController {
     });
   }
 
+  void onUsernameChanged(String username) {
+    this.username = username.trim();
+    isEmailOK = true;
+    update();
+    // debugPrint('当前用户名:' + username);
+  }
+
+  void onPasswordChanged(String password) {
+    this.password = password.trim();
+    isPasswordOK = true;
+    update();
+    // debugPrint('当前密码:' + password);
+  }
+
   Future<void> resendEmail({int time = 60}) async {
     countdown = time;
     update();
@@ -85,19 +101,6 @@ class LoginController extends GetxController {
     }
   }
 
-  void onUsernameChanged(String username) {
-    username = username.trim();
-
-    // debugPrint('当前用户名:' + username);
-  }
-
-  void onPasswordChanged(String password) {
-    password = password.trim();
-    isPasswordOK = true;
-    update();
-    // debugPrint('当前密码:' + password);
-  }
-
   void changeSecure() {
     hidePassword = !hidePassword;
     update();
@@ -117,12 +120,14 @@ class LoginController extends GetxController {
     update();
   }
 
-  void submit(BuildContext context) async {
+  void loginSubmit(BuildContext context) async {
     // 非空检查等, 初步检查
     if (check() == false) return;
     isLoading = true;
     update();
-    if (isPasswordOK = await authService.login(username, password)) {
+    final String response =
+        await authService.signInWithEmail(username, password);
+    if (response == 'Login success') {
       logger.d('邮箱认证状态: ' +
           (authService.user?.emailVerified == true ? '已认证' : '未认证'));
       if (authService.user?.emailVerified == false) {
@@ -144,22 +149,44 @@ class LoginController extends GetxController {
         Get.until((route) => false);
         Get.toNamed(Routes.HOME);
       }
+    } else {
+      toastLoginError(response);
     }
     isLoading = false;
     update();
   }
 
+  // *  [Email 注册错误的提示信息] 用来 toast login 相关的 error
+  void toastLoginError(String code) {
+    if (code == 'user-not-found') {
+      toast('No user found for that email.');
+    } else if (code == 'invalid-email') {
+      toast('Email form isn\'t right');
+      isEmailOK = false;
+    } else if (code == 'wrong-password') {
+      toast('Wrong password');
+      isPasswordOK = false;
+    } else if (code == 'too-many-requests') {
+      toast('You have try too many times\nplease wait 30 secs');
+    } else if (code == 'unknown') {
+      toast('Check your internet connection');
+    } else {
+      toast('Login failed');
+    }
+  }
+
   bool check() {
+    isStyleOK = false;
     if (username.isEmpty) {
       toast('Email cannot be null');
-      isPasswordOK = false;
+      isEmailOK = false;
     } else if (password.isEmpty) {
       toast('Password cannot be null');
       isPasswordOK = false;
     } else {
-      isPasswordOK = true;
+      isStyleOK = true;
     }
     update();
-    return isPasswordOK;
+    return isStyleOK;
   }
 }

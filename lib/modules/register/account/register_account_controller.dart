@@ -19,6 +19,7 @@ class RegisterAccountController extends GetxController {
   String _username = '';
   String _password = '';
   String _rePassword = '';
+  bool isEmailOK = true;
   bool isPasswordOK = true;
   bool isRePasswordOK = true;
   bool isRegisterd = false;
@@ -48,6 +49,8 @@ class RegisterAccountController extends GetxController {
 
   void onUsernameChanged(String username) {
     _username = username.trim();
+    isEmailOK = true;
+    update();
   }
 
   void onPasswordChanged(String password) {
@@ -109,12 +112,15 @@ class RegisterAccountController extends GetxController {
     }
   }
 
-  Future<void> submit(BuildContext context) async {
+  Future<void> registerSubmit(BuildContext context) async {
     // 检查非空, 密码强度, 两次输入密码一致
     if (check() == false) return;
     isLoading = true;
     update();
-    if (await authService.register(_username, _password)) {
+    final String response =
+        await authService.registerWithEmail(_username, _password);
+
+    if (response == 'Register success') {
       isRegisterd = true;
       if (authService.user?.emailVerified == false) {
         isEmailVerifyed = false;
@@ -147,9 +153,30 @@ class RegisterAccountController extends GetxController {
         Get.until((route) => false);
         Get.toNamed(Routes.HOME);
       }
+    } else {
+      toastRegisterError(response);
     }
     isLoading = false;
     update();
+  }
+
+  // *  [Email 注册错误的提示信息] 用来 toast register 相关的 error
+  void toastRegisterError(String code) {
+    if (code == 'weak-password') {
+      toast('Weak password');
+      isPasswordOK = false;
+    } else if (code == 'invalid-email') {
+      toast('Email form isn\'t right');
+      isEmailOK = false;
+    } else if (code == 'email-already-in-use') {
+      toast('Account already exists');
+    } else if (code == 'too-many-requests') {
+      toast('You have try too many times\nplease wait 30 secs');
+    } else if (code == 'unknown') {
+      toast('Check your internet connection');
+    } else {
+      toast('Register fail');
+    }
   }
 
   bool check() {
@@ -157,6 +184,7 @@ class RegisterAccountController extends GetxController {
     if (_username.isEmpty) {
       check = false;
       toast('Email cannot be null');
+      isEmailOK = false;
     } else if (_password.isEmpty) {
       check = false;
       toast('Password cannot be null');

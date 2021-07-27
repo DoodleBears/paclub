@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:paclub/constants/constants.dart';
-import 'package:paclub/functions/gesture.dart';
 import 'package:paclub/modules/login/components/components.dart';
 import 'package:paclub/modules/register/form/register_form_controller.dart';
 import 'package:paclub/r.dart';
-import 'package:paclub/routes/app_pages.dart';
 import 'package:paclub/widgets/widgets.dart';
 
 class RegisterFormBody extends GetView<RegisterFormController> {
@@ -40,25 +38,14 @@ class RegisterFormBody extends GetView<RegisterFormController> {
             form_2(),
             SizedBox(height: 3 + Get.height * 0.02),
             // 下一页按钮
-            GetBuilder<RegisterFormController>(
-              builder: (_) {
-                return RoundedLoadingButton(
-                  width: Get.width * 0.8,
-                  text: '${controller.page.value}/2 Next',
-                  // 点击后确认用户名不为空
-                  onPressed: controller.check()
-                      ? () {
-                          if (controller.page.value == 1) {
-                            controller.nextPage();
-                          } else if (controller.page.value == 2) {
-                            Get.toNamed(Routes.REGISTER_ACCOUNT);
-                          }
-                          hideKeyboard(context);
-                        }
-                      : () => toast('Name cannot be null'),
-                  isLoading: false,
-                );
-              },
+            Obx(
+              () => RoundedLoadingButton(
+                width: Get.width * 0.8,
+                text: '${controller.page.value}/2 Next',
+                // 点击后确认用户名不为空
+                onPressed: () => controller.nextPage(context),
+                isLoading: false,
+              ),
             ),
           ],
         ),
@@ -95,6 +82,7 @@ class RegisterFormBody extends GetView<RegisterFormController> {
           isShow: controller.page.value == 1,
           child: RoundedInputField(
             textInputType: TextInputType.name,
+            error: controller.isNameOK.value == false,
             hintText: 'Name',
             icon: Icon(
               Icons.person,

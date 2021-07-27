@@ -30,11 +30,6 @@ class AuthService extends GetxService {
   // 获得 user, 使用 firebase 的
   User? get user => _auth.currentUser;
 
-  // *  [重载用户] 当用户登陆或切换状态时候需要用到
-  void reload() {
-    user!.reload();
-  }
-
   // *  [初始化 Service] 绑定监听 user 和 connectivity 状态
   @override
   void onInit() {
@@ -59,6 +54,11 @@ class AuthService extends GetxService {
     super.onClose();
   }
 
+  // *  [重载用户] 当用户登陆或切换状态时候需要用到
+  void reload() {
+    user!.reload();
+  }
+
   // *  [检测是否登陆]
   bool isLogin({bool notify = true, bool jump = false}) {
     if (user == null || user!.emailVerified == false) {
@@ -77,10 +77,12 @@ class AuthService extends GetxService {
   }
 
   // *  [Email 注册功能]
-  Future<bool> register(String email, String password) async {
+  Future<String> registerWithEmail(String email, String password) async {
     try {
       // 检查网络链接, 如果未联网(false), 提示user联网并取消register
-      if (await internetProvider.isConnected() == false) return false;
+      if (await internetProvider.isConnected() == false) {
+        toast('Check your internet connection');
+      }
       await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
       logger.d('账号注册通过: $email');
@@ -91,63 +93,30 @@ class AuthService extends GetxService {
       logger.d('更新账号信息成功, name是: ${registerFormController.name}');
 
       // 确认联网情况正常, 并完成注册后返回 true
-      return true;
+      return 'Register success';
     } on FirebaseAuthException catch (e) {
       logger.d('eamil注册失败, 错误码:' + e.code);
-      toastRegisterError(e.code);
+      return e.code;
     } catch (e) {
       logger.e(e);
-    }
-    return false;
-  }
-
-  // *  [Email 注册错误的提示信息] 用来 toast register 相关的 error
-  void toastRegisterError(String code) {
-    if (code == 'weak-password') {
-      toast('weak password');
-    } else if (code == 'invalid-email') {
-      toast('email form isn\'t right');
-    } else if (code == 'email-already-in-use') {
-      toast('account already exists');
-    } else if (code == 'too-many-requests') {
-      toast('you have try too many times\nplease wait 30 secs');
-    } else if (code == 'unknown') {
-      toast('check your internet connection');
-    } else {
-      toast('register fail');
+      return e.toString();
     }
   }
 
   //*  [Email 登录功能]
-  Future<bool> login(String email, String password) async {
+  Future<String> signInWithEmail(String email, String password) async {
     try {
       // 检查网络链接, 如果未联网(false), 提示user联网并取消 login
-      if (await internetProvider.isConnected() == false) return false;
+      if (await internetProvider.isConnected() == false) {
+        toast('Check your internet connection');
+      }
       // 使用 Firebase 提供的[用Email登陆]方法
       await _auth.signInWithEmailAndPassword(email: email, password: password);
       // 确认联网情况正常, 并完成登录后返回 true
-      return true;
+      return 'Login success';
     } on FirebaseAuthException catch (e) {
       logger.d('eamil登录失败, 错误码:' + e.code);
-      toastLoginError(e.code);
-    }
-    return false;
-  }
-
-  // *  [Email 注册错误的提示信息] 用来 toast login 相关的 error
-  void toastLoginError(String code) {
-    if (code == 'user-not-found') {
-      toast('No user found for that email.');
-    } else if (code == 'invalid-email') {
-      toast('email form isn\'t right');
-    } else if (code == 'wrong-password') {
-      toast('Wrong password');
-    } else if (code == 'too-many-requests') {
-      toast('you have try too many times\nplease wait 30 secs');
-    } else if (code == 'unknown') {
-      toast('check your internet connection');
-    } else {
-      toast('Login failed');
+      return e.code;
     }
   }
 

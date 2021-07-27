@@ -15,6 +15,7 @@ class RoundedInputField extends StatelessWidget {
   final double? height;
   final Icon? icon;
   final int maxLines;
+  final bool error;
   final int maxLength;
   const RoundedInputField({
     Key? key,
@@ -26,12 +27,14 @@ class RoundedInputField extends StatelessWidget {
     this.maxLines = 1,
     this.labelText,
     this.maxLength = 50,
+    this.error = false,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return TextFieldContainer(
       color: primaryLightColor,
+      error: error,
       height: height ?? 16 + Get.height * 0.07,
       child: TextField(
         inputFormatters: [

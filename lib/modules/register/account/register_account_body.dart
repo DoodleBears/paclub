@@ -47,6 +47,7 @@ class RegisterAccountBody extends GetView<RegisterAccountController> {
                   isShow: controller.isRegisterd == false,
                   child: RoundedInputField(
                     textInputType: TextInputType.emailAddress,
+                    error: controller.isEmailOK == false,
                     hintText: 'Email',
                     icon: Icon(
                       Icons.person,
@@ -158,7 +159,7 @@ class RegisterAccountBody extends GetView<RegisterAccountController> {
                                 }
                           : () async {
                               logger.d('提交注册信息，开始进行账号注册');
-                              await controller.submit(context);
+                              await controller.registerSubmit(context);
                             },
                   // 在点击后触发loading效果，加载结束后再次触发，取消loading
                   isLoading: controller.isLoading,
