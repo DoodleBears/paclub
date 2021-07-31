@@ -22,6 +22,8 @@ if (flutterVersionName == null) {
 }
 
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'  // Google Services plugin
+apply plugin: 'com.google.firebase.crashlytics' // Google firebase Crashlytics
 apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
@@ -38,11 +40,12 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId "com.example.flutter_app"
+        applicationId "club.paclubs.paclub"
         minSdkVersion 16
         targetSdkVersion 29
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+        multiDexEnabled true
     }
 
     buildTypes {
@@ -59,5 +62,25 @@ flutter {
 }
 
 dependencies {
+    // Import the Firebase BoM
+    implementation platform('com.google.firebase:firebase-bom:28.2.1')
+    
+    // https://developers.google.com/android/guides/setup
+    implementation 'com.google.android.gms:play-services-location:18.0.0'
+    // When using the BoM, you don't specify versions in Firebase library dependencies
+
+    //* base 版本的 firebase-analytics
+    // Declare the base library
+    implementation 'com.google.firebase:firebase-analytics'
+    //* KTX 版本的 firebase-analytics
+    // Declare the KTX library instead (which automatically has a dependency on the base library)
+    // implementation 'com.google.firebase:firebase-analytics-ktx'
+
+    // Declare the dependencies for any other desired Firebase products
+    // For example, declare the dependencies for Firebase Authentication and Cloud Firestore
+    implementation 'com.google.firebase:firebase-auth'
+    implementation 'com.google.firebase:firebase-firestore'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'com.android.support:multidex:1.0.3'
+    
 }

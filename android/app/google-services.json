@@ -1,0 +1,70 @@
+{
+  "project_info": {
+    "project_number": "161942683104",
+    "project_id": "paclub-20546",
+    "storage_bucket": "paclub-20546.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:161942683104:android:0a108e1faa9018b479ff85",
+        "android_client_info": {
+          "package_name": "club.paclubs.paclub"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "161942683104-hhcfcdh1v4en26jq9o3ae3mu6ha4l1k0.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "club.paclubs.paclub",
+            "certificate_hash": "e393965be1dc44d5eaf1f668a7f610c7d0799b7a"
+          }
+        },
+        {
+          "client_id": "161942683104-lb16ej2fjb0ab2srpmiktuln9baodm3p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "club.paclubs.paclub",
+            "certificate_hash": "7d88c13fe370674ac2bf7b5033f8849ea5de3551"
+          }
+        },
+        {
+          "client_id": "161942683104-tn63kshp3oo5hjtjdeg28s1qausnb3gc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "club.paclubs.paclub",
+            "certificate_hash": "443d1821ed1c364644225134da2399b014971147"
+          }
+        },
+        {
+          "client_id": "161942683104-c7f81apno7r8v7m2sk95i21gouep21ns.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBpoDJBxIPAVTyVkLAFAHQyfxuO1Fp4NqU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "161942683104-c7f81apno7r8v7m2sk95i21gouep21ns.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "161942683104-0tusalft8qn430kbns7h9d12vn68bsqm.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.codingwithflutter.timeTrackerFlutterCourse"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -9,6 +9,12 @@
 .history
 .svn/
 
+# firebase
+firebase.json
+.firebaserc
+# android/app/google-services.json
+# ios/Runner/GoogleService-Info.plist
+
 # IntelliJ related
 *.iml
 *.ipr
@@ -39,3 +45,6 @@ app.*.symbols
 
 # Obfuscation related
 app.*.map.json
+
+# app_icon
+assets/icon/app_icon
