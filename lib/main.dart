@@ -51,7 +51,7 @@ class _AppState extends State<App> {
                 child: child,
               ),
             ),
-            transitionDuration: Duration(milliseconds: 350),
+            transitionDuration: Duration(milliseconds: 300),
             debugShowCheckedModeBanner: false,
             title: '盒群',
             getPages: AppPages.pages,

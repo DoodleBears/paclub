@@ -20,7 +20,7 @@ class TabsController extends GetxController {
 
   void setIndex(int index) {
     currentIndex = index;
-    logger.i('当前index是：' + currentIndex.toString());
+    // logger.i('当前index是：' + currentIndex.toString());
     currentPage = pageList[index];
     update();
   }
