@@ -1,17 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:paclub/frontend/widgets/opacity_change_container.dart';
+import 'package:paclub/frontend/widgets/containers/opacity_change_container.dart';
 
 class FadeInScaleContainer extends StatelessWidget {
-  final bool isShow; // 判断出现的条件
-  final double width; //  container 宽度
-  final double height; // container 高度
-  final Widget child;
-  final Duration scaleDuration; // 宽度和高度变化的动画时长
-  final Duration opacityDuration; // 透明度变化的时长
-  final Curve scaleCurve; // 宽度和高度变化的动画时长
-  final Curve opacityCurve; // 透明度变化的时长
-
   /// [文件说明]
   /// - fade_in_scale_container 具有淡入和宽高变化动画的 container
   /// - 如果不需要 scale 的变化，可以使用 opacity_change_container
@@ -39,6 +30,16 @@ class FadeInScaleContainer extends StatelessWidget {
     this.scaleCurve = Curves.linearToEaseOut,
     this.opacityCurve = Curves.linearToEaseOut,
   }) : super(key: key);
+
+  final bool isShow;
+  final double width;
+  final double height;
+  final Widget child;
+  final Duration scaleDuration;
+  final Duration opacityDuration;
+  final Curve scaleCurve;
+  final Curve opacityCurve;
+
   @override
   Widget build(BuildContext context) {
     return OpacityChangeContainer(

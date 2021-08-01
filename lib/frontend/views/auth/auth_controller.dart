@@ -5,9 +5,8 @@ import 'package:get/get.dart';
 import 'package:paclub/frontend/constants/colors.dart';
 import 'package:paclub/frontend/modules/auth_module.dart';
 import 'package:paclub/frontend/utils/timer.dart';
+import 'package:paclub/frontend/widgets/notifications/notifications.dart';
 import 'package:paclub/utils/logger.dart';
-import 'package:paclub/frontend/widgets/snackbar.dart';
-import 'package:paclub/frontend/widgets/toast.dart';
 import 'package:paclub/utils/app_response.dart';
 
 class AuthController extends GetxController {

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:paclub/frontend/utils/gesture.dart';
 import 'package:paclub/frontend/routes/app_pages.dart';
+import 'package:paclub/frontend/widgets/notifications/notifications.dart';
 import 'package:paclub/utils/logger.dart';
-import 'package:paclub/frontend/widgets/widgets.dart';
 
 class RegisterFormController extends GetxController {
   // HINT: Rx 即 Stream 类型的值，设定为 final 防止重复宣告 Stream

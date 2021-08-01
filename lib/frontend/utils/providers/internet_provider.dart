@@ -1,8 +1,8 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
+import 'package:paclub/frontend/widgets/notifications/notifications.dart';
 import 'package:paclub/utils/logger.dart';
-import 'package:paclub/frontend/widgets/toast.dart';
 
 class InternetProvider extends GetxService {
   String _connectionStatus = 'Unknown';
