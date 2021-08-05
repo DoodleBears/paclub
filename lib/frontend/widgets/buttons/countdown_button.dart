@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:paclub/frontend/constants/constants.dart';
 import 'package:paclub/frontend/widgets/containers/containers.dart';
 
-// TODO: 可以加入自定义颜色的设置（允许传入Color），方便未来有需要的时候使用
-
 class CountdownButton extends StatelessWidget {
   /// [文件说明]
   /// - CountdownButton 是用来简单制作倒计时按钮的 widget
@@ -18,6 +16,7 @@ class CountdownButton extends StatelessWidget {
   /// - [countdown] 显示的倒计时数字
   /// - [isLoading] loading判断条件
   /// - [icon] button 上的 icon (会在文字左侧)
+  /// - [color] 文字颜色
   const CountdownButton({
     Key? key,
     required this.text,
@@ -25,12 +24,14 @@ class CountdownButton extends StatelessWidget {
     required this.countdown,
     required this.isLoading,
     this.icon,
+    this.color = accentColor,
   }) : super(key: key);
 
   final int countdown;
   final String text;
   final VoidCallback onPressed;
   final bool isLoading;
+  final Color color;
   final Icon? icon;
 
   @override
@@ -41,7 +42,7 @@ class CountdownButton extends StatelessWidget {
         shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(borderRadius)),
         shadowColor: Colors.transparent,
-        primary: countdown == 0 ? accentColor : Colors.grey[600],
+        primary: countdown == 0 ? color : Colors.grey[600],
         backgroundColor: countdown == 0 ? Colors.grey[100] : primaryLightColor,
       ),
       // FittedBox 防止内容溢出

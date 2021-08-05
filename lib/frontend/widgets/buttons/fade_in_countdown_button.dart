@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:paclub/frontend/constants/colors.dart';
 import 'package:paclub/frontend/widgets/buttons/buttons.dart';
 import 'package:paclub/frontend/widgets/containers/containers.dart';
 
@@ -22,6 +23,7 @@ class FadeInCountdownButton extends StatelessWidget {
   /// - [isLoading] 是否加载中（显示圆圈加载动画）
   /// - [icon] 文字左侧的 icon
   /// - [width] 按钮宽度
+  /// - [color] 文字颜色
   const FadeInCountdownButton({
     Key? key,
     required this.isShow,
@@ -32,6 +34,7 @@ class FadeInCountdownButton extends StatelessWidget {
     required this.isLoading,
     this.icon,
     this.width,
+    this.color = accentColor,
   }) : super(key: key);
 
   final bool isShow;
@@ -41,6 +44,7 @@ class FadeInCountdownButton extends StatelessWidget {
   final int countdown;
   final Icon? icon;
   final String text;
+  final Color color;
   final VoidCallback onPressed;
 
   @override
@@ -58,6 +62,7 @@ class FadeInCountdownButton extends StatelessWidget {
         isLoading: isLoading,
         icon: icon,
         text: text,
+        color: color,
       ),
     );
   }

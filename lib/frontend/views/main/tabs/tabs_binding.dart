@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-import 'package:paclub/backend/repository/local/user_preferences.dart';
 import 'package:paclub/frontend/views/main/tabs/tabs_controller.dart';
 import 'package:paclub/utils/logger.dart';
 
@@ -11,8 +10,5 @@ class TabsBinding implements Bindings {
 
     /// TabsController 用来管理 tab
     Get.put(TabsController());
-
-    // 注入UserPreferences
-    await UserPreferences.init();
   }
 }

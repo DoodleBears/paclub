@@ -30,7 +30,10 @@ class HomeHotPage extends StatelessWidget {
               child: ListTile(
                 title: Text(
                   'Paclub Number $index',
-                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                  style: Theme.of(context).textTheme.headline1!.copyWith(
+                        fontSize: 25,
+                        fontWeight: FontWeight.bold,
+                      ),
                 ),
                 subtitle: Text(
                   'Little Subtitle Test $index and $index',

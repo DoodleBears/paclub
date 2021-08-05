@@ -33,13 +33,19 @@ class RoundedPasswordField extends StatelessWidget {
       error: error,
       child: TextField(
         keyboardType: TextInputType.visiblePassword,
-        style: TextStyle(fontSize: Get.height * 0.022),
+        style: TextStyle(
+          fontSize: Get.height * 0.022,
+          color: Colors.black,
+        ),
         cursorHeight: Get.height * 0.033,
         onChanged: onChanged,
         obscureText: hidePassword,
         decoration: InputDecoration(
           hintText: hinttext,
-          hintStyle: TextStyle(fontSize: Get.height * 0.022),
+          hintStyle: TextStyle(
+            fontSize: Get.height * 0.022,
+            color: Colors.black,
+          ),
           // 左侧icon
           icon: Icon(Icons.lock, color: accentColor),
           // 右侧icon

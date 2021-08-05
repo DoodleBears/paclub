@@ -43,7 +43,7 @@ dependencies:
   shared_preferences: ^2.0.6
   connectivity_plus: ^1.0.5
   # switch animation between light and dark theme
-  # animated_theme_switcher: ^2.0.1
+  animated_theme_switcher: ^2.0.1
   # pick image
   image_picker: ^0.8.2
   # store image
