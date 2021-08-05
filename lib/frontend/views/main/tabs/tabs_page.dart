@@ -5,6 +5,7 @@ import 'package:paclub/frontend/views/main/tabs/tabs_controller.dart';
 import 'package:paclub/utils/logger.dart';
 
 class Tabs extends GetView<TabsController> {
+  const Tabs({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     logger.i('渲染 —— Tabs');

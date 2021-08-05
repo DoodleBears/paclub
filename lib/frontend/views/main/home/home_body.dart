@@ -5,7 +5,7 @@ import 'package:paclub/frontend/views/main/home/home_follow/home_follow_page.dar
 import 'package:paclub/frontend/views/main/home/home_hot/home_hot_page.dart';
 
 class HomeBody extends GetView<HomeController> {
-  // * 用 Get.find() 取得 AuthService, 以使用 signOut() function
+  const HomeBody({Key? key}) : super(key: key);
 
   Future<Null> getRefresh() async {
     await Future.delayed(Duration(seconds: 2));

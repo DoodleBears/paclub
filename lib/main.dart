@@ -14,7 +14,7 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // await Firebase.initializeApp();
   // App 开启时就优先启动的各种, 如 Controller, Service(比如用于检测登录, 自动登录的)
-  logger0.wtf('点击链接查看更多 logger 使用方式 https://pub.dev/packages/logger/example');
+  logger.wtf('点击链接查看更多 logger 使用方式 https://pub.dev/packages/logger/example');
 
   await DenpendencyInjection.init();
 

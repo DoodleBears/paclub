@@ -4,6 +4,7 @@ import 'package:paclub/frontend/constants/colors.dart';
 import 'package:paclub/frontend/views/main/card/card_controller.dart';
 
 class CardBody extends GetView<CardController> {
+  const CardBody({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -11,9 +12,13 @@ class CardBody extends GetView<CardController> {
         children: [
           Container(
             child: Center(
-              child: Text(
-                controller.testString,
-                style: TextStyle(fontSize: 24),
+              child: GetBuilder<CardController>(
+                builder: (_) {
+                  return Text(
+                    controller.testString,
+                    style: TextStyle(fontSize: 24),
+                  );
+                },
               ),
             ),
             color: accentColor,

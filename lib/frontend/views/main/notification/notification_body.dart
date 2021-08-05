@@ -11,15 +11,19 @@ class NotificationBody extends GetView<NotificationController> {
     return SafeArea(
       child: ListView(
         children: [
-          Container(
-            child: Center(
-              child: Text(
-                controller.testString,
-                style: TextStyle(fontSize: 24),
-              ),
-            ),
-            color: accentColor,
-            height: Get.height * 0.1,
+          GetBuilder<NotificationController>(
+            builder: (_) {
+              return Container(
+                child: Center(
+                  child: Text(
+                    controller.testString,
+                    style: TextStyle(fontSize: 24),
+                  ),
+                ),
+                color: accentColor,
+                height: Get.height * 0.1,
+              );
+            },
           ),
           ListView.builder(
             shrinkWrap: true,

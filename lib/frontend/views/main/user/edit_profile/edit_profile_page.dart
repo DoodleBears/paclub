@@ -3,80 +3,75 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:paclub/backend/repository/local/user_preferences.dart';
 import 'package:paclub/frontend/views/main/user/components/appber_widget.dart';
 import 'package:paclub/frontend/views/main/user/components/button_widget.dart';
 import 'package:paclub/frontend/views/main/user/components/profile_widget.dart';
 import 'package:paclub/frontend/views/main/user/components/textfield_widget.dart';
-import 'package:paclub/models/user.dart';
+import 'package:paclub/frontend/views/main/user/user_controller.dart';
+import 'package:paclub/utils/logger.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'package:path/path.dart';
 
-class EditProfilePage extends StatefulWidget {
-  @override
-  _EditProfilePageState createState() => _EditProfilePageState();
-}
-
-class _EditProfilePageState extends State<EditProfilePage> {
-  late User user;
-
-  @override
-  void initState() {
-    super.initState();
-
-    user = UserPreferences.getUser();
-  }
-
+class EditProfilePage extends GetView<UserController> {
   @override
   Widget build(BuildContext context) {
+    logger.i('渲染 —— EditProfilePage');
     return Scaffold(
       appBar: buildAppBar(context),
       body: ListView(
         padding: EdgeInsets.symmetric(horizontal: 32),
         physics: BouncingScrollPhysics(),
         children: [
-          ProfileWidget(
-            imagePath: user.imagePath,
-            isEdit: true,
-            onClicked: () async {
-              final image =
-                  await ImagePicker().pickImage(source: ImageSource.gallery);
+          GetBuilder<UserController>(
+            builder: (_) {
+              return ProfileWidget(
+                imagePath: controller.imagePath,
+                isEdit: true,
+                onClicked: () async {
+                  final image = await ImagePicker()
+                      .pickImage(source: ImageSource.gallery);
 
-              if (image == null) return;
+                  if (image == null) return;
 
-              final directory = await getApplicationDocumentsDirectory();
-              final name = basename(image.path);
-              final imageFile = File('${directory.path}/$name');
-              final newImage = await File(image.path).copy(imageFile.path);
-
-              setState(() => user = user.copy(imagePath: newImage.path));
+                  final directory = await getApplicationDocumentsDirectory();
+                  final name = basename(image.path);
+                  final imageFile = File('${directory.path}/$name');
+                  final newImage = await File(image.path).copy(imageFile.path);
+                  controller.imagePath = newImage.path;
+                  controller.update();
+                  // setState(() => user = user.copy(imagePath: newImage.path));
+                },
+              );
+            },
+          ),
+          const SizedBox(height: 24),
+          GetBuilder<UserController>(
+            builder: (_) {
+              return TextFieldWidget(
+                label: 'Full Name',
+                text: controller.name,
+                onChanged: (name) => controller.name = name,
+              );
             },
           ),
           const SizedBox(height: 24),
           TextFieldWidget(
-            label: 'Full Name',
-            text: user.name,
-            onChanged: (name) => user = user.copy(name: name),
-          ),
-          const SizedBox(height: 24),
-          TextFieldWidget(
             label: 'Email',
-            text: user.email,
-            onChanged: (email) => user = user.copy(email: email),
+            text: controller.email,
+            onChanged: (email) => controller.email = email,
           ),
           const SizedBox(height: 24),
           TextFieldWidget(
-            label: 'About',
-            text: user.about,
-            maxLines: 5,
-            onChanged: (about) => user = user.copy(about: about),
-          ),
+              label: 'About',
+              text: controller.about,
+              maxLines: 5,
+              onChanged: (about) => controller.about = about),
           const SizedBox(height: 24),
           ButtonWidget(
             text: 'Save',
             onClicked: () {
-              UserPreferences.setUser(user);
+              controller.setUserPreference();
               Get.back();
             },
           ),
