@@ -23,6 +23,7 @@ Future<void> main() async {
 
   // 注入UserPreferences
   await UserPreferences.init();
+  Get.lazyPut(() => UserController());
 
   runApp(App());
 }
@@ -34,11 +35,11 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
+  final UserController controller = Get.find();
 
   @override
   Widget build(BuildContext context) {
     logger.i('渲染 App');
-    UserController controller = Get.put(UserController());
     return ThemeProvider(
       initTheme:
           controller.isDarkMode ? MyThemes.darkTheme : MyThemes.lightTheme,

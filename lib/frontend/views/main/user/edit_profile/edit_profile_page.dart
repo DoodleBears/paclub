@@ -38,6 +38,7 @@ class EditProfilePage extends GetView<UserController> {
                   final name = basename(image.path);
                   final imageFile = File('${directory.path}/$name');
                   final newImage = await File(image.path).copy(imageFile.path);
+
                   controller.imagePath = newImage.path;
                   controller.update();
                   // setState(() => user = user.copy(imagePath: newImage.path));

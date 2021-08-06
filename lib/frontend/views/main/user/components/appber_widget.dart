@@ -22,10 +22,11 @@ AppBar buildAppBar(BuildContext context) {
                 final theme = controller.isDarkMode
                     ? MyThemes.lightTheme
                     : MyThemes.darkTheme;
-                ThemeSwitcher.of(context)!.changeTheme(theme: theme);
 
                 controller.isDarkMode = !controller.isDarkMode;
                 controller.setUserPreference();
+
+                ThemeSwitcher.of(context)!.changeTheme(theme: theme);
               },
             );
           },

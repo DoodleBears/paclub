@@ -5,6 +5,7 @@ import 'package:paclub/frontend/views/login/components/components.dart';
 import 'package:paclub/frontend/views/register/form/register_form_controller.dart';
 import 'package:paclub/r.dart';
 import 'package:paclub/frontend/widgets/widgets.dart';
+import 'package:paclub/utils/logger.dart';
 
 class RegisterFormBody extends GetView<RegisterFormController> {
   @override
@@ -76,6 +77,7 @@ class RegisterFormBody extends GetView<RegisterFormController> {
   Obx form_1() {
     return Obx(
       () {
+        logger.w('重新渲染 form_1');
         return FadeInScaleContainer(
           width: Get.width * 0.8,
           height: controller.page.value != 1 ? 0.0 : 16 + Get.height * 0.07,

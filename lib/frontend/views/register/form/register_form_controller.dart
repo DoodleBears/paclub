@@ -48,6 +48,7 @@ class RegisterFormController extends GetxController {
 
   void onNameChanged(String name) {
     this.name = name.trim();
+    isNameOK.value = true;
   }
 
   void onBioChanged(String bio) {
@@ -55,10 +56,11 @@ class RegisterFormController extends GetxController {
   }
 
   bool check() {
-    isNameOK.value = true;
     if (name.isEmpty) {
       isNameOK.value = false;
       toastBottom('Name cannot be null');
+    } else {
+      isNameOK.value = true;
     }
 
     return isNameOK.value;
