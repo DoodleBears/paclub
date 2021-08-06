@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
 import 'package:paclub/models/user.dart';
 import 'package:paclub/utils/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -37,7 +36,7 @@ class UserPreferences {
     // jsonEncode() 只能直接编码 String int 等 primitive 的类型
     // 如果需要转自己宣告的object，建议先写 .toJson()
     final json = jsonEncode(user.toJson());
-    debugPrint(json);
+    // debugPrint(json);
     // 将 json 以 string 形式存入 local storage
     await _preferences.setString(_keyUser, json);
   }

@@ -60,6 +60,7 @@ class AuthBody extends StatelessWidget {
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: Get.width * 0.06,
+                        color: Colors.white,
                       ),
                     ),
                   ),

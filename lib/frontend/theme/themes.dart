@@ -21,9 +21,7 @@ class MyThemes {
       backgroundColor: Colors.white,
       foregroundColor: accentColor,
     ),
-
-    // textTheme: GoogleFonts.poppinsTextTheme(),
-    textTheme: TextTheme(
+    textTheme: GoogleFonts.poppinsTextTheme().copyWith(
       headline1: lightThemTextStyle,
       headline2: lightThemTextStyle,
       headline3: lightThemTextStyle,
@@ -75,7 +73,7 @@ class MyThemes {
     colorScheme: ColorScheme.dark(
       primary: accentColor,
     ),
-    textTheme: TextTheme(
+    textTheme: GoogleFonts.poppinsTextTheme().copyWith(
       headline1: darkThemTextStyle,
       headline2: darkThemTextStyle,
       headline3: darkThemTextStyle,
