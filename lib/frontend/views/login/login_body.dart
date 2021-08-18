@@ -4,8 +4,8 @@ import 'package:paclub/frontend/constants/constants.dart';
 import 'package:paclub/frontend/views/auth/auth_controller.dart';
 import 'package:paclub/frontend/views/login/components/components.dart';
 import 'package:paclub/frontend/views/login/login_controller.dart';
+import 'package:paclub/frontend/widgets/buttons/buttons.dart';
 import 'package:paclub/r.dart';
-import 'package:paclub/frontend/widgets/button/fade_in_countdown_button.dart';
 import 'package:paclub/frontend/widgets/widgets.dart';
 import 'components/or_divider.dart';
 
@@ -98,7 +98,6 @@ class LoginBody extends GetView<LoginController> {
                           text: 'Resend',
                           countdown: authController.countdown,
                           isLoading: authController.countdown == countdownTime,
-                          time: countdownTime,
                         );
                       },
                     ),

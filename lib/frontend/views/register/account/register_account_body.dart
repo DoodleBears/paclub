@@ -4,9 +4,8 @@ import 'package:paclub/frontend/constants/constants.dart';
 import 'package:paclub/frontend/views/auth/auth_controller.dart';
 import 'package:paclub/frontend/views/login/components/components.dart';
 import 'package:paclub/frontend/views/register/account/register_account_controller.dart';
-import 'package:paclub/frontend/widgets/button/fade_in_countdown_button.dart';
+import 'package:paclub/frontend/widgets/buttons/buttons.dart';
 import 'package:paclub/r.dart';
-import 'package:paclub/frontend/widgets/fade_in_scale_container.dart';
 import 'package:paclub/frontend/widgets/widgets.dart';
 
 const int countdownTime = 60;
@@ -127,7 +126,6 @@ class RegisterAccountBody extends GetView<RegisterAccountController> {
                           // isLoading 的值一般和 倒计时设定的值一致，主要用于在联网请求的时候
                           // 有 loading 动画，只有请求成功之后才开始倒计时
                           isLoading: authController.countdown == countdownTime,
-                          time: countdownTime,
                         );
                       },
                     ),

@@ -2,8 +2,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:paclub/backend/api/auth_api.dart';
 import 'package:paclub/frontend/routes/app_pages.dart';
+import 'package:paclub/frontend/widgets/notifications/notifications.dart';
 import 'package:paclub/utils/logger.dart';
-import 'package:paclub/frontend/widgets/toast.dart';
 import 'package:paclub/utils/app_response.dart';
 
 /// [认证模块]

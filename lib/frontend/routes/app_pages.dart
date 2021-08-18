@@ -6,6 +6,8 @@ import 'package:paclub/frontend/views/auth/auth_page.dart';
 import 'package:paclub/frontend/views/main/tabs/tabs_binding.dart';
 import 'package:paclub/frontend/views/login/login_binding.dart';
 import 'package:paclub/frontend/views/login/login_page.dart';
+import 'package:paclub/frontend/views/main/user/edit_profile/edit_profile_page.dart';
+import 'package:paclub/frontend/views/main/user/profile/profile_page.dart';
 import 'package:paclub/frontend/views/register/account/register_account_binding.dart';
 import 'package:paclub/frontend/views/register/account/register_account_page.dart';
 import 'package:paclub/frontend/views/register/form/register_form_binding.dart';
@@ -45,7 +47,7 @@ abstract class AppPages {
       customTransition: ShiftLeftLinearTransitions(),
       popGesture: true,
       gestureWidth: gestureWidth(170),
-      transitionDuration: const Duration(milliseconds: 200),
+      transitionDuration: const Duration(milliseconds: 250),
     ),
     GetPage(
       name: Routes.REGISTER_FORM,
@@ -54,7 +56,7 @@ abstract class AppPages {
       customTransition: ShiftLeftLinearTransitions(),
       popGesture: true,
       gestureWidth: gestureWidth(170),
-      transitionDuration: const Duration(milliseconds: 200),
+      transitionDuration: const Duration(milliseconds: 250),
     ),
     GetPage(
       name: Routes.REGISTER_ACCOUNT,
@@ -63,13 +65,29 @@ abstract class AppPages {
       customTransition: ShiftLeftLinearTransitions(),
       popGesture: true,
       gestureWidth: gestureWidth(170),
-      transitionDuration: const Duration(milliseconds: 200),
+      transitionDuration: const Duration(milliseconds: 250),
     ),
     GetPage(
       name: Routes.HOME,
       binding: TabsBinding(),
       page: () => Tabs(),
+      customTransition: TopLeftMaskBelowLeftLinearTransitions(),
+      transitionDuration: const Duration(milliseconds: 250),
+    ),
+    GetPage(
+      name: Routes.PROFILE,
+      // binding: TabsBinding(),
+      page: () => ProfilePage(),
       customTransition: TopLeftMaskBelowLeftTransitions(),
+    ),
+    GetPage(
+      name: Routes.EDIT_PROFILE,
+      // binding: TabsBinding(),
+      page: () => EditProfilePage(),
+      customTransition: TopLeftMaskBelowLeftLinearTransitions(),
+      popGesture: true,
+      gestureWidth: gestureWidth(170),
+      transitionDuration: const Duration(milliseconds: 250),
     ),
   ];
 }

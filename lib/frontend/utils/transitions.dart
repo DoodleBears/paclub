@@ -203,6 +203,58 @@ class TopLeftMaskBelowLeftTransitions extends CustomTransition {
   }
 }
 
+/// 仿 iOS 上 Twitter 式的界面 Transition（视差效果）动画
+/// - Coming(Enter) push进来时执行的入场动画
+///   - position: (1, 0) -> (0, 0), 位置从右往左 1个页面
+/// - Leaving(Exit) 被pop出去时执行的离场动画
+///   - position: (0, 0) -> (-0.33, 0), 位置从左往右 1/3个页面
+class TopLeftMaskBelowLeftLinearTransitions extends CustomTransition {
+  @override
+  Widget buildTransition(
+      BuildContext context,
+      Curve? curve,
+      Alignment? alignment,
+      Animation<double> animation, // coming page
+      Animation<double> secondaryAnimation, // leaving page
+      Widget child) {
+    return Stack(
+      children: <Widget>[
+        // 在中间加一层黑色的透明层
+        DarkCurtainFade(
+          animation: animation,
+          begin: 0.0,
+          end: 1.0,
+        ),
+        SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(1.0, 0.0),
+            end: Offset.zero,
+          ).animate(
+            CurvedAnimation(
+              parent: animation,
+              curve: Curves.linear,
+              reverseCurve: Curves.linear,
+            ),
+          ),
+          child: SlideTransition(
+            position: Tween<Offset>(
+              begin: Offset.zero,
+              end: const Offset(-0.33, 0.0),
+            ).animate(
+              CurvedAnimation(
+                parent: secondaryAnimation,
+                curve: Curves.linear,
+                reverseCurve: Curves.linear,
+              ),
+            ),
+            child: child,
+          ),
+        )
+      ],
+    );
+  }
+}
+
 /// 左右水平位移（无视差效果）动画
 /// - Coming(Enter) push进来时执行的入场动画
 ///   - position: (1, 0) -> (0, 0)
@@ -279,8 +331,8 @@ class DarkCurtainFade extends StatelessWidget {
     this.end = 0.0,
     this.color = const Color(0x88000000),
     this.child,
-    this.curve = Curves.easeOutCubic,
-    this.reverseCurve = Curves.easeInCubic,
+    this.curve = Curves.linear,
+    this.reverseCurve = Curves.linear,
   }) : super(key: key);
 
   final Animation<double> animation;

@@ -14,9 +14,13 @@ class MessageBody extends GetView<MessageController> {
         children: [
           Container(
             child: Center(
-              child: Text(
-                controller.testString,
-                style: TextStyle(fontSize: 24),
+              child: GetBuilder<MessageController>(
+                builder: (_) {
+                  return Text(
+                    controller.testString,
+                    style: TextStyle(fontSize: 24),
+                  );
+                },
               ),
             ),
             color: accentColor,

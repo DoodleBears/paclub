@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:paclub/frontend/constants/constants.dart';
-import 'package:paclub/frontend/widgets/fade_in_scale_container.dart';
-import 'package:paclub/frontend/widgets/opacity_change_container.dart';
+import 'package:paclub/frontend/widgets/containers/containers.dart';
 
 class RoundedLoadingButton extends StatelessWidget {
   final VoidCallback onPressed;

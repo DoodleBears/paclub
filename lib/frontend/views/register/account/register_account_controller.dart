@@ -8,9 +8,8 @@ import 'package:paclub/frontend/utils/timer.dart';
 import 'package:paclub/frontend/views/auth/auth_controller.dart';
 import 'package:paclub/frontend/views/register/form/register_form_controller.dart';
 import 'package:paclub/frontend/routes/app_pages.dart';
+import 'package:paclub/frontend/widgets/notifications/notifications.dart';
 import 'package:paclub/utils/logger.dart';
-import 'package:paclub/frontend/widgets/snackbar.dart';
-import 'package:paclub/frontend/widgets/toast.dart';
 import 'package:paclub/utils/app_response.dart';
 
 class RegisterAccountController extends GetxController {

@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
 
 class OpacityChangeContainer extends StatelessWidget {
-  final Widget child;
-  final bool isShow; // 根据 isShow 的值自动做显现隐藏
-  final Duration duration;
-  final Curve curve;
-
   /// [文件说明]
   /// - opacity_change_container 用来做透明度变化的 container
   ///
@@ -24,6 +19,12 @@ class OpacityChangeContainer extends StatelessWidget {
     this.duration = const Duration(milliseconds: 500),
     this.curve = Curves.linearToEaseOut,
   }) : super(key: key);
+
+  final Widget child;
+  final bool isShow;
+  final Duration duration;
+  final Curve curve;
+
   @override
   Widget build(BuildContext context) {
     return AnimatedOpacity(

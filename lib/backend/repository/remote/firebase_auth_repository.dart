@@ -40,6 +40,8 @@ class FirebaseAuthRepository extends GetxService {
   Future<void> reload() async {
     try {
       await user!.reload();
+    } on FirebaseException catch (e) {
+      logger3.w(e.code);
     } catch (e) {
       throw e;
     }
