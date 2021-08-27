@@ -9,9 +9,9 @@ import 'package:paclub/frontend/widgets/notifications/notifications.dart';
 import 'package:paclub/utils/logger.dart';
 import 'package:paclub/utils/app_response.dart';
 
-class AuthController extends GetxController {
-  final AuthModule authModule = Get.find();
-  late AppTimer countdownTimer = AppTimer();
+class AuthEmailController extends GetxController {
+  final AuthModule authModule = Get.put(AuthModule());
+  final AppTimer countdownTimer = AppTimer();
   int countdown = 0;
 
   Future<void> sendEmailVerification(int time) async {
@@ -43,7 +43,6 @@ class AuthController extends GetxController {
   }
 
   bool isEmailVerified() {
-    authModule.reload();
     if (authModule.isEmailVerified()) {
       return true;
     } else {
@@ -60,13 +59,13 @@ class AuthController extends GetxController {
 
   @override
   void onInit() {
-    logger.i('启用 AuthController');
+    logger.i('启用 AuthEmailController');
     super.onInit();
   }
 
   @override
   void onClose() {
-    logger.w('关闭 AuthController');
+    logger.w('关闭 AuthEmailController');
     super.onClose();
   }
 }

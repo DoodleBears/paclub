@@ -10,6 +10,6 @@ class AppBinding implements Bindings {
     // 检查网络用的 Provider
     Get.lazyPut(() => InternetProvider());
     // 授权认证服务的 Service
-    Get.lazyPut(() => FirebaseAuthRepository());
+    Get.put(FirebaseAuthRepository());
   }
 }

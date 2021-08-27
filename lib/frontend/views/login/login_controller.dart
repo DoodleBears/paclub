@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:paclub/frontend/modules/auth_module.dart';
 import 'package:paclub/frontend/routes/app_pages.dart';
 import 'package:paclub/frontend/utils/timer.dart';
-import 'package:paclub/frontend/views/auth/auth_controller.dart';
+import 'package:paclub/frontend/views/auth/auth_email_controller.dart';
 import 'package:paclub/frontend/widgets/notifications/notifications.dart';
 import 'package:paclub/utils/logger.dart';
 import 'package:paclub/utils/app_response.dart';
@@ -17,8 +17,8 @@ import 'package:paclub/utils/app_response.dart';
 // feat_2: Toast信息提示，当用户的操作出现失败时，跳出提示
 // feat_3: 显示/隐藏 密码(visibility)
 class LoginController extends GetxController {
-  final AuthModule authModule = Get.find();
-  final AuthController authController = Get.find();
+  final AuthModule authModule = Get.put(AuthModule());
+  final AuthEmailController authEmailController = Get.find();
   final AppTimer countdownTimer = AppTimer();
 
   // 等待登录后的回传
@@ -65,9 +65,9 @@ class LoginController extends GetxController {
     if (appResponse.data != null) {
       Get.until((route) => false);
       Get.toNamed(Routes.HOME);
-    } else {
-      toastBottom(appResponse.message);
     }
+    toastBottom(appResponse.message);
+
     isLoading = false;
     update();
   }
@@ -89,7 +89,7 @@ class LoginController extends GetxController {
     final AppResponse appResponse =
         await authModule.signInWithEmail(username, password);
     if (appResponse.data != null) {
-      if (authController.isEmailVerified()) {
+      if (authEmailController.isEmailVerified()) {
         Get.until((route) => false);
         Get.toNamed(Routes.HOME);
       } else {

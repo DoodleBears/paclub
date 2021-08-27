@@ -1,6 +1,4 @@
 import 'package:get/get.dart';
-import 'package:paclub/backend/api/auth_api.dart';
-import 'package:paclub/frontend/modules/auth_module.dart';
 import 'package:paclub/utils/logger.dart';
 import 'splash_controller.dart';
 
@@ -11,8 +9,6 @@ class SplashBinding implements Bindings {
   @override
   void dependencies() {
     logger.i('[自动绑定]依赖注入 —— SplashBinding');
-    Get.lazyPut(() => AuthApi());
-    Get.lazyPut(() => AuthModule());
 
     Get.put<SplashController>(SplashController());
   }

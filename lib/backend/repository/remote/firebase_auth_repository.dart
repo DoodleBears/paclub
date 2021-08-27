@@ -2,7 +2,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:paclub/frontend/utils/providers/internet_provider.dart';
 import 'package:paclub/utils/logger.dart';
 import 'package:paclub/utils/app_response.dart';
 
@@ -20,20 +19,24 @@ import 'package:paclub/utils/app_response.dart';
 ///   - 存储用户的资料
 ///   - 点赞, 等各种跟User有关的操作前需要获取uid
 class FirebaseAuthRepository extends GetxService {
+  // 之所以 FirebaseAuthRepository 需要是 GetxService，
+  // 是因为需要长时间存在（监听User State），不能用 static （class function）的形式调用
+  // 所以依赖它的 API 也不行
   static const String kSignInRequiredError = 'sign_in_required';
   static const String kSignInCanceledError = 'sign_in_canceled';
   static const String kSignInSuccessedError = 'sign_in_successed';
   static const String kSignInFailedError = 'sign_in_failed';
-  static const String kSignOutSuccessedError = 'sign_in_successed';
-  static const String kSignOutFailedError = 'sign_in_failed';
+  static const String kSignOutSuccessedError = 'sign_out_successed';
+  static const String kSignOutFailedError = 'sign_out_failed';
   static const String kNetworkError = 'network_error';
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final InternetProvider internetProvider = Get.find();
+  // final Rx<User?> _user = FirebaseAuth.instance.currentUser.obs;
+  User? _user = FirebaseAuth.instance.currentUser;
 
   /// [取得用户类] 回传 User instance（Firebase）
   User? get user {
-    return _auth.currentUser;
+    return _user;
   }
 
   /// [重载用户] 当用户登陆或切换状态时候需要用到
@@ -49,7 +52,7 @@ class FirebaseAuthRepository extends GetxService {
 
   /// [检测是否登陆]
   bool isLogin() {
-    if (user == null || isEmailVerified() == false) {
+    if (user == null) {
       return false;
     }
     return true;
@@ -103,8 +106,8 @@ class FirebaseAuthRepository extends GetxService {
 
   /// [检查用户 Email 认证]
   bool isEmailVerified() {
-    reload();
-    logger.d('邮箱认证状态: ' + (user!.emailVerified ? '已认证' : '未认证'));
+    reload(); // 用户认证邮箱后 authStateChanges().listen 并不会监听到，需要自己 reload
+    logger3.d('邮箱认证状态: ' + (user!.emailVerified ? '已认证' : '未认证'));
 
     return user!.emailVerified;
   }
@@ -134,7 +137,9 @@ class FirebaseAuthRepository extends GetxService {
       // 等待用户完整Google授权的response, 如果用户取消, 则 googleUser 为 null
 
       if (googleUser == null) {
-        return AppResponse(kSignInCanceledError, null);
+        AppResponse appResponse = AppResponse(kSignInCanceledError, null);
+        logger3.w(appResponse.toString());
+        return appResponse;
       }
 
       final GoogleSignInAuthentication googleAuth =
@@ -168,10 +173,7 @@ class FirebaseAuthRepository extends GetxService {
   Future<AppResponse> signOut() async {
     try {
       String uid = user!.uid;
-      // 登出以 Email 方式登陆的 User
       await _auth.signOut();
-      // 登出以 Google账号 方式登陆的User
-      await GoogleSignIn().signOut();
       logger3.d('登出用户ID: ' + uid);
       return AppResponse(kSignOutSuccessedError, uid);
     } catch (e) {
@@ -183,20 +185,25 @@ class FirebaseAuthRepository extends GetxService {
   /// [初始化 Service] 绑定监听 user 和 connectivity 状态
   @override
   void onInit() {
-    super.onInit();
     logger3.i('初始化 FirebaseAuthRepository');
-    // 注入 FirebaseAuth
-    Get.lazyPut(() => _auth);
     // 一旦 _auth 状态改变, _user 就会被重新赋值
-    // _user.bindStream(_auth.authStateChanges());
     _auth.authStateChanges().listen((User? user) {
-      // 一旦用户丢失在线状态
+      _user = user;
+      // 一旦用户丢失在线状态或未验证邮箱
+      // 则强制用户返回主页(比如重设密码时，会强制下线所有终端上的该用户账号)
       if (user == null) {
         logger.d('Firebase 检测到用户状态为: 未登录');
       } else {
-        logger.d('用户登录: ' + user.uid);
+        // 之所以不在此处统一设置检测用户在线，自动跳转主页是因为可能存在用户在其他页面登录的情况
+        // 此外，不应该在 Repository 有页面交互的代码
+        logger.d('Firebase 检测到用户状态为: 登录\n用户ID: ' + user.uid);
+
+        if (user.emailVerified == false) {
+          // 当登录用户没有验证邮箱时
+        } else {}
       }
     });
+    super.onInit();
   }
 
   /// [结束 Service] 关闭监听 user 状态

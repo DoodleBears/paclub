@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 import 'package:paclub/frontend/constants/colors.dart';
 import 'package:paclub/frontend/modules/auth_module.dart';
 import 'package:paclub/frontend/utils/timer.dart';
-import 'package:paclub/frontend/views/auth/auth_controller.dart';
+import 'package:paclub/frontend/views/auth/auth_email_controller.dart';
 import 'package:paclub/frontend/views/register/form/register_form_controller.dart';
 import 'package:paclub/frontend/routes/app_pages.dart';
 import 'package:paclub/frontend/widgets/notifications/notifications.dart';
@@ -14,9 +14,9 @@ import 'package:paclub/utils/app_response.dart';
 
 class RegisterAccountController extends GetxController {
   // 调用 AuthModule 认证模块
-  final AuthModule authModule = Get.find();
-  // 调用 AuthController 认证控制器
-  final AuthController authController = Get.find();
+  final AuthModule authModule = Get.put(AuthModule());
+  // 调用 AuthEmailController Email认证控制器
+  final AuthEmailController authEmailController = Get.find();
   // 从 form controller 获取用户填写的用户名
   final RegisterFormController registerFormController = Get.find();
   // 检查网络状态
@@ -69,8 +69,8 @@ class RegisterAccountController extends GetxController {
     update();
   }
 
-  Future<void> login() async {
-    if (authController.isEmailVerified()) {
+  Future<void> loginAfterSignUp() async {
+    if (authEmailController.isEmailVerified()) {
       Get.until((route) => false);
       Get.toNamed(Routes.HOME);
     } else {

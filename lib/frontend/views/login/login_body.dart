@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:paclub/frontend/constants/constants.dart';
-import 'package:paclub/frontend/views/auth/auth_controller.dart';
+import 'package:paclub/frontend/views/auth/auth_email_controller.dart';
 import 'package:paclub/frontend/views/login/components/components.dart';
 import 'package:paclub/frontend/views/login/login_controller.dart';
 import 'package:paclub/frontend/widgets/buttons/buttons.dart';
@@ -13,7 +13,7 @@ const int countdownTime = 60;
 
 // 登录界面的 View 部分，使用 GetView<LoginController> 直接注入 Controller，
 class LoginBody extends GetView<LoginController> {
-  final AuthController authController = Get.find();
+  final AuthEmailController authEmailController = Get.find();
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -87,17 +87,18 @@ class LoginBody extends GetView<LoginController> {
                           : 0,
                     ),
                     //* 重送 resend 按钮
-                    GetBuilder<AuthController>(
+                    GetBuilder<AuthEmailController>(
                       builder: (_) {
                         return FadeInCountdownButton(
                           icon: Icon(Icons.send),
                           isShow: controller.isResendButtonShow,
                           height: Get.height * 0.08,
-                          onPressed: () => authController
+                          onPressed: () => authEmailController
                               .sendEmailVerification(countdownTime),
                           text: 'Resend',
-                          countdown: authController.countdown,
-                          isLoading: authController.countdown == countdownTime,
+                          countdown: authEmailController.countdown,
+                          isLoading:
+                              authEmailController.countdown == countdownTime,
                         );
                       },
                     ),

@@ -8,7 +8,7 @@ import 'package:paclub/utils/app_response.dart';
 
 /// [认证模块]
 class AuthModule extends GetxController {
-  final AuthApi _authApi = Get.find<AuthApi>();
+  final AuthApi _authApi = Get.put(AuthApi());
 
   bool isLogin() {
     return _authApi.isLogin();
@@ -33,6 +33,7 @@ class AuthModule extends GetxController {
     return _authApi.sendEmailVerification();
   }
 
+  // TODO: 尝试把功能（检查密码强度等，放在 Module 中
   Future<AppResponse> signInWithEmail(String email, String password) async {
     return _authApi.signInWithEmail(email, password);
   }
@@ -43,15 +44,12 @@ class AuthModule extends GetxController {
 
   Future<void> signOut() async {
     AppResponse appResponse = await _authApi.signOut();
+
     if (appResponse.data != null) {
-      // [清空所有页面] pop all the page in stack
-      Get.until((route) => false);
-      // 跳转到 authentication 页面
-      Get.toNamed(Routes.AUTH);
-      toastBottom('Sign out 成功');
-    } else {
-      toastBottom('Sign out 失败');
+      Get.until((route) => false); // [清空所有页面] pop all the page in stack
+      Get.toNamed(Routes.AUTH); // 跳转到 authentication 页面
     }
+    toastBottom(appResponse.message);
   }
 
   @override

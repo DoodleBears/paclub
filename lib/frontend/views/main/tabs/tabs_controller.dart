@@ -1,11 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:paclub/frontend/views/main/home/home_page.dart';
 import 'package:paclub/utils/logger.dart';
 
 class TabsController extends GetxController {
   int currentIndex = 0;
-  Widget currentPage = HomePage();
 
   void setIndex(int index) {
     currentIndex = index;

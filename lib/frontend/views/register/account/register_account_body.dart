@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:paclub/frontend/constants/constants.dart';
-import 'package:paclub/frontend/views/auth/auth_controller.dart';
+import 'package:paclub/frontend/views/auth/auth_email_controller.dart';
 import 'package:paclub/frontend/views/login/components/components.dart';
 import 'package:paclub/frontend/views/register/account/register_account_controller.dart';
 import 'package:paclub/frontend/widgets/buttons/buttons.dart';
@@ -11,7 +11,7 @@ import 'package:paclub/frontend/widgets/widgets.dart';
 const int countdownTime = 60;
 
 class RegisterAccountBody extends GetView<RegisterAccountController> {
-  final AuthController authController = Get.find();
+  final AuthEmailController authController = Get.find();
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -111,7 +111,7 @@ class RegisterAccountBody extends GetView<RegisterAccountController> {
                           ? 3 + Get.height * 0.02
                           : 0,
                     ),
-                    GetBuilder<AuthController>(
+                    GetBuilder<AuthEmailController>(
                       builder: (_) {
                         return FadeInCountdownButton(
                           icon: Icon(Icons.send),
@@ -142,7 +142,7 @@ class RegisterAccountBody extends GetView<RegisterAccountController> {
                   text: controller.isRegisterd ? 'Login' : 'Sign Up',
                   // 点击后确认登录
                   onPressed: controller.isRegisterd
-                      ? () async => controller.login()
+                      ? () async => controller.loginAfterSignUp()
                       : () async => await controller.registerWithEmail(context),
                   // 在点击后触发loading效果，加载结束后再次触发，取消loading
                   isLoading: controller.isLoading,

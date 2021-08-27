@@ -57,6 +57,7 @@ class RegisterFormBody extends GetView<RegisterFormController> {
   Obx form_2() {
     return Obx(
       () {
+        logger.w('重新渲染 form_2');
         return FadeInScaleContainer(
           width: Get.width * 0.8,
           height: controller.page.value == 2 ? 16 + Get.height * 0.20 : 0.0,
