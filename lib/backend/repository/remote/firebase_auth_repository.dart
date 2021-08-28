@@ -24,9 +24,9 @@ class FirebaseAuthRepository extends GetxService {
   // 所以依赖它的 API 也不行
   static const String kSignInRequiredError = 'sign_in_required';
   static const String kSignInCanceledError = 'sign_in_canceled';
-  static const String kSignInSuccessedError = 'sign_in_successed';
+  static const String kSignInSuccessed = 'sign_in_successed';
   static const String kSignInFailedError = 'sign_in_failed';
-  static const String kSignOutSuccessedError = 'sign_out_successed';
+  static const String kSignOutSuccessed = 'sign_out_successed';
   static const String kSignOutFailedError = 'sign_out_failed';
   static const String kNetworkError = 'network_error';
 
@@ -154,7 +154,7 @@ class FirebaseAuthRepository extends GetxService {
       final UserCredential userCredential =
           await _auth.signInWithCredential(credential);
 
-      return AppResponse(kSignInSuccessedError, userCredential);
+      return AppResponse(kSignInSuccessed, userCredential);
     } on FirebaseAuthException catch (e) {
       // TODO: 解决如果账号已经用 email 注册登陆后, 想用同一个 email 对应的 google account 登陆的情况
       AppResponse appResponse =
@@ -175,7 +175,7 @@ class FirebaseAuthRepository extends GetxService {
       String uid = user!.uid;
       await _auth.signOut();
       logger3.d('登出用户ID: ' + uid);
-      return AppResponse(kSignOutSuccessedError, uid);
+      return AppResponse(kSignOutSuccessed, uid);
     } catch (e) {
       logger3.w('Sign out 失败');
       return AppResponse(kSignOutFailedError, null, e.runtimeType.toString());
