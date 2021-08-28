@@ -24,7 +24,8 @@ class ProfilePage extends GetView<UserController> {
               return ProfileWidget(
                 imagePath: controller.imagePath,
                 onClicked: () {
-                  Get.toNamed(Routes.EDIT_PROFILE);
+                  Get.toNamed(
+                      Routes.TABS + Routes.MYUSER + Routes.EDIT_PROFILE);
                 },
               );
             },

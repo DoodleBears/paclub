@@ -54,7 +54,8 @@ class AuthBody extends StatelessWidget {
                           vertical: context.height * 0.008),
                       shadowColor: Colors.transparent,
                     ),
-                    onPressed: () => Get.toNamed(Routes.REGISTER_FORM),
+                    onPressed: () =>
+                        Get.toNamed(Routes.AUTH + Routes.REGISTER_FORM),
                     child: Text(
                       '创建账号',
                       style: TextStyle(
@@ -80,7 +81,7 @@ class AuthBody extends StatelessWidget {
                   ),
                 ),
                 GestureDetector(
-                  onTap: () => Get.toNamed(Routes.LOGIN),
+                  onTap: () => Get.toNamed(Routes.AUTH + Routes.LOGIN),
                   child: Text(
                     '登录',
                     style: TextStyle(

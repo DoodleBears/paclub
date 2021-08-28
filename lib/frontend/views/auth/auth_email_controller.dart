@@ -10,7 +10,7 @@ import 'package:paclub/utils/logger.dart';
 import 'package:paclub/utils/app_response.dart';
 
 class AuthEmailController extends GetxController {
-  final AuthModule authModule = Get.put(AuthModule());
+  final AuthModule authModule = Get.find<AuthModule>();
   final AppTimer countdownTimer = AppTimer();
   int countdown = 0;
 

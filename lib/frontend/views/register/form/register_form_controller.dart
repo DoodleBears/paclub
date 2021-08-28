@@ -21,7 +21,7 @@ class RegisterFormController extends GetxController {
         page.value++;
         hideKeyboard(context);
       } else if (page.value == 2) {
-        Get.toNamed(Routes.REGISTER_ACCOUNT);
+        Get.toNamed(Routes.AUTH + Routes.REGISTER_ACCOUNT);
       }
     }
   }

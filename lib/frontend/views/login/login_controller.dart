@@ -17,8 +17,9 @@ import 'package:paclub/utils/app_response.dart';
 // feat_2: Toast信息提示，当用户的操作出现失败时，跳出提示
 // feat_3: 显示/隐藏 密码(visibility)
 class LoginController extends GetxController {
-  final AuthModule authModule = Get.put(AuthModule());
-  final AuthEmailController authEmailController = Get.find();
+  final AuthModule authModule = Get.find<AuthModule>();
+  final AuthEmailController authEmailController =
+      Get.find<AuthEmailController>();
   final AppTimer countdownTimer = AppTimer();
 
   // 等待登录后的回传
@@ -64,7 +65,7 @@ class LoginController extends GetxController {
 
     if (appResponse.data != null) {
       Get.until((route) => false);
-      Get.toNamed(Routes.HOME);
+      Get.toNamed(Routes.TABS);
     }
     toastBottom(appResponse.message);
 
@@ -91,7 +92,7 @@ class LoginController extends GetxController {
     if (appResponse.data != null) {
       if (authEmailController.isEmailVerified()) {
         Get.until((route) => false);
-        Get.toNamed(Routes.HOME);
+        Get.toNamed(Routes.TABS);
       } else {
         isNeedToResend = true;
         update();

@@ -8,7 +8,7 @@ import 'package:paclub/utils/app_response.dart';
 
 /// [认证模块]
 class AuthModule extends GetxController {
-  final AuthApi _authApi = Get.put(AuthApi());
+  final AuthApi _authApi = Get.find();
 
   bool isLogin() {
     return _authApi.isLogin();

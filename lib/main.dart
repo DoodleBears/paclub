@@ -23,7 +23,7 @@ Future<void> main() async {
 
   // 注入UserPreferences
   await UserPreferences.init();
-  Get.lazyPut(() => UserController());
+  Get.lazyPut<UserController>(() => UserController());
 
   runApp(App());
 }

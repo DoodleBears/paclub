@@ -14,7 +14,7 @@ import 'package:paclub/utils/app_response.dart';
 
 class RegisterAccountController extends GetxController {
   // 调用 AuthModule 认证模块
-  final AuthModule authModule = Get.put(AuthModule());
+  final AuthModule authModule = Get.find();
   // 调用 AuthEmailController Email认证控制器
   final AuthEmailController authEmailController = Get.find();
   // 从 form controller 获取用户填写的用户名
@@ -72,7 +72,7 @@ class RegisterAccountController extends GetxController {
   Future<void> loginAfterSignUp() async {
     if (authEmailController.isEmailVerified()) {
       Get.until((route) => false);
-      Get.toNamed(Routes.HOME);
+      Get.toNamed(Routes.TABS);
     } else {
       await Future.delayed(const Duration(seconds: 1));
       isResendButtonShow = true;
