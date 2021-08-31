@@ -48,3 +48,4 @@ app.*.map.json
 
 # app_icon
 assets/icon/app_icon
+storage.rules

@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:paclub/constants/emulator_constant.dart';
 import 'package:paclub/utils/logger.dart';
 import 'package:paclub/utils/app_response.dart';
 
@@ -29,14 +30,48 @@ class FirebaseAuthRepository extends GetxService {
   static const String kSignOutSuccessed = 'sign_out_successed';
   static const String kSignOutFailedError = 'sign_out_failed';
   static const String kNetworkError = 'network_error';
-
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
   // final Rx<User?> _user = FirebaseAuth.instance.currentUser.obs;
   User? _user = FirebaseAuth.instance.currentUser;
 
   /// [取得用户类] 回传 User instance（Firebase）
   User? get user {
     return _user;
+  }
+
+  /// [初始化 Service] 绑定监听 user 和 connectivity 状态
+  @override
+  void onInit() async {
+    logger3.i('初始化 FirebaseAuthRepository' + (useEmulator ? '(Emulator)' : ''));
+    // if (useEmulator) {
+    //   await _auth.useAuthEmulator(localhost, authPort);
+    // }
+    // 一旦 _auth 状态改变, _user 就会被重新赋值
+    _auth.authStateChanges().listen((User? user) {
+      _user = user;
+      // 一旦用户丢失在线状态或未验证邮箱
+      // 则强制用户返回主页(比如重设密码时，会强制下线所有终端上的该用户账号)
+      if (user == null) {
+        logger.d('Firebase 检测到用户状态为: 未登录');
+      } else {
+        // 之所以不在此处统一设置检测用户在线，自动跳转主页是因为可能存在用户在其他页面登录的情况
+        // 此外，不应该在 Repository 有页面交互的代码
+        logger.d('Firebase 检测到用户状态为: 登录\n用户ID: ' + user.uid);
+
+        if (user.emailVerified == false) {
+          // 当登录用户没有验证邮箱时
+        } else {}
+      }
+    });
+    super.onInit();
+  }
+
+  /// [结束 Service] 关闭监听 user 状态
+  @override
+  void onClose() {
+    logger.w('关闭 FirebaseAuthRepository' + (useEmulator ? '(Emulator)' : ''));
+    super.onClose();
   }
 
   /// [重载用户] 当用户登陆或切换状态时候需要用到
@@ -180,36 +215,5 @@ class FirebaseAuthRepository extends GetxService {
       logger3.w('Sign out 失败');
       return AppResponse(kSignOutFailedError, null, e.runtimeType.toString());
     }
-  }
-
-  /// [初始化 Service] 绑定监听 user 和 connectivity 状态
-  @override
-  void onInit() {
-    logger3.i('初始化 FirebaseAuthRepository');
-    // 一旦 _auth 状态改变, _user 就会被重新赋值
-    _auth.authStateChanges().listen((User? user) {
-      _user = user;
-      // 一旦用户丢失在线状态或未验证邮箱
-      // 则强制用户返回主页(比如重设密码时，会强制下线所有终端上的该用户账号)
-      if (user == null) {
-        logger.d('Firebase 检测到用户状态为: 未登录');
-      } else {
-        // 之所以不在此处统一设置检测用户在线，自动跳转主页是因为可能存在用户在其他页面登录的情况
-        // 此外，不应该在 Repository 有页面交互的代码
-        logger.d('Firebase 检测到用户状态为: 登录\n用户ID: ' + user.uid);
-
-        if (user.emailVerified == false) {
-          // 当登录用户没有验证邮箱时
-        } else {}
-      }
-    });
-    super.onInit();
-  }
-
-  /// [结束 Service] 关闭监听 user 状态
-  @override
-  void onClose() {
-    logger.w('关闭 FirebaseAuthRepository');
-    super.onClose();
   }
 }

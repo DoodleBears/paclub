@@ -11,6 +11,7 @@ class ChatroomModel {
   ChatroomModel.fromDoucumentSnapshot(DocumentSnapshot documentSnapshot) {
     if (documentSnapshot.data() != null) {
       Map data = documentSnapshot.data() as Map;
+      // TODO: 修改chatroom的逻辑，把对方的Name也存成document
       userName = data['chatRoomId']
           .replaceAll("_", "")
           .replaceAll(authApi.user!.displayName, "");

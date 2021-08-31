@@ -33,7 +33,6 @@ class AuthModule extends GetxController {
     return _authApi.sendEmailVerification();
   }
 
-  // TODO: 尝试把功能（检查密码强度等，放在 Module 中
   Future<AppResponse> signInWithEmail(String email, String password) async {
     return _authApi.signInWithEmail(email, password);
   }
