@@ -43,10 +43,14 @@ class FirebaseAuthRepository extends GetxService {
   /// [初始化 Service] 绑定监听 user 和 connectivity 状态
   @override
   void onInit() async {
-    logger3.i('初始化 FirebaseAuthRepository' + (useEmulator ? '(Emulator)' : ''));
-    // if (useEmulator) {
-    //   await _auth.useAuthEmulator(localhost, authPort);
-    // }
+    logger3.i('初始化 FirebaseAuthRepository' +
+        (useAuthEmulator ? '(useAuthEmulator)' : ''));
+
+    if (useAuthEmulator) {
+      logger.w('设定 FirebaseAuth 为 useAuthEmulator');
+      await _auth.useAuthEmulator(localhost, authPort);
+    }
+
     // 一旦 _auth 状态改变, _user 就会被重新赋值
     _auth.authStateChanges().listen((User? user) {
       _user = user;
@@ -70,7 +74,8 @@ class FirebaseAuthRepository extends GetxService {
   /// [结束 Service] 关闭监听 user 状态
   @override
   void onClose() {
-    logger.w('关闭 FirebaseAuthRepository' + (useEmulator ? '(Emulator)' : ''));
+    logger.w('关闭 FirebaseAuthRepository' +
+        (useFirestoreEmulator ? '(useAuthEmulator)' : ''));
     super.onClose();
   }
 

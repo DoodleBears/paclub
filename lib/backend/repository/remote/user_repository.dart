@@ -15,8 +15,9 @@ class UserRepository extends GetxController {
 
   @override
   void onInit() {
-    logger3.i('初始化 UserRepository' + (useEmulator ? '(Emulator)' : ''));
-    if (useEmulator) {
+    logger3.i('初始化 UserRepository' +
+        (useFirestoreEmulator ? '(useFirestoreEmulator)' : ''));
+    if (useFirestoreEmulator) {
       _firestore.useFirestoreEmulator(localhost, firestorePort);
       _firestore.settings = Settings(
         host: '$localhost:$firestorePort',
@@ -30,7 +31,8 @@ class UserRepository extends GetxController {
 
   @override
   void onClose() {
-    logger.w('关闭 UserRepository' + (useEmulator ? '(Emulator)' : ''));
+    logger.w('关闭 UserRepository' +
+        (useFirestoreEmulator ? '(useFirestoreEmulator)' : ''));
     super.onClose();
   }
 

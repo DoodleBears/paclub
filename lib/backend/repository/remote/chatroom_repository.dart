@@ -23,8 +23,9 @@ class ChatroomRepository extends GetxController {
 
   @override
   void onInit() {
-    logger3.i('初始化 ChatroomRepository' + (useEmulator ? '(Emulator)' : ''));
-    if (useEmulator) {
+    logger3.i('初始化 ChatroomRepository' +
+        (useFirestoreEmulator ? '(useFirestoreEmulator)' : ''));
+    if (useFirestoreEmulator) {
       _firestore.useFirestoreEmulator(localhost, firestorePort);
       _firestore.settings = Settings(
         host: '$localhost:$firestorePort',
@@ -39,7 +40,8 @@ class ChatroomRepository extends GetxController {
 
   @override
   void onClose() {
-    logger.w('关闭 ChatroomRepository' + (useEmulator ? '(Emulator)' : ''));
+    logger.w('关闭 ChatroomRepository' +
+        (useFirestoreEmulator ? '(useFirestoreEmulator)' : ''));
     super.onClose();
   }
 
