@@ -7,13 +7,15 @@ abstract class Routes {
   static const SPLASH = '/splash';
   static const AUTH = '/auth';
   static const LOGIN = '/login';
-  static const REGISTER = '/register';
+  // static const REGISTER = '/register';
   static const REGISTER_FORM = '/register/form';
   static const REGISTER_ACCOUNT = '/register/account';
   static const TABS = '/tabs';
   static const HOME = '/home';
   static const CARD = '/card';
   static const MESSAGE = '/message';
+  static const CHATROOMLIST = '/chatroom_list';
+  static const CHATROOM = '/chatroom';
   static const NOTIFICATION = '/notification';
   static const MYUSER = '/user/';
   // TODO: 实现查看其他用户的个人信息页面

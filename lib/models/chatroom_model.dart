@@ -1,10 +1,8 @@
-import 'package:get/get.dart';
-import 'package:paclub/backend/api/auth_api.dart';
+import 'package:paclub/helper/constants.dart';
 import 'package:paclub/utils/logger.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ChatroomModel {
-  final AuthApi authApi = Get.find<AuthApi>();
   late String userName;
   late String chatroomId;
 
@@ -14,7 +12,7 @@ class ChatroomModel {
       // TODO: 修改chatroom的逻辑，把对方的Name也存成document
       userName = data['chatRoomId']
           .replaceAll("_", "")
-          .replaceAll(authApi.user!.displayName, "");
+          .replaceAll(Constants.myName, "");
       chatroomId = data['chatRoomId'];
       logger.d(userName);
     } else {

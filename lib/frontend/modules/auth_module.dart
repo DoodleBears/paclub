@@ -21,8 +21,8 @@ class AuthModule extends GetxController {
   void reload() => _authApi.reload();
 
   Future<AppResponse> registerWithEmail(
-      String email, String password, String name) async {
-    return _authApi.registerWithEmail(email, password, name);
+      String email, String password, String name, String bio) async {
+    return _authApi.registerWithEmail(email, password, name, bio);
   }
 
   bool isEmailVerified() {

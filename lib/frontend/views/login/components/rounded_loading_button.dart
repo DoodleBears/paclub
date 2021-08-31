@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:paclub/frontend/constants/constants.dart';
+import 'package:paclub/frontend/widgets/buttons/rounded_button.dart';
 import 'package:paclub/frontend/widgets/containers/containers.dart';
 
 class RoundedLoadingButton extends StatelessWidget {
@@ -43,17 +44,8 @@ class RoundedLoadingButton extends StatelessWidget {
       width: width ?? Get.width * 0.8,
       height: height ?? Get.height * 0.08,
       isShow: true,
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          shape:
-              // RoundedRectangleBorder(borderRadius: BorderRadius.circular(14.0)),
-              RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(borderRadius)),
-          primary: primaryColor,
-          padding: EdgeInsets.symmetric(vertical: Get.pixelRatio * 3),
-          // 去除 Button 默认的阴影
-          shadowColor: Colors.transparent,
-        ),
+      child: RoundedButton(
+        color: color,
         onPressed: onPressed,
         child: Stack(
           alignment: AlignmentDirectional.center,

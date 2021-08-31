@@ -69,6 +69,11 @@ class RegisterAccountController extends GetxController {
     update();
   }
 
+  void loginSkipAuthorization() {
+    Get.until((route) => false);
+    Get.toNamed(Routes.TABS);
+  }
+
   Future<void> loginAfterSignUp() async {
     if (authEmailController.isEmailVerified()) {
       Get.until((route) => false);
@@ -95,7 +100,10 @@ class RegisterAccountController extends GetxController {
     logger.d('提交注册信息，开始进行账号注册');
 
     final AppResponse appResponse = await authModule.registerWithEmail(
-        _username, _password, registerFormController.name);
+        _username,
+        _password,
+        registerFormController.name,
+        registerFormController.bio);
 
     if (appResponse.data != null) {
       isRegisterd = true;

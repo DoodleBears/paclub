@@ -5,6 +5,7 @@ import 'package:paclub/frontend/views/auth/auth_email_controller.dart';
 import 'package:paclub/frontend/views/login/components/components.dart';
 import 'package:paclub/frontend/views/register/account/register_account_controller.dart';
 import 'package:paclub/frontend/widgets/buttons/buttons.dart';
+import 'package:paclub/frontend/widgets/buttons/rounded_button.dart';
 import 'package:paclub/r.dart';
 import 'package:paclub/frontend/widgets/widgets.dart';
 
@@ -98,7 +99,6 @@ class RegisterAccountBody extends GetView<RegisterAccountController> {
             ),
             SizedBox(height: 3 + Get.height * 0.02),
 
-            // *  重送 resend 按钮
             GetBuilder<RegisterAccountController>(
               builder: (_) {
                 return Column(
@@ -111,6 +111,7 @@ class RegisterAccountBody extends GetView<RegisterAccountController> {
                           ? 3 + Get.height * 0.02
                           : 0,
                     ),
+                    // *  重送 resend 按钮
                     GetBuilder<AuthEmailController>(
                       builder: (_) {
                         return FadeInCountdownButton(
@@ -126,6 +127,35 @@ class RegisterAccountBody extends GetView<RegisterAccountController> {
                           // isLoading 的值一般和 倒计时设定的值一致，主要用于在联网请求的时候
                           // 有 loading 动画，只有请求成功之后才开始倒计时
                           isLoading: authController.countdown == countdownTime,
+                        );
+                      },
+                    ),
+                    AnimatedSizedBox(
+                      width: Get.width * 0.8,
+                      height: controller.isResendButtonShow
+                          ? 3 + Get.height * 0.02
+                          : 0,
+                    ),
+                    // *  直接登录 skip auth 按钮
+                    GetBuilder<AuthEmailController>(
+                      builder: (_) {
+                        return FadeInScaleContainer(
+                          isShow: controller.isResendButtonShow,
+                          height: Get.height * 0.08,
+                          width: Get.width * 0.8,
+                          child: RoundedButton(
+                            onPressed: () =>
+                                controller.loginSkipAuthorization(),
+                            color: primaryColor,
+                            child: Text(
+                              'Skip',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 24.0,
+                              ),
+                            ),
+                          ),
                         );
                       },
                     ),

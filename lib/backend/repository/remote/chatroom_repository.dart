@@ -56,7 +56,7 @@ class ChatroomRepository extends GetxController {
   Future<AppResponse> addChatRoom(Map chatRoom, String chatRoomId) async {
     return _chatroom
         .doc(chatRoomId)
-        // TODO：set 和 add，set 会 overwrite，需要注意
+        // TODO set 和 add，set 会 overwrite，需要注意
         .set(chatRoom)
         .then(
       (_) => AppResponse(kAddChatroomSuccessed, chatRoomId),
@@ -67,7 +67,7 @@ class ChatroomRepository extends GetxController {
     );
   }
 
-// TODO: Stream 类型的 return 需要包装为 AppResponse 吗？
+// TODO Stream 类型的 return 需要包装为 AppResponse 吗？
 // FIXME: 用 .snapshots() 是否不会有 error 需要catch
   Stream<List<ChatMessageModel>> getChats(String chatroomId) {
     return _chatroom

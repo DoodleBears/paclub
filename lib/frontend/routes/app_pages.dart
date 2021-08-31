@@ -5,6 +5,10 @@ import 'package:paclub/frontend/views/auth/auth_binding.dart';
 import 'package:paclub/frontend/views/auth/auth_page.dart';
 import 'package:paclub/frontend/views/main/card/card_binding.dart';
 import 'package:paclub/frontend/views/main/card/card_page.dart';
+import 'package:paclub/frontend/views/main/message/components/chatroom/chatroom_binding.dart';
+import 'package:paclub/frontend/views/main/message/components/chatroom/chatroom_page.dart';
+import 'package:paclub/frontend/views/main/message/components/chatroom_list/chatroom_list_binding.dart';
+import 'package:paclub/frontend/views/main/message/components/chatroom_list/chatroom_list_page.dart';
 import 'package:paclub/frontend/views/main/message/message_binding.dart';
 import 'package:paclub/frontend/views/main/message/message_page.dart';
 import 'package:paclub/frontend/views/main/notification/notification_binding.dart';
@@ -93,6 +97,22 @@ abstract class AppPages {
             binding: MessageBinding(),
             page: () => MessagePage(),
             customTransition: TopLeftMaskBelowLeftTransitions(),
+            children: [
+              GetPage(
+                name: Routes.CHATROOMLIST,
+                binding: ChatroomListBinding(),
+                page: () => ChatroomListPage(),
+                customTransition: TopLeftMaskBelowLeftTransitions(),
+                children: [
+                  GetPage(
+                    name: Routes.CHATROOM,
+                    binding: ChatroomBinding(),
+                    page: () => ChatroomPage(),
+                    customTransition: TopLeftMaskBelowLeftTransitions(),
+                  ),
+                ],
+              ),
+            ],
           ),
           GetPage(
             name: Routes.NOTIFICATION,

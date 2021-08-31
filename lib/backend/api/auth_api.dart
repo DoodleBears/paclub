@@ -42,8 +42,8 @@ class AuthApi extends GetxController {
   ///   - message: [String]错误代码
   ///   - data: 成功: [String]email | 失败: null
   Future<AppResponse> registerWithEmail(
-          String email, String password, String name) async =>
-      firebaseAuthRepository.registerWithEmail(email, password, name);
+          String email, String password, String name, String bio) async =>
+      firebaseAuthRepository.registerWithEmail(email, password, name, bio);
 
   /// [发送认证 Email]
   ///

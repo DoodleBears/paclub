@@ -1,0 +1,30 @@
+import 'package:paclub/backend/repository/remote/chatroom_repository.dart';
+import 'package:paclub/helper/constants.dart';
+import 'package:paclub/models/chatroom_model.dart';
+import 'package:paclub/utils/logger.dart';
+import 'package:get/get.dart';
+
+class ChatroomListController extends GetxController {
+  // Stream chatRooms;
+  final chatroomStream = List<ChatroomModel>.empty().obs;
+
+  final ChatroomRepository chatroomRepository = Get.find<ChatroomRepository>();
+
+  @override
+  void onInit() async {
+    logger.i('启用 ChatroomListController');
+    // 從DatabaseMethods抓取較大量的資料(聊天內容等等)
+    chatroomRepository.getChatroomList(Constants.myName);
+
+    chatroomStream
+        .bindStream(chatroomRepository.getChatroomList(Constants.myName));
+
+    super.onInit();
+  }
+
+  @override
+  void onClose() {
+    logger.w('关闭 ChatroomListController');
+    super.onClose();
+  }
+}

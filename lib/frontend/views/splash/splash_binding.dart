@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:paclub/backend/api/auth_api.dart';
+import 'package:paclub/backend/repository/remote/firebase_auth_repository.dart';
 import 'package:paclub/frontend/modules/auth_module.dart';
 import 'package:paclub/utils/logger.dart';
 import 'splash_controller.dart';
@@ -13,6 +14,7 @@ class SplashBinding implements Bindings {
     logger.i('[自动绑定]依赖注入 —— SplashBinding');
 
     /// Controller 用到的 Module 和 API
+    Get.lazyPut<FirebaseAuthRepository>(() => FirebaseAuthRepository());
     Get.lazyPut<AuthApi>(() => AuthApi());
     Get.lazyPut<AuthModule>(() => AuthModule());
 

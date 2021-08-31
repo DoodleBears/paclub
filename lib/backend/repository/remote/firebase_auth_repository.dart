@@ -2,7 +2,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:paclub/backend/repository/remote/user_repository.dart';
 import 'package:paclub/constants/emulator_constant.dart';
+import 'package:paclub/helper/constants.dart';
+import 'package:paclub/models/user_model.dart';
 import 'package:paclub/utils/logger.dart';
 import 'package:paclub/utils/app_response.dart';
 
@@ -19,7 +22,7 @@ import 'package:paclub/utils/app_response.dart';
 ///   - 用来登出
 ///   - 存储用户的资料
 ///   - 点赞, 等各种跟User有关的操作前需要获取uid
-class FirebaseAuthRepository extends GetxService {
+class FirebaseAuthRepository extends GetxController {
   // 之所以 FirebaseAuthRepository 需要是 GetxService，
   // 是因为需要长时间存在（监听User State），不能用 static （class function）的形式调用
   // 所以依赖它的 API 也不行
@@ -27,11 +30,12 @@ class FirebaseAuthRepository extends GetxService {
   static const String kSignInCanceledError = 'sign_in_canceled';
   static const String kSignInSuccessed = 'sign_in_successed';
   static const String kSignInFailedError = 'sign_in_failed';
+  static const String kAddUserFailedError =
+      'Register success, but failed to add User Info';
   static const String kSignOutSuccessed = 'sign_out_successed';
   static const String kSignOutFailedError = 'sign_out_failed';
   static const String kNetworkError = 'network_error';
   final FirebaseAuth _auth = FirebaseAuth.instance;
-
   // final Rx<User?> _user = FirebaseAuth.instance.currentUser.obs;
   User? _user = FirebaseAuth.instance.currentUser;
 
@@ -54,11 +58,15 @@ class FirebaseAuthRepository extends GetxService {
     // 一旦 _auth 状态改变, _user 就会被重新赋值
     _auth.authStateChanges().listen((User? user) {
       _user = user;
+      // TODO: 更新名字
+
       // 一旦用户丢失在线状态或未验证邮箱
       // 则强制用户返回主页(比如重设密码时，会强制下线所有终端上的该用户账号)
       if (user == null) {
         logger.d('Firebase 检测到用户状态为: 未登录');
       } else {
+        Constants.myUid = user.uid;
+
         // 之所以不在此处统一设置检测用户在线，自动跳转主页是因为可能存在用户在其他页面登录的情况
         // 此外，不应该在 Repository 有页面交互的代码
         logger.d('Firebase 检测到用户状态为: 登录\n用户ID: ' + user.uid);
@@ -100,7 +108,9 @@ class FirebaseAuthRepository extends GetxService {
 
   /// [Email 注册功能] —— 回传字串结果
   Future<AppResponse> registerWithEmail(
-      String email, String password, String name) async {
+      String email, String password, String name, String bio) async {
+    final UserRepository userRepository = Get.find<UserRepository>();
+
     try {
       await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
@@ -108,6 +118,17 @@ class FirebaseAuthRepository extends GetxService {
 
       await user!.updateDisplayName(name);
       logger.d('更新账号信息成功, name是: $name');
+      Constants.myName = name;
+
+      // TODO registerWithEmail 在 Firestore 创建该 User
+      AppResponse appResponse = await userRepository.addUser(UserModel.toJson(
+          uid: user!.uid, displayName: name, email: email, bio: bio));
+
+      if (appResponse.data == null) {
+        logger3.e('添加用户信息到 firestore/user 失败');
+        return AppResponse(kAddUserFailedError, null);
+      }
+      logger.d('添加用户信息到 firestore/user 成功');
 
       return AppResponse('Register success', email);
     } on FirebaseAuthException catch (e) {
@@ -193,6 +214,21 @@ class FirebaseAuthRepository extends GetxService {
       // 使用该证书登陆 (可以是 Twitter, Google 等证书)
       final UserCredential userCredential =
           await _auth.signInWithCredential(credential);
+
+      // TODO signInWithGoogle 在 Firestore 创建该 User
+      final UserRepository userRepository = Get.find<UserRepository>();
+      User user = userCredential.user!;
+      AppResponse appResponse = await userRepository.addUser(UserModel.toJson(
+          uid: user.uid,
+          displayName: user.displayName!,
+          email: user.email!,
+          bio: ''));
+
+      if (appResponse.data == null) {
+        logger3.e('添加用户信息到 firestore/user 失败');
+        return AppResponse(kAddUserFailedError, null);
+      }
+      logger.d('添加用户信息到 firestore/user 成功');
 
       return AppResponse(kSignInSuccessed, userCredential);
     } on FirebaseAuthException catch (e) {

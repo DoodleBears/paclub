@@ -123,7 +123,7 @@ class LoginBody extends GetView<LoginController> {
             SizedBox(height: Get.height * 0.03),
             const OrDivider(), // OR 的分割线
             SizedBox(height: Get.height * 0.02),
-            RoundedButton(
+            CircleButton(
               height: Get.height * 0.085,
               onPressed: () => controller.signInWithGoogle(),
               imageUrl: R.googleIcon,

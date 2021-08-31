@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:paclub/constants/emulator_constant.dart';
 import 'package:paclub/frontend/modules/auth_module.dart';
 
 import 'package:paclub/frontend/routes/app_pages.dart';
@@ -22,7 +23,8 @@ class SplashController extends GetxController {
 
     await Future.delayed(Duration(milliseconds: 1500));
 
-    if (authModule.isLogin() && authModule.isEmailVerified()) {
+    if (authModule.isLogin() &&
+        (useFirestoreEmulator || authModule.isEmailVerified())) {
       // 如果已登录就去task页面
       logger.d('前往主页');
       Get.until((route) => false);
