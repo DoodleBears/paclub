@@ -49,18 +49,19 @@ class UserSearchBody extends GetView<UserSearchController> {
               ),
             ),
           ),
-          GetBuilder<UserSearchController>(
-            builder: (_) {
-              List<String> chatroomIdList = chatroomListController
-                  .chatroomStream
-                  .map((ChatroomModel chatroomModel) => chatroomModel.chatroomId
-                      .replaceAll("_", "")
-                      .replaceFirst(Constants.myUid, ""))
-                  .toList();
-              logger.d(chatroomIdList);
-              return controller.isLoading
-                  ? Expanded(
-                      child: Center(
+          Expanded(
+            child: GetBuilder<UserSearchController>(
+              builder: (_) {
+                List<String> chatroomIdList = chatroomListController
+                    .chatroomStream
+                    .map((ChatroomModel chatroomModel) => chatroomModel
+                        .chatroomId
+                        .replaceAll("_", "")
+                        .replaceFirst(Constants.myUid, ""))
+                    .toList();
+                logger.d(chatroomIdList);
+                return controller.isLoading
+                    ? Center(
                         child: Container(
                           height: 50.0,
                           width: 50.0,
@@ -69,25 +70,26 @@ class UserSearchBody extends GetView<UserSearchController> {
                             child: CircularProgressIndicator(),
                           ),
                         ),
-                      ),
-                    )
-                  : controller.haveUserSearched
-                      ? ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: controller.userList.length,
-                          itemBuilder: (context, index) {
-                            final UserModel userModel =
-                                controller.userList[index];
-                            return SearchUserTile(
-                              isChatroomExist:
-                                  chatroomIdList.contains(userModel.uid),
-                              userUid: userModel.uid,
-                              userName: userModel.displayName,
-                              userEmail: userModel.email,
-                            );
-                          })
-                      : SizedBox.shrink();
-            },
+                      )
+                    : controller.haveUserSearched
+                        ? ListView.builder(
+                            physics: BouncingScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount: controller.userList.length,
+                            itemBuilder: (context, index) {
+                              final UserModel userModel =
+                                  controller.userList[index];
+                              return SearchUserTile(
+                                isChatroomExist:
+                                    chatroomIdList.contains(userModel.uid),
+                                userUid: userModel.uid,
+                                userName: userModel.displayName,
+                                userEmail: userModel.email,
+                              );
+                            })
+                        : SizedBox.shrink();
+              },
+            ),
           )
         ],
       ),

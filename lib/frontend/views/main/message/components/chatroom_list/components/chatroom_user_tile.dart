@@ -1,4 +1,5 @@
 import 'package:paclub/frontend/constants/colors.dart';
+import 'package:paclub/frontend/constants/numbers.dart';
 import 'package:paclub/frontend/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -28,11 +29,11 @@ class ChatroomsUserTile extends StatelessWidget {
 
       ///每位用戶顯示於名單上的UI介面
       child: Container(
-        margin: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0),
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+        margin: EdgeInsets.fromLTRB(8.0, 12.0, 8.0, 0),
+        padding: EdgeInsets.symmetric(horizontal: 14, vertical: 16),
         decoration: BoxDecoration(
           color: primaryLightColor,
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(borderRadius),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -40,8 +41,8 @@ class ChatroomsUserTile extends StatelessWidget {
             Row(
               children: [
                 Container(
-                  height: 36.0,
-                  width: 36.0,
+                  height: 48.0,
+                  width: 48.0,
                   decoration: BoxDecoration(
                       color: accentColor,
                       borderRadius: BorderRadius.circular(30)),
@@ -56,13 +57,17 @@ class ChatroomsUserTile extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 12),
-                Text(userName,
-                    textAlign: TextAlign.start,
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontSize: 20,
-                        fontFamily: 'OverpassRegular',
-                        fontWeight: FontWeight.w300))
+                Expanded(
+                  child: Text(userName,
+                      textAlign: TextAlign.start,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 20,
+                          fontFamily: 'OverpassRegular',
+                          fontWeight: FontWeight.w300)),
+                )
               ],
             ),
           ],
