@@ -66,6 +66,9 @@ class FirebaseAuthRepository extends GetxController {
         logger.d('Firebase 检测到用户状态为: 未登录');
       } else {
         Constants.myUid = user.uid;
+        if (user.displayName != null) {
+          Constants.myName = user.displayName!;
+        }
 
         // 之所以不在此处统一设置检测用户在线，自动跳转主页是因为可能存在用户在其他页面登录的情况
         // 此外，不应该在 Repository 有页面交互的代码

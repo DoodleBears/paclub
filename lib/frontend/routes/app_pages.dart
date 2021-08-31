@@ -9,6 +9,8 @@ import 'package:paclub/frontend/views/main/message/components/chatroom/chatroom_
 import 'package:paclub/frontend/views/main/message/components/chatroom/chatroom_page.dart';
 import 'package:paclub/frontend/views/main/message/components/chatroom_list/chatroom_list_binding.dart';
 import 'package:paclub/frontend/views/main/message/components/chatroom_list/chatroom_list_page.dart';
+import 'package:paclub/frontend/views/main/message/components/user_search/user_search_binding.dart';
+import 'package:paclub/frontend/views/main/message/components/user_search/user_search_page.dart';
 import 'package:paclub/frontend/views/main/message/message_binding.dart';
 import 'package:paclub/frontend/views/main/message/message_page.dart';
 import 'package:paclub/frontend/views/main/notification/notification_binding.dart';
@@ -108,6 +110,12 @@ abstract class AppPages {
                     name: Routes.CHATROOM,
                     binding: ChatroomBinding(),
                     page: () => ChatroomPage(),
+                    customTransition: TopLeftMaskBelowLeftTransitions(),
+                  ),
+                  GetPage(
+                    name: Routes.USERSEARCH,
+                    binding: UserSearchBinding(),
+                    page: () => UserSearchPage(),
                     customTransition: TopLeftMaskBelowLeftTransitions(),
                   ),
                 ],

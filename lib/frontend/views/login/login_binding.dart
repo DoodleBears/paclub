@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:paclub/backend/api/auth_api.dart';
+import 'package:paclub/backend/repository/remote/user_repository.dart';
 import 'package:paclub/frontend/modules/auth_module.dart';
 import 'package:paclub/frontend/views/auth/auth_email_controller.dart';
 import 'package:paclub/frontend/views/login/login_controller.dart';
@@ -12,6 +13,7 @@ class LoginBinding implements Bindings {
     logger.i('[自动绑定]依赖注入 —— LoginBinding');
 
     /// Controller 用到的 Module 和 API
+    Get.lazyPut<UserRepository>(() => UserRepository());
     Get.lazyPut<AuthApi>(() => AuthApi());
     Get.lazyPut<AuthModule>(() => AuthModule());
 

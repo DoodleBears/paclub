@@ -39,6 +39,11 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
+    if (controller.isDarkMode) {
+      AppColors.darkMode();
+    } else {
+      AppColors.lightMode();
+    }
     logger.i('渲染 App');
     return ThemeProvider(
       initTheme:

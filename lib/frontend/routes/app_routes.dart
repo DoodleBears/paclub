@@ -16,6 +16,7 @@ abstract class Routes {
   static const MESSAGE = '/message';
   static const CHATROOMLIST = '/chatroom_list';
   static const CHATROOM = '/chatroom';
+  static const USERSEARCH = '/user_search';
   static const NOTIFICATION = '/notification';
   static const MYUSER = '/user/';
   // TODO: 实现查看其他用户的个人信息页面

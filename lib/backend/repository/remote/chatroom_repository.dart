@@ -34,7 +34,7 @@ class ChatroomRepository extends GetxController {
       );
     }
 
-    _chatroom = _firestore.collection('chatRoom');
+    _chatroom = _firestore.collection('chatroom');
     super.onInit();
   }
 
@@ -45,21 +45,23 @@ class ChatroomRepository extends GetxController {
     super.onClose();
   }
 
-  Stream<List<ChatroomModel>> getChatroomList(String userName) {
-    return _chatroom.where('users', arrayContains: userName).snapshots().map(
+  Stream<List<ChatroomModel>> getChatroomList(String uid) {
+    logger.i('获取好友资料 uid:' + uid);
+    return _chatroom.where('users', arrayContains: uid).snapshots().map(
         (QuerySnapshot querySnapshot) => querySnapshot.docs
             .map((doc) => ChatroomModel.fromDoucumentSnapshot(doc))
             .toList());
   }
 
 // TODO: 改用 chatRoomModel
-  Future<AppResponse> addChatRoom(Map chatRoom, String chatRoomId) async {
+  Future<AppResponse> addChatRoom(
+      Map<String, dynamic> chatroomData, String chatroomId) async {
     return _chatroom
-        .doc(chatRoomId)
+        .doc(chatroomId)
         // TODO set 和 add，set 会 overwrite，需要注意
-        .set(chatRoom)
+        .set(chatroomData)
         .then(
-      (_) => AppResponse(kAddChatroomSuccessed, chatRoomId),
+      (_) => AppResponse(kAddChatroomSuccessed, chatroomId),
       onError: (e) {
         logger.e('添加聊天室失败, error: ' + e.runtimeType.toString());
         return AppResponse(kAddChatroomFailedError, null);

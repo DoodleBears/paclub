@@ -34,18 +34,18 @@ dependencies:
   firebase_core: ^1.6.0
   firebase_crashlytics: ^2.2.1
   firebase_performance: ^0.7.0+9
-  fluttertoast: ^8.0.7
+  fluttertoast: ^8.0.8
   get: ^4.3.0
   google_fonts: ^2.1.0
-  google_sign_in: ^5.0.5
-  logger: ^1.0.0
+  google_sign_in: ^5.0.7
+  logger: ^1.1.0
   # persist locally data
   shared_preferences: ^2.0.6
-  connectivity_plus: ^1.0.5
+  connectivity_plus: ^1.1.0
   # switch animation between light and dark theme
   animated_theme_switcher: ^2.0.1
   # pick image
-  image_picker: ^0.8.2
+  image_picker: ^0.8.3+3
   # store image
   path_provider: ^2.0.2
 

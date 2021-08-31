@@ -11,6 +11,7 @@ class ChatroomPage extends GetView<ChatroomController> {
     return Scaffold(
       appBar: AppBar(
         title: Text(controller.userName),
+        elevation: 0,
       ),
       body: ChatroomBody(),
     );

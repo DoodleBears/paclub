@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:paclub/frontend/constants/constants.dart';
+import 'package:paclub/frontend/constants/colors.dart';
 import 'package:paclub/frontend/views/login/components/text_field_container.dart';
 
 // 圆角输入框，用于 (Email) 的输入

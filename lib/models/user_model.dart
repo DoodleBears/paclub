@@ -5,6 +5,8 @@ class UserModel {
   late String uid;
   late String displayName;
   late String email;
+  late int createdAt;
+  late int lastLoginAt;
   late String bio = '';
 
   UserModel({required this.displayName, required this.email});
@@ -16,6 +18,8 @@ class UserModel {
       displayName = data['displayName'];
       email = data['email'];
       bio = data['bio'];
+      lastLoginAt = data['lastLoginAt'];
+      createdAt = data['createdAt'];
       logger.d(email);
     } else {
       throw Exception('Null DocumentSnapshot');

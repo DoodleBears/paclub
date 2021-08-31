@@ -2,6 +2,7 @@ import 'package:animated_theme_switcher/animated_theme_switcher.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:paclub/frontend/constants/colors.dart';
 import 'package:paclub/frontend/theme/themes.dart';
 import 'package:paclub/frontend/views/main/user/user_controller.dart';
 
@@ -25,7 +26,11 @@ AppBar buildAppBar(BuildContext context) {
 
                 controller.isDarkMode = !controller.isDarkMode;
                 controller.setUserPreference();
-
+                if (controller.isDarkMode) {
+                  AppColors.darkMode();
+                } else {
+                  AppColors.lightMode();
+                }
                 ThemeSwitcher.of(context)!.changeTheme(theme: theme);
               },
             );

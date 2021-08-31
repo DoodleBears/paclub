@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:paclub/frontend/constants/constants.dart';
+import 'package:paclub/frontend/routes/app_pages.dart';
 import 'package:paclub/frontend/views/auth/auth_email_controller.dart';
 import 'package:paclub/frontend/views/login/components/components.dart';
 import 'package:paclub/frontend/views/login/login_controller.dart';
 import 'package:paclub/frontend/widgets/buttons/buttons.dart';
+import 'package:paclub/frontend/widgets/buttons/rounded_button.dart';
 import 'package:paclub/r.dart';
 import 'package:paclub/frontend/widgets/widgets.dart';
 import 'components/or_divider.dart';
@@ -120,6 +122,41 @@ class LoginBody extends GetView<LoginController> {
                 );
               },
             ),
+            GetBuilder<LoginController>(
+              builder: (_) {
+                return AnimatedSizedBox(
+                  width: Get.width * 0.8,
+                  height:
+                      controller.isResendButtonShow ? 3 + Get.height * 0.02 : 0,
+                );
+              },
+            ),
+            // *  直接登录 skip auth 按钮
+            GetBuilder<LoginController>(
+              builder: (_) {
+                return FadeInScaleContainer(
+                  isShow: controller.isResendButtonShow,
+                  height: Get.height * 0.08,
+                  width: Get.width * 0.8,
+                  child: RoundedButton(
+                    onPressed: () {
+                      Get.until((route) => false);
+                      Get.toNamed(Routes.TABS);
+                    },
+                    color: primaryColor,
+                    child: Text(
+                      'Skip',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24.0,
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+
             SizedBox(height: Get.height * 0.03),
             const OrDivider(), // OR 的分割线
             SizedBox(height: Get.height * 0.02),
@@ -129,6 +166,7 @@ class LoginBody extends GetView<LoginController> {
               imageUrl: R.googleIcon,
               color: white,
             ),
+
             // 跳过登录，直接进入主页
           ],
         ),

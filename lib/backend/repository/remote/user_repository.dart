@@ -86,7 +86,8 @@ class UserRepository extends GetxController {
   Future<AppResponse> searchByName(String searchText) async {
     return _firestore
         .collection('users')
-        .where('displayName', isEqualTo: searchText)
+        .where('displayName', isGreaterThanOrEqualTo: searchText)
+        .limit(20)
         .get()
         .then(
       (QuerySnapshot querySnapshot) {

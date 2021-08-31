@@ -2,6 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 // App主题，包含: 颜色，字体大小等
+//  TOOD
+class AppColors {
+  static Color? messageBoxBackground = Colors.grey[300];
+  static Color? messageBoxContainerBackground = Colors.grey[50];
+
+  static lightMode() {
+    messageBoxBackground = Colors.grey[300];
+    messageBoxContainerBackground = Colors.grey[50];
+  }
+
+  static darkMode() {
+    messageBoxBackground = Colors.grey[800];
+    messageBoxContainerBackground = Colors.grey[850];
+  }
+}
+
 const accentColor = Color(0xFF96C336);
 const accentLightColor = Color(0xFFB3D270);
 const accentDarkColor = Color(0xFF75A118);

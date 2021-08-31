@@ -5,6 +5,7 @@ import 'package:paclub/frontend/views/main/message/components/user_search/compon
 import 'package:paclub/frontend/views/main/message/components/user_search/user_search_controller.dart';
 import 'package:paclub/helper/constants.dart';
 import 'package:paclub/models/chatroom_model.dart';
+import 'package:paclub/models/user_model.dart';
 import 'package:paclub/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -18,33 +19,31 @@ class UserSearchBody extends GetView<UserSearchController> {
         children: [
           Container(
             padding: EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-            child: Expanded(
-              child: TextField(
-                controller: controller.searchTextController,
-                style: TextStyle(color: Colors.white, fontSize: 18),
-                decoration: InputDecoration(
-                  hintText: "search username ...",
-                  hintStyle: TextStyle(
-                    fontSize: 18,
-                  ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(borderRadius),
-                    borderSide: BorderSide(color: accentDarkColor),
-                  ),
-                  suffixIcon: Container(
-                    width: 60.0,
-                    padding: EdgeInsets.fromLTRB(0, 0, 7.0, 0),
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.all(8.0),
-                        primary: accentDarkColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(borderRadius),
-                        ),
+            child: TextField(
+              controller: controller.searchTextController,
+              style: TextStyle(fontSize: 18),
+              decoration: InputDecoration(
+                hintText: "search username ...",
+                hintStyle: TextStyle(
+                  fontSize: 18,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(borderRadius),
+                  borderSide: BorderSide(color: accentDarkColor),
+                ),
+                suffixIcon: Container(
+                  width: 60.0,
+                  padding: EdgeInsets.fromLTRB(0, 0, 7.0, 0),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      padding: EdgeInsets.all(8.0),
+                      primary: accentDarkColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(borderRadius),
                       ),
-                      onPressed: () async => controller.searchByName(),
-                      child: Icon(Icons.search),
                     ),
+                    onPressed: () async => controller.searchByName(),
+                    child: Icon(Icons.search),
                   ),
                 ),
               ),
@@ -52,13 +51,11 @@ class UserSearchBody extends GetView<UserSearchController> {
           ),
           GetBuilder<UserSearchController>(
             builder: (_) {
-              // 获取 聊天室 的用户列表，排除已有聊天室
-              // TODO 将判断改为聊天室 id 比对
               List<String> chatroomIdList = chatroomListController
                   .chatroomStream
                   .map((ChatroomModel chatroomModel) => chatroomModel.chatroomId
                       .replaceAll("_", "")
-                      .replaceAll(Constants.myName, ""))
+                      .replaceFirst(Constants.myUid, ""))
                   .toList();
               logger.d(chatroomIdList);
               return controller.isLoading
@@ -79,11 +76,14 @@ class UserSearchBody extends GetView<UserSearchController> {
                           shrinkWrap: true,
                           itemCount: controller.userList.length,
                           itemBuilder: (context, index) {
+                            final UserModel userModel =
+                                controller.userList[index];
                             return SearchUserTile(
-                              isChatroomExist: chatroomIdList.contains(
-                                  controller.userList[index].displayName),
-                              userName: controller.userList[index].displayName,
-                              userEmail: controller.userList[index].email,
+                              isChatroomExist:
+                                  chatroomIdList.contains(userModel.uid),
+                              userUid: userModel.uid,
+                              userName: userModel.displayName,
+                              userEmail: userModel.email,
                             );
                           })
                       : SizedBox.shrink();

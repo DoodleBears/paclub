@@ -28,7 +28,7 @@ class ChatroomsUserTile extends StatelessWidget {
 
       ///每位用戶顯示於名單上的UI介面
       child: Container(
-        margin: EdgeInsets.fromLTRB(4.0, 8.0, 4.0, 0),
+        margin: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 0),
         padding: EdgeInsets.symmetric(horizontal: 16, vertical: 20),
         decoration: BoxDecoration(
           color: primaryLightColor,

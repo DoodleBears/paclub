@@ -63,11 +63,13 @@ class UserSearchController extends GetxController {
   }
 
   /// 添加好友（聊天室）
-  Future<AppResponse> addFriend(String userName, bool isChatroomExist) async {
-    String chatRoomId = getChatRoomId(Constants.myName, userName);
+  Future<AppResponse> addFriend(
+      String userName, String userUid, bool isChatroomExist) async {
+    String chatRoomId = getChatRoomId(Constants.myUid, userUid);
     Map<String, dynamic> chatroomInfo = {
+      "userUid": userUid,
       "userName": userName,
-      "chatRoomId": chatRoomId,
+      "chatroomId": chatRoomId,
     };
     if (isChatroomExist) {
       logger.w('聊天室已存在');
@@ -79,8 +81,12 @@ class UserSearchController extends GetxController {
     update();
     // 创建 user 列表，存储聊天室的用户列表
     Map<String, dynamic> chatroomData = {
-      "users": [Constants.myName, userName],
-      "chatRoomId": chatRoomId,
+      "users": [Constants.myUid, userUid],
+      "usersName": {
+        '${Constants.myUid}': Constants.myName,
+        '$userUid': userName
+      },
+      "chatroomId": chatRoomId,
     };
 
     AppResponse appResponse =

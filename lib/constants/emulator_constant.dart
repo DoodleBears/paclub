@@ -1,4 +1,4 @@
-const bool useFirestoreEmulator = true;
+const bool useFirestoreEmulator = false;
 const bool useAuthEmulator = false;
 const int authPort = 9099;
 const int firestorePort = 8081;

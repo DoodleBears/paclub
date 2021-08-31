@@ -13,11 +13,10 @@ class ChatroomListController extends GetxController {
   @override
   void onInit() async {
     logger.i('启用 ChatroomListController');
-    // 從DatabaseMethods抓取較大量的資料(聊天內容等等)
-    chatroomRepository.getChatroomList(Constants.myName);
+    // chatroomRepository.getChatroomList(Constants.myUid);
 
     chatroomStream
-        .bindStream(chatroomRepository.getChatroomList(Constants.myName));
+        .bindStream(chatroomRepository.getChatroomList(Constants.myUid));
 
     super.onInit();
   }

@@ -20,7 +20,7 @@ class ChatroomBody extends GetView<ChatroomController> {
         // 消息列
         Expanded(
           child: Stack(
-            alignment: Alignment.center,
+            alignment: Alignment.topCenter,
             children: [
               Container(
                 child: GetBuilder<ChatroomController>(builder: (_) {
@@ -60,9 +60,7 @@ class ChatroomBody extends GetView<ChatroomController> {
                       style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.symmetric(
                             vertical: 0.0, horizontal: 16.0),
-                        primary: primaryLightColor,
                         shape: StadiumBorder(),
-                        shadowColor: Colors.white,
                       ),
                       onPressed: () => chatroomScroller.jumpToBottom(),
                       child: Text(
@@ -75,6 +73,12 @@ class ChatroomBody extends GetView<ChatroomController> {
                     ),
                   );
                 },
+              ),
+              Positioned(
+                child: Container(
+                  height: 1.0,
+                  color: AppColors.messageBoxBackground,
+                ),
               ),
             ],
           ),
@@ -91,7 +95,7 @@ class ChatroomBody extends GetView<ChatroomController> {
           ]),
           alignment: Alignment.bottomRight,
           child: Container(
-            color: Colors.white,
+            color: AppColors.messageBoxContainerBackground,
             child: Container(
               height: 100.0,
               padding: const EdgeInsets.fromLTRB(10.0, 10.0, 0.0, 20.0),
@@ -100,16 +104,15 @@ class ChatroomBody extends GetView<ChatroomController> {
                   Expanded(
                     child: Container(
                       padding:
-                          EdgeInsets.symmetric(horizontal: 6.0, vertical: 2.0),
+                          EdgeInsets.symmetric(horizontal: 16.0, vertical: 6.0),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(14.0),
-                        color: Colors.grey[300],
+                        color: AppColors.messageBoxBackground,
                       ),
                       child: TextField(
                         maxLines: 1,
                         controller: controller.messageController,
                         style: TextStyle(
-                          color: Colors.white,
                           fontWeight: FontWeight.bold,
                         ),
                         decoration: InputDecoration(
