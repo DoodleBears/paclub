@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:paclub/backend/repository/remote/user_repository.dart';
 import 'package:paclub/constants/emulator_constant.dart';
-import 'package:paclub/helper/constants.dart';
+import 'package:paclub/helper/app_constants.dart';
 import 'package:paclub/models/user_model.dart';
 import 'package:paclub/utils/logger.dart';
 import 'package:paclub/utils/app_response.dart';
@@ -58,16 +58,15 @@ class FirebaseAuthRepository extends GetxController {
     // 一旦 _auth 状态改变, _user 就会被重新赋值
     _auth.authStateChanges().listen((User? user) {
       _user = user;
-      // TODO: 更新名字
 
       // 一旦用户丢失在线状态或未验证邮箱
       // 则强制用户返回主页(比如重设密码时，会强制下线所有终端上的该用户账号)
       if (user == null) {
         logger.d('Firebase 检测到用户状态为: 未登录');
       } else {
-        Constants.myUid = user.uid;
+        AppConstants.uuid = user.uid;
         if (user.displayName != null) {
-          Constants.myName = user.displayName!;
+          AppConstants.userName = user.displayName!;
         }
 
         // 之所以不在此处统一设置检测用户在线，自动跳转主页是因为可能存在用户在其他页面登录的情况
@@ -121,7 +120,7 @@ class FirebaseAuthRepository extends GetxController {
 
       await user!.updateDisplayName(name);
       logger.d('更新账号信息成功, name是: $name');
-      Constants.myName = name;
+      AppConstants.userName = name;
 
       // TODO registerWithEmail 在 Firestore 创建该 User
       AppResponse appResponse = await userRepository.addUser(UserModel.toJson(

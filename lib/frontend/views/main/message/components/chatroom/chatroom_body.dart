@@ -1,6 +1,6 @@
 import 'package:paclub/frontend/constants/colors.dart';
 import 'package:paclub/frontend/views/main/message/components/chatroom/chatroom_scroller.dart';
-import 'package:paclub/helper/constants.dart';
+import 'package:paclub/helper/app_constants.dart';
 import 'package:paclub/utils/logger.dart';
 import 'package:paclub/frontend/views/main/message/components/chatroom/chatroom_controller.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +39,7 @@ class ChatroomBody extends GetView<ChatroomController> {
                         logger.w('新建 Row: ' + index.toString());
                         return ChatroomMessageTile(
                           message: controller.messageStream[index].message,
-                          sendByMe: Constants.myName ==
+                          sendByMe: AppConstants.userName ==
                               controller.messageStream[index].sendBy,
                         );
                       });

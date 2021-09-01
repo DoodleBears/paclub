@@ -1,7 +1,7 @@
 import 'package:paclub/backend/repository/remote/chatroom_repository.dart';
 import 'package:paclub/backend/repository/remote/user_repository.dart';
 import 'package:paclub/frontend/widgets/widgets.dart';
-import 'package:paclub/helper/constants.dart';
+import 'package:paclub/helper/app_constants.dart';
 import 'package:paclub/models/user_model.dart';
 import 'package:paclub/utils/app_response.dart';
 import 'package:paclub/utils/logger.dart';
@@ -65,7 +65,7 @@ class UserSearchController extends GetxController {
   /// 添加好友（聊天室）
   Future<AppResponse> addFriend(
       String userName, String userUid, bool isChatroomExist) async {
-    String chatRoomId = getChatRoomId(Constants.myUid, userUid);
+    String chatRoomId = getChatRoomId(AppConstants.uuid, userUid);
     Map<String, dynamic> chatroomInfo = {
       "userUid": userUid,
       "userName": userName,
@@ -73,7 +73,6 @@ class UserSearchController extends GetxController {
     };
     if (isChatroomExist) {
       logger.w('聊天室已存在');
-      // TODO 聊天室已存在
       return AppResponse('chatroom_already_exist', chatroomInfo);
     }
 
@@ -81,9 +80,9 @@ class UserSearchController extends GetxController {
     update();
     // 创建 user 列表，存储聊天室的用户列表
     Map<String, dynamic> chatroomData = {
-      "users": [Constants.myUid, userUid],
+      "users": [AppConstants.uuid, userUid],
       "usersName": {
-        '${Constants.myUid}': Constants.myName,
+        '${AppConstants.uuid}': AppConstants.userName,
         '$userUid': userName
       },
       "chatroomId": chatRoomId,

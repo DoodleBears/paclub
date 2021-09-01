@@ -3,7 +3,7 @@ import 'package:paclub/frontend/constants/numbers.dart';
 import 'package:paclub/frontend/views/main/message/components/chatroom_list/chatroom_list_controller.dart';
 import 'package:paclub/frontend/views/main/message/components/user_search/components/search_user_tile.dart';
 import 'package:paclub/frontend/views/main/message/components/user_search/user_search_controller.dart';
-import 'package:paclub/helper/constants.dart';
+import 'package:paclub/helper/app_constants.dart';
 import 'package:paclub/models/chatroom_model.dart';
 import 'package:paclub/models/user_model.dart';
 import 'package:paclub/utils/logger.dart';
@@ -57,7 +57,7 @@ class UserSearchBody extends GetView<UserSearchController> {
                     .map((ChatroomModel chatroomModel) => chatroomModel
                         .chatroomId
                         .replaceAll("_", "")
-                        .replaceFirst(Constants.myUid, ""))
+                        .replaceFirst(AppConstants.uuid, ""))
                     .toList();
                 logger.d(chatroomIdList);
                 return controller.isLoading

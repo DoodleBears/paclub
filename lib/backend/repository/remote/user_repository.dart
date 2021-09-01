@@ -23,11 +23,6 @@ class UserRepository extends GetxController {
         (useFirestoreEmulator ? '(useFirestoreEmulator)' : ''));
     if (useFirestoreEmulator) {
       _firestore.useFirestoreEmulator(localhost, firestorePort);
-      // _firestore.settings = Settings(
-      //   host: '$localhost:$firestorePort',
-      //   sslEnabled: false,
-      //   persistenceEnabled: false,
-      // );
     }
     super.onInit();
   }
@@ -82,7 +77,6 @@ class UserRepository extends GetxController {
 
   /// Search時，能夠找到相符合的用戶名稱
   // TODO 模糊搜索，搜索多个用户
-  // FIXME: Error Handling 怎么做？
   Future<AppResponse> searchByName(String searchText) async {
     return _firestore
         .collection('users')

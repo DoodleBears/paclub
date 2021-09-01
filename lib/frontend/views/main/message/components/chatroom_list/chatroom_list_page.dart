@@ -1,6 +1,6 @@
 import 'package:paclub/frontend/constants/colors.dart';
 import 'package:paclub/frontend/routes/app_pages.dart';
-import 'package:paclub/helper/constants.dart';
+import 'package:paclub/helper/app_constants.dart';
 import 'package:paclub/r.dart';
 import 'package:paclub/utils/logger.dart';
 import 'package:paclub/frontend/views/main/message/components/chatroom_list/chatroom_list_body.dart';
@@ -25,7 +25,7 @@ class ChatroomListPage extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Text(Constants.myName),
+              child: Text(AppConstants.userName),
             ),
           ],
         ),

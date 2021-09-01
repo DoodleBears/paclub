@@ -1,4 +1,4 @@
-import 'package:paclub/helper/constants.dart';
+import 'package:paclub/helper/app_constants.dart';
 import 'package:paclub/models/chatroom_model.dart';
 import 'package:paclub/utils/logger.dart';
 import 'package:paclub/frontend/views/main/message/components/chatroom_list/chatroom_list_controller.dart';
@@ -18,7 +18,7 @@ class ChatroomListBody extends GetView<ChatroomListController> {
           shrinkWrap: true,
           itemBuilder: (context, index) {
             ChatroomModel chatroomModel = controller.chatroomStream[index];
-            final userUid = chatroomModel.users[0] == Constants.myUid
+            final userUid = chatroomModel.users[0] == AppConstants.uuid
                 ? chatroomModel.users[1]
                 : chatroomModel.users[0];
             final userName = chatroomModel.usersName['$userUid'];

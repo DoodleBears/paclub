@@ -1,3 +1,4 @@
+// 关于 Firebase Emulator 的一些设置
 const bool useFirestoreEmulator = false;
 const bool useAuthEmulator = false;
 const int authPort = 9099;
