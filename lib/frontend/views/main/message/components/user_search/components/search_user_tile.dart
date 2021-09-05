@@ -43,7 +43,6 @@ class SearchUserTile extends GetView<UserSearchController> {
                   style: TextStyle(
                       color: Colors.white,
                       fontSize: 20,
-                      fontFamily: 'OverpassRegular',
                       fontWeight: FontWeight.w300)),
             ),
           ),
@@ -71,7 +70,7 @@ class SearchUserTile extends GetView<UserSearchController> {
               ],
             ),
           ),
-          Flexible(
+          Expanded(
             flex: 10,
             child: GetBuilder<UserSearchController>(
               builder: (_) {
@@ -92,8 +91,9 @@ class SearchUserTile extends GetView<UserSearchController> {
                           arguments: chatroomInfo);
                     }
                   },
-                  width: 120.0,
                   height: 44.0,
+                  width: 160.0,
+                  padding: EdgeInsets.symmetric(horizontal: 10.0),
                   text: isChatroomExist ? "Message" : 'Add Friend',
                   color: accentColor,
                   isLoading: controller.isAddUserLoading,

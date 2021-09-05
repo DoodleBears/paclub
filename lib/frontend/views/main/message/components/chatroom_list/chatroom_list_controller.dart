@@ -1,5 +1,5 @@
 import 'package:paclub/backend/repository/remote/chatroom_repository.dart';
-import 'package:paclub/helper/constants.dart';
+import 'package:paclub/helper/app_constants.dart';
 import 'package:paclub/models/chatroom_model.dart';
 import 'package:paclub/utils/logger.dart';
 import 'package:get/get.dart';
@@ -16,7 +16,7 @@ class ChatroomListController extends GetxController {
     // chatroomRepository.getChatroomList(Constants.myUid);
 
     chatroomStream
-        .bindStream(chatroomRepository.getChatroomList(Constants.myUid));
+        .bindStream(chatroomRepository.getChatroomList(AppConstants.uuid));
 
     super.onInit();
   }

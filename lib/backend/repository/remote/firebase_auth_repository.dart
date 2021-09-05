@@ -122,7 +122,6 @@ class FirebaseAuthRepository extends GetxController {
       logger.d('更新账号信息成功, name是: $name');
       AppConstants.userName = name;
 
-      // TODO registerWithEmail 在 Firestore 创建该 User
       AppResponse appResponse = await userRepository.addUser(UserModel.toJson(
           uid: user!.uid, displayName: name, email: email, bio: bio));
 
@@ -180,10 +179,32 @@ class FirebaseAuthRepository extends GetxController {
       String email, String password) async {
     try {
       // 使用 Firebase 提供的[用Email登陆]方法
-      await _auth.signInWithEmailAndPassword(email: email, password: password);
-      // 确认联网情况正常, 并完成登录后返回 true
-      return AppResponse('Login success', email);
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+          email: email, password: password);
+      // 添加用户到 Firestore
+      final User user = userCredential.user!;
+      final UserRepository userRepository = Get.find<UserRepository>();
+      AppResponse appResponse = await userRepository.addUser(UserModel.toJson(
+          uid: user.uid,
+          displayName: user.displayName!,
+          email: email,
+          bio: ''));
+
+      if (appResponse.data == null) {
+        logger3.e('添加用户信息到 firestore/user 失败');
+        return AppResponse(kAddUserFailedError, null);
+      }
+      logger.d('添加用户信息到 firestore/user 成功');
+
+      return AppResponse(kSignInSuccessed, email);
     } on FirebaseAuthException catch (e) {
+      // FirebaseAuth 的异常，如密码错误等
+      AppResponse appResponse =
+          AppResponse(e.code, null, e.runtimeType.toString());
+      logger3.w(appResponse.toString());
+      return appResponse;
+    } on PlatformException catch (e) {
+      // 像是联网错误
       AppResponse appResponse =
           AppResponse(e.code, null, e.runtimeType.toString());
       logger3.w(appResponse.toString());

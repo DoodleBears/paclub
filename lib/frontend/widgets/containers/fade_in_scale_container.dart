@@ -23,17 +23,19 @@ class FadeInScaleContainer extends StatelessWidget {
     Key? key,
     required this.isShow,
     required this.child,
-    required this.height,
-    this.width = double.infinity,
+    this.height,
+    this.width,
     this.scaleDuration = const Duration(milliseconds: 1000),
     this.opacityDuration = const Duration(milliseconds: 500),
     this.scaleCurve = Curves.linearToEaseOut,
     this.opacityCurve = Curves.linearToEaseOut,
+    this.color,
   }) : super(key: key);
 
   final bool isShow;
-  final double width;
-  final double height;
+  final double? width;
+  final double? height;
+  final Color? color;
   final Widget child;
   final Duration scaleDuration;
   final Duration opacityDuration;
@@ -51,9 +53,10 @@ class FadeInScaleContainer extends StatelessWidget {
         duration: scaleDuration,
         // 在给定 isShow 的时候也可以动态赋予 height
         //  在出现过程中, 默认情况 container 高度会由 0 变为给定高度
-        height: isShow ? height : 0,
+        height: isShow ? height : 0.0,
         width: width,
         child: child,
+        color: color,
       ),
     );
   }

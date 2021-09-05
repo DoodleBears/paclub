@@ -11,6 +11,7 @@ class RoundedLoadingButton extends StatelessWidget {
   final bool isLoading;
   final double? width, height;
   final OutlinedBorder? shape;
+  final EdgeInsetsGeometry? padding;
 
   /// [文件说明]
   /// - 带有 loading 效果的 button
@@ -26,6 +27,8 @@ class RoundedLoadingButton extends StatelessWidget {
   /// - [isLoading] 按钮加载状态，传入 true 显示转圈 ｜ false显示文字
   /// - [width] 按钮宽度
   /// - [height] 按钮高度
+  /// - [shape] 按钮样式（形状）
+  /// - [padding] 按钮 padding
   const RoundedLoadingButton({
     Key? key,
     required this.onPressed,
@@ -36,6 +39,7 @@ class RoundedLoadingButton extends StatelessWidget {
     this.width,
     this.height,
     this.shape,
+    this.padding,
   }) : super(key: key);
 
   @override
@@ -50,6 +54,7 @@ class RoundedLoadingButton extends StatelessWidget {
         color: color,
         onPressed: onPressed,
         shape: shape,
+        padding: padding,
         child: Stack(
           alignment: AlignmentDirectional.center,
           children: [

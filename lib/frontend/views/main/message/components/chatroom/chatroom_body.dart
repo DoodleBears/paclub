@@ -1,6 +1,7 @@
 import 'package:paclub/frontend/constants/colors.dart';
-import 'package:paclub/frontend/views/main/message/components/chatroom/chatroom_scroller.dart';
+import 'package:paclub/frontend/views/main/message/components/chatroom/chatroom_scroll_controller.dart';
 import 'package:paclub/helper/app_constants.dart';
+import 'package:paclub/models/chat_message_model.dart';
 import 'package:paclub/utils/logger.dart';
 import 'package:paclub/frontend/views/main/message/components/chatroom/chatroom_controller.dart';
 import 'package:flutter/material.dart';
@@ -10,70 +11,78 @@ import 'package:get/get_state_manager/get_state_manager.dart';
 import 'components/chatroom_message_tile.dart';
 
 class ChatroomBody extends GetView<ChatroomController> {
-  final ChatroomScroller chatroomScroller = Get.find<ChatroomScroller>();
+  final ChatroomScrollController chatroomScroller =
+      Get.find<ChatroomScrollController>();
   @override
   Widget build(BuildContext context) {
     logger.d('渲染 ChatRoomBody');
 
     return Column(
       children: [
-        // 消息列
         Expanded(
           child: Stack(
             alignment: Alignment.topCenter,
             children: [
-              Container(
-                child: GetBuilder<ChatroomController>(builder: (_) {
-                  logger.i('重建 ListView');
+              GetBuilder<ChatroomController>(builder: (_) {
+                logger.i('重建 ListView,length: ' +
+                    controller.messageStream.length.toString());
 
-                  /// 使用ListView会重新渲染整个 List，80条信息就是渲染80个
-                  /// 所以必须用ListView.builder
-                  /// 使用 GetBuilder 可以控制渲染更新效果
-                  return ListView.builder(
-                      physics: BouncingScrollPhysics(),
-                      controller: chatroomScroller.scrollController,
-                      itemCount: controller.messageStream.length,
-                      itemExtent: 68.0,
-                      reverse: true,
-                      itemBuilder: (context, index) {
-                        logger.w('新建 Row: ' + index.toString());
+                /// 使用ListView会重新渲染整个 List，80条信息就是渲染80个
+                /// 所以必须用ListView.builder
+                /// 使用 GetBuilder 可以控制渲染更新效果
+                List<ChatMessageModel> list =
+                    controller.messageStream.reversed.toList();
+                return ListView.builder(
+                  physics: BouncingScrollPhysics(),
+                  controller: chatroomScroller.scrollController,
+                  // initialItemCount: controller.messageStream.length,
+                  itemCount: controller.messageStream.length,
+                  // shrinkWrap: true,
+                  // FIXME 不能给定固定高度，消息高度是变化的
+                  reverse: true,
+
+                  itemBuilder: (context, index) {
+                    return GetBuilder<ChatroomScrollController>(
+                      builder: (_) {
                         return ChatroomMessageTile(
-                          message: controller.messageStream[index].message,
-                          sendByMe: AppConstants.userName ==
-                              controller.messageStream[index].sendBy,
+                          senderName: list[index].sendBy,
+                          message: list[index].message,
+                          sendByMe: AppConstants.userName == list[index].sendBy,
                         );
-                      });
-                }),
-              ),
+                      },
+                    );
+                  },
+                );
+              }),
+
               // 消息提示
-              GetBuilder<ChatroomScroller>(
-                builder: (chatroomScroller) {
-                  return AnimatedPositioned(
-                    curve: Curves.easeInOutCubic,
-                    duration: const Duration(milliseconds: 350),
-                    bottom: chatroomScroller.messagesNotRead != 0 &&
-                            chatroomScroller.isReadHistory
-                        ? 10.0
-                        : -40.0,
-                    height: 40.0,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(
-                            vertical: 0.0, horizontal: 16.0),
-                        shape: StadiumBorder(),
-                      ),
-                      onPressed: () => chatroomScroller.jumpToBottom(),
-                      child: Text(
-                        chatroomScroller.messagesNotRead.toString() + ' Unread',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  );
+              GetBuilder<ChatroomScrollController>(
+                builder: (_) {
+                  return chatroomScroller.messagesNotRead != 0 &&
+                          chatroomScroller.isReadHistory
+                      ? Positioned(
+                          bottom: 6.0,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 0.0, horizontal: 16.0),
+                              shape: StadiumBorder(),
+                            ),
+                            onPressed: () => chatroomScroller.jumpToBottom(),
+                            child: Text(
+                              chatroomScroller.messagesNotRead.toString() +
+                                  ' Unread',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        )
+                      : SizedBox.shrink();
                 },
               ),
+              // 顶部黑色线条
               Positioned(
                 child: Container(
                   height: 1.0,
@@ -83,8 +92,10 @@ class ChatroomBody extends GetView<ChatroomController> {
             ],
           ),
         ),
-        // 发送框 和 发送按钮 和 消息提示
+
+        // 发送框 和 发送按钮
         Container(
+          height: 100.0,
           decoration: BoxDecoration(boxShadow: [
             BoxShadow(
               color: Colors.black12,
@@ -110,7 +121,6 @@ class ChatroomBody extends GetView<ChatroomController> {
                         color: AppColors.messageBoxBackground,
                       ),
                       child: TextField(
-                        maxLines: 1,
                         controller: controller.messageController,
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
@@ -131,7 +141,9 @@ class ChatroomBody extends GetView<ChatroomController> {
                       shape: CircleBorder(),
                       shadowColor: Colors.transparent,
                     ),
-                    onPressed: () async => await controller.addMessage(),
+                    onPressed: () async {
+                      await controller.addMessage();
+                    },
                     child: Icon(Icons.send),
                   ),
                 ],

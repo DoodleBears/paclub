@@ -8,12 +8,14 @@ class RoundedButton extends StatelessWidget {
   final Widget child;
   final Color color;
   final OutlinedBorder? shape;
+  final EdgeInsetsGeometry? padding;
   const RoundedButton({
     Key? key,
     required this.onPressed,
     required this.color,
     required this.child,
     this.shape,
+    this.padding,
   }) : super(key: key);
 
   @override
@@ -25,7 +27,7 @@ class RoundedButton extends StatelessWidget {
               borderRadius: BorderRadius.circular(borderRadius),
             ),
         primary: primaryColor,
-        padding: EdgeInsets.symmetric(vertical: Get.pixelRatio * 3),
+        padding: padding ?? EdgeInsets.symmetric(vertical: Get.pixelRatio * 3),
         // 去除 Button 默认的阴影
         shadowColor: Colors.transparent,
       ),
