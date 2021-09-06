@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:paclub/frontend/constants/colors.dart';
+import 'package:paclub/frontend/constants/numbers.dart';
 import 'package:paclub/frontend/views/main/message/components/chatroom/chatroom_scroll_controller.dart';
 import 'package:paclub/helper/app_constants.dart';
 import 'package:paclub/models/chat_message_model.dart';
@@ -57,6 +60,9 @@ class _ChatroomBodyState extends State<ChatroomBody>
       chatroomScrollController.focusNode.unfocus();
       logger.i('键盘消失');
       // 如果键盘消失，则滚动列表向下（如果不在读历史记录，可以直接让键盘消失）
+      if (!Platform.isIOS) {
+        iosKeyboardCheck = true;
+      }
       if (chatroomScrollController.isReadHistory == true && iosKeyboardCheck) {
         chatroomScrollController.scrollController.jumpTo(
             chatroomScrollController.scrollController.offset - keyboardHeight);
@@ -179,10 +185,7 @@ class _ChatroomBodyState extends State<ChatroomBody>
               ),
               // 顶部黑色线条
               Positioned(
-                child: Container(
-                  height: 1.0,
-                  color: AppColors.messageBoxBackground,
-                ),
+                child: Container(height: 1.0, color: AppColors.divideLine),
               ),
             ],
           ),
@@ -202,19 +205,22 @@ class _ChatroomBodyState extends State<ChatroomBody>
               ]),
               child: Container(
                 color: AppColors.messageBoxContainerBackground,
-                padding:
-                    const EdgeInsets.only(left: 16.0, top: 18.0, bottom: 28.0),
+                padding: const EdgeInsets.only(
+                    left: 16.0, right: 16.0, top: 18.0, bottom: 28.0),
                 alignment: Alignment.topCenter,
                 child: Container(
                   child: Row(
                     children: [
                       Expanded(
                         child: Container(
+                          height: 52.0,
                           padding: EdgeInsets.symmetric(
                               horizontal: 16.0, vertical: 6.0),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(14.0),
                             color: AppColors.messageBoxBackground,
+                            // border: Border.all(
+                            //     width: 1.0, color: AppColors.messageBoxContainerBackground!),
                           ),
                           child: TextField(
                             focusNode: chatroomScrollController.focusNode,
@@ -229,29 +235,40 @@ class _ChatroomBodyState extends State<ChatroomBody>
                           ),
                         ),
                       ),
-                      // const SizedBox(width: 10),
+                      const SizedBox(width: 10),
                       // 送出訊息的按鈕，調用上面創的addMessage()函式
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.all(10.0),
-                          primary: accentColor,
-                          shape: CircleBorder(),
-                          shadowColor: Colors.transparent,
+                      Container(
+                        height: 52.0,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            primary: accentColor,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(borderRadius),
+                            ),
+                            shadowColor: Colors.transparent,
+                          ),
+                          onPressed: () async {
+                            await chatroomController.addMessage();
+                          },
+                          child: Text(
+                            'Send',
+                            style: TextStyle(
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
-                        onPressed: () async {
-                          await chatroomController.addMessage();
-                        },
-                        child: Icon(Icons.send),
                       ),
                     ],
                   ),
                 ),
               ),
             ),
+            // 底部黑色线条
             Positioned(
               child: Container(
                 height: 1.5,
-                color: AppColors.messageBoxBackground,
+                color: AppColors.divideLine,
               ),
             ),
           ],

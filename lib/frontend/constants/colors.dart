@@ -5,18 +5,21 @@ import 'package:flutter/widgets.dart';
 //  TOOD
 class AppColors {
   static Color? bottomNavigationBarBackground = Colors.white;
-  static Color? messageBoxBackground = Colors.grey[300];
+  static Color? messageBoxBackground = Colors.grey[200];
+  static Color? divideLine = Colors.grey[200];
   static Color? messageBoxContainerBackground = Colors.grey[50];
 
   static lightMode() {
     bottomNavigationBarBackground = Colors.white;
+    divideLine = Colors.grey[200];
     messageBoxBackground = Colors.grey[200];
     messageBoxContainerBackground = Colors.grey[50];
   }
 
   static darkMode() {
     bottomNavigationBarBackground = Colors.black;
-    messageBoxBackground = Colors.grey[850];
+    divideLine = Colors.grey[850];
+    messageBoxBackground = Colors.grey[800];
     messageBoxContainerBackground = Colors.grey[850];
   }
 }

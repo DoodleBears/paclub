@@ -99,7 +99,7 @@ class Tabs extends GetView<TabsController> {
                   Positioned(
                     child: Container(
                       height: 1.5,
-                      color: AppColors.messageBoxBackground,
+                      color: AppColors.divideLine,
                     ),
                   ),
                 ],
