@@ -10,13 +10,94 @@ import 'package:get/get_state_manager/get_state_manager.dart';
 
 import 'components/chatroom_message_tile.dart';
 
-class ChatroomBody extends GetView<ChatroomController> {
-  final ChatroomScrollController chatroomScroller =
+class ChatroomBody extends StatefulWidget {
+  @override
+  _ChatroomBodyState createState() => _ChatroomBodyState();
+}
+
+class _ChatroomBodyState extends State<ChatroomBody>
+    with WidgetsBindingObserver {
+  final ChatroomController chatroomController = Get.find<ChatroomController>();
+  final ChatroomScrollController chatroomScrollController =
       Get.find<ChatroomScrollController>();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance!.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance!.removeObserver(this);
+    super.dispose();
+  }
+
+  /// [用来检测键盘的出现和消失] This routine is invoked when the window metrics have changed.
+  double keyboardHeight = 0.0;
+  @override
+  void didChangeMetrics() {
+    if (keyboardHeight == 0.0) {
+      // 当键盘出现后，set一次高度之后，就不用再改变了
+      keyboardHeight =
+          WidgetsBinding.instance!.window.viewInsets.bottom / Get.pixelRatio;
+      logger.wtf('键盘高度: $keyboardHeight');
+    }
+    bool isKeyboardOpen = WidgetsBinding.instance!.window.viewInsets.bottom > 0;
+    if (isKeyboardOpen) {
+      logger.i('键盘出现');
+      // 如果键盘出现，则滚动列表向上，如果是新的聊天室没有消息，则不滚动
+      if (chatroomScrollController.scrollController.position.maxScrollExtent >
+          100.0) {
+        chatroomScrollController.scrollController.jumpTo(
+            chatroomScrollController.scrollController.offset + keyboardHeight);
+      }
+    } else {
+      chatroomScrollController.focusNode.unfocus();
+      logger.i('键盘消失');
+      // 如果键盘消失，则滚动列表向下（如果不在读历史记录，可以直接让键盘消失）
+      if (chatroomScrollController.isReadHistory == true) {
+        chatroomScrollController.scrollController.jumpTo(
+            chatroomScrollController.scrollController.offset - keyboardHeight);
+      }
+    }
+    chatroomScrollController.bottom =
+        chatroomScrollController.scrollController.position.maxScrollExtent;
+    if (keyboardHeight == 0.0 && chatroomScrollController.focusNode.hasFocus) {
+      chatroomScrollController.focusNode.unfocus();
+    }
+  }
+
+  // 每次 重建LsitView（一般是有新消息进入，则会重新计算高度）
+  afterBuild() {
+    if (chatroomScrollController.scrollController.hasClients) {
+      /// 最新的 bottom 位置（一般是上次读到的消息的位置，准确来说是上次加载过的最大 ListView 高度）
+      /// 注意！ListView.builder 只会加载画面范围附近的Tile，如果不再附近listView不会build，
+
+      /// 在读最新消息(即在聊天室底部)，直接加载最新消息，划入动画
+      if (chatroomScrollController.isReadHistory == false) {
+        chatroomScrollController.bottom =
+            chatroomScrollController.scrollController.position.maxScrollExtent;
+        chatroomScrollController.scrollToBottom();
+      }
+
+      /// 更新ListView高度
+      // if (chatroomScrollController.bottom !=
+      //     chatroomScrollController.lastListHeight) {
+      //   logger.i(
+      //       '更新List高度\n上次的List高度: ${chatroomScrollController.lastListHeight}\n新的List高度: ${chatroomScrollController.bottom}');
+      //   chatroomScrollController.lastListHeight =
+      //       chatroomScrollController.bottom;
+      // }
+    } else {
+      logger.e('无法找到controller');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     logger.d('渲染 ChatRoomBody');
-
+    keyboardHeight = 0.0;
     return Column(
       children: [
         Expanded(
@@ -24,22 +105,24 @@ class ChatroomBody extends GetView<ChatroomController> {
             alignment: Alignment.topCenter,
             children: [
               GetBuilder<ChatroomController>(builder: (_) {
-                logger.i('重建 ListView,length: ' +
-                    controller.messageStream.length.toString());
+                logger3.i('重建 ListView,length: ' +
+                    chatroomController.messageStream.length.toString());
 
                 /// 使用ListView会重新渲染整个 List，80条信息就是渲染80个
                 /// 所以必须用ListView.builder
                 /// 使用 GetBuilder 可以控制渲染更新效果
                 List<ChatMessageModel> list =
-                    controller.messageStream.reversed.toList();
+                    chatroomController.messageStream.toList();
+                // 有新消息的时候，调用
+                WidgetsBinding.instance!
+                    .addPostFrameCallback((_) => afterBuild());
+
                 return ListView.builder(
                   physics: BouncingScrollPhysics(),
-                  controller: chatroomScroller.scrollController,
+                  controller: chatroomScrollController.scrollController,
                   // initialItemCount: controller.messageStream.length,
-                  itemCount: controller.messageStream.length,
+                  itemCount: chatroomController.messageStream.length,
                   // shrinkWrap: true,
-                  // FIXME 不能给定固定高度，消息高度是变化的
-                  reverse: true,
 
                   itemBuilder: (context, index) {
                     return GetBuilder<ChatroomScrollController>(
@@ -58,8 +141,8 @@ class ChatroomBody extends GetView<ChatroomController> {
               // 消息提示
               GetBuilder<ChatroomScrollController>(
                 builder: (_) {
-                  return chatroomScroller.messagesNotRead != 0 &&
-                          chatroomScroller.isReadHistory
+                  return chatroomScrollController.messagesNotRead != 0 &&
+                          chatroomScrollController.isReadHistory
                       ? Positioned(
                           bottom: 6.0,
                           child: ElevatedButton(
@@ -68,9 +151,16 @@ class ChatroomBody extends GetView<ChatroomController> {
                                   vertical: 0.0, horizontal: 16.0),
                               shape: StadiumBorder(),
                             ),
-                            onPressed: () => chatroomScroller.jumpToBottom(),
+                            onPressed: () {
+                              // 测算按下的时候的 bottom
+                              chatroomScrollController.bottom =
+                                  chatroomScrollController.scrollController
+                                      .position.maxScrollExtent;
+                              chatroomScrollController.jumpToBottom();
+                            },
                             child: Text(
-                              chatroomScroller.messagesNotRead.toString() +
+                              chatroomScrollController.messagesNotRead
+                                      .toString() +
                                   ' Unread',
                               style: TextStyle(
                                 fontSize: 18,
@@ -121,7 +211,8 @@ class ChatroomBody extends GetView<ChatroomController> {
                         color: AppColors.messageBoxBackground,
                       ),
                       child: TextField(
-                        controller: controller.messageController,
+                        focusNode: chatroomScrollController.focusNode,
+                        controller: chatroomController.messageController,
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                         ),
@@ -142,7 +233,7 @@ class ChatroomBody extends GetView<ChatroomController> {
                       shadowColor: Colors.transparent,
                     ),
                     onPressed: () async {
-                      await controller.addMessage();
+                      await chatroomController.addMessage();
                     },
                     child: Icon(Icons.send),
                   ),

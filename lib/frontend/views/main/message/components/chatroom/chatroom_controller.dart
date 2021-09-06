@@ -23,7 +23,7 @@ class ChatroomController extends GetxController {
   final messageStream = <ChatMessageModel>[].obs;
 
   @override
-  void onInit() async {
+  void onInit() {
     logger.i('启用 ChatroomController');
     // 监听滚动条状态
     Map<String, dynamic> chatroomInfo = Get.arguments;
@@ -44,17 +44,14 @@ class ChatroomController extends GetxController {
   void listenMessageStream(list) async {
     newMessageNum = list.length - messageLength;
     // 首次加载消息
-    if (messageLength == 0) {
-      update();
-    }
+    update();
     if (chatroomScroller.isReadHistory == true) {
       //如果在阅读历史消息，则添加增加未读消息数量
       chatroomScroller.messagesNotRead += newMessageNum;
-      chatroomScroller.update();
-      logger.i('未读条数为：' + chatroomScroller.messagesNotRead.toString());
+      chatroomScroller.update(); // 更新显示未读消息数量
+      logger.i('未读消息数量：' + chatroomScroller.messagesNotRead.toString());
     } else {
       chatroomScroller.messagesNotRead = 0;
-      update();
     }
     messageLength = list.length; //更新当前消息长度
   }
