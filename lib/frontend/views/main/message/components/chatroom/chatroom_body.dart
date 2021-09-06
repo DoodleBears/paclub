@@ -35,6 +35,7 @@ class _ChatroomBodyState extends State<ChatroomBody>
 
   /// [用来检测键盘的出现和消失] This routine is invoked when the window metrics have changed.
   double keyboardHeight = 0.0;
+  bool iosKeyboardCheck = false;
   @override
   void didChangeMetrics() {
     if (keyboardHeight == 0.0) {
@@ -56,9 +57,12 @@ class _ChatroomBodyState extends State<ChatroomBody>
       chatroomScrollController.focusNode.unfocus();
       logger.i('键盘消失');
       // 如果键盘消失，则滚动列表向下（如果不在读历史记录，可以直接让键盘消失）
-      if (chatroomScrollController.isReadHistory == true) {
+      if (chatroomScrollController.isReadHistory == true && iosKeyboardCheck) {
         chatroomScrollController.scrollController.jumpTo(
             chatroomScrollController.scrollController.offset - keyboardHeight);
+        iosKeyboardCheck = false;
+      } else if (iosKeyboardCheck == false) {
+        iosKeyboardCheck = true;
       }
     }
     chatroomScrollController.bottom =
@@ -78,7 +82,7 @@ class _ChatroomBodyState extends State<ChatroomBody>
       if (chatroomScrollController.isReadHistory == false) {
         chatroomScrollController.bottom =
             chatroomScrollController.scrollController.position.maxScrollExtent;
-        chatroomScrollController.scrollToBottom();
+        chatroomScrollController.jumpToBottom();
       }
 
       /// 更新ListView高度
@@ -119,11 +123,12 @@ class _ChatroomBodyState extends State<ChatroomBody>
 
                 return ListView.builder(
                   physics: BouncingScrollPhysics(),
+                  shrinkWrap: true,
                   controller: chatroomScrollController.scrollController,
                   // initialItemCount: controller.messageStream.length,
                   itemCount: chatroomController.messageStream.length,
                   // shrinkWrap: true,
-
+                  padding: EdgeInsets.zero,
                   itemBuilder: (context, index) {
                     return GetBuilder<ChatroomScrollController>(
                       builder: (_) {
@@ -184,63 +189,72 @@ class _ChatroomBodyState extends State<ChatroomBody>
         ),
 
         // 发送框 和 发送按钮
-        Container(
-          height: 100.0,
-          decoration: BoxDecoration(boxShadow: [
-            BoxShadow(
-              color: Colors.black12,
-              spreadRadius: 4.0,
-              blurRadius: 8.0,
-              offset: Offset(0.0, 0.0),
-            )
-          ]),
-          alignment: Alignment.bottomRight,
-          child: Container(
-            color: AppColors.messageBoxContainerBackground,
-            child: Container(
-              height: 100.0,
-              padding: const EdgeInsets.fromLTRB(10.0, 10.0, 0.0, 20.0),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 16.0, vertical: 6.0),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(14.0),
-                        color: AppColors.messageBoxBackground,
-                      ),
-                      child: TextField(
-                        focusNode: chatroomScrollController.focusNode,
-                        controller: chatroomController.messageController,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
+        Stack(
+          children: [
+            Container(
+              decoration: BoxDecoration(boxShadow: [
+                BoxShadow(
+                  color: Colors.black12,
+                  spreadRadius: 2.0,
+                  blurRadius: 8.0,
+                  offset: Offset(0.0, 5.0),
+                )
+              ]),
+              child: Container(
+                color: AppColors.messageBoxContainerBackground,
+                padding:
+                    const EdgeInsets.only(left: 16.0, top: 18.0, bottom: 28.0),
+                alignment: Alignment.topCenter,
+                child: Container(
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 16.0, vertical: 6.0),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(14.0),
+                            color: AppColors.messageBoxBackground,
+                          ),
+                          child: TextField(
+                            focusNode: chatroomScrollController.focusNode,
+                            controller: chatroomController.messageController,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                            ),
+                            decoration: InputDecoration(
+                              hintText: "Message ...",
+                              border: InputBorder.none,
+                            ),
+                          ),
                         ),
-                        decoration: InputDecoration(
-                          hintText: "Message ...",
-                          border: InputBorder.none,
-                        ),
                       ),
-                    ),
+                      // const SizedBox(width: 10),
+                      // 送出訊息的按鈕，調用上面創的addMessage()函式
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.all(10.0),
+                          primary: accentColor,
+                          shape: CircleBorder(),
+                          shadowColor: Colors.transparent,
+                        ),
+                        onPressed: () async {
+                          await chatroomController.addMessage();
+                        },
+                        child: Icon(Icons.send),
+                      ),
+                    ],
                   ),
-                  // const SizedBox(width: 10),
-                  // 送出訊息的按鈕，調用上面創的addMessage()函式
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      padding: EdgeInsets.all(10.0),
-                      primary: accentColor,
-                      shape: CircleBorder(),
-                      shadowColor: Colors.transparent,
-                    ),
-                    onPressed: () async {
-                      await chatroomController.addMessage();
-                    },
-                    child: Icon(Icons.send),
-                  ),
-                ],
+                ),
               ),
             ),
-          ),
+            Positioned(
+              child: Container(
+                height: 1.5,
+                color: AppColors.messageBoxBackground,
+              ),
+            ),
+          ],
         ),
       ],
     );

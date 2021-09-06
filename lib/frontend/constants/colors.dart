@@ -4,16 +4,19 @@ import 'package:flutter/widgets.dart';
 // App主题，包含: 颜色，字体大小等
 //  TOOD
 class AppColors {
+  static Color? bottomNavigationBarBackground = Colors.white;
   static Color? messageBoxBackground = Colors.grey[300];
   static Color? messageBoxContainerBackground = Colors.grey[50];
 
   static lightMode() {
-    messageBoxBackground = Colors.grey[300];
+    bottomNavigationBarBackground = Colors.white;
+    messageBoxBackground = Colors.grey[200];
     messageBoxContainerBackground = Colors.grey[50];
   }
 
   static darkMode() {
-    messageBoxBackground = Colors.grey[800];
+    bottomNavigationBarBackground = Colors.black;
+    messageBoxBackground = Colors.grey[850];
     messageBoxContainerBackground = Colors.grey[850];
   }
 }

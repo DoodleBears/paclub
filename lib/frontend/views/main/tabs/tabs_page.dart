@@ -39,30 +39,71 @@ class Tabs extends GetView<TabsController> {
             body: GetBuilder<TabsController>(builder: (_) {
               return pageList[controller.currentIndex];
             }), // 从controller 得知当前应该显示哪个page
-            bottomNavigationBar: GetBuilder<TabsController>(
-              builder: (_) {
-                return BottomNavigationBar(
-                  currentIndex: controller.currentIndex,
-                  onTap: (int index) {
-                    controller.setIndex(index);
-                  },
-                  showSelectedLabels: true,
-                  selectedItemColor: accentColor,
-                  type: BottomNavigationBarType.fixed,
-                  items: [
-                    BottomNavigationBarItem(
-                        icon: Icon(Icons.home), label: '首頁'),
-                    BottomNavigationBarItem(
-                        icon: Icon(Icons.lightbulb), label: '抽卡'),
-                    BottomNavigationBarItem(
-                        icon: Icon(Icons.message), label: '私訊'),
-                    BottomNavigationBarItem(
-                        icon: Icon(Icons.alarm), label: '提醒'),
-                    BottomNavigationBarItem(
-                        icon: Icon(Icons.person), label: '個人'),
-                  ],
-                );
-              },
+            bottomNavigationBar: Container(
+              color: AppColors.bottomNavigationBarBackground,
+              child: Stack(
+                children: [
+                  Container(
+                    height: 72.0,
+                    child: GetBuilder<TabsController>(
+                      builder: (_) {
+                        return BottomNavigationBar(
+                          enableFeedback: false,
+                          showUnselectedLabels: false,
+                          currentIndex: controller.currentIndex,
+                          elevation: 0.0,
+                          backgroundColor: Colors.transparent,
+                          onTap: (int index) {
+                            controller.setIndex(index);
+                          },
+                          showSelectedLabels: true,
+                          selectedItemColor: accentColor,
+                          type: BottomNavigationBarType.fixed,
+                          iconSize: 28.0,
+                          unselectedLabelStyle: TextStyle(
+                              fontSize: 14.0, fontWeight: FontWeight.bold),
+                          selectedLabelStyle: TextStyle(
+                              fontSize: 14.0, fontWeight: FontWeight.bold),
+                          items: [
+                            BottomNavigationBarItem(
+                              icon: Icon(Icons.home_outlined),
+                              activeIcon: Icon(Icons.home),
+                              label: '首頁',
+                            ),
+                            BottomNavigationBarItem(
+                              icon: Icon(Icons.lightbulb_outline),
+                              activeIcon: Icon(Icons.lightbulb),
+                              label: '抽卡',
+                            ),
+                            BottomNavigationBarItem(
+                              icon: Icon(Icons.message_outlined),
+                              activeIcon: Icon(Icons.message),
+                              label: '私訊',
+                            ),
+                            BottomNavigationBarItem(
+                              icon: Icon(Icons.notifications_outlined),
+                              activeIcon: Icon(Icons.notifications),
+                              label: '提醒',
+                            ),
+                            BottomNavigationBarItem(
+                              icon: Icon(Icons.person_outline),
+                              activeIcon: Icon(Icons.person),
+                              label: '個人',
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
+                  // 顶部黑色线条
+                  Positioned(
+                    child: Container(
+                      height: 1.5,
+                      color: AppColors.messageBoxBackground,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

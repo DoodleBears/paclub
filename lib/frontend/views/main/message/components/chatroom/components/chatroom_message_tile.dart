@@ -17,7 +17,7 @@ class ChatroomMessageTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(
+      margin: EdgeInsets.only(
         left: 12.0,
         right: 12.0,
         bottom: 8.0,
@@ -39,11 +39,11 @@ class ChatroomMessageTile extends StatelessWidget {
               strutStyle: StrutStyle(
                 height: 1,
                 leading: 0.1,
-                fontSize: 16.0,
+                fontSize: 14.0,
               ),
               textAlign: TextAlign.start,
               style: TextStyle(
-                fontSize: 16.0,
+                fontSize: 14.0,
                 fontWeight: FontWeight.bold,
               ),
             ),
