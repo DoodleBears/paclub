@@ -26,7 +26,7 @@ class AppColors {
 
 const accentColor = Color(0xFF96C336);
 const accentLightColor = Color(0xFFB3D270);
-const accentDarkColor = Color(0xFF75A118);
+const accentDarkColor = Color(0xFF75D118);
 const primaryColor = Color(0xFFF0BF84);
 const primaryLightColor = Color(0xFFFCF4E9);
 const primaryDarkColor = Color(0xFF9F7C53);

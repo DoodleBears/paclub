@@ -169,6 +169,7 @@ class RegisterAccountBody extends GetView<RegisterAccountController> {
                 return RoundedLoadingButton(
                   width:
                       controller.isLoading ? Get.width * 0.4 : Get.width * 0.8,
+                  height: Get.height * 0.08,
                   text: controller.isRegisterd ? 'Login' : 'Sign Up',
                   // 点击后确认登录
                   onPressed: controller.isRegisterd

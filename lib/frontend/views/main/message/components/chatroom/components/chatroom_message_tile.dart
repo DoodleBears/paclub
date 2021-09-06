@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:paclub/frontend/constants/colors.dart';
 import 'package:paclub/frontend/constants/numbers.dart';
 
@@ -18,8 +19,8 @@ class ChatroomMessageTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(
-        left: 12.0,
-        right: 12.0,
+        left: sendByMe ? Get.width * 0.2 : 12.0,
+        right: sendByMe ? 12.0 : Get.width * 0.2,
         bottom: 8.0,
         top: 2.0,
       ),
@@ -39,19 +40,24 @@ class ChatroomMessageTile extends StatelessWidget {
               strutStyle: StrutStyle(
                 height: 1,
                 leading: 0.1,
-                fontSize: 14.0,
+                fontSize: 16.0,
               ),
               textAlign: TextAlign.start,
               style: TextStyle(
-                fontSize: 14.0,
+                fontSize: 16.0,
                 fontWeight: FontWeight.bold,
               ),
             ),
           ),
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+            padding: EdgeInsets.all(14.0),
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(borderRadius)),
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(sendByMe ? borderRadius : 6.0),
+                  topRight: Radius.circular(sendByMe ? 6.0 : borderRadius),
+                  bottomLeft: Radius.circular(borderRadius),
+                  bottomRight: Radius.circular(borderRadius),
+                ),
                 gradient: LinearGradient(
                   colors: sendByMe
                       ? [accentColor, accentDarkColor]
@@ -64,10 +70,7 @@ class ChatroomMessageTile extends StatelessWidget {
                 fontSize: 16.0,
               ),
               textAlign: TextAlign.start,
-              style: TextStyle(
-                fontSize: 16.0,
-                fontWeight: FontWeight.w500,
-              ),
+              style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
             ),
           ),
         ],

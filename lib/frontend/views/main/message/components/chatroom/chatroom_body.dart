@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:paclub/frontend/constants/colors.dart';
 import 'package:paclub/frontend/constants/numbers.dart';
+import 'package:paclub/frontend/views/login/components/components.dart';
 import 'package:paclub/frontend/views/main/message/components/chatroom/chatroom_scroll_controller.dart';
 import 'package:paclub/helper/app_constants.dart';
 import 'package:paclub/models/chat_message_model.dart';
@@ -208,59 +209,66 @@ class _ChatroomBodyState extends State<ChatroomBody>
                 padding: const EdgeInsets.only(
                     left: 16.0, right: 16.0, top: 18.0, bottom: 28.0),
                 alignment: Alignment.topCenter,
-                child: Container(
-                  child: Row(
-                    children: [
-                      Expanded(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    Expanded(
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                            minHeight: Get.height * 0.07 //最小高度为50像素
+                            ),
                         child: Container(
-                          height: 52.0,
                           padding: EdgeInsets.symmetric(
-                              horizontal: 16.0, vertical: 6.0),
+                              horizontal: 12.0, vertical: 2.0),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(14.0),
                             color: AppColors.messageBoxBackground,
+
                             // border: Border.all(
                             //     width: 1.0, color: AppColors.messageBoxContainerBackground!),
                           ),
                           child: TextField(
+                            minLines: 1,
+                            maxLines: 5,
+                            textAlignVertical: TextAlignVertical.center,
                             focusNode: chatroomScrollController.focusNode,
                             controller: chatroomController.messageController,
                             style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                            ),
+                                fontWeight: FontWeight.bold, fontSize: 18.0),
                             decoration: InputDecoration(
-                              hintText: "Message ...",
                               border: InputBorder.none,
                             ),
                           ),
                         ),
                       ),
-                      const SizedBox(width: 10),
-                      // 送出訊息的按鈕，調用上面創的addMessage()函式
-                      Container(
-                        height: 52.0,
-                        child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            primary: accentColor,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(borderRadius),
-                            ),
-                            shadowColor: Colors.transparent,
+                    ),
+                    const SizedBox(width: 10),
+                    // 送出訊息的按鈕，調用上面創的addMessage()函式
+                    ConstrainedBox(
+                      constraints: BoxConstraints(
+                          minHeight: Get.height * 0.07 //最小高度为50像素
                           ),
-                          onPressed: () async {
-                            await chatroomController.addMessage();
-                          },
-                          child: Text(
-                            'Send',
-                            style: TextStyle(
-                              fontSize: 16.0,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
+                      child: GetBuilder<ChatroomController>(
+                        builder: (_) {
+                          return RoundedLoadingButton(
+                              textStyle: TextStyle(
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 12.0,
+                                vertical: 8.0,
+                              ),
+                              isLoading: chatroomController.isSendingMessage,
+                              color: accentColor,
+                              onPressed: () async {
+                                await chatroomController.addMessage();
+                              },
+                              text: 'Send');
+                        },
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),

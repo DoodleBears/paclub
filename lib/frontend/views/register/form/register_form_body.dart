@@ -42,6 +42,7 @@ class RegisterFormBody extends GetView<RegisterFormController> {
             Obx(
               () => RoundedLoadingButton(
                 width: Get.width * 0.8,
+                height: Get.height * 0.08,
                 text: '${controller.page.value}/2 Next',
                 // 点击后确认用户名不为空
                 onPressed: () => controller.nextPage(context),

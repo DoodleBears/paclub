@@ -1,4 +1,5 @@
 import 'package:paclub/frontend/views/main/message/components/chatroom/chatroom_scroll_controller.dart';
+import 'package:paclub/frontend/widgets/widgets.dart';
 import 'package:paclub/helper/app_constants.dart';
 import 'package:paclub/models/chat_message_model.dart';
 import 'package:paclub/backend/repository/remote/chatroom_repository.dart';
@@ -16,7 +17,7 @@ class ChatroomController extends GetxController {
   String userName = '';
   int messageLength = 0;
   int newMessageNum = 0;
-
+  bool isSendingMessage = false;
   TextEditingController messageController = TextEditingController();
   // final ScrollController scrollController = ScrollController();
 
@@ -57,6 +58,9 @@ class ChatroomController extends GetxController {
   }
 
   Future<void> addMessage() async {
+    if (isSendingMessage) return;
+    isSendingMessage = true;
+    update();
     if (chatroomId.isEmpty) {
       logger.e('chatroomId 为空子串');
     }
@@ -67,10 +71,14 @@ class ChatroomController extends GetxController {
       if (appResponse.data != null) {
         logger.d(appResponse.message + ', 消息为: ' + message);
         messageController.clear(); // 成功发送消息，才清空消息框内容
+
       } else {
+        toastBottom('sending fail: ${appResponse.message}');
         logger.e(appResponse.message);
       }
     }
+    isSendingMessage = false;
+    update();
   }
 
   @override

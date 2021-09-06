@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:animated_theme_switcher/animated_theme_switcher.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -36,6 +38,7 @@ class Tabs extends GetView<TabsController> {
       child: ThemeSwitchingArea(
         child: Builder(
           builder: (context) => Scaffold(
+            backgroundColor: AppColors.bottomNavigationBarBackground,
             body: GetBuilder<TabsController>(builder: (_) {
               return pageList[controller.currentIndex];
             }), // 从controller 得知当前应该显示哪个page
@@ -44,7 +47,7 @@ class Tabs extends GetView<TabsController> {
               child: Stack(
                 children: [
                   Container(
-                    height: 72.0,
+                    padding: EdgeInsets.only(top: 4.0, bottom: 8.0),
                     child: GetBuilder<TabsController>(
                       builder: (_) {
                         return BottomNavigationBar(
@@ -59,7 +62,7 @@ class Tabs extends GetView<TabsController> {
                           showSelectedLabels: true,
                           selectedItemColor: accentColor,
                           type: BottomNavigationBarType.fixed,
-                          iconSize: 28.0,
+                          iconSize: Get.width * 0.07,
                           unselectedLabelStyle: TextStyle(
                               fontSize: 14.0, fontWeight: FontWeight.bold),
                           selectedLabelStyle: TextStyle(

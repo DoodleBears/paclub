@@ -115,6 +115,7 @@ class LoginBody extends GetView<LoginController> {
                 return RoundedLoadingButton(
                   width:
                       controller.isLoading ? Get.width * 0.4 : Get.width * 0.8,
+                  height: Get.height * 0.08,
                   // height: Get.pixelRatio * 16,
                   text: 'Login',
                   onPressed: () => controller.signInWithEmail(context),

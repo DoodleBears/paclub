@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:paclub/frontend/constants/constants.dart';
 import 'package:paclub/frontend/widgets/buttons/rounded_button.dart';
 import 'package:paclub/frontend/widgets/containers/containers.dart';
@@ -7,11 +6,12 @@ import 'package:paclub/frontend/widgets/containers/containers.dart';
 class RoundedLoadingButton extends StatelessWidget {
   final VoidCallback onPressed;
   final String text;
-  final Color color, textColor;
+  final Color? color;
   final bool isLoading;
   final double? width, height;
   final OutlinedBorder? shape;
   final EdgeInsetsGeometry? padding;
+  final TextStyle? textStyle;
 
   /// [文件说明]
   /// - 带有 loading 效果的 button
@@ -33,13 +33,13 @@ class RoundedLoadingButton extends StatelessWidget {
     Key? key,
     required this.onPressed,
     required this.text,
-    this.color = primaryColor,
-    this.textColor = Colors.white,
+    this.color,
     this.isLoading = false,
     this.width,
     this.height,
     this.shape,
     this.padding,
+    this.textStyle,
   }) : super(key: key);
 
   @override
@@ -47,8 +47,8 @@ class RoundedLoadingButton extends StatelessWidget {
     return FadeInScaleContainer(
       scaleDuration: const Duration(milliseconds: 800),
       opacityDuration: const Duration(milliseconds: 800),
-      width: width ?? Get.width * 0.8,
-      height: height ?? Get.height * 0.08,
+      width: width,
+      height: height,
       isShow: true,
       child: RoundedButton(
         color: color,
@@ -80,11 +80,11 @@ class RoundedLoadingButton extends StatelessWidget {
                 fit: BoxFit.contain,
                 child: Text(
                   text,
-                  style: TextStyle(
-                    fontSize: 24.0,
-                    fontWeight: FontWeight.bold,
-                    color: textColor,
-                  ),
+                  style: textStyle ??
+                      TextStyle(
+                        fontSize: 24.0,
+                        fontWeight: FontWeight.bold,
+                      ),
                 ),
               ),
             ),

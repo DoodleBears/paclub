@@ -57,7 +57,7 @@ class ChatroomScrollController extends GetxController {
     isTop = scrollController.offset <= 0;
     isCloseToButtom = scrollController.offset + 100.0 >
         scrollController.position.maxScrollExtent;
-    isBottom = !isTop && (isEdge || isOut);
+    isBottom = !isTop && (isCloseToButtom || isOut);
 
     // if (isListening) return;
     // 当出界或是在边缘，且不是在顶上，则说明 —— 滚动到底部，或是超出底部
