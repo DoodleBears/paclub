@@ -25,10 +25,11 @@ class SplashController extends GetxController {
 
     if (authModule.isLogin() &&
         (useFirestoreEmulator || authModule.isEmailVerified())) {
-      // 如果已登录就去task页面
+      // 如果已登录就去主页面
       logger.d('前往主页');
-      Get.until((route) => false);
-      Get.toNamed(Routes.TABS);
+      Get.until((route) => false); // 清空 routes
+      Get.toNamed(Routes.TABS); //
+      // Get.to(Tabs());
     } else {
       // 如果未登录则前往认证页
       logger.d('前往认证页');

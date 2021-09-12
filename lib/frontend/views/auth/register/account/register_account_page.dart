@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:paclub/frontend/constants/constants.dart';
-import 'package:paclub/frontend/views/register/account/register_account_body.dart';
-import 'package:paclub/frontend/views/register/account/register_account_controller.dart';
+import 'package:paclub/frontend/views/auth/register/account/register_account_body.dart';
+import 'package:paclub/frontend/views/auth/register/account/register_account_controller.dart';
 import 'package:paclub/utils/logger.dart';
 
 class RegisterAccountPage extends GetView<RegisterAccountController> {

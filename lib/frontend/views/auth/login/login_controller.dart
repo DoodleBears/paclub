@@ -37,15 +37,20 @@ class LoginController extends GetxController {
   late Timer timer;
 
   void onUsernameChanged(String username) {
+    // logger0.d(username);
     this.username = username.trim();
-    isEmailOK = true;
-    update();
+    if (isEmailOK == false) {
+      isEmailOK = true;
+      update();
+    }
   }
 
   void onPasswordChanged(String password) {
     this.password = password.trim();
-    isPasswordOK = true;
-    update();
+    if (isPasswordOK) {
+      isPasswordOK = true;
+      update();
+    }
   }
 
   void changeSecure() {
@@ -113,13 +118,14 @@ class LoginController extends GetxController {
     if (username.isEmpty) {
       toastBottom('Email cannot be null');
       isEmailOK = false;
+      update();
     } else if (password.isEmpty) {
       toastBottom('Password cannot be null');
       isPasswordOK = false;
+      update();
     } else {
       isStyleOK = true;
     }
-    update();
     return isStyleOK;
   }
 

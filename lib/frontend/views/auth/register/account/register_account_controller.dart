@@ -6,7 +6,7 @@ import 'package:paclub/frontend/constants/colors.dart';
 import 'package:paclub/frontend/modules/auth_module.dart';
 import 'package:paclub/frontend/utils/timer.dart';
 import 'package:paclub/frontend/views/auth/auth_email_controller.dart';
-import 'package:paclub/frontend/views/register/form/register_form_controller.dart';
+import 'package:paclub/frontend/views/auth/register/form/register_form_controller.dart';
 import 'package:paclub/frontend/routes/app_pages.dart';
 import 'package:paclub/frontend/widgets/notifications/notifications.dart';
 import 'package:paclub/utils/logger.dart';

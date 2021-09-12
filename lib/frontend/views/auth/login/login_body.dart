@@ -3,8 +3,8 @@ import 'package:get/get.dart';
 import 'package:paclub/frontend/constants/constants.dart';
 import 'package:paclub/frontend/routes/app_pages.dart';
 import 'package:paclub/frontend/views/auth/auth_email_controller.dart';
-import 'package:paclub/frontend/views/login/components/components.dart';
-import 'package:paclub/frontend/views/login/login_controller.dart';
+import 'package:paclub/frontend/views/auth/login/components/components.dart';
+import 'package:paclub/frontend/views/auth/login/login_controller.dart';
 import 'package:paclub/frontend/widgets/buttons/buttons.dart';
 import 'package:paclub/frontend/widgets/buttons/rounded_button.dart';
 import 'package:paclub/r.dart';
@@ -41,6 +41,7 @@ class LoginBody extends GetView<LoginController> {
               ),
             ),
             SizedBox(height: Get.height * 0.03), // 用户名和邮箱输入
+            // Email 输入
             GetBuilder<LoginController>(
               builder: (_) {
                 return RoundedInputField(

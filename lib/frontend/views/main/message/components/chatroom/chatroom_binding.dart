@@ -8,7 +8,7 @@ import 'package:paclub/utils/logger.dart';
 class ChatroomBinding implements Bindings {
   @override
   void dependencies() {
-    logger.i('[自动绑定]依赖注入 —— ChatroomBinding');
+    logger.wtf('[自动绑定]依赖注入 —— ChatroomBinding');
 
     // 如果希望是懒加载，则用下面一行（会导致每次打开页面重新刷新内容，因为 Controller 重建了）
     // Get.lazyPut<MessageController>(() => MessageController());

@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:paclub/frontend/constants/constants.dart';
 import 'package:paclub/frontend/utils/length_limit_textfield_formatter.dart';
-import 'package:paclub/frontend/views/login/components/text_field_container.dart';
+import 'package:paclub/frontend/views/auth/login/components/text_field_container.dart';
 
 class RoundedInputField extends StatelessWidget {
   final TextInputType textInputType;

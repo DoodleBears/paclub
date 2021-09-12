@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
-import 'package:paclub/frontend/views/login/components/rounded_input_field.dart';
-import 'package:paclub/frontend/views/register/form/register_form_controller.dart';
+import 'package:paclub/frontend/views/auth/login/components/rounded_input_field.dart';
+import 'package:paclub/frontend/views/auth/register/form/register_form_controller.dart';
 import 'package:paclub/frontend/widgets/containers/fade_in_scale_container.dart';
 import 'package:paclub/utils/logger.dart';
 

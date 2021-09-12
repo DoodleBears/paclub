@@ -11,7 +11,7 @@ import 'package:paclub/utils/logger.dart';
 class TabsBinding implements Bindings {
   @override
   void dependencies() {
-    logger.i('[自动绑定]依赖注入 —— TabsBinding');
+    logger.wtf('[自动绑定]依赖注入 —— TabsBinding');
 
     /// View 用到的 Controller
     Get.put<TabsController>(TabsController());

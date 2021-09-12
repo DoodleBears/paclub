@@ -9,7 +9,7 @@ import 'package:paclub/utils/logger.dart';
 class HomeBinding implements Bindings {
   @override
   void dependencies() {
-    logger.i('[自动绑定]依赖注入 —— HomeBinding');
+    logger.wtf('[自动绑定]依赖注入 —— HomeBinding');
 
     /// Controller 用到的 Module 和 API
     Get.lazyPut<FirebaseAuthRepository>(() => FirebaseAuthRepository());

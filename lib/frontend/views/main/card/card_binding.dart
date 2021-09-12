@@ -6,7 +6,7 @@ import 'package:paclub/utils/logger.dart';
 class CardBinding implements Bindings {
   @override
   void dependencies() {
-    logger.i('[自动绑定]依赖注入 —— CardBinding');
+    logger.wtf('[自动绑定]依赖注入 —— CardBinding');
 
     /// View 用到的 Controller
     Get.put<CardController>(CardController());

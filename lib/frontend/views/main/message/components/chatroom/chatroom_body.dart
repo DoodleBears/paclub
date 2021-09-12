@@ -1,8 +1,7 @@
 import 'dart:io';
 
 import 'package:paclub/frontend/constants/colors.dart';
-import 'package:paclub/frontend/constants/numbers.dart';
-import 'package:paclub/frontend/views/login/components/components.dart';
+import 'package:paclub/frontend/views/auth/login/components/components.dart';
 import 'package:paclub/frontend/views/main/message/components/chatroom/chatroom_scroll_controller.dart';
 import 'package:paclub/helper/app_constants.dart';
 import 'package:paclub/models/chat_message_model.dart';
@@ -58,7 +57,7 @@ class _ChatroomBodyState extends State<ChatroomBody>
             chatroomScrollController.scrollController.offset + keyboardHeight);
       }
     } else {
-      chatroomScrollController.focusNode.unfocus();
+      // chatroomScrollController.focusNode.unfocus();
       logger.i('键盘消失');
       // 如果键盘消失，则滚动列表向下（如果不在读历史记录，可以直接让键盘消失）
       if (!Platform.isIOS) {

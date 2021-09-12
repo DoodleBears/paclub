@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:paclub/frontend/constants/constants.dart';
-import 'package:paclub/frontend/views/register/form/register_form_body.dart';
-import 'package:paclub/frontend/views/register/form/register_form_controller.dart';
+import 'package:paclub/frontend/views/auth/register/form/register_form_body.dart';
+import 'package:paclub/frontend/views/auth/register/form/register_form_controller.dart';
 import 'package:paclub/utils/logger.dart';
 
 class RegisterFormPage extends GetView<RegisterFormController> {

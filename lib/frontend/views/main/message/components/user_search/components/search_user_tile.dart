@@ -1,7 +1,7 @@
 import 'package:paclub/frontend/constants/colors.dart';
 import 'package:paclub/frontend/constants/numbers.dart';
 import 'package:paclub/frontend/routes/app_pages.dart';
-import 'package:paclub/frontend/views/login/components/components.dart';
+import 'package:paclub/frontend/views/auth/login/components/components.dart';
 import 'package:paclub/frontend/views/main/message/components/user_search/user_search_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

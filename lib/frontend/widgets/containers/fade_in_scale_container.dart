@@ -22,7 +22,7 @@ class FadeInScaleContainer extends StatelessWidget {
   const FadeInScaleContainer({
     Key? key,
     required this.isShow,
-    required this.child,
+    this.child,
     this.height,
     this.width,
     this.scaleDuration = const Duration(milliseconds: 1000),
@@ -36,7 +36,7 @@ class FadeInScaleContainer extends StatelessWidget {
   final double? width;
   final double? height;
   final Color? color;
-  final Widget child;
+  final Widget? child;
   final Duration scaleDuration;
   final Duration opacityDuration;
   final Curve scaleCurve;

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:paclub/frontend/constants/constants.dart';
 import 'package:paclub/frontend/widgets/buttons/rounded_button.dart';
 import 'package:paclub/frontend/widgets/containers/containers.dart';
 

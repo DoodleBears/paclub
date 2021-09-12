@@ -6,7 +6,7 @@ import 'package:paclub/utils/logger.dart';
 class UserBinding implements Bindings {
   @override
   Future<void> dependencies() async {
-    logger.i('[自动绑定]依赖注入 —— UserBinding');
+    logger.wtf('[自动绑定]依赖注入 —— UserBinding');
 
     /// 如: `自动登录`, `黑夜模式`等
     Get.put<UserController>(UserController());

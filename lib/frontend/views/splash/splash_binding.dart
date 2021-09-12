@@ -11,7 +11,7 @@ import 'splash_controller.dart';
 class SplashBinding implements Bindings {
   @override
   void dependencies() {
-    logger.i('[自动绑定]依赖注入 —— SplashBinding');
+    logger.wtf('[自动绑定]依赖注入 —— SplashBinding');
 
     /// Controller 用到的 Module 和 API
     Get.lazyPut<FirebaseAuthRepository>(() => FirebaseAuthRepository());
