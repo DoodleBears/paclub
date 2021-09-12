@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:paclub/frontend/constants/colors.dart';
 import 'package:paclub/frontend/views/auth/login/components/components.dart';
 import 'package:paclub/frontend/views/main/message/components/chatroom/chatroom_scroll_controller.dart';
@@ -37,45 +35,54 @@ class _ChatroomBodyState extends State<ChatroomBody>
   }
 
   /// [用来检测键盘的出现和消失] This routine is invoked when the window metrics have changed.
-  double keyboardHeight = 0.0;
-  bool iosKeyboardCheck = false;
+  double keyboardHeightPixel = 0.0;
+  double keyboardHeightOrigin = 0.0;
+  bool isKeyboardShow = false; //防止出现didChangeMetrics因为键盘出现/消失多次触发
   @override
   void didChangeMetrics() {
-    if (keyboardHeight == 0.0) {
-      // 当键盘出现后，set一次高度之后，就不用再改变了
-      keyboardHeight =
-          WidgetsBinding.instance!.window.viewInsets.bottom / Get.pixelRatio;
-      logger.wtf('键盘高度: $keyboardHeight');
+    // 如果键盘高度不是0，或键盘高度发生变化，更新键盘高度
+    if (WidgetsBinding.instance!.window.viewInsets.bottom !=
+            keyboardHeightOrigin &&
+        WidgetsBinding.instance!.window.viewInsets.bottom != 0.0) {
+      keyboardHeightOrigin = WidgetsBinding.instance!.window.viewInsets.bottom;
+      keyboardHeightPixel = keyboardHeightOrigin / Get.pixelRatio;
+
+      logger.wtf('键盘高度: $keyboardHeightPixel');
     }
-    bool isKeyboardOpen = WidgetsBinding.instance!.window.viewInsets.bottom > 0;
-    if (isKeyboardOpen) {
+    // 用 viewInsets.bottom 判断是否打开键盘
+    bool isKeyboardOpen =
+        WidgetsBinding.instance!.window.viewInsets.bottom > 0.0;
+    // 如果当时键盘高度 > 0 ，且键盘并不是已经打开了
+    if (isKeyboardOpen && isKeyboardShow == false) {
+      isKeyboardShow = true;
       logger.i('键盘出现');
       // 如果键盘出现，则滚动列表向上，如果是新的聊天室没有消息，则不滚动
       if (chatroomScrollController.scrollController.position.maxScrollExtent >
           100.0) {
         chatroomScrollController.scrollController.jumpTo(
-            chatroomScrollController.scrollController.offset + keyboardHeight);
+            chatroomScrollController.scrollController.offset +
+                keyboardHeightPixel);
       }
-    } else {
+    } else if (isKeyboardOpen == false && isKeyboardShow) {
+      // 如果当时键盘 == 0（即键盘关闭），且键盘并不是已经关闭了
       // chatroomScrollController.focusNode.unfocus();
+      isKeyboardShow = false;
       logger.i('键盘消失');
       // 如果键盘消失，则滚动列表向下（如果不在读历史记录，可以直接让键盘消失）
-      if (!Platform.isIOS) {
-        iosKeyboardCheck = true;
-      }
-      if (chatroomScrollController.isReadHistory == true && iosKeyboardCheck) {
+
+      if (chatroomScrollController.isReadHistory == true) {
         chatroomScrollController.scrollController.jumpTo(
-            chatroomScrollController.scrollController.offset - keyboardHeight);
-        iosKeyboardCheck = false;
-      } else if (iosKeyboardCheck == false) {
-        iosKeyboardCheck = true;
+            chatroomScrollController.scrollController.offset -
+                keyboardHeightPixel);
       }
     }
     chatroomScrollController.bottom =
         chatroomScrollController.scrollController.position.maxScrollExtent;
-    if (keyboardHeight == 0.0 && chatroomScrollController.focusNode.hasFocus) {
-      chatroomScrollController.focusNode.unfocus();
-    }
+    // 取消 TextField 的 focusNode（焦点）
+    // if (isKeyboardShow == false &&
+    //     chatroomScrollController.focusNode.hasFocus) {
+    //   chatroomScrollController.focusNode.unfocus();
+    // }
   }
 
   // 每次 重建LsitView（一般是有新消息进入，则会重新计算高度）
@@ -107,7 +114,7 @@ class _ChatroomBodyState extends State<ChatroomBody>
   @override
   Widget build(BuildContext context) {
     logger.d('渲染 ChatRoomBody');
-    keyboardHeight = 0.0;
+    keyboardHeightPixel = 0.0;
     return Column(
       children: [
         Expanded(
