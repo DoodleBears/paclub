@@ -10,16 +10,20 @@ class ChatroomPage extends GetView<ChatroomController> {
   @override
   Widget build(BuildContext context) {
     logger.d('渲染 ChatroomPage');
-    return Scaffold(
-      appBar: AppBar(
-        titleTextStyle: TextStyle(
-            fontSize: 20.0,
-            fontWeight: FontWeight.bold,
-            color: AppColors.chatroomAppBarTitleColor),
-        title: Text(controller.userName),
-        elevation: 0,
-      ),
-      body: ChatroomBody(),
+    return GetBuilder<UserController>(
+      builder: (_) {
+        return Scaffold(
+          appBar: AppBar(
+            titleTextStyle: TextStyle(
+                fontSize: 20.0,
+                fontWeight: FontWeight.bold,
+                color: AppColors.chatroomAppBarTitleColor),
+            title: Text(controller.userName),
+            elevation: 0,
+          ),
+          body: ChatroomBody(),
+        );
+      },
     );
   }
 }

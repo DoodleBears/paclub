@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:paclub/frontend/views/main/user/components/appber_widget.dart';
 import 'package:paclub/frontend/views/main/user/components/button_widget.dart';
 import 'package:paclub/frontend/views/main/user/components/profile_widget.dart';
 import 'package:paclub/frontend/views/main/user/components/textfield_widget.dart';
@@ -18,7 +17,10 @@ class EditProfilePage extends GetView<UserController> {
   Widget build(BuildContext context) {
     logger.i('渲染 —— EditProfilePage');
     return Scaffold(
-      appBar: buildAppBar(context),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0, // z-index高度的感觉，影响 AppBar 的阴影
+      ),
       body: ListView(
         padding: EdgeInsets.symmetric(horizontal: 32),
         physics: BouncingScrollPhysics(),

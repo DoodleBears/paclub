@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:paclub/frontend/routes/app_pages.dart';
-import 'package:paclub/frontend/views/main/user/components/appber_widget.dart';
 import 'package:paclub/frontend/views/main/user/components/button_widget.dart';
 import 'package:paclub/frontend/views/main/user/components/numbers_widget.dart';
 import 'package:paclub/frontend/views/main/user/components/profile_widget.dart';
@@ -15,7 +14,10 @@ class ProfilePage extends GetView<UserController> {
   Widget build(BuildContext context) {
     logger.i('渲染 —— ProfilePage');
     return Scaffold(
-      appBar: buildAppBar(context),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0, // z-index高度的感觉，影响 AppBar 的阴影
+      ),
       body: ListView(
         physics: BouncingScrollPhysics(),
         children: [

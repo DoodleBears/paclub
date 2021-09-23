@@ -1,4 +1,3 @@
-import 'package:animated_theme_switcher/animated_theme_switcher.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:paclub/frontend/constants/colors.dart';
@@ -7,6 +6,7 @@ import 'package:paclub/frontend/views/main/home/home_page.dart';
 import 'package:paclub/frontend/views/main/message/message_page.dart';
 import 'package:paclub/frontend/views/main/notification/notification_page.dart';
 import 'package:paclub/frontend/views/main/tabs/tabs_controller.dart';
+import 'package:paclub/frontend/views/main/user/user_controller.dart';
 import 'package:paclub/frontend/views/main/user/user_page.dart';
 import 'package:paclub/utils/logger.dart';
 
@@ -33,13 +33,12 @@ class Tabs extends GetView<TabsController> {
         }
         return false;
       },
-      child: ThemeSwitchingArea(
-        child: Builder(
-          builder: (context) => Scaffold(
+      child: GetBuilder<UserController>(builder: (_) {
+        return GetBuilder<TabsController>(builder: (_) {
+          return Scaffold(
             backgroundColor: AppColors.bottomNavigationBarBackgroundColor,
-            body: GetBuilder<TabsController>(builder: (_) {
-              return pageList[controller.currentIndex];
-            }), // 从controller 得知当前应该显示哪个page
+            body:
+                pageList[controller.currentIndex], // 从controller 得知当前应该显示哪个page
             bottomNavigationBar: Container(
               color: AppColors.bottomNavigationBarBackgroundColor,
               child: Stack(
@@ -106,9 +105,9 @@ class Tabs extends GetView<TabsController> {
                 ],
               ),
             ),
-          ),
-        ),
-      ),
+          );
+        });
+      }),
     );
   }
 }
