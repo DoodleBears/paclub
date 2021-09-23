@@ -36,12 +36,12 @@ class Tabs extends GetView<TabsController> {
       child: ThemeSwitchingArea(
         child: Builder(
           builder: (context) => Scaffold(
-            backgroundColor: AppColors.bottomNavigationBarBackground,
+            backgroundColor: AppColors.bottomNavigationBarBackgroundColor,
             body: GetBuilder<TabsController>(builder: (_) {
               return pageList[controller.currentIndex];
             }), // 从controller 得知当前应该显示哪个page
             bottomNavigationBar: Container(
-              color: AppColors.bottomNavigationBarBackground,
+              color: AppColors.bottomNavigationBarBackgroundColor,
               child: Stack(
                 children: [
                   Container(
@@ -100,7 +100,7 @@ class Tabs extends GetView<TabsController> {
                   Positioned(
                     child: Container(
                       height: 1.5,
-                      color: AppColors.divideLine,
+                      color: AppColors.divideLineColor,
                     ),
                   ),
                 ],

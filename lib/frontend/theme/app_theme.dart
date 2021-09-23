@@ -6,7 +6,6 @@ ThemeData get appThemeData => ThemeData(
       primaryColor: primaryColor,
       primaryColorLight: primaryLightColor,
       scaffoldBackgroundColor: Colors.white,
-      accentColor: accentColor,
       appBarTheme: appBarTheme,
       textTheme: GoogleFonts.poppinsTextTheme(),
       pageTransitionsTheme: PageTransitionsTheme(

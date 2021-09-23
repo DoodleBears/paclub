@@ -2,6 +2,7 @@ import 'package:animated_theme_switcher/animated_theme_switcher.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:paclub/backend/repository/local/user_preferences.dart';
 import 'package:paclub/frontend/constants/constants.dart';
@@ -15,6 +16,12 @@ import 'package:paclub/utils/logger.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // SystemChrome.setEnabledSystemUIMode(
+  //   SystemUiMode.edgeToEdge,
+  // );
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+  ));
   // await Firebase.initializeApp();
   // App 开启时就优先启动的各种, 如 Controller, Service(比如用于检测登录, 自动登录的)
   logger.wtf('点击链接查看更多 logger 使用方式 https://pub.dev/packages/logger/example');

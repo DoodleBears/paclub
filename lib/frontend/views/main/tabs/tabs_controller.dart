@@ -25,6 +25,7 @@ class TabsController extends GetxController {
   }
 
   void setIndex(int index) {
+    if (currentIndex == index) return;
     currentIndex = index;
     // logger.i('当前index是：' + currentIndex.toString());
     tabsDependencyInjection(index);

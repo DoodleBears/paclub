@@ -192,7 +192,7 @@ class _ChatroomBodyState extends State<ChatroomBody>
               ),
               // 顶部黑色线条
               Positioned(
-                child: Container(height: 1.0, color: AppColors.divideLine),
+                child: Container(height: 1.0, color: AppColors.divideLineColor),
               ),
             ],
           ),
@@ -211,7 +211,7 @@ class _ChatroomBodyState extends State<ChatroomBody>
                 )
               ]),
               child: Container(
-                color: AppColors.messageBoxContainerBackground,
+                color: AppColors.messageBoxContainerBackgroundColor,
                 padding: const EdgeInsets.only(
                     left: 16.0, right: 16.0, top: 18.0, bottom: 28.0),
                 alignment: Alignment.topCenter,
@@ -228,7 +228,7 @@ class _ChatroomBodyState extends State<ChatroomBody>
                               horizontal: 12.0, vertical: 2.0),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(14.0),
-                            color: AppColors.messageBoxBackground,
+                            color: AppColors.messageBoxBackgroundColor,
 
                             // border: Border.all(
                             //     width: 1.0, color: AppColors.messageBoxContainerBackground!),
@@ -282,7 +282,7 @@ class _ChatroomBodyState extends State<ChatroomBody>
             Positioned(
               child: Container(
                 height: 1.5,
-                color: AppColors.divideLine,
+                color: AppColors.divideLineColor,
               ),
             ),
           ],

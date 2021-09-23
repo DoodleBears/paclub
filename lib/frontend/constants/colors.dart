@@ -4,23 +4,26 @@ import 'package:flutter/widgets.dart';
 // App主题，包含: 颜色，字体大小等
 //  TOOD
 class AppColors {
-  static Color? bottomNavigationBarBackground = Colors.white;
-  static Color? messageBoxBackground = Colors.grey[200];
-  static Color? divideLine = Colors.grey[200];
-  static Color? messageBoxContainerBackground = Colors.grey[50];
+  static Color? listViewBackgroundColor = Colors.grey[200];
+  static Color? bottomNavigationBarBackgroundColor = Colors.white;
+  static Color? messageBoxBackgroundColor = Colors.grey[200];
+  static Color? divideLineColor = Colors.grey[200];
+  static Color? messageBoxContainerBackgroundColor = Colors.grey[50];
 
   static lightMode() {
-    bottomNavigationBarBackground = Colors.white;
-    divideLine = Colors.grey[200];
-    messageBoxBackground = Colors.grey[200];
-    messageBoxContainerBackground = Colors.grey[50];
+    listViewBackgroundColor = Colors.grey[200];
+    bottomNavigationBarBackgroundColor = Colors.white;
+    divideLineColor = Colors.grey[200];
+    messageBoxBackgroundColor = Colors.grey[200];
+    messageBoxContainerBackgroundColor = Colors.grey[50];
   }
 
   static darkMode() {
-    bottomNavigationBarBackground = Colors.black;
-    divideLine = Colors.grey[850];
-    messageBoxBackground = Colors.grey[800];
-    messageBoxContainerBackground = Colors.grey[850];
+    listViewBackgroundColor = Colors.black;
+    bottomNavigationBarBackgroundColor = Colors.black;
+    divideLineColor = Colors.grey[850];
+    messageBoxBackgroundColor = Colors.grey[800];
+    messageBoxContainerBackgroundColor = Colors.grey[850];
   }
 }
 
