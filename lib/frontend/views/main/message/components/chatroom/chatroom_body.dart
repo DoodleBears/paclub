@@ -8,6 +8,7 @@ import 'package:paclub/frontend/views/main/message/components/chatroom/chatroom_
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 import 'components/chatroom_message_tile.dart';
 
@@ -41,9 +42,10 @@ class _ChatroomBodyState extends State<ChatroomBody>
   @override
   void didChangeMetrics() {
     // 如果键盘高度不是0，或键盘高度发生变化，更新键盘高度
-    if (WidgetsBinding.instance!.window.viewInsets.bottom !=
-            keyboardHeightOrigin &&
-        WidgetsBinding.instance!.window.viewInsets.bottom != 0.0) {
+    if ((WidgetsBinding.instance!.window.viewInsets.bottom !=
+                keyboardHeightOrigin &&
+            WidgetsBinding.instance!.window.viewInsets.bottom != 0.0) ||
+        keyboardHeightPixel == 0.0) {
       keyboardHeightOrigin = WidgetsBinding.instance!.window.viewInsets.bottom;
       keyboardHeightPixel = keyboardHeightOrigin / Get.pixelRatio;
 
@@ -55,10 +57,10 @@ class _ChatroomBodyState extends State<ChatroomBody>
     // 如果当时键盘高度 > 0 ，且键盘并不是已经打开了
     if (isKeyboardOpen && isKeyboardShow == false) {
       isKeyboardShow = true;
-      logger.i('键盘出现');
+      logger.i('键盘出现，键盘高度: $keyboardHeightPixel');
       // 如果键盘出现，则滚动列表向上，如果是新的聊天室没有消息，则不滚动
       if (chatroomScrollController.scrollController.position.maxScrollExtent >
-          100.0) {
+          80.0) {
         chatroomScrollController.scrollController.jumpTo(
             chatroomScrollController.scrollController.offset +
                 keyboardHeightPixel);
@@ -95,7 +97,9 @@ class _ChatroomBodyState extends State<ChatroomBody>
       if (chatroomScrollController.isReadHistory == false) {
         chatroomScrollController.bottom =
             chatroomScrollController.scrollController.position.maxScrollExtent;
-        chatroomScrollController.jumpToBottom();
+        chatroomScrollController.scrollToBottom();
+        // chatroomScrollController
+        //     .scrollToIndex(chatroomController.messageLength);
       }
 
       /// 更新ListView高度
@@ -143,14 +147,20 @@ class _ChatroomBodyState extends State<ChatroomBody>
                   // shrinkWrap: true,
                   padding: EdgeInsets.zero,
                   itemBuilder: (context, index) {
-                    return GetBuilder<ChatroomScrollController>(
-                      builder: (_) {
-                        return ChatroomMessageTile(
-                          senderName: list[index].sendBy,
-                          message: list[index].message,
-                          sendByMe: AppConstants.userName == list[index].sendBy,
-                        );
-                      },
+                    return AutoScrollTag(
+                      controller: chatroomScrollController.scrollController,
+                      index: index,
+                      key: ValueKey(index),
+                      child: GetBuilder<ChatroomScrollController>(
+                        builder: (_) {
+                          return ChatroomMessageTile(
+                            senderName: list[index].sendBy,
+                            message: list[index].message,
+                            sendByMe:
+                                AppConstants.userName == list[index].sendBy,
+                          );
+                        },
+                      ),
                     );
                   },
                 );
@@ -174,7 +184,10 @@ class _ChatroomBodyState extends State<ChatroomBody>
                               chatroomScrollController.bottom =
                                   chatroomScrollController.scrollController
                                       .position.maxScrollExtent;
-                              chatroomScrollController.jumpToBottom();
+                              // chatroomScrollController.jumpToBottom();
+                              chatroomScrollController.scrollToIndex(
+                                  chatroomController.messageLength -
+                                      chatroomScrollController.messagesNotRead);
                             },
                             child: Text(
                               chatroomScrollController.messagesNotRead

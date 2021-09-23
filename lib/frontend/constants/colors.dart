@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 // App主题，包含: 颜色，字体大小等
 //  TOOD
 class AppColors {
+  static Color? chatroomAppBarTitleColor = Colors.black;
   static Color? listViewBackgroundColor = Colors.grey[200];
   static Color? bottomNavigationBarBackgroundColor = Colors.white;
   static Color? messageBoxBackgroundColor = Colors.grey[200];
@@ -11,6 +12,7 @@ class AppColors {
   static Color? messageBoxContainerBackgroundColor = Colors.grey[50];
 
   static lightMode() {
+    chatroomAppBarTitleColor = Colors.black;
     listViewBackgroundColor = Colors.grey[200];
     bottomNavigationBarBackgroundColor = Colors.white;
     divideLineColor = Colors.grey[200];
@@ -19,6 +21,7 @@ class AppColors {
   }
 
   static darkMode() {
+    chatroomAppBarTitleColor = Colors.grey[100];
     listViewBackgroundColor = Colors.black;
     bottomNavigationBarBackgroundColor = Colors.black;
     divideLineColor = Colors.grey[850];

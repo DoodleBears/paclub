@@ -1,10 +1,10 @@
 import 'package:paclub/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:scroll_to_index/scroll_to_index.dart';
 
 class ChatroomScrollController extends GetxController {
-  final ScrollController scrollController =
-      ScrollController(keepScrollOffset: false);
+  final AutoScrollController scrollController = AutoScrollController();
   bool isReadHistory = false; // 是否正在浏览历史记录
   int messagesNotRead = 0; // 未读消息数量
   bool isEdge = true; // 是否在边缘（顶部边缘，底部边缘）
@@ -77,18 +77,29 @@ class ChatroomScrollController extends GetxController {
     }
   }
 
+  void scrollToIndex(int index) {
+    scrollController.scrollToIndex(
+      index,
+      duration: const Duration(milliseconds: 300),
+      preferPosition: AutoScrollPosition.end,
+    );
+    messagesNotRead = 0;
+    isReadHistory = false;
+  }
+
   void scrollToBottom() {
+    logger.w('bottom: $bottom');
     scrollController.animateTo(bottom,
         duration: const Duration(milliseconds: 300), curve: Curves.ease);
+    isReadHistory = false;
     messagesNotRead = 0;
   }
 
   void jumpToBottom() {
     logger.w('bottom: $bottom');
-    messagesNotRead = 0;
-
     scrollController.jumpTo(bottom);
     // focusNode.unfocus();
+    messagesNotRead = 0;
     isReadHistory = false;
   }
 
