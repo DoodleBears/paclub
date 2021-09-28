@@ -41,6 +41,7 @@ class _ChatroomBodyState extends State<ChatroomBody>
   bool isKeyboardShow = false; //防止出现didChangeMetrics因为键盘出现/消失多次触发
   @override
   void didChangeMetrics() {
+    chatroomScrollController.isMetricsChangeing = true;
     // 如果键盘高度不是0，或键盘高度发生变化，更新键盘高度
     if ((WidgetsBinding.instance!.window.viewInsets.bottom !=
                 keyboardHeightOrigin &&
@@ -58,6 +59,8 @@ class _ChatroomBodyState extends State<ChatroomBody>
     if (isKeyboardOpen && isKeyboardShow == false) {
       isKeyboardShow = true;
       logger.i('键盘出现，键盘高度: $keyboardHeightPixel');
+      // logger.d(
+      //     'maxExtent: ${chatroomScrollController.scrollController.position.maxScrollExtent}\nGetHeight: ${Get.height}');
       // 如果键盘出现，则滚动列表向上，如果是新的聊天室没有消息，则不滚动
       if (chatroomScrollController.scrollController.position.maxScrollExtent >
           80.0) {
@@ -69,47 +72,34 @@ class _ChatroomBodyState extends State<ChatroomBody>
       // 如果当时键盘 == 0（即键盘关闭），且键盘并不是已经关闭了
       // chatroomScrollController.focusNode.unfocus();
       isKeyboardShow = false;
-      logger.i('键盘消失');
-      // 如果键盘消失，则滚动列表向下（如果不在读历史记录，可以直接让键盘消失）
+      logger.i('键盘消失，键盘高度: $keyboardHeightPixel');
 
+      // 如果键盘消失，则滚动列表向下（如果消息数量太少，则不滚动）
+      // logger.d(
+      //     'maxExtent: ${chatroomScrollController.scrollController.position.maxScrollExtent}\nGetHeight: ${Get.height}');
       if (chatroomScrollController.isReadHistory == true) {
         chatroomScrollController.scrollController.jumpTo(
             chatroomScrollController.scrollController.offset -
                 keyboardHeightPixel);
       }
+      if (chatroomScrollController.focusNode.hasFocus) {
+        chatroomScrollController.focusNode.unfocus();
+      }
     }
-    chatroomScrollController.bottom =
-        chatroomScrollController.scrollController.position.maxScrollExtent;
-    // 取消 TextField 的 focusNode（焦点）
-    // if (isKeyboardShow == false &&
-    //     chatroomScrollController.focusNode.hasFocus) {
-    //   chatroomScrollController.focusNode.unfocus();
-    // }
+
+    chatroomScrollController.isMetricsChangeing = false;
   }
 
   // 每次 重建LsitView（一般是有新消息进入，则会重新计算高度）
   afterBuild() {
+    // logger.d('itemBuild 完成');
     if (chatroomScrollController.scrollController.hasClients) {
-      /// 最新的 bottom 位置（一般是上次读到的消息的位置，准确来说是上次加载过的最大 ListView 高度）
       /// 注意！ListView.builder 只会加载画面范围附近的Tile，如果不再附近listView不会build，
 
       /// 在读最新消息(即在聊天室底部)，直接加载最新消息，划入动画
       if (chatroomScrollController.isReadHistory == false) {
-        chatroomScrollController.bottom =
-            chatroomScrollController.scrollController.position.maxScrollExtent;
         chatroomScrollController.scrollToBottom();
-        // chatroomScrollController
-        //     .scrollToIndex(chatroomController.messageLength);
       }
-
-      /// 更新ListView高度
-      // if (chatroomScrollController.bottom !=
-      //     chatroomScrollController.lastListHeight) {
-      //   logger.i(
-      //       '更新List高度\n上次的List高度: ${chatroomScrollController.lastListHeight}\n新的List高度: ${chatroomScrollController.bottom}');
-      //   chatroomScrollController.lastListHeight =
-      //       chatroomScrollController.bottom;
-      // }
     } else {
       logger.e('无法找到controller');
     }
@@ -140,11 +130,10 @@ class _ChatroomBodyState extends State<ChatroomBody>
 
                 return ListView.builder(
                   physics: BouncingScrollPhysics(),
-                  shrinkWrap: true,
+                  // shrinkWrap: true,
                   controller: chatroomScrollController.scrollController,
                   // initialItemCount: controller.messageStream.length,
                   itemCount: chatroomController.messageStream.length,
-                  // shrinkWrap: true,
                   padding: EdgeInsets.zero,
                   itemBuilder: (context, index) {
                     return AutoScrollTag(
@@ -169,38 +158,34 @@ class _ChatroomBodyState extends State<ChatroomBody>
               // 消息提示
               GetBuilder<ChatroomScrollController>(
                 builder: (_) {
-                  return chatroomScrollController.messagesNotRead != 0 &&
-                          chatroomScrollController.isReadHistory
-                      ? Positioned(
-                          bottom: 6.0,
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 0.0, horizontal: 16.0),
-                              shape: StadiumBorder(),
-                            ),
-                            onPressed: () {
-                              // 测算按下的时候的 bottom
-                              chatroomScrollController.bottom =
-                                  chatroomScrollController.scrollController
-                                      .position.maxScrollExtent;
-                              // chatroomScrollController.jumpToBottom();
-                              chatroomScrollController.scrollToIndex(
-                                  chatroomController.messageLength -
-                                      chatroomScrollController.messagesNotRead);
-                            },
-                            child: Text(
-                              chatroomScrollController.messagesNotRead
-                                      .toString() +
-                                  ' Unread',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                  return Visibility(
+                    visible: chatroomScrollController.messagesNotRead != 0 &&
+                        chatroomScrollController.isReadHistory,
+                    child: Positioned(
+                      bottom: 6.0,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          padding: EdgeInsets.symmetric(
+                              vertical: 0.0, horizontal: 16.0),
+                          shape: StadiumBorder(),
+                        ),
+                        onPressed: () {
+                          // chatroomScrollController.jumpToBottom();
+                          chatroomScrollController.scrollToIndex(
+                              chatroomController.messageLength -
+                                  chatroomScrollController.messagesNotRead);
+                        },
+                        child: Text(
+                          chatroomScrollController.messagesNotRead.toString() +
+                              ' Unread',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
                           ),
-                        )
-                      : SizedBox.shrink();
+                        ),
+                      ),
+                    ),
+                  );
                 },
               ),
               // 顶部黑色线条

@@ -12,7 +12,8 @@ class ChatroomScrollController extends GetxController {
   bool isCloseToButtom = true; // 是否接近底部
   bool isBottom = false; // 是否在底部
   bool isOut = false; // 是否出界（顶部之外，底部之外）
-  double bottom = 0.0; // 记录ListView底部位置，方便跳转
+  bool isMetricsChangeing = false; // 是否键盘在弹出
+  // double bottom = 0.0; // 记录ListView底部位置，方便跳转
   // double lastListHeight = 0.0;
   double keyboardHeight = 0.0; // 记录键盘高度
 
@@ -26,9 +27,10 @@ class ChatroomScrollController extends GetxController {
     super.onInit();
   }
 
-  void setReadNew() {
-    bottom = scrollController.position.maxScrollExtent;
+  void setReadHistory() {
     if (isReadHistory == false) {
+      // logger.d(
+      //     'isEdge: $isEdge\nisOut: $isOut\nisTop: $isTop\nisCloseToButtom: $isCloseToButtom');
       isReadHistory = true; // 防止多次set
       update();
       logger0
@@ -36,8 +38,10 @@ class ChatroomScrollController extends GetxController {
     }
   }
 
-  void setReadHistory() {
+  void setReadNew() {
     if (isReadHistory) {
+      logger.d(
+          'isEdge: $isEdge\nisOut: $isOut\nisTop: $isTop\nisCloseToButtom: $isCloseToButtom');
       isReadHistory = false; // 防止多次set
       logger0.d('页面滚动-返回底部, isReadHistory:' +
           isReadHistory.toString() +
@@ -52,19 +56,21 @@ class ChatroomScrollController extends GetxController {
   }
 
   void listenScrolling() {
+    // logger.d(isMetricsChangeing);
+    if (isMetricsChangeing) return; // 防止键盘弹出的时候的滚动更新状态
     isEdge = scrollController.position.atEdge;
     isOut = scrollController.position.outOfRange;
     isTop = scrollController.offset <= 0;
-    isCloseToButtom = scrollController.offset + 100.0 >
+    isCloseToButtom = scrollController.offset + 60.0 >
         scrollController.position.maxScrollExtent;
     isBottom = !isTop && (isCloseToButtom || isOut);
-
+    // logger.d('maxScrollExtent: ${scrollController.position.maxScrollExtent}');
     // if (isListening) return;
     // 当出界或是在边缘，且不是在顶上，则说明 —— 滚动到底部，或是超出底部
     if (isBottom) {
-      setReadHistory();
-    } else {
       setReadNew();
+    } else {
+      setReadHistory();
     }
   }
 
@@ -88,16 +94,14 @@ class ChatroomScrollController extends GetxController {
   }
 
   void scrollToBottom() {
-    logger.w('bottom: $bottom');
-    scrollController.animateTo(bottom,
+    scrollController.animateTo(scrollController.position.maxScrollExtent,
         duration: const Duration(milliseconds: 300), curve: Curves.ease);
     isReadHistory = false;
     messagesNotRead = 0;
   }
 
   void jumpToBottom() {
-    logger.w('bottom: $bottom');
-    scrollController.jumpTo(bottom);
+    scrollController.jumpTo(scrollController.position.maxScrollExtent);
     // focusNode.unfocus();
     messagesNotRead = 0;
     isReadHistory = false;

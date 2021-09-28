@@ -37,7 +37,7 @@ class UserSearchBody extends GetView<UserSearchController> {
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       padding: EdgeInsets.all(8.0),
-                      primary: accentDarkColor,
+                      primary: accentColor,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(borderRadius),
                       ),
@@ -71,23 +71,22 @@ class UserSearchBody extends GetView<UserSearchController> {
                           ),
                         ),
                       )
-                    : controller.haveUserSearched
-                        ? ListView.builder(
-                            physics: BouncingScrollPhysics(),
-                            shrinkWrap: true,
-                            itemCount: controller.userList.length,
-                            itemBuilder: (context, index) {
-                              final UserModel userModel =
-                                  controller.userList[index];
-                              return SearchUserTile(
-                                isChatroomExist:
-                                    chatroomIdList.contains(userModel.uid),
-                                userUid: userModel.uid,
-                                userName: userModel.displayName,
-                                userEmail: userModel.email,
-                              );
-                            })
-                        : SizedBox.shrink();
+                    : ListView.builder(
+                        physics: BouncingScrollPhysics(),
+                        shrinkWrap: true,
+                        itemCount: controller.userList.length,
+                        itemBuilder: (context, index) {
+                          final UserModel userModel =
+                              controller.userList[index];
+                          return SearchUserTile(
+                            isChatroomExist:
+                                chatroomIdList.contains(userModel.uid),
+                            userUid: userModel.uid,
+                            userName: userModel.displayName,
+                            userEmail: userModel.email,
+                          );
+                        },
+                      );
               },
             ),
           )

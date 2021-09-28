@@ -28,41 +28,43 @@ class ChatroomMessageTile extends StatelessWidget {
         crossAxisAlignment:
             sendByMe ? CrossAxisAlignment.end : CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: EdgeInsets.only(
-                left: sendByMe ? 0.0 : 4.0,
-                right: sendByMe ? 4.0 : 0.0,
-                bottom: 4.0),
-            child: Text(
-              senderName,
-              overflow: TextOverflow.ellipsis,
-              maxLines: 1,
-              strutStyle: StrutStyle(
-                height: 1,
-                leading: 0.1,
-                fontSize: 16.0,
-              ),
-              textAlign: TextAlign.start,
-              style: TextStyle(
-                fontSize: 16.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
+          // TODO 加入用户头像
+          // 用户名
+          // Padding(
+          //   padding: EdgeInsets.only(
+          //       left: sendByMe ? 0.0 : 4.0,
+          //       right: sendByMe ? 4.0 : 0.0,
+          //       bottom: 4.0),
+          //   child: Text(
+          //     senderName,
+          //     overflow: TextOverflow.ellipsis,
+          //     maxLines: 1,
+          //     strutStyle: StrutStyle(
+          //       height: 1,
+          //       leading: 0.1,
+          //       fontSize: 16.0,
+          //     ),
+          //     textAlign: TextAlign.start,
+          //     style: TextStyle(
+          //       fontSize: 16.0,
+          //       fontWeight: FontWeight.bold,
+          //     ),
+          //   ),
+          // ),
+
           Container(
             padding: EdgeInsets.all(14.0),
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(sendByMe ? borderRadius : 6.0),
-                  topRight: Radius.circular(sendByMe ? 6.0 : borderRadius),
-                  bottomLeft: Radius.circular(borderRadius),
-                  bottomRight: Radius.circular(borderRadius),
-                ),
-                gradient: LinearGradient(
-                  colors: sendByMe
-                      ? [accentColor, accentDarkColor]
-                      : [primaryColor, primaryDarkColor],
-                )),
+              borderRadius: BorderRadius.circular(borderRadius),
+              color: sendByMe
+                  ? AppColors.chatMeBackgroundColor
+                  : AppColors.chatOtherBackgroundColor,
+              // gradient: LinearGradient(
+              //   colors: sendByMe
+              //       ? [accentColor, accentDarkColor]
+              //       : [primaryColor, primaryDarkColor],
+              // ),
+            ),
             child: Text(
               message,
               // line-height = fontSize * (leading + height) = 16.0 * 1.1 = 17.6
