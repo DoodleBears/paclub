@@ -18,11 +18,12 @@ class ChatroomController extends GetxController {
   String message = '';
   String chatroomId = '';
   String userName = '';
-  int messageLength = 0;
   int newMessageNum = 0;
-  int oldMessageNum = 0;
+  int skipMessageNum = 0;
+  bool isAddingMessage = false;
   bool isSendingMessage = false;
   bool isHistoryExist = false;
+  Key centerKey = ValueKey('onelist'); // 用两个list，不同延伸方向，来解决加载旧消息和接收新消息
   TextEditingController messageController = TextEditingController();
   // final ScrollController scrollController = ScrollController();
 
@@ -53,7 +54,7 @@ class ChatroomController extends GetxController {
     if (appResponse.data != null) {
       List<ChatMessageModel> list = appResponse.data;
       oldMessageList.addAll(list);
-
+      update();
       logger.d(list.length);
       if (appResponse.message == 'no_more_history_message') {
         isHistoryExist = false;
@@ -65,14 +66,32 @@ class ChatroomController extends GetxController {
     super.onInit();
   }
 
+  bool isOver13 = false;
   void listenMessageStream(List<ChatMessageModel> list) async {
-    newMessageNum = list.length - messageLength;
-    newMessageList.addAll(list.skip(messageLength));
-    newMessageList.forEach((item) {
-      logger.d(item.message);
-    });
-    // 首次加载消息
+    // newMessageNum 计算未读消息数量
+    newMessageNum = list.length - newMessageList.length;
+    if (oldMessageList.length + messageStream.length < 13) {
+      newMessageList = newMessageList = List.from(messageStream.reversed);
+    } else if (isOver13 == false) {
+      isOver13 = true;
+      centerKey = ValueKey('twolist');
+      logger.e('超过13');
+      newMessageList = List.from(messageStream);
+      skipMessageNum = newMessageList.length;
+      oldMessageList.insertAll(0, newMessageList.reversed);
+      newMessageList = List.from(messageStream.skip(skipMessageNum));
+
+      update();
+    } else {
+      newMessageList = List.from(messageStream.skip(skipMessageNum));
+    }
+    // newMessageList.forEach((item) {
+    //   logger.d(item.message);
+    // });
+
     update();
+
+    // 首次加载消息
     if (chatroomScroller.isReadHistory == true) {
       //如果在阅读历史消息，则添加增加未读消息数量
       chatroomScroller.messagesNotRead += newMessageNum;
@@ -81,7 +100,6 @@ class ChatroomController extends GetxController {
     } else {
       chatroomScroller.messagesNotRead = 0;
     }
-    messageLength = list.length; //更新当前消息长度
   }
 
   Future<void> loadMoreHistoryMessages({int limit = 20}) async {
@@ -96,6 +114,7 @@ class ChatroomController extends GetxController {
       firstMessageDoc: oldMessageList.last.documentSnapshot,
       limit: limit,
     );
+    await Future.delayed(const Duration(milliseconds: 1000));
     logger.d(appResponse.message);
     if (appResponse.message == 'no_more_history_message') {
       isHistoryExist = false;
@@ -105,8 +124,7 @@ class ChatroomController extends GetxController {
           List<ChatMessageModel>.from(appResponse.data);
       oldMessageList.addAll(list);
 
-      oldMessageNum = list.length;
-      logger.d('length: $oldMessageNum');
+      logger.d('length: ${oldMessageList.length}');
       update();
     } else {
       refreshController.loadFailed();

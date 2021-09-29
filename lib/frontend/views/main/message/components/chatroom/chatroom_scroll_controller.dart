@@ -14,6 +14,7 @@ class ChatroomScrollController extends GetxController {
   bool isBottom = false; // 是否在底部
   bool isOut = false; // 是否出界（顶部之外，底部之外）
   bool isMetricsChangeing = false; // 是否键盘在弹出
+
   // double bottom = 0.0; // 记录ListView底部位置，方便跳转
   // double lastListHeight = 0.0;
   double keyboardHeight = 0.0; // 记录键盘高度

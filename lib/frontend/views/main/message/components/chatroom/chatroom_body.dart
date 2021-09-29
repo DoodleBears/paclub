@@ -4,7 +4,6 @@ import 'package:paclub/frontend/constants/colors.dart';
 import 'package:paclub/frontend/views/auth/login/components/components.dart';
 import 'package:paclub/frontend/views/main/message/components/chatroom/chatroom_scroll_controller.dart';
 import 'package:paclub/helper/app_constants.dart';
-import 'package:paclub/models/chat_message_model.dart';
 import 'package:paclub/utils/logger.dart';
 import 'package:paclub/frontend/views/main/message/components/chatroom/chatroom_controller.dart';
 import 'package:flutter/material.dart';
@@ -45,19 +44,9 @@ class _ChatroomBodyState extends State<ChatroomBody>
 
       /// 在读最新消息(即在聊天室底部)，直接加载最新消息，划入动画
       if (chatroomScrollController.isReadHistory == false) {
-        logger.e('滑动到底部');
-        if (chatroomController.newMessageList.isNotEmpty &&
-            chatroomController.oldMessageList.length < 13) {
-          chatroomController.oldMessageList
-              .insertAll(0, chatroomController.newMessageList.reversed);
-          chatroomController.newMessageList.clear();
-          chatroomController.update();
-        } else {
-          chatroomScrollController.scrollToBottom();
-        }
-        // Future.delayed(const Duration(milliseconds: 300), () {
+        logger.e('新消息渲染');
 
-        // });
+        chatroomScrollController.scrollToBottom();
       }
     } else {
       logger.e('无法找到controller');
@@ -67,8 +56,6 @@ class _ChatroomBodyState extends State<ChatroomBody>
   @override
   Widget build(BuildContext context) {
     logger.d('渲染 ChatRoomBody');
-    Key centerKey =
-        ValueKey('second-sliver-list'); // 用两个list，不同延伸方向，来解决加载旧消息和接收新消息
     return Column(
       children: [
         Expanded(
@@ -121,7 +108,11 @@ class _ChatroomBodyState extends State<ChatroomBody>
                       child: CustomScrollView(
                         // anchor: 0.8,
                         reverse: true,
-                        center: centerKey,
+                        center: chatroomController.oldMessageList.length +
+                                    chatroomController.messageStream.length <
+                                13
+                            ? null
+                            : chatroomController.centerKey,
                         physics: const BouncingScrollPhysics(),
                         controller: chatroomScrollController.scrollController,
                         slivers: <Widget>[
@@ -148,7 +139,7 @@ class _ChatroomBodyState extends State<ChatroomBody>
                           ),
                           SliverList(
                             // 历史消息
-                            key: centerKey,
+                            key: chatroomController.centerKey,
                             delegate: SliverChildBuilderDelegate(
                               (_, index) {
                                 // logger0.d('newindex: $index');
