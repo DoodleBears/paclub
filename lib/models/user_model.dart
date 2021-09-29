@@ -7,9 +7,13 @@ class UserModel {
   late String email;
   late int createdAt;
   late int lastLoginAt;
-  late String bio = '';
+  late String bio;
 
-  UserModel({required this.displayName, required this.email});
+  UserModel(
+      {required this.uid,
+      required this.displayName,
+      this.bio = '',
+      required this.email});
 
   UserModel.fromDoucumentSnapshot(DocumentSnapshot documentSnapshot) {
     if (documentSnapshot.data() != null) {
@@ -26,14 +30,12 @@ class UserModel {
     }
   }
 
-  static Map<String, dynamic> toJson(
-      {required String uid,
-      required String displayName,
-      required String email,
-      required String bio}) {
+  Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['uid'] = uid;
     data['displayName'] = displayName;
+    data['createdAt'] = FieldValue.serverTimestamp();
+    data['lastLoginAt'] = FieldValue.serverTimestamp();
     data['email'] = email;
     data['bio'] = bio;
 

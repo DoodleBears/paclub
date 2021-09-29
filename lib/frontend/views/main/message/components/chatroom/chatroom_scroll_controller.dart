@@ -2,10 +2,9 @@ import 'package:paclub/frontend/views/main/message/components/chatroom/chatroom_
 import 'package:paclub/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:scroll_to_index/scroll_to_index.dart';
 
 class ChatroomScrollController extends GetxController {
-  final AutoScrollController scrollController = AutoScrollController();
+  final ScrollController scrollController = ScrollController();
   bool isReadHistory = false; // 是否正在浏览历史记录
   int messagesNotRead = 0; // 未读消息数量
   bool isEdge = true; // 是否在边缘（顶部边缘，底部边缘）
@@ -44,12 +43,7 @@ class ChatroomScrollController extends GetxController {
     if (isReadHistory) {
       final ChatroomController chatroomController =
           Get.find<ChatroomController>();
-      // if (chatroomController.newMessageList.isNotEmpty) {
-      //   chatroomController.oldMessageList
-      //       .insertAll(0, chatroomController.newMessageList.reversed);
-      //   chatroomController.newMessageList.clear();
-      //   chatroomController.update();
-      // }
+
       logger.d(
           'isEdge: $isEdge\nisOut: $isOut\nisTop: $isTop\nisCloseToButtom: $isCloseToButtom');
       isReadHistory = false; // 防止多次set
@@ -93,17 +87,6 @@ class ChatroomScrollController extends GetxController {
     }
   }
 
-  // void scrollToIndex(int index,
-  //     {AutoScrollPosition preferPosition = AutoScrollPosition.end}) {
-  //   scrollController.scrollToIndex(
-  //     index,
-  //     duration: const Duration(milliseconds: 300),
-  //     preferPosition: preferPosition,
-  //   );
-  //   messagesNotRead = 0;
-  //   isReadHistory = false;
-  // }
-
   void scrollToBottom() {
     scrollController.animateTo(scrollController.position.minScrollExtent,
         duration: const Duration(milliseconds: 300), curve: Curves.ease);
@@ -112,6 +95,7 @@ class ChatroomScrollController extends GetxController {
   }
 
   void jumpToBottom() {
+    logger.e(scrollController.position.minScrollExtent);
     scrollController.jumpTo(scrollController.position.minScrollExtent);
     // focusNode.unfocus();
     messagesNotRead = 0;

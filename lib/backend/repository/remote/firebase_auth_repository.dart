@@ -122,8 +122,8 @@ class FirebaseAuthRepository extends GetxController {
       logger.d('更新账号信息成功, name是: $name');
       AppConstants.userName = name;
 
-      AppResponse appResponse = await userRepository.addUser(UserModel.toJson(
-          uid: user!.uid, displayName: name, email: email, bio: bio));
+      AppResponse appResponse = await userRepository.addUser(
+          UserModel(uid: user!.uid, displayName: name, email: email, bio: bio));
 
       if (appResponse.data == null) {
         logger3.e('添加用户信息到 firestore/user 失败');
@@ -184,7 +184,7 @@ class FirebaseAuthRepository extends GetxController {
       // 添加用户到 Firestore
       final User user = userCredential.user!;
       final UserRepository userRepository = Get.find<UserRepository>();
-      AppResponse appResponse = await userRepository.addUser(UserModel.toJson(
+      AppResponse appResponse = await userRepository.addUser(UserModel(
           uid: user.uid,
           displayName: user.displayName!,
           email: email,
@@ -241,7 +241,7 @@ class FirebaseAuthRepository extends GetxController {
       // TODO signInWithGoogle 在 Firestore 创建该 User
       final UserRepository userRepository = Get.find<UserRepository>();
       User user = userCredential.user!;
-      AppResponse appResponse = await userRepository.addUser(UserModel.toJson(
+      AppResponse appResponse = await userRepository.addUser(UserModel(
           uid: user.uid,
           displayName: user.displayName!,
           email: user.email!,

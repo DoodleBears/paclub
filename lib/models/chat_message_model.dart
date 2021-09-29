@@ -32,7 +32,7 @@ class ChatMessageModel {
     // data['time'] = DateTime.now().millisecondsSinceEpoch;
     // 下面用到了 Firebase Server 的 timestamp
     data['time'] = FieldValue.serverTimestamp();
-    ;
+
     return data;
   }
   // Map<String, dynamic> toJson() {

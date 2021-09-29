@@ -14,12 +14,14 @@ class ChatroomController extends GetxController {
       Get.find<ChatroomScrollController>();
   final RefreshController refreshController = RefreshController();
   final ChatroomRepository chatroomRepository = Get.find<ChatroomRepository>();
-
+  static final switchMessageNum = 12;
   String message = '';
   String chatroomId = '';
   String userName = '';
   int newMessageNum = 0;
+  int allMessageNum = 0;
   int skipMessageNum = 0;
+  bool isOver12 = false;
   bool isAddingMessage = false;
   bool isSendingMessage = false;
   bool isHistoryExist = false;
@@ -55,6 +57,9 @@ class ChatroomController extends GetxController {
       List<ChatMessageModel> list = appResponse.data;
       oldMessageList.addAll(list);
       update();
+      if (oldMessageList.length >= switchMessageNum) {
+        isOver12 = true;
+      }
       logger.d(list.length);
       if (appResponse.message == 'no_more_history_message') {
         isHistoryExist = false;
@@ -66,16 +71,16 @@ class ChatroomController extends GetxController {
     super.onInit();
   }
 
-  bool isOver13 = false;
   void listenMessageStream(List<ChatMessageModel> list) async {
     // newMessageNum 计算未读消息数量
-    newMessageNum = list.length - newMessageList.length;
-    if (oldMessageList.length + messageStream.length < 13) {
+    // logger.i('old: ${oldMessageList.length}\nnew: ${newMessageList.length}');
+    // logger.i('all: $allMessageNum');
+
+    if (oldMessageList.length + messageStream.length < switchMessageNum) {
       newMessageList = newMessageList = List.from(messageStream.reversed);
-    } else if (isOver13 == false) {
-      isOver13 = true;
+    } else if (isOver12 == false) {
+      isOver12 = true;
       centerKey = ValueKey('twolist');
-      logger.e('超过13');
       newMessageList = List.from(messageStream);
       skipMessageNum = newMessageList.length;
       oldMessageList.insertAll(0, newMessageList.reversed);
@@ -85,9 +90,11 @@ class ChatroomController extends GetxController {
     } else {
       newMessageList = List.from(messageStream.skip(skipMessageNum));
     }
-    // newMessageList.forEach((item) {
-    //   logger.d(item.message);
-    // });
+    if (oldMessageList.length + messageStream.length >= switchMessageNum) {
+      newMessageNum =
+          oldMessageList.length + newMessageList.length - allMessageNum;
+    }
+    allMessageNum = oldMessageList.length + newMessageList.length;
 
     update();
 

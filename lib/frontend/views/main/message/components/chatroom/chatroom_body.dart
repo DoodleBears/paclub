@@ -47,6 +47,8 @@ class _ChatroomBodyState extends State<ChatroomBody>
         logger.e('新消息渲染');
 
         chatroomScrollController.scrollToBottom();
+        // chatroomScrollController
+        //     .scrollToIndex(chatroomController.newMessageNum);
       }
     } else {
       logger.e('无法找到controller');
@@ -108,9 +110,8 @@ class _ChatroomBodyState extends State<ChatroomBody>
                       child: CustomScrollView(
                         // anchor: 0.8,
                         reverse: true,
-                        center: chatroomController.oldMessageList.length +
-                                    chatroomController.messageStream.length <
-                                13
+                        center: chatroomController.allMessageNum <
+                                ChatroomController.switchMessageNum
                             ? null
                             : chatroomController.centerKey,
                         physics: const BouncingScrollPhysics(),
@@ -120,8 +121,7 @@ class _ChatroomBodyState extends State<ChatroomBody>
                             // 新消息
                             delegate: SliverChildBuilderDelegate((_, index) {
                               // logger0.d('newindex: $index');
-                              if (chatroomController.newMessageList.isEmpty)
-                                return SizedBox.shrink().sliverBox;
+
                               bool isSendByMe = AppConstants.userName ==
                                   chatroomController
                                       .newMessageList[index].sendBy;

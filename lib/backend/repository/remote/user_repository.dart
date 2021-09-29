@@ -35,12 +35,12 @@ class UserRepository extends GetxController {
   }
 
   /// 添加新用户（设置信息）
-  Future<AppResponse> addUser(Map<String, dynamic> userData) async {
+  Future<AppResponse> addUser(UserModel userData) async {
     logger.i('addUser');
     // 判断是否要添加user
     bool isUserExist = await _firestore
         .collection('users')
-        .doc(userData['uid'])
+        .doc(userData.uid)
         .get()
         .then((doc) {
       return doc.exists ? true : false;
@@ -48,11 +48,12 @@ class UserRepository extends GetxController {
 
     if (isUserExist) {
       logger.w('用户已存在，无需再注册，更新上次登录时间');
-      final Map<String, dynamic> updatedData = new Map<String, dynamic>();
-      updatedData['lastLoginAt'] = DateTime.now().millisecondsSinceEpoch;
+      final Map<String, dynamic> updatedData = Map<String, dynamic>();
+      updatedData['lastLoginAt'] = FieldValue.serverTimestamp();
+
       return _firestore
           .collection('users')
-          .doc(userData['uid'])
+          .doc(userData.uid)
           .update(updatedData)
           .then((value) => AppResponse(kUpdateUserSuccessed, userData),
               onError: (e) {
@@ -61,12 +62,10 @@ class UserRepository extends GetxController {
       });
     } else {
       logger.w('用户不存在，添加用户到 collection:users');
-      userData['createdAt'] = DateTime.now().millisecondsSinceEpoch;
-      userData['lastLoginAt'] = DateTime.now().millisecondsSinceEpoch;
       return _firestore
           .collection('users')
-          .doc(userData['uid'])
-          .set(userData)
+          .doc(userData.uid)
+          .set(userData.toJson())
           .then((value) => AppResponse(kAddUserSuccessed, userData),
               onError: (e) {
         logger.e('添加用户失败，error: ' + e.runtimeType.toString());
