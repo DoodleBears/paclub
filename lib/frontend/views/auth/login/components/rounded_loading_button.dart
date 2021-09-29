@@ -11,6 +11,7 @@ class RoundedLoadingButton extends StatelessWidget {
   final OutlinedBorder? shape;
   final EdgeInsetsGeometry? padding;
   final TextStyle? textStyle;
+  final Widget? loadingWidget;
 
   /// [文件说明]
   /// - 带有 loading 效果的 button
@@ -39,6 +40,7 @@ class RoundedLoadingButton extends StatelessWidget {
     this.shape,
     this.padding,
     this.textStyle,
+    this.loadingWidget,
   }) : super(key: key);
 
   @override
@@ -63,13 +65,14 @@ class RoundedLoadingButton extends StatelessWidget {
               child: FittedBox(
                 fit: BoxFit.fitHeight,
                 // 圆形进度条
-                child: CircularProgressIndicator(
-                  // 设置为白色（保持不变的 Animation，一直为白色
-                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                  // 进度条背后背景的颜色（圆圈底下的部分）
-                  // backgroundColor: Colors.grey[300],
-                  strokeWidth: 5.0,
-                ),
+                child: loadingWidget ??
+                    CircularProgressIndicator(
+                      // 设置为白色（保持不变的 Animation，一直为白色
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      // 进度条背后背景的颜色（圆圈底下的部分）
+                      // backgroundColor: Colors.grey[300],
+                      strokeWidth: 5.0,
+                    ),
               ),
             ),
             // [LOGIN 文字] 改变 Opacity 的动画, 不在 Loading 的时候显示

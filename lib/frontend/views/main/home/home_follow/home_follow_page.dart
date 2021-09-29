@@ -14,7 +14,7 @@ class HomeFollowPage extends StatelessWidget {
     return RefreshIndicator(
       onRefresh: getRefresh,
       backgroundColor: accentColor,
-      color: Colors.white,
+      color: AppColors.refreshIndicatorColor,
       child: Container(
         color: AppColors.listViewBackgroundColor,
         child: ListView.builder(

@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:paclub/frontend/constants/colors.dart';
 import 'package:paclub/frontend/views/auth/login/components/components.dart';
 import 'package:paclub/frontend/views/main/message/components/chatroom/chatroom_scroll_controller.dart';
@@ -8,7 +10,7 @@ import 'package:paclub/frontend/views/main/message/components/chatroom/chatroom_
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
-import 'package:scroll_to_index/scroll_to_index.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import 'components/chatroom_message_tile.dart';
 
@@ -35,70 +37,27 @@ class _ChatroomBodyState extends State<ChatroomBody>
     super.dispose();
   }
 
-  /// [用来检测键盘的出现和消失] This routine is invoked when the window metrics have changed.
-  double keyboardHeightPixel = 0.0;
-  double keyboardHeightOrigin = 0.0;
-  bool isKeyboardShow = false; //防止出现didChangeMetrics因为键盘出现/消失多次触发
-  @override
-  void didChangeMetrics() {
-    chatroomScrollController.isMetricsChangeing = true;
-    // 如果键盘高度不是0，或键盘高度发生变化，更新键盘高度
-    if ((WidgetsBinding.instance!.window.viewInsets.bottom !=
-                keyboardHeightOrigin &&
-            WidgetsBinding.instance!.window.viewInsets.bottom != 0.0) ||
-        keyboardHeightPixel == 0.0) {
-      keyboardHeightOrigin = WidgetsBinding.instance!.window.viewInsets.bottom;
-      keyboardHeightPixel = keyboardHeightOrigin / Get.pixelRatio;
-
-      logger.wtf('键盘高度: $keyboardHeightPixel');
-    }
-    // 用 viewInsets.bottom 判断是否打开键盘
-    bool isKeyboardOpen =
-        WidgetsBinding.instance!.window.viewInsets.bottom > 0.0;
-    // 如果当时键盘高度 > 0 ，且键盘并不是已经打开了
-    if (isKeyboardOpen && isKeyboardShow == false) {
-      isKeyboardShow = true;
-      logger.i('键盘出现，键盘高度: $keyboardHeightPixel');
-      // logger.d(
-      //     'maxExtent: ${chatroomScrollController.scrollController.position.maxScrollExtent}\nGetHeight: ${Get.height}');
-      // 如果键盘出现，则滚动列表向上，如果是新的聊天室没有消息，则不滚动
-      if (chatroomScrollController.scrollController.position.maxScrollExtent >
-          80.0) {
-        chatroomScrollController.scrollController.jumpTo(
-            chatroomScrollController.scrollController.offset +
-                keyboardHeightPixel);
-      }
-    } else if (isKeyboardOpen == false && isKeyboardShow) {
-      // 如果当时键盘 == 0（即键盘关闭），且键盘并不是已经关闭了
-      // chatroomScrollController.focusNode.unfocus();
-      isKeyboardShow = false;
-      logger.i('键盘消失，键盘高度: $keyboardHeightPixel');
-
-      // 如果键盘消失，则滚动列表向下（如果消息数量太少，则不滚动）
-      // logger.d(
-      //     'maxExtent: ${chatroomScrollController.scrollController.position.maxScrollExtent}\nGetHeight: ${Get.height}');
-      if (chatroomScrollController.isReadHistory == true) {
-        chatroomScrollController.scrollController.jumpTo(
-            chatroomScrollController.scrollController.offset -
-                keyboardHeightPixel);
-      }
-      if (chatroomScrollController.focusNode.hasFocus) {
-        chatroomScrollController.focusNode.unfocus();
-      }
-    }
-
-    chatroomScrollController.isMetricsChangeing = false;
-  }
-
-  // 每次 重建LsitView（一般是有新消息进入，则会重新计算高度）
+  // 每次 重建ListView（一般是有新消息进入，则会重新计算高度）
   afterBuild() {
-    // logger.d('itemBuild 完成');
     if (chatroomScrollController.scrollController.hasClients) {
-      /// 注意！ListView.builder 只会加载画面范围附近的Tile，如果不再附近listView不会build，
+      // logger.e(
+      //     'extentAfter: ${chatroomScrollController.scrollController.position.extentAfter}');
 
       /// 在读最新消息(即在聊天室底部)，直接加载最新消息，划入动画
       if (chatroomScrollController.isReadHistory == false) {
-        chatroomScrollController.scrollToBottom();
+        logger.e('滑动到底部');
+        if (chatroomController.newMessageList.isNotEmpty &&
+            chatroomController.oldMessageList.length < 13) {
+          chatroomController.oldMessageList
+              .insertAll(0, chatroomController.newMessageList.reversed);
+          chatroomController.newMessageList.clear();
+          chatroomController.update();
+        } else {
+          chatroomScrollController.scrollToBottom();
+        }
+        // Future.delayed(const Duration(milliseconds: 300), () {
+
+        // });
       }
     } else {
       logger.e('无法找到controller');
@@ -108,52 +67,128 @@ class _ChatroomBodyState extends State<ChatroomBody>
   @override
   Widget build(BuildContext context) {
     logger.d('渲染 ChatRoomBody');
-    keyboardHeightPixel = 0.0;
+    Key centerKey =
+        ValueKey('second-sliver-list'); // 用两个list，不同延伸方向，来解决加载旧消息和接收新消息
     return Column(
       children: [
         Expanded(
           child: Stack(
             alignment: Alignment.topCenter,
             children: [
-              GetBuilder<ChatroomController>(builder: (_) {
-                logger3.i('重建 ListView,length: ' +
-                    chatroomController.messageStream.length.toString());
+              Container(
+                color: AppColors.chatBackgroundColor,
+                child: GetBuilder<ChatroomController>(
+                  builder: (_) {
+                    logger3.i('重建 ListView,length: ' +
+                        (chatroomController.newMessageList.length +
+                                chatroomController.oldMessageList.length)
+                            .toString());
 
-                /// 使用ListView会重新渲染整个 List，80条信息就是渲染80个
-                /// 所以必须用ListView.builder
-                /// 使用 GetBuilder 可以控制渲染更新效果
-                List<ChatMessageModel> list =
-                    chatroomController.messageStream.toList();
-                // 有新消息的时候，调用
-                WidgetsBinding.instance!
-                    .addPostFrameCallback((_) => afterBuild());
+                    // 有新消息的时候才会触发，因为ListView.itemCount改变，导致GetBuilder重新渲染
+                    WidgetsBinding.instance!
+                        .addPostFrameCallback((_) => afterBuild());
+                    return SmartRefresher(
+                      enablePullDown: false,
+                      header: ClassicHeader(
+                        completeIcon: SizedBox.shrink(),
+                        completeText: '',
+                      ),
+                      enablePullUp: true,
+                      controller: chatroomController.refreshController,
+                      onRefresh: () {
+                        // chatroomScrollController.focusNode.requestFocus();
+                        // chatroomController.refreshController.refreshCompleted();
+                      },
+                      onLoading: chatroomController.loadMoreHistoryMessages,
+                      footer: ClassicFooter(
+                        textStyle: TextStyle(
+                          fontSize: 18.0,
+                        ),
+                        loadingText: '',
+                        spacing: 0.0,
+                        loadingIcon: SizedBox(
+                          height: 28.0,
+                          width: 28.0,
+                          child: CircularProgressIndicator(
+                            color: accentColor,
+                            strokeWidth: 6.0,
+                            // color: AppColors.refreshIndicatorColor,
+                          ),
+                        ),
+                        loadStyle: LoadStyle.ShowWhenLoading,
+                        height: 60.0,
+                      ),
+                      child: CustomScrollView(
+                        // anchor: 0.8,
+                        reverse: true,
+                        center: centerKey,
+                        physics: const BouncingScrollPhysics(),
+                        controller: chatroomScrollController.scrollController,
+                        slivers: <Widget>[
+                          SliverList(
+                            // 新消息
+                            delegate: SliverChildBuilderDelegate((_, index) {
+                              // logger0.d('newindex: $index');
+                              if (chatroomController.newMessageList.isEmpty)
+                                return SizedBox.shrink().sliverBox;
+                              bool isSendByMe = AppConstants.userName ==
+                                  chatroomController
+                                      .newMessageList[index].sendBy;
 
-                return ListView.builder(
-                  physics: BouncingScrollPhysics(),
-                  // shrinkWrap: true,
-                  controller: chatroomScrollController.scrollController,
-                  // initialItemCount: controller.messageStream.length,
-                  itemCount: chatroomController.messageStream.length,
-                  padding: EdgeInsets.zero,
-                  itemBuilder: (context, index) {
-                    return AutoScrollTag(
-                      controller: chatroomScrollController.scrollController,
-                      index: index,
-                      key: ValueKey(index),
-                      child: GetBuilder<ChatroomScrollController>(
-                        builder: (_) {
-                          return ChatroomMessageTile(
-                            senderName: list[index].sendBy,
-                            message: list[index].message,
-                            sendByMe:
-                                AppConstants.userName == list[index].sendBy,
-                          );
-                        },
+                              return ChatroomMessageTile(
+                                senderName: chatroomController
+                                    .newMessageList[index].sendBy,
+                                message: chatroomController
+                                    .newMessageList[index].message,
+                                sendByMe: isSendByMe,
+                              );
+                            },
+                                childCount:
+                                    chatroomController.newMessageList.length),
+                          ),
+                          SliverList(
+                            // 历史消息
+                            key: centerKey,
+                            delegate: SliverChildBuilderDelegate(
+                              (_, index) {
+                                // logger0.d('newindex: $index');
+                                if (index ==
+                                    chatroomController.oldMessageList.length -
+                                        1) {
+                                  return Padding(
+                                    padding: const EdgeInsets.only(top: 6.0),
+                                    child: ChatroomMessageTile(
+                                      senderName: chatroomController
+                                          .oldMessageList[index].sendBy,
+                                      message: chatroomController
+                                          .oldMessageList[index].message,
+                                      sendByMe: AppConstants.userName ==
+                                          chatroomController
+                                              .oldMessageList[index].sendBy,
+                                    ),
+                                  );
+                                }
+
+                                return ChatroomMessageTile(
+                                  senderName: chatroomController
+                                      .oldMessageList[index].sendBy,
+                                  message: chatroomController
+                                      .oldMessageList[index].message,
+                                  sendByMe: AppConstants.userName ==
+                                      chatroomController
+                                          .oldMessageList[index].sendBy,
+                                );
+                              },
+                              childCount:
+                                  chatroomController.oldMessageList.length,
+                            ),
+                          ),
+                        ],
                       ),
                     );
                   },
-                );
-              }),
+                ),
+              ),
 
               // 消息提示
               GetBuilder<ChatroomScrollController>(
@@ -170,10 +205,7 @@ class _ChatroomBodyState extends State<ChatroomBody>
                           shape: StadiumBorder(),
                         ),
                         onPressed: () {
-                          // chatroomScrollController.jumpToBottom();
-                          chatroomScrollController.scrollToIndex(
-                              chatroomController.messageLength -
-                                  chatroomScrollController.messagesNotRead);
+                          chatroomScrollController.jumpToBottom();
                         },
                         child: Text(
                           chatroomScrollController.messagesNotRead.toString() +

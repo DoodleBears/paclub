@@ -78,12 +78,15 @@ class UserSearchBody extends GetView<UserSearchController> {
                         itemBuilder: (context, index) {
                           final UserModel userModel =
                               controller.userList[index];
-                          return SearchUserTile(
-                            isChatroomExist:
-                                chatroomIdList.contains(userModel.uid),
-                            userUid: userModel.uid,
-                            userName: userModel.displayName,
-                            userEmail: userModel.email,
+                          return GestureDetector(
+                            child: SearchUserTile(
+                              index: index,
+                              isChatroomExist:
+                                  chatroomIdList.contains(userModel.uid),
+                              userUid: userModel.uid,
+                              userName: userModel.displayName,
+                              userEmail: userModel.email,
+                            ),
                           );
                         },
                       );

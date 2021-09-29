@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:paclub/utils/app_response.dart';
 
 class SearchUserTile extends GetView<UserSearchController> {
+  final int index;
   final bool isChatroomExist;
   final String userUid;
   final String userName;
@@ -15,6 +16,7 @@ class SearchUserTile extends GetView<UserSearchController> {
 
   const SearchUserTile({
     Key? key,
+    required this.index,
     required this.isChatroomExist,
     required this.userUid,
     required this.userName,
@@ -75,15 +77,25 @@ class SearchUserTile extends GetView<UserSearchController> {
             child: GetBuilder<UserSearchController>(
               builder: (_) {
                 return RoundedLoadingButton(
+                  loadingWidget: Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: CircularProgressIndicator(
+                      // 设置为白色（保持不变的 Animation，一直为白色
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      // 进度条背后背景的颜色（圆圈底下的部分）
+                      // backgroundColor: Colors.grey[300],
+                      strokeWidth: 5.0,
+                    ),
+                  ),
                   onPressed: () async {
-                    if (controller.isAddUserLoading) {
-                      return;
+                    if (controller.isAddUserLoading.contains(true)) {
+                      return; //防止频繁和列表交互
                     }
                     AppResponse appResponse = await controller.addFriend(
-                        userName, userUid, isChatroomExist);
+                        userName, userUid, isChatroomExist, index);
                     if (appResponse.data != null) {
                       Map<String, dynamic> chatroomInfo = appResponse.data;
-                      Get.offAndToNamed(
+                      Get.toNamed(
                           Routes.TABS +
                               Routes.MESSAGE +
                               Routes.CHATROOMLIST +
@@ -96,7 +108,7 @@ class SearchUserTile extends GetView<UserSearchController> {
                   padding: EdgeInsets.symmetric(horizontal: 10.0),
                   text: isChatroomExist ? "Message" : 'Add Friend',
                   color: accentColor,
-                  isLoading: controller.isAddUserLoading,
+                  isLoading: controller.isAddUserLoading[index],
                   shape: StadiumBorder(),
                 );
               },

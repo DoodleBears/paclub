@@ -2,6 +2,8 @@ import 'dart:async';
 
 import 'package:get/get.dart';
 import 'package:paclub/constants/emulator_constant.dart';
+import 'package:paclub/frontend/widgets/widgets.dart';
+import 'package:paclub/helper/app_constants.dart';
 import 'package:paclub/models/chat_message_model.dart';
 import 'package:paclub/models/chatroom_model.dart';
 import 'package:paclub/utils/app_response.dart';
@@ -51,12 +53,16 @@ class ChatroomRepository extends GetxController {
     super.onClose();
   }
 
+// FIXME 如何处理 Stream 的 error
   Stream<List<ChatroomModel>> getChatroomList(String uid) {
     logger.i('获取聊天列表资料 uid:' + uid);
     return _chatroomCollection
         .where('users', arrayContains: uid)
         .snapshots()
-        .map((QuerySnapshot querySnapshot) => querySnapshot.docs
+        .handleError((e) {
+      toastBottom('Check your connection');
+      logger.e(e.runtimeType);
+    }).map((QuerySnapshot querySnapshot) => querySnapshot.docs
             .map((doc) => ChatroomModel.fromDoucumentSnapshot(doc))
             .toList());
   }
@@ -64,7 +70,9 @@ class ChatroomRepository extends GetxController {
   Future<AppResponse> addChatRoom(
       Map<String, dynamic> chatroomData, String chatroomId) async {
     return _chatroomCollection.doc(chatroomId).set(chatroomData).then(
-      (_) => AppResponse(kAddChatroomSuccess, chatroomId),
+      (_) async {
+        return AppResponse(kAddChatroomSuccess, chatroomId);
+      },
       onError: (e) {
         logger.e('添加聊天室失败, error: ' + e.runtimeType.toString());
         return AppResponse(kAddChatroomFail, null);
@@ -83,8 +91,7 @@ class ChatroomRepository extends GetxController {
     return _chatroomCollection
         .doc(chatroomId)
         .collection("chats")
-        .where('time',
-            isGreaterThanOrEqualTo: DateTime.now().millisecondsSinceEpoch)
+        .where('time', isGreaterThanOrEqualTo: Timestamp.now())
         .orderBy('time', descending: false)
         .snapshots()
         .map((QuerySnapshot querySnapshot) => querySnapshot.docs
@@ -94,19 +101,28 @@ class ChatroomRepository extends GetxController {
 
   // TODO 用 Pagination 来实作新 message 和旧 message 的获取
   Future<AppResponse> getOldMessages(String chatroomId,
-      {DocumentSnapshot? lastMessageDoc,
+      {DocumentSnapshot? firstMessageDoc,
       bool firstTime = false,
       int limit = 20}) async {
+    assert(firstTime == true || firstMessageDoc != null,
+        '请求更多历史消息需要有传入最旧(first)的消息做 pagination'); // 请求更多历史消息需要有传入最旧(first)的消息做 pagination
+
     // TODO 设定一个 limit 的 query，如果是第一次就直接query，如果不是，则从上次query的最后一个开始
     // 比如第一次获取 103-84条，再来就获取83-64条 message
-
-    final myQuery = _chatroomCollection
+    // final String path =
+    //     _chatroomCollection.doc(chatroomId).collection("chats").doc().path;
+    // logger.w(path);
+    // final FieldPath fieldPath = FieldPath.fromString(path);
+    final baseQuery = _chatroomCollection
         .doc(chatroomId)
         .collection("chats")
-        // TODO 这边要 orderBy
-        .limitToLast(limit);
+        .orderBy('time', descending: true)
+        .limit(limit);
+    // TODO 这边要 orderBy
+
+    // 如果是第一次拉取历史消息，如：刚进入聊天室（可以不用startbefore，所以区别开）
     if (firstTime) {
-      List<ChatMessageModel> list = await myQuery.get().then(
+      List<ChatMessageModel> list = await baseQuery.get().then(
         (QuerySnapshot querySnapshot) => querySnapshot.docs
             .map((doc) => ChatMessageModel.fromDoucumentSnapshot(doc))
             .toList(),
@@ -120,34 +136,31 @@ class ChatroomRepository extends GetxController {
               : kLoadHistoryMessageSuccess,
           list);
     }
-    if (lastMessageDoc == null) {
-      return AppResponse(
-          kLoadHistoryMessageFail + ': lack of lastMessageDoc', null);
-    } else {
-      // 开始获取
-      List<ChatMessageModel> list =
-          await myQuery.endBeforeDocument(lastMessageDoc).get().then(
-        (QuerySnapshot querySnapshot) => querySnapshot.docs
-            .map((doc) => ChatMessageModel.fromDoucumentSnapshot(doc))
-            .toList(),
-        onError: (e) {
-          return AppResponse(kLoadHistoryMessageFail, null);
-        },
-      );
-      // 获取成功，回传
-      return AppResponse(
-          list.length < limit
-              ? kNoMoreHistoryMessage
-              : kLoadHistoryMessageSuccess,
-          list);
-    }
+    // 如果不是第一次拉取历史消息，如：加载更多历史消息（需要startbefore，所以区别开）
+
+    List<ChatMessageModel> list =
+        await baseQuery.startAfterDocument(firstMessageDoc!).get().then(
+      (QuerySnapshot querySnapshot) => querySnapshot.docs
+          .map((doc) => ChatMessageModel.fromDoucumentSnapshot(doc))
+          .toList(),
+      onError: (e) {
+        logger3.e(e.runtimeType);
+        return AppResponse(kLoadHistoryMessageFail, null);
+      },
+    );
+    // 获取成功，回传
+    return AppResponse(
+        list.length < limit
+            ? kNoMoreHistoryMessage
+            : kLoadHistoryMessageSuccess,
+        list);
   }
 
 //TODO[epic=example] 这是标准的 Firestore 写法
   Future<AppResponse> addMessage(
-      String chatRoomId, ChatMessageModel chatMessageModel) async {
+      String chatroomId, ChatMessageModel chatMessageModel) async {
     return _chatroomCollection
-        .doc(chatRoomId)
+        .doc(chatroomId)
         .collection("chats")
         .add(chatMessageModel.toJson())
         .then(

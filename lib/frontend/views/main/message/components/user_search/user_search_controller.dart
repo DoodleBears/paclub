@@ -11,7 +11,7 @@ import 'package:get/get.dart';
 class UserSearchController extends GetxController {
   String searchText = '';
   bool isLoading = false;
-  bool isAddUserLoading = false;
+  List<bool> isAddUserLoading = [false];
   bool haveUserSearched = false;
   List<UserModel> userList = List<UserModel>.empty();
   TextEditingController searchTextController = TextEditingController();
@@ -44,6 +44,7 @@ class UserSearchController extends GetxController {
       logger.d(appResponse.message);
       if (appResponse.data != null) {
         userList = appResponse.data;
+        isAddUserLoading = List.filled(userList.length, false);
       }
 
       logger.d('搜索结束');
@@ -64,7 +65,7 @@ class UserSearchController extends GetxController {
 
   /// 添加好友（聊天室）
   Future<AppResponse> addFriend(
-      String userName, String userUid, bool isChatroomExist) async {
+      String userName, String userUid, bool isChatroomExist, int index) async {
     String chatRoomId = getChatRoomId(AppConstants.uuid, userUid);
     Map<String, dynamic> chatroomInfo = {
       "userUid": userUid,
@@ -76,7 +77,7 @@ class UserSearchController extends GetxController {
       return AppResponse('chatroom_already_exist', chatroomInfo);
     }
 
-    isAddUserLoading = true;
+    isAddUserLoading[index] = true;
     update();
     // 创建 user 列表，存储聊天室的用户列表
     Map<String, dynamic> chatroomData = {
@@ -90,7 +91,7 @@ class UserSearchController extends GetxController {
 
     AppResponse appResponse =
         await chatroomRepository.addChatRoom(chatroomData, chatRoomId);
-    isAddUserLoading = false;
+    isAddUserLoading[index] = false;
     update();
     logger.d(appResponse.message);
     if (appResponse.data == null) {

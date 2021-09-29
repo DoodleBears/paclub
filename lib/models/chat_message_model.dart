@@ -5,14 +5,12 @@ class ChatMessageModel {
   late String id;
   late String message;
   late String sendBy;
-  late int time;
+  late Timestamp time;
 
   // 有 {} curly bracket 的话，初始化宣告变量的时候要指定变量名
   ChatMessageModel.withTime(this.message, this.sendBy, this.time);
 
-  ChatMessageModel(this.message, this.sendBy) {
-    this.time = DateTime.now().millisecondsSinceEpoch;
-  }
+  ChatMessageModel(this.message, this.sendBy);
 
   ChatMessageModel.fromDoucumentSnapshot(DocumentSnapshot documentSnapshot) {
     if (documentSnapshot.data() != null) {
@@ -31,7 +29,10 @@ class ChatMessageModel {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['sendBy'] = sendBy;
     data['message'] = message;
-    data['time'] = DateTime.now().millisecondsSinceEpoch;
+    // data['time'] = DateTime.now().millisecondsSinceEpoch;
+    // 下面用到了 Firebase Server 的 timestamp
+    data['time'] = FieldValue.serverTimestamp();
+    ;
     return data;
   }
   // Map<String, dynamic> toJson() {

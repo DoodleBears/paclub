@@ -76,7 +76,8 @@ class UserRepository extends GetxController {
   }
 
   /// Search時，能夠找到相符合的用戶名稱
-  // TODO 模糊搜索，搜索多个用户
+  // TODO 模糊搜索，搜索多个用户，
+  // TODO 如何处理 Timeout
   Future<AppResponse> searchByName(String searchText) async {
     return _firestore
         .collection('users')
@@ -94,6 +95,8 @@ class UserRepository extends GetxController {
         logger3.e(e);
         return AppResponse(kSearchUserFailedError, null);
       },
-    );
+    ).timeout(const Duration(seconds: 5), onTimeout: () {
+      return AppResponse(kSearchUserFailedError, null);
+    });
   }
 }

@@ -4,27 +4,33 @@ import 'package:flutter/widgets.dart';
 // App主题，包含: 颜色，字体大小等
 //  TOOD
 class AppColors {
+  static Color? refreshIndicatorColor = Colors.white;
+  static Color? chatBackgroundColor = Colors.grey[50];
   static Color? chatMeBackgroundColor = accentColor;
   static Color? chatOtherBackgroundColor = Colors.grey[200];
   static Color? chatroomAppBarTitleColor = Colors.black;
   static Color? listViewBackgroundColor = Colors.grey[200];
   static Color? bottomNavigationBarBackgroundColor = Colors.white;
-  static Color? messageBoxBackgroundColor = Colors.grey[200];
   static Color? divideLineColor = Colors.grey[200];
-  static Color? messageBoxContainerBackgroundColor = Colors.grey[50];
+  static Color? messageBoxBackgroundColor = Colors.grey[100];
+  static Color? messageBoxContainerBackgroundColor = Colors.white;
 
   static lightMode() {
+    refreshIndicatorColor = Colors.white;
+    chatBackgroundColor = Colors.grey[50];
     chatMeBackgroundColor = accentColor;
     chatOtherBackgroundColor = Colors.grey[200];
     chatroomAppBarTitleColor = Colors.black;
     listViewBackgroundColor = Colors.grey[200];
     bottomNavigationBarBackgroundColor = Colors.white;
     divideLineColor = Colors.grey[200];
-    messageBoxBackgroundColor = Colors.grey[200];
-    messageBoxContainerBackgroundColor = Colors.grey[50];
+    messageBoxBackgroundColor = Colors.grey[100];
+    messageBoxContainerBackgroundColor = Colors.white;
   }
 
   static darkMode() {
+    refreshIndicatorColor = Colors.grey[900];
+    chatBackgroundColor = Colors.grey[900];
     chatMeBackgroundColor = Colors.grey[800];
     chatOtherBackgroundColor = Colors.grey[800];
     chatroomAppBarTitleColor = Colors.grey[100];

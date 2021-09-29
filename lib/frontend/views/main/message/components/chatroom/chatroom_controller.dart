@@ -7,24 +7,31 @@ import 'package:paclub/utils/app_response.dart';
 import 'package:paclub/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ChatroomController extends GetxController {
   final ChatroomScrollController chatroomScroller =
       Get.find<ChatroomScrollController>();
+  final RefreshController refreshController = RefreshController();
   final ChatroomRepository chatroomRepository = Get.find<ChatroomRepository>();
+
   String message = '';
   String chatroomId = '';
   String userName = '';
   int messageLength = 0;
   int newMessageNum = 0;
+  int oldMessageNum = 0;
   bool isSendingMessage = false;
+  bool isHistoryExist = false;
   TextEditingController messageController = TextEditingController();
   // final ScrollController scrollController = ScrollController();
 
   final messageStream = <ChatMessageModel>[].obs;
+  List<ChatMessageModel> oldMessageList = <ChatMessageModel>[];
+  List<ChatMessageModel> newMessageList = <ChatMessageModel>[];
 
   @override
-  void onInit() {
+  void onInit() async {
     logger.i('启用 ChatroomController');
     // 监听滚动条状态
     Map<String, dynamic> chatroomInfo = Get.arguments;
@@ -39,11 +46,31 @@ class ChatroomController extends GetxController {
     // 监听消息
     messageStream.listen(listenMessageStream);
 
+    AppResponse appResponse =
+        await chatroomRepository.getOldMessages(chatroomId, firstTime: true);
+    logger.d(appResponse.message);
+
+    if (appResponse.data != null) {
+      List<ChatMessageModel> list = appResponse.data;
+      oldMessageList.addAll(list);
+
+      logger.d(list.length);
+      if (appResponse.message == 'no_more_history_message') {
+        isHistoryExist = false;
+      } else {
+        isHistoryExist = true;
+      }
+    }
+
     super.onInit();
   }
 
-  void listenMessageStream(list) async {
+  void listenMessageStream(List<ChatMessageModel> list) async {
     newMessageNum = list.length - messageLength;
+    newMessageList.addAll(list.skip(messageLength));
+    newMessageList.forEach((item) {
+      logger.d(item.message);
+    });
     // 首次加载消息
     update();
     if (chatroomScroller.isReadHistory == true) {
@@ -55,6 +82,38 @@ class ChatroomController extends GetxController {
       chatroomScroller.messagesNotRead = 0;
     }
     messageLength = list.length; //更新当前消息长度
+  }
+
+  Future<void> loadMoreHistoryMessages({int limit = 20}) async {
+    if (isHistoryExist == false) {
+      toastTop('No more history');
+      refreshController.loadNoData();
+      return;
+    }
+    logger.i('开始加载 history');
+    AppResponse appResponse = await chatroomRepository.getOldMessages(
+      chatroomId,
+      firstMessageDoc: oldMessageList.last.documentSnapshot,
+      limit: limit,
+    );
+    logger.d(appResponse.message);
+    if (appResponse.message == 'no_more_history_message') {
+      isHistoryExist = false;
+    }
+    if (appResponse.data != null) {
+      List<ChatMessageModel> list =
+          List<ChatMessageModel>.from(appResponse.data);
+      oldMessageList.addAll(list);
+
+      oldMessageNum = list.length;
+      logger.d('length: $oldMessageNum');
+      update();
+    } else {
+      refreshController.loadFailed();
+    }
+    refreshController.loadComplete();
+
+    return;
   }
 
   Future<void> addMessage() async {
@@ -78,7 +137,7 @@ class ChatroomController extends GetxController {
       }
     }
     isSendingMessage = false;
-    update();
+    // update();
   }
 
   @override

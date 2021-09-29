@@ -1,3 +1,4 @@
+import 'package:paclub/frontend/views/main/message/components/chatroom/chatroom_controller.dart';
 import 'package:paclub/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -40,6 +41,14 @@ class ChatroomScrollController extends GetxController {
 
   void setReadNew() {
     if (isReadHistory) {
+      final ChatroomController chatroomController =
+          Get.find<ChatroomController>();
+      // if (chatroomController.newMessageList.isNotEmpty) {
+      //   chatroomController.oldMessageList
+      //       .insertAll(0, chatroomController.newMessageList.reversed);
+      //   chatroomController.newMessageList.clear();
+      //   chatroomController.update();
+      // }
       logger.d(
           'isEdge: $isEdge\nisOut: $isOut\nisTop: $isTop\nisCloseToButtom: $isCloseToButtom');
       isReadHistory = false; // 防止多次set
@@ -61,13 +70,13 @@ class ChatroomScrollController extends GetxController {
     isEdge = scrollController.position.atEdge;
     isOut = scrollController.position.outOfRange;
     isTop = scrollController.offset <= 0;
-    isCloseToButtom = scrollController.offset + 60.0 >
-        scrollController.position.maxScrollExtent;
+    isCloseToButtom = scrollController.offset - 60.0 <
+        scrollController.position.minScrollExtent;
     isBottom = !isTop && (isCloseToButtom || isOut);
     // logger.d('maxScrollExtent: ${scrollController.position.maxScrollExtent}');
     // if (isListening) return;
     // 当出界或是在边缘，且不是在顶上，则说明 —— 滚动到底部，或是超出底部
-    if (isBottom) {
+    if (isCloseToButtom) {
       setReadNew();
     } else {
       setReadHistory();
@@ -83,25 +92,26 @@ class ChatroomScrollController extends GetxController {
     }
   }
 
-  void scrollToIndex(int index) {
-    scrollController.scrollToIndex(
-      index,
-      duration: const Duration(milliseconds: 300),
-      preferPosition: AutoScrollPosition.end,
-    );
-    messagesNotRead = 0;
-    isReadHistory = false;
-  }
+  // void scrollToIndex(int index,
+  //     {AutoScrollPosition preferPosition = AutoScrollPosition.end}) {
+  //   scrollController.scrollToIndex(
+  //     index,
+  //     duration: const Duration(milliseconds: 300),
+  //     preferPosition: preferPosition,
+  //   );
+  //   messagesNotRead = 0;
+  //   isReadHistory = false;
+  // }
 
   void scrollToBottom() {
-    scrollController.animateTo(scrollController.position.maxScrollExtent,
+    scrollController.animateTo(scrollController.position.minScrollExtent,
         duration: const Duration(milliseconds: 300), curve: Curves.ease);
     isReadHistory = false;
     messagesNotRead = 0;
   }
 
   void jumpToBottom() {
-    scrollController.jumpTo(scrollController.position.maxScrollExtent);
+    scrollController.jumpTo(scrollController.position.minScrollExtent);
     // focusNode.unfocus();
     messagesNotRead = 0;
     isReadHistory = false;
