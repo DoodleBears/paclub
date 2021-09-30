@@ -5,8 +5,8 @@ class UserModel {
   late String uid;
   late String displayName;
   late String email;
-  late int createdAt;
-  late int lastLoginAt;
+  late Timestamp createdAt;
+  late Timestamp lastLoginAt;
   late String bio;
 
   UserModel(

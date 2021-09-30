@@ -95,6 +95,7 @@ class ChatroomController extends GetxController {
     }
     isLoadingHistory = true;
     update();
+    logger.i('开始加载历史消息');
     AppResponse appResponse;
     // 当历史列表为空，有可能是第一次进入页面，或是网络重连后，再该页面刷新
     if (oldMessageList.isEmpty) {
@@ -121,7 +122,8 @@ class ChatroomController extends GetxController {
       if (oldMessageList.length >= switchMessageNum) {
         isOver12 = true;
       }
-
+      // 更新总消息长度
+      allMessageNum = oldMessageList.length + newMessageList.length;
       refreshController.loadComplete();
     } else {
       toastCenter('Check Internet\n${appResponse.message}');

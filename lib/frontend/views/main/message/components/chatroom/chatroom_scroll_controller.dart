@@ -91,8 +91,9 @@ class ChatroomScrollController extends GetxController {
   }
 
   void jumpToBottom() {
-    logger.e(scrollController.position.minScrollExtent);
-    scrollController.jumpTo(scrollController.position.minScrollExtent);
+    // logger.e(scrollController.position.moveTo(double.negativeInfinity));
+    // scrollController.jumpTo(scrollController.position.minScrollExtent);
+    scrollController.position.moveTo(double.negativeInfinity);
     // focusNode.unfocus();
     messagesNotRead = 0;
     isReadHistory = false;
