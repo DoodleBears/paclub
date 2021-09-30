@@ -188,7 +188,6 @@ class Loading extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      color: white,
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: Center(

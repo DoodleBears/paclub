@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter/widgets.dart';
 import 'package:paclub/frontend/constants/colors.dart';
 import 'package:paclub/frontend/views/auth/login/components/components.dart';
 import 'package:paclub/frontend/views/main/message/components/chatroom/chatroom_scroll_controller.dart';
@@ -62,7 +63,7 @@ class _ChatroomBodyState extends State<ChatroomBody>
       children: [
         Expanded(
           child: Stack(
-            alignment: Alignment.topCenter,
+            // alignment: Alignment.topCenter,
             children: [
               Container(
                 color: AppColors.chatBackgroundColor,
@@ -127,6 +128,8 @@ class _ChatroomBodyState extends State<ChatroomBody>
                                       .newMessageList[index].sendBy;
 
                               return ChatroomMessageTile(
+                                sendTime: chatroomController
+                                    .newMessageList[index].time,
                                 senderName: chatroomController
                                     .newMessageList[index].sendBy,
                                 message: chatroomController
@@ -143,24 +146,9 @@ class _ChatroomBodyState extends State<ChatroomBody>
                             delegate: SliverChildBuilderDelegate(
                               (_, index) {
                                 // logger0.d('newindex: $index');
-                                if (index ==
-                                    chatroomController.oldMessageList.length -
-                                        1) {
-                                  return Padding(
-                                    padding: const EdgeInsets.only(top: 6.0),
-                                    child: ChatroomMessageTile(
-                                      senderName: chatroomController
-                                          .oldMessageList[index].sendBy,
-                                      message: chatroomController
-                                          .oldMessageList[index].message,
-                                      sendByMe: AppConstants.userName ==
-                                          chatroomController
-                                              .oldMessageList[index].sendBy,
-                                    ),
-                                  );
-                                }
-
-                                return ChatroomMessageTile(
+                                Widget child = ChatroomMessageTile(
+                                  sendTime: chatroomController
+                                      .oldMessageList[index].time,
                                   senderName: chatroomController
                                       .oldMessageList[index].sendBy,
                                   message: chatroomController
@@ -169,6 +157,16 @@ class _ChatroomBodyState extends State<ChatroomBody>
                                       chatroomController
                                           .oldMessageList[index].sendBy,
                                 );
+                                if (index ==
+                                    chatroomController.oldMessageList.length -
+                                        1) {
+                                  return Padding(
+                                    padding: const EdgeInsets.only(top: 6.0),
+                                    child: child,
+                                  );
+                                }
+
+                                return child;
                               },
                               childCount:
                                   chatroomController.oldMessageList.length,
@@ -184,29 +182,63 @@ class _ChatroomBodyState extends State<ChatroomBody>
               // 消息提示
               GetBuilder<ChatroomScrollController>(
                 builder: (_) {
-                  return Visibility(
-                    visible: chatroomScrollController.messagesNotRead != 0 &&
-                        chatroomScrollController.isReadHistory,
-                    child: Positioned(
-                      bottom: 6.0,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 0.0, horizontal: 16.0),
-                          shape: StadiumBorder(),
-                        ),
-                        onPressed: () {
-                          chatroomScrollController.jumpToBottom();
-                        },
-                        child: Text(
-                          chatroomScrollController.messagesNotRead.toString() +
-                              ' Unread',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
+                  return AnimatedPositioned(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.ease,
+                    bottom:
+                        chatroomScrollController.isReadHistory ? 4.0 : -60.0,
+                    right: 16.0,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        elevation: 2.0,
+                        primary: AppColors.notReadButtonColor,
+                        padding: EdgeInsets.symmetric(horizontal: 4.0),
+                        minimumSize: Size(30.0, 40.0),
+                      ),
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 300),
+                        curve: Curves.ease,
+                        width: chatroomScrollController.messagesNotRead == 0
+                            ? 36.0
+                            : 70.0,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Flexible(
+                              child: Center(
+                                child: Icon(
+                                  Icons.arrow_drop_down,
+                                  size: 32.0,
+                                ),
+                              ),
+                            ),
+                            Visibility(
+                              visible:
+                                  chatroomScrollController.messagesNotRead != 0,
+                              child: Flexible(
+                                flex: 2,
+                                child: Center(
+                                  child: Text(
+                                    chatroomScrollController.messagesNotRead >
+                                            99
+                                        ? '99+'
+                                        : '${chatroomScrollController.messagesNotRead}',
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                      fontSize: 18.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
+                      onPressed: () {
+                        chatroomScrollController.jumpToBottom();
+                      },
                     ),
                   );
                 },
