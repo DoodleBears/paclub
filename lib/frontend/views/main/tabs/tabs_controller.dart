@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:paclub/frontend/views/main/card/card_binding.dart';
 import 'package:paclub/frontend/views/main/home/home_binding.dart';
+import 'package:paclub/frontend/views/main/message/components/chatroom_list/chatroom_list_controller.dart';
 import 'package:paclub/frontend/views/main/message/message_binding.dart';
 import 'package:paclub/frontend/views/main/notification/notification_binding.dart';
 import 'package:paclub/frontend/views/main/user/user_binding.dart';
@@ -43,6 +44,9 @@ class TabsController extends GetxController {
   @override
   void onClose() {
     logger.w('关闭 TabsController');
+    ChatroomListController chatroomListController =
+        Get.find<ChatroomListController>();
+    chatroomListController.friendsStream.close();
     super.onClose();
   }
 }

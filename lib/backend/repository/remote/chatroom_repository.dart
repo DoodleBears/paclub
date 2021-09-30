@@ -61,14 +61,6 @@ class ChatroomRepository extends GetxController {
     super.onClose();
   }
 
-  static String getChatRoomId(String strOne, String strTwo) {
-    if (strOne.compareTo(strTwo) > 0) {
-      return "$strTwo\_$strOne";
-    } else {
-      return "$strOne\_$strTwo";
-    }
-  }
-
   Stream<List<FriendModel>> getChatroomList(String uid) {
     logger.i('获取聊天列表资料 uid:' + uid);
 

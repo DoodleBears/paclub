@@ -1,5 +1,5 @@
-import 'package:paclub/backend/repository/remote/chatroom_repository.dart';
 import 'package:paclub/helper/app_constants.dart';
+import 'package:paclub/helper/chatroom_helper.dart';
 import 'package:paclub/models/friend_model.dart';
 import 'package:paclub/utils/logger.dart';
 import 'package:paclub/frontend/views/main/message/components/chatroom_list/chatroom_list_controller.dart';
@@ -12,21 +12,21 @@ class ChatroomListBody extends GetView<ChatroomListController> {
   Widget build(BuildContext context) {
     logger.d('渲染 charRoomsListBody');
     return Container(
-      child: Obx(() {
+      child: GetBuilder<ChatroomListController>(builder: (_) {
         return ListView.builder(
           physics: BouncingScrollPhysics(),
-          itemCount: controller.friendsStream.length,
+          itemCount: controller.friendList.length,
           shrinkWrap: true,
           itemBuilder: (context, index) {
-            FriendModel friendModel = controller.friendsStream[index];
+            FriendModel friendModel = controller.friendList[index];
 
             final userName = friendModel.friendName;
             return ChatroomsListUserTile(
                 lastMessageTime: friendModel.lastMessageTime,
                 lastMessage: friendModel.lastMessage,
                 messageNotRead: friendModel.messageNotRead,
-                chatroomId: ChatroomRepository.getChatRoomId(
-                    AppConstants.uuid, friendModel.friendUid),
+                chatroomId:
+                    getChatRoomId(AppConstants.uuid, friendModel.friendUid),
                 userUid: friendModel.friendUid,
                 userName: userName);
           },

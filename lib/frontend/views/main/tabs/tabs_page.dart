@@ -21,6 +21,7 @@ class Tabs extends GetView<TabsController> {
 
   @override
   Widget build(BuildContext context) {
+    UserController userController = Get.find<UserController>();
     logger.i('渲染 —— Tabs');
     return WillPopScope(
       // * 如果用户不在Home页面时，使用系统返回键会先返回Home，不会直接退出
@@ -76,8 +77,74 @@ class Tabs extends GetView<TabsController> {
                               label: '抽卡',
                             ),
                             BottomNavigationBarItem(
-                              icon: Icon(Icons.message_outlined),
-                              activeIcon: Icon(Icons.message),
+                              icon: Stack(
+                                clipBehavior: Clip.none,
+                                children: [
+                                  Icon(Icons.message_outlined),
+                                  Positioned(
+                                    top: -8.0,
+                                    right: -8.0,
+                                    child: GetBuilder<UserController>(
+                                      builder: (_) {
+                                        logger.e('重新AllMessageNotRead');
+                                        return Visibility(
+                                          visible: userController
+                                                  .messageNotReadAll !=
+                                              0,
+                                          child: Container(
+                                            padding: EdgeInsets.all(5.0),
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: Colors.red,
+                                            ),
+                                            child: Text(
+                                              userController.messageNotReadAll
+                                                  .toString(),
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  )
+                                ],
+                              ),
+                              activeIcon: Stack(
+                                clipBehavior: Clip.none,
+                                children: [
+                                  Icon(Icons.message),
+                                  Positioned(
+                                    right: -8.0,
+                                    top: -8.0,
+                                    child: GetBuilder<UserController>(
+                                      builder: (_) {
+                                        logger.e('重新AllMessageNotRead');
+                                        return Visibility(
+                                          visible: userController
+                                                  .messageNotReadAll !=
+                                              0,
+                                          child: Container(
+                                            padding: EdgeInsets.all(5.0),
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: Colors.red,
+                                            ),
+                                            child: Text(
+                                              userController.messageNotReadAll
+                                                  .toString(),
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                              ),
+                                            ),
+                                          ),
+                                        );
+                                      },
+                                    ),
+                                  )
+                                ],
+                              ),
                               label: '私訊',
                             ),
                             BottomNavigationBarItem(

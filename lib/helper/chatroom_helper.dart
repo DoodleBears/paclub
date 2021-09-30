@@ -1,5 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+String getChatRoomId(String strOne, String strTwo) {
+  if (strOne.compareTo(strTwo) > 0) {
+    return "$strTwo\_$strOne";
+  } else {
+    return "$strOne\_$strTwo";
+  }
+}
+
 String chatMessageformatTime(Timestamp timestamp) {
   String timeText = '';
   int hour = timestamp.toDate().toLocal().hour;

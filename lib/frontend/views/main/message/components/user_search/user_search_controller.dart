@@ -2,6 +2,7 @@ import 'package:paclub/backend/repository/remote/chatroom_repository.dart';
 import 'package:paclub/backend/repository/remote/user_repository.dart';
 import 'package:paclub/frontend/widgets/widgets.dart';
 import 'package:paclub/helper/app_constants.dart';
+import 'package:paclub/helper/chatroom_helper.dart';
 import 'package:paclub/models/chatroom_model.dart';
 import 'package:paclub/models/user_model.dart';
 import 'package:paclub/utils/app_response.dart';
@@ -60,8 +61,7 @@ class UserSearchController extends GetxController {
   /// 添加好友（聊天室）
   Future<AppResponse> addFriend(
       String userName, String userUid, bool isChatroomExist, int index) async {
-    String chatroomId =
-        ChatroomRepository.getChatRoomId(AppConstants.uuid, userUid);
+    String chatroomId = getChatRoomId(AppConstants.uuid, userUid);
     Map<String, dynamic> chatroomInfo = {
       "userUid": userUid,
       "userName": userName,

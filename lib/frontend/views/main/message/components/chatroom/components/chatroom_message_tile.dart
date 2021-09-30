@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:paclub/frontend/constants/colors.dart';
 import 'package:paclub/frontend/constants/numbers.dart';
-import 'package:paclub/helper/time_format.dart';
+import 'package:paclub/helper/chatroom_helper.dart';
 import 'package:paclub/utils/logger.dart';
 
 class ChatroomMessageTile extends StatelessWidget {

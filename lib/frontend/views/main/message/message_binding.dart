@@ -15,7 +15,7 @@ class MessageBinding implements Bindings {
     Get.lazyPut<ChatroomRepository>(() => ChatroomRepository());
     // Get.lazyPut<UserRepository>(() => UserRepository());
     // Get.lazyPut<UserSearchController>(() => UserSearchController());
-    Get.lazyPut<ChatroomListController>(() => ChatroomListController());
+    Get.put<ChatroomListController>(ChatroomListController());
 
     /// View 用到的 Controller
     Get.put<MessageController>(MessageController());

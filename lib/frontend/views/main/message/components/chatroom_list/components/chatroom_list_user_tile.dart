@@ -5,7 +5,7 @@ import 'package:paclub/frontend/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:paclub/frontend/views/main/user/user_controller.dart';
-import 'package:paclub/helper/time_format.dart';
+import 'package:paclub/helper/chatroom_helper.dart';
 
 ///此Function為搜尋完畢後的用戶名單頁面
 class ChatroomsListUserTile extends StatelessWidget {
