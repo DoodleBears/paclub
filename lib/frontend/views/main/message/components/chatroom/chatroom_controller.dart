@@ -12,22 +12,20 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 class ChatroomController extends GetxController {
   final ChatroomScrollController chatroomScroller =
       Get.find<ChatroomScrollController>();
-  final RefreshController refreshController = RefreshController();
   final ChatroomRepository chatroomRepository = Get.find<ChatroomRepository>();
+  final RefreshController refreshController = RefreshController();
   static final switchMessageNum = 12;
-  String message = '';
   String chatroomId = '';
   String userName = '';
   int newMessageNum = 0;
   int allMessageNum = 0;
   int skipMessageNum = 0;
   bool isOver12 = false;
-  bool isAddingMessage = false;
+  bool isLoadingHistory = false;
   bool isSendingMessage = false;
-  bool isHistoryExist = false;
+  bool isHistoryExist = true;
   Key centerKey = ValueKey('onelist'); // 用两个list，不同延伸方向，来解决加载旧消息和接收新消息
-  TextEditingController messageController = TextEditingController();
-  // final ScrollController scrollController = ScrollController();
+  TextEditingController messageTextFieldController = TextEditingController();
 
   final messageStream = <ChatMessageModel>[].obs;
   List<ChatMessageModel> oldMessageList = <ChatMessageModel>[];
@@ -35,44 +33,24 @@ class ChatroomController extends GetxController {
 
   @override
   void onInit() async {
-    logger.i('启用 ChatroomController');
-    // 监听滚动条状态
     Map<String, dynamic> chatroomInfo = Get.arguments;
     this.chatroomId = chatroomInfo['chatroomId'];
     this.userName = chatroomInfo['userName'];
-    logger.i('开始获取房间ID:' + chatroomId + ' 的消息');
+    logger.i('启用 ChatroomController\n开始获取房间ID: $chatroomId 的消息');
+
+    // TODO: 拆分 DatabaseMethods 成 Module API 的请求
 
     // 绑定消息 Stream 到 Firebase 的数据库请求回传
-    // TODO: 拆分 DatabaseMethods 成 Module API 的请求
     messageStream
         .bindStream(chatroomRepository.getNewMessageStream(chatroomId));
     // 监听消息
     messageStream.listen(listenMessageStream);
-
-    AppResponse appResponse =
-        await chatroomRepository.getOldMessages(chatroomId, firstTime: true);
-    logger.d(appResponse.message);
-
-    if (appResponse.data != null) {
-      List<ChatMessageModel> list = appResponse.data;
-      oldMessageList.addAll(list);
-      update();
-      if (oldMessageList.length >= switchMessageNum) {
-        isOver12 = true;
-      }
-      logger.d(list.length);
-      if (appResponse.message == 'no_more_history_message') {
-        isHistoryExist = false;
-      } else {
-        isHistoryExist = true;
-      }
-    }
+    loadMoreHistoryMessages(); // 首次加载历史记录
 
     super.onInit();
   }
 
-  void listenMessageStream(List<ChatMessageModel> list) async {
-    // newMessageNum 计算未读消息数量
+  void listenMessageStream(_) async {
     // logger.i('old: ${oldMessageList.length}\nnew: ${newMessageList.length}');
     // logger.i('all: $allMessageNum');
 
@@ -109,34 +87,48 @@ class ChatroomController extends GetxController {
     }
   }
 
-  Future<void> loadMoreHistoryMessages({int limit = 20}) async {
+  Future<void> loadMoreHistoryMessages({int limit = 30}) async {
+    if (isLoadingHistory) return;
     if (isHistoryExist == false) {
-      toastTop('No more history');
       refreshController.loadNoData();
       return;
     }
-    logger.i('开始加载 history');
-    AppResponse appResponse = await chatroomRepository.getOldMessages(
-      chatroomId,
-      firstMessageDoc: oldMessageList.last.documentSnapshot,
-      limit: limit,
-    );
-    await Future.delayed(const Duration(milliseconds: 1000));
-    logger.d(appResponse.message);
-    if (appResponse.message == 'no_more_history_message') {
-      isHistoryExist = false;
+    isLoadingHistory = true;
+    update();
+    AppResponse appResponse;
+    // 当历史列表为空，有可能是第一次进入页面，或是网络重连后，再该页面刷新
+    if (oldMessageList.isEmpty) {
+      appResponse = await chatroomRepository.getOldMessages(
+        chatroomId,
+        firstTime: true,
+        limit: limit,
+      );
+    } else {
+      // 历史列表不为空，拉取更早的消息
+      appResponse = await chatroomRepository.getOldMessages(
+        chatroomId,
+        firstMessageDoc: oldMessageList.last.documentSnapshot,
+        limit: limit,
+      );
     }
     if (appResponse.data != null) {
+      if (appResponse.message == 'no_more_history_message') {
+        isHistoryExist = false;
+      }
       List<ChatMessageModel> list =
           List<ChatMessageModel>.from(appResponse.data);
       oldMessageList.addAll(list);
+      if (oldMessageList.length >= switchMessageNum) {
+        isOver12 = true;
+      }
 
-      logger.d('length: ${oldMessageList.length}');
-      update();
+      refreshController.loadComplete();
     } else {
+      toastCenter('Check Internet\n${appResponse.message}');
       refreshController.loadFailed();
     }
-    refreshController.loadComplete();
+    isLoadingHistory = false;
+    update();
 
     return;
   }
@@ -144,25 +136,24 @@ class ChatroomController extends GetxController {
   Future<void> addMessage() async {
     if (isSendingMessage) return;
     isSendingMessage = true;
-    update();
+    update(['chatSendingMessageField']);
     if (chatroomId.isEmpty) {
       logger.e('chatroomId 为空子串');
     }
-    message = messageController.text;
+    String message = messageTextFieldController.text;
     if (message.isNotEmpty) {
       AppResponse appResponse = await chatroomRepository.addMessage(
           chatroomId, ChatMessageModel(message, AppConstants.userName));
       if (appResponse.data != null) {
         logger.d(appResponse.message + ', 消息为: ' + message);
-        messageController.clear(); // 成功发送消息，才清空消息框内容
-
+        messageTextFieldController.clear(); // 成功发送消息，才清空消息框内容
       } else {
-        toastBottom('sending fail: ${appResponse.message}');
+        toastCenter(appResponse.message);
         logger.e(appResponse.message);
       }
     }
     isSendingMessage = false;
-    // update();
+    update(['chatSendingMessageField']);
   }
 
   @override

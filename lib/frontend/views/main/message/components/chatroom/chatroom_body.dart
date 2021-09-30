@@ -77,6 +77,8 @@ class _ChatroomBodyState extends State<ChatroomBody>
                     WidgetsBinding.instance!
                         .addPostFrameCallback((_) => afterBuild());
                     return SmartRefresher(
+                      // 这里 PullDown对应 onRefresh()，但这里我们reverse了，所以不需要用到
+                      // 而是要用 PullUp和对应的 onLoading()
                       enablePullDown: false,
                       header: ClassicHeader(
                         completeIcon: SizedBox.shrink(),
@@ -84,10 +86,6 @@ class _ChatroomBodyState extends State<ChatroomBody>
                       ),
                       enablePullUp: true,
                       controller: chatroomController.refreshController,
-                      onRefresh: () {
-                        // chatroomScrollController.focusNode.requestFocus();
-                        // chatroomController.refreshController.refreshCompleted();
-                      },
                       onLoading: chatroomController.loadMoreHistoryMessages,
                       footer: ClassicFooter(
                         textStyle: TextStyle(
@@ -114,7 +112,9 @@ class _ChatroomBodyState extends State<ChatroomBody>
                                 ChatroomController.switchMessageNum
                             ? null
                             : chatroomController.centerKey,
-                        physics: const BouncingScrollPhysics(),
+                        physics: chatroomController.isLoadingHistory
+                            ? const NeverScrollableScrollPhysics() // 防止加载历史记录时候滚动跳动
+                            : const BouncingScrollPhysics(),
                         controller: chatroomScrollController.scrollController,
                         slivers: <Widget>[
                           SliverList(
@@ -259,7 +259,8 @@ class _ChatroomBodyState extends State<ChatroomBody>
                             maxLines: 5,
                             textAlignVertical: TextAlignVertical.center,
                             focusNode: chatroomScrollController.focusNode,
-                            controller: chatroomController.messageController,
+                            controller:
+                                chatroomController.messageTextFieldController,
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 18.0),
                             decoration: InputDecoration(
@@ -273,9 +274,11 @@ class _ChatroomBodyState extends State<ChatroomBody>
                     // 送出訊息的按鈕，調用上面創的addMessage()函式
                     ConstrainedBox(
                       constraints: BoxConstraints(
-                          minHeight: Get.height * 0.07 //最小高度为50像素
-                          ),
+                        minHeight: Get.height * 0.07, //最小高度为50像素
+                      ),
                       child: GetBuilder<ChatroomController>(
+                        assignId: true,
+                        id: 'chatSendingMessageField', // 防止 ListView 多刷新一次
                         builder: (_) {
                           return RoundedLoadingButton(
                               textStyle: TextStyle(

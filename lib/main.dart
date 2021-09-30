@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/physics.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:paclub/backend/repository/local/user_preferences.dart';
@@ -14,6 +15,7 @@ import 'package:paclub/frontend/routes/app_pages.dart';
 import 'package:paclub/frontend/utils/dependency_injection.dart';
 import 'package:paclub/frontend/views/main/user/user_controller.dart';
 import 'package:paclub/utils/logger.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -97,32 +99,35 @@ class _AppState extends State<App> {
             }
             // Once complete, show your application
             if (snapshot.connectionState == ConnectionState.done) {
-              return GetMaterialApp(
-                themeMode: ThemeMode.system,
-                // controller.isDarkMode ? ThemeMode.dark : ThemeMode.light,
-                theme: MyThemes.lightTheme,
-                darkTheme: MyThemes.darkTheme,
-                // customTransition: TopLeftMaskBelowleftTransitions(),
-                builder: (context, child) => Scaffold(
-                  // Global GestureDetector that will dismiss the keyboard
-                  body: GestureDetector(
-                    onTap: () => hideKeyboard(context),
-                    child: child,
+              return RefreshConfiguration(
+                enableBallisticLoad: false,
+                child: GetMaterialApp(
+                  themeMode: ThemeMode.system,
+                  // controller.isDarkMode ? ThemeMode.dark : ThemeMode.light,
+                  theme: MyThemes.lightTheme,
+                  darkTheme: MyThemes.darkTheme,
+                  // customTransition: TopLeftMaskBelowleftTransitions(),
+                  builder: (context, child) => Scaffold(
+                    // Global GestureDetector that will dismiss the keyboard
+                    body: GestureDetector(
+                      onTap: () => hideKeyboard(context),
+                      child: child,
+                    ),
                   ),
+                  transitionDuration: Duration(milliseconds: 300),
+                  debugShowCheckedModeBanner: false,
+                  title: '盒群',
+                  getPages: AppPages.pages,
+                  initialRoute: Routes.SPLASH,
+                  initialBinding: AppBinding(),
+                  unknownRoute: GetPage(
+                    name: Routes.UNKNOWN,
+                    page: () => SomethingWentWrong(),
+                  ),
+                  // home: LoginPage()
+                  popGesture: true,
+                  enableLog: false,
                 ),
-                transitionDuration: Duration(milliseconds: 300),
-                debugShowCheckedModeBanner: false,
-                title: '盒群',
-                getPages: AppPages.pages,
-                initialRoute: Routes.SPLASH,
-                initialBinding: AppBinding(),
-                unknownRoute: GetPage(
-                  name: Routes.UNKNOWN,
-                  page: () => SomethingWentWrong(),
-                ),
-                // home: LoginPage()
-                popGesture: true,
-                enableLog: false,
               );
             }
 

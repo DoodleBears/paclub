@@ -82,11 +82,6 @@ class ChatroomRepository extends GetxController {
 // TODO Stream 类型的 return 需要包装为 AppResponse 吗？
 // FIXME: 用 .snapshots() 是否不会有 error 需要catch
   Stream<List<ChatMessageModel>> getNewMessageStream(String chatroomId) {
-    // TODO 用 FirldPath 来获取 Document ID 来做 OrderBy
-    // final String path =
-    //     _chatroomCollection.doc(chatroomId).collection("chats").doc().path;
-    // logger.w(path);
-    // final FieldPath fieldPath = new FieldPath.fromString(path);
     return _chatroomCollection
         .doc(chatroomId)
         .collection("chats")
@@ -98,61 +93,75 @@ class ChatroomRepository extends GetxController {
             .toList());
   }
 
-  // TODO 用 Pagination 来实作新 message 和旧 message 的获取
+  /// 用 Pagination（分页）来实作新 message 和旧 message 的获取
+  /// 每次获取 [limit] 条消息
   Future<AppResponse> getOldMessages(String chatroomId,
       {DocumentSnapshot? firstMessageDoc,
       bool firstTime = false,
-      int limit = 20}) async {
+      int limit = 30}) async {
     assert(firstTime == true || firstMessageDoc != null,
         '请求更多历史消息需要有传入最旧(first)的消息做 pagination'); // 请求更多历史消息需要有传入最旧(first)的消息做 pagination
 
-    // TODO 设定一个 limit 的 query，如果是第一次就直接query，如果不是，则从上次query的最后一个开始
-    // 比如第一次获取 103-84条，再来就获取83-64条 message
-    // final String path =
-    //     _chatroomCollection.doc(chatroomId).collection("chats").doc().path;
-    // logger.w(path);
-    // final FieldPath fieldPath = FieldPath.fromString(path);
+    // 基础 query, 参考教程: https://youtu.be/poqTHxtDXwU
     final baseQuery = _chatroomCollection
         .doc(chatroomId)
         .collection("chats")
         .orderBy('time', descending: true)
         .limit(limit);
-    // TODO 这边要 orderBy
 
     // 如果是第一次拉取历史消息，如：刚进入聊天室（可以不用startbefore，所以区别开）
     if (firstTime) {
-      List<ChatMessageModel> list = await baseQuery.get().then(
-        (QuerySnapshot querySnapshot) => querySnapshot.docs
-            .map((doc) => ChatMessageModel.fromDoucumentSnapshot(doc))
-            .toList(),
-        onError: (e) {
-          return AppResponse(kLoadHistoryMessageFail, null);
-        },
-      );
+      try {
+        List<ChatMessageModel> list = await baseQuery
+            .get(GetOptions(source: Source.server))
+            .timeout(const Duration(seconds: 10)) // 10秒钟超时限制
+            .then((QuerySnapshot querySnapshot) => querySnapshot.docs
+                .map((doc) => ChatMessageModel.fromDoucumentSnapshot(doc))
+                .toList());
+        return AppResponse(
+            list.length < limit
+                ? kNoMoreHistoryMessage
+                : kLoadHistoryMessageSuccess,
+            list);
+      } on FirebaseException catch (e) {
+        AppResponse appResponse = AppResponse(
+            kLoadHistoryMessageFail, null, e.runtimeType.toString());
+        logger3.w('errorCode: ${e.code}' + appResponse.toString());
+        return appResponse;
+      } catch (e) {
+        AppResponse appResponse = AppResponse(
+            kLoadHistoryMessageFail, null, e.runtimeType.toString());
+        logger3.w(appResponse.toString());
+        return appResponse;
+      }
+    }
+    // 如果不是第一次拉取历史消息，如：加载更多历史消息（需要startbefore，所以区别开）
+
+    try {
+      List<ChatMessageModel> list = await baseQuery
+          .startAfterDocument(firstMessageDoc!)
+          .get(GetOptions(source: Source.server))
+          .timeout(const Duration(seconds: 10)) // 10秒钟超时限制
+          .then((QuerySnapshot querySnapshot) => querySnapshot.docs
+              .map((doc) => ChatMessageModel.fromDoucumentSnapshot(doc))
+              .toList());
+      // 获取成功，回传
       return AppResponse(
           list.length < limit
               ? kNoMoreHistoryMessage
               : kLoadHistoryMessageSuccess,
           list);
+    } on FirebaseException catch (e) {
+      AppResponse appResponse =
+          AppResponse(kLoadHistoryMessageFail, null, e.runtimeType.toString());
+      logger3.w('errorCode: ${e.code}' + appResponse.toString());
+      return appResponse;
+    } catch (e) {
+      AppResponse appResponse =
+          AppResponse(kLoadHistoryMessageFail, null, e.runtimeType.toString());
+      logger3.w(appResponse.toString());
+      return appResponse;
     }
-    // 如果不是第一次拉取历史消息，如：加载更多历史消息（需要startbefore，所以区别开）
-
-    List<ChatMessageModel> list =
-        await baseQuery.startAfterDocument(firstMessageDoc!).get().then(
-      (QuerySnapshot querySnapshot) => querySnapshot.docs
-          .map((doc) => ChatMessageModel.fromDoucumentSnapshot(doc))
-          .toList(),
-      onError: (e) {
-        logger3.e(e.runtimeType);
-        return AppResponse(kLoadHistoryMessageFail, null);
-      },
-    );
-    // 获取成功，回传
-    return AppResponse(
-        list.length < limit
-            ? kNoMoreHistoryMessage
-            : kLoadHistoryMessageSuccess,
-        list);
   }
 
 //TODO[epic=example] 这是标准的 Firestore 写法
@@ -162,6 +171,7 @@ class ChatroomRepository extends GetxController {
         .doc(chatroomId)
         .collection("chats")
         .add(chatMessageModel.toJson())
+        .timeout(const Duration(seconds: 15)) // 15秒钟超时限制
         .then(
       (docRef) {
         return AppResponse(kAddMessageSuccess, docRef);

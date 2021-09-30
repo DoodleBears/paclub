@@ -238,7 +238,6 @@ class FirebaseAuthRepository extends GetxController {
       final UserCredential userCredential =
           await _auth.signInWithCredential(credential);
 
-      // TODO signInWithGoogle 在 Firestore 创建该 User
       final UserRepository userRepository = Get.find<UserRepository>();
       User user = userCredential.user!;
       AppResponse appResponse = await userRepository.addUser(UserModel(

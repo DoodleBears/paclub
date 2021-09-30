@@ -1,4 +1,3 @@
-import 'package:paclub/frontend/views/main/message/components/chatroom/chatroom_controller.dart';
 import 'package:paclub/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -41,9 +40,6 @@ class ChatroomScrollController extends GetxController {
 
   void setReadNew() {
     if (isReadHistory) {
-      final ChatroomController chatroomController =
-          Get.find<ChatroomController>();
-
       logger.d(
           'isEdge: $isEdge\nisOut: $isOut\nisTop: $isTop\nisCloseToButtom: $isCloseToButtom');
       isReadHistory = false; // 防止多次set
