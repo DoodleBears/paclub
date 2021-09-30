@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:paclub/frontend/constants/colors.dart';
 import 'package:paclub/frontend/constants/numbers.dart';
+import 'package:paclub/utils/logger.dart';
 
 class ChatroomMessageTile extends StatelessWidget {
   String formatTime() {
@@ -15,6 +15,8 @@ class ChatroomMessageTile extends StatelessWidget {
 
     return timeText;
   }
+
+  final FocusNode focusNode = FocusNode();
 
   ///當資料傳送到聊天室後，要依照時間先後依序排列，並區分資料傳送端(右側)及接收端(左側)
   final String senderName;
@@ -46,10 +48,44 @@ class ChatroomMessageTile extends StatelessWidget {
           //用户名
 
           Row(
-            textDirection: !sendByMe ? TextDirection.rtl : TextDirection.ltr,
+            textDirection: sendByMe ? TextDirection.rtl : TextDirection.ltr,
             crossAxisAlignment: CrossAxisAlignment.end,
-            mainAxisAlignment: MainAxisAlignment.end,
             children: [
+              Flexible(
+                flex: 10,
+                child: GestureDetector(
+                  onLongPress: () {
+                    logger.d('按住了');
+                    focusNode.requestFocus();
+                  },
+                  child: Container(
+                    padding: EdgeInsets.all(14.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(borderRadius),
+                      color: sendByMe
+                          ? AppColors.chatMeBackgroundColor
+                          : AppColors.chatOtherBackgroundColor,
+                    ),
+                    child: SelectableText(
+                      message,
+                      focusNode: focusNode,
+                      cursorColor: primaryColor,
+
+                      toolbarOptions: ToolbarOptions(
+                        copy: true,
+                        selectAll: true,
+                      ),
+                      // line-height = fontSize * (leading + height) = 16.0 * 1.1 = 17.6
+                      strutStyle: StrutStyle(
+                        fontSize: 16.0,
+                      ),
+                      textAlign: TextAlign.start,
+                      style: TextStyle(
+                          fontSize: 16.0, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ),
               Container(
                 margin: EdgeInsets.only(
                   bottom: 4.0,
@@ -67,33 +103,6 @@ class ChatroomMessageTile extends StatelessWidget {
                   style: TextStyle(
                     color: AppColors.chatTimestampColor,
                     fontSize: 10.0,
-                  ),
-                ),
-              ),
-              Flexible(
-                flex: 10,
-                child: Container(
-                  padding: EdgeInsets.all(14.0),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(borderRadius),
-                    color: sendByMe
-                        ? AppColors.chatMeBackgroundColor
-                        : AppColors.chatOtherBackgroundColor,
-                    // gradient: LinearGradient(
-                    //   colors: sendByMe
-                    //       ? [accentColor, accentDarkColor]
-                    //       : [primaryColor, primaryDarkColor],
-                    // ),
-                  ),
-                  child: Text(
-                    message,
-                    // line-height = fontSize * (leading + height) = 16.0 * 1.1 = 17.6
-                    strutStyle: StrutStyle(
-                      fontSize: 16.0,
-                    ),
-                    textAlign: TextAlign.start,
-                    style:
-                        TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
                   ),
                 ),
               ),

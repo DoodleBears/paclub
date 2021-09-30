@@ -12,7 +12,11 @@ final TextStyle lightThemTextStyle = TextStyle(
 
 class MyThemes {
   static final lightTheme = ThemeData(
-    highlightColor: accentColor.withAlpha(50), // 长按的颜色
+    textSelectionTheme: TextSelectionThemeData(
+      cursorColor: Colors.blue,
+      selectionHandleColor: Colors.blue,
+      selectionColor: Colors.blue.withAlpha(128),
+    ),
     tabBarTheme: TabBarTheme(
       indicator: RoundedUnderlineTabIndicator(
         width: 40.0,
@@ -61,7 +65,12 @@ class MyThemes {
   );
 
   static final darkTheme = ThemeData(
-    highlightColor: accentColor.withAlpha(50), // 长按的颜色
+    textSelectionTheme: TextSelectionThemeData(
+      cursorColor: Colors.blue,
+      selectionHandleColor: Colors.blue,
+      selectionColor: Colors.blue.withAlpha(128),
+    ),
+
     tabBarTheme: TabBarTheme(
       indicator: RoundedUnderlineTabIndicator(
         width: 40.0,

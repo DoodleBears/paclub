@@ -46,8 +46,12 @@ class _ChatroomBodyState extends State<ChatroomBody>
       /// 在读最新消息(即在聊天室底部)，直接加载最新消息，划入动画
       if (chatroomScrollController.isReadHistory == false) {
         logger.e('新消息渲染');
+        chatroomScrollController.isAutoScrolling = true; // 防止自动滚动的时候，切换历史消息阅读状态
+        Future.delayed(const Duration(milliseconds: 300),
+            () => chatroomScrollController.isAutoScrolling = false);
 
         chatroomScrollController.scrollToBottom();
+
         // chatroomScrollController
         //     .scrollToIndex(chatroomController.newMessageNum);
       }
@@ -291,10 +295,14 @@ class _ChatroomBodyState extends State<ChatroomBody>
                             maxLines: 5,
                             textAlignVertical: TextAlignVertical.center,
                             focusNode: chatroomScrollController.focusNode,
+                            cursorColor: accentColor,
+                            cursorHeight: 24.0,
                             controller:
                                 chatroomController.messageTextFieldController,
                             style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 18.0),
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18.0,
+                            ),
                             decoration: InputDecoration(
                               border: InputBorder.none,
                             ),

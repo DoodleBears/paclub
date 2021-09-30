@@ -5,13 +5,13 @@ import 'package:get/get.dart';
 class ChatroomScrollController extends GetxController {
   final ScrollController scrollController = ScrollController();
   bool isReadHistory = false; // 是否正在浏览历史记录
+  bool isAutoScrolling = false;
   int messagesNotRead = 0; // 未读消息数量
   bool isEdge = true; // 是否在边缘（顶部边缘，底部边缘）
   bool isTop = true; // 是否在顶部
   bool isCloseToButtom = true; // 是否接近底部
   bool isBottom = false; // 是否在底部
   bool isOut = false; // 是否出界（顶部之外，底部之外）
-  bool isMetricsChangeing = false; // 是否键盘在弹出
 
   // double bottom = 0.0; // 记录ListView底部位置，方便跳转
   // double lastListHeight = 0.0;
@@ -57,7 +57,7 @@ class ChatroomScrollController extends GetxController {
 
   void listenScrolling() {
     // logger.d(isMetricsChangeing);
-    if (isMetricsChangeing) return; // 防止键盘弹出的时候的滚动更新状态
+    if (isAutoScrolling) return; // 防止键盘弹出的时候的滚动更新状态
     isEdge = scrollController.position.atEdge;
     isOut = scrollController.position.outOfRange;
     isTop = scrollController.offset <= 0;
@@ -77,7 +77,7 @@ class ChatroomScrollController extends GetxController {
   void listenFocusNode() {
     if (focusNode.hasFocus) {
       logger0.d('选中输入框: TextField got the focus，打断滚动动画');
-      scrollController.jumpTo(scrollController.offset); // 打断滚动，如果用户在滚动过程中点击输入框
+      // scrollController.jumpTo(scrollController.offset); // 打断滚动，如果用户在滚动过程中点击输入框
     } else {
       logger0.d('取消选中输入框: TextField lost the focus');
     }
