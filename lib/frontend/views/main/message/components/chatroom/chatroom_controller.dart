@@ -1,3 +1,4 @@
+import 'package:paclub/backend/repository/remote/user_repository.dart';
 import 'package:paclub/frontend/views/main/message/components/chatroom/chatroom_scroll_controller.dart';
 import 'package:paclub/frontend/widgets/widgets.dart';
 import 'package:paclub/helper/app_constants.dart';
@@ -10,6 +11,8 @@ import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ChatroomController extends GetxController {
+  final UserRepository userRepository = Get.find<UserRepository>();
+
   final ChatroomScrollController chatroomScroller =
       Get.find<ChatroomScrollController>();
   final ChatroomRepository chatroomRepository = Get.find<ChatroomRepository>();
@@ -17,6 +20,7 @@ class ChatroomController extends GetxController {
   static final switchMessageNum = 12;
   String chatroomId = '';
   String userName = '';
+  String chatUserUid = '';
   int newMessageNum = 0;
   int allMessageNum = 0;
   int skipMessageNum = 0;
@@ -36,7 +40,10 @@ class ChatroomController extends GetxController {
     Map<String, dynamic> chatroomInfo = Get.arguments;
     this.chatroomId = chatroomInfo['chatroomId'];
     this.userName = chatroomInfo['userName'];
+    this.chatUserUid = chatroomInfo['userUid'];
     logger.i('启用 ChatroomController\n开始获取房间ID: $chatroomId 的消息');
+    // 进入房间
+    userRepository.enterLeaveRoom(friendUid: chatUserUid, isEnterRoom: true);
 
     // TODO: 拆分 DatabaseMethods 成 Module API 的请求
 
@@ -144,8 +151,9 @@ class ChatroomController extends GetxController {
     }
     String message = messageTextFieldController.text;
     if (message.isNotEmpty) {
-      AppResponse appResponse = await chatroomRepository.addMessage(
-          chatroomId, ChatMessageModel(message, AppConstants.userName));
+      AppResponse appResponse = await chatroomRepository.addMessage(chatroomId,
+          ChatMessageModel(message, AppConstants.userName), chatUserUid);
+
       if (appResponse.data != null) {
         logger.d(appResponse.message + ', 消息为: ' + message);
         messageTextFieldController.clear(); // 成功发送消息，才清空消息框内容
@@ -158,9 +166,15 @@ class ChatroomController extends GetxController {
     update(['chatSendingMessageField']);
   }
 
+  Future<void> enterLeaveRoom(bool isEnterRoom) async {
+    userRepository.enterLeaveRoom(
+        friendUid: chatUserUid, isEnterRoom: isEnterRoom);
+  }
+
   @override
   void onClose() {
     logger.w('关闭 ChatroomController');
+    // userRepository.enterLeaveRoom(friendUid: chatUserUid, isEnterRoom: false);
     messageStream.close();
     super.onClose();
   }

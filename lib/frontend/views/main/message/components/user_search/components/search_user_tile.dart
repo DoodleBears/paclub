@@ -1,3 +1,4 @@
+import 'package:paclub/backend/repository/remote/user_repository.dart';
 import 'package:paclub/frontend/constants/colors.dart';
 import 'package:paclub/frontend/constants/numbers.dart';
 import 'package:paclub/frontend/routes/app_pages.dart';
@@ -95,12 +96,17 @@ class SearchUserTile extends GetView<UserSearchController> {
                         userName, userUid, isChatroomExist, index);
                     if (appResponse.data != null) {
                       Map<String, dynamic> chatroomInfo = appResponse.data;
-                      Get.toNamed(
+                      await Get.toNamed(
                           Routes.TABS +
                               Routes.MESSAGE +
                               Routes.CHATROOMLIST +
                               Routes.CHATROOM,
                           arguments: chatroomInfo);
+                      // 离开房间
+                      final UserRepository userRepository =
+                          Get.find<UserRepository>();
+                      userRepository.enterLeaveRoom(
+                          friendUid: userUid, isEnterRoom: false);
                     }
                   },
                   height: 44.0,

@@ -2,20 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:paclub/frontend/constants/colors.dart';
 import 'package:paclub/frontend/constants/numbers.dart';
+import 'package:paclub/helper/time_format.dart';
 import 'package:paclub/utils/logger.dart';
 
 class ChatroomMessageTile extends StatelessWidget {
-  String formatTime() {
-    String timeText = '';
-    int hour = sendTime.toDate().hour;
-    timeText += hour > 12 ? '下午 ${hour - 12}' : '上午 $hour';
-    timeText += ':';
-    int minute = sendTime.toDate().minute;
-    timeText += minute < 10 ? '0$minute' : '$minute';
-
-    return timeText;
-  }
-
   final FocusNode focusNode = FocusNode();
 
   ///當資料傳送到聊天室後，要依照時間先後依序排列，並區分資料傳送端(右側)及接收端(左側)
@@ -93,7 +83,7 @@ class ChatroomMessageTile extends StatelessWidget {
                   right: sendByMe ? 4.0 : 0.0,
                 ),
                 child: Text(
-                  formatTime(),
+                  chatMessageformatTime(sendTime),
                   strutStyle: StrutStyle(
                     height: 1,
                     leading: 0.1,

@@ -3,8 +3,7 @@ import 'package:paclub/frontend/constants/numbers.dart';
 import 'package:paclub/frontend/views/main/message/components/chatroom_list/chatroom_list_controller.dart';
 import 'package:paclub/frontend/views/main/message/components/user_search/components/search_user_tile.dart';
 import 'package:paclub/frontend/views/main/message/components/user_search/user_search_controller.dart';
-import 'package:paclub/helper/app_constants.dart';
-import 'package:paclub/models/chatroom_model.dart';
+import 'package:paclub/models/friend_model.dart';
 import 'package:paclub/models/user_model.dart';
 import 'package:paclub/utils/logger.dart';
 import 'package:flutter/material.dart';
@@ -53,11 +52,8 @@ class UserSearchBody extends GetView<UserSearchController> {
             child: GetBuilder<UserSearchController>(
               builder: (_) {
                 List<String> chatroomIdList = chatroomListController
-                    .chatroomStream
-                    .map((ChatroomModel chatroomModel) => chatroomModel
-                        .chatroomId
-                        .replaceAll("_", "")
-                        .replaceFirst(AppConstants.uuid, ""))
+                    .friendsStream
+                    .map((FriendModel friendModel) => friendModel.friendUid)
                     .toList();
                 logger.d(chatroomIdList);
                 return controller.isLoading

@@ -1,8 +1,9 @@
+import 'package:paclub/backend/repository/remote/chatroom_repository.dart';
 import 'package:paclub/helper/app_constants.dart';
-import 'package:paclub/models/chatroom_model.dart';
+import 'package:paclub/models/friend_model.dart';
 import 'package:paclub/utils/logger.dart';
 import 'package:paclub/frontend/views/main/message/components/chatroom_list/chatroom_list_controller.dart';
-import 'package:paclub/frontend/views/main/message/components/chatroom_list/components/chatroom_user_tile.dart';
+import 'package:paclub/frontend/views/main/message/components/chatroom_list/components/chatroom_list_user_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 
@@ -14,16 +15,20 @@ class ChatroomListBody extends GetView<ChatroomListController> {
       child: Obx(() {
         return ListView.builder(
           physics: BouncingScrollPhysics(),
-          itemCount: controller.chatroomStream.length,
+          itemCount: controller.friendsStream.length,
           shrinkWrap: true,
           itemBuilder: (context, index) {
-            ChatroomModel chatroomModel = controller.chatroomStream[index];
-            final userUid = chatroomModel.users[0] == AppConstants.uuid
-                ? chatroomModel.users[1]
-                : chatroomModel.users[0];
-            final userName = chatroomModel.usersName['$userUid'];
-            return ChatroomsUserTile(
-                chatroomId: chatroomModel.chatroomId, userName: userName);
+            FriendModel friendModel = controller.friendsStream[index];
+
+            final userName = friendModel.friendName;
+            return ChatroomsListUserTile(
+                lastMessageTime: friendModel.lastMessageTime,
+                lastMessage: friendModel.lastMessage,
+                messageNotRead: friendModel.messageNotRead,
+                chatroomId: ChatroomRepository.getChatRoomId(
+                    AppConstants.uuid, friendModel.friendUid),
+                userUid: friendModel.friendUid,
+                userName: userName);
           },
         );
       }),

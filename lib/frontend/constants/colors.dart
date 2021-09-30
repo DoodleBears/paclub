@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 // App主题，包含: 颜色，字体大小等
 //  TOOD
 class AppColors {
+  static Color? chatroomTileBackgroundColor = Colors.grey[50];
   static Color? chatTimestampColor = Colors.grey;
   static Color? notReadButtonColor = Colors.grey[800];
   static Color? refreshIndicatorColor = Colors.white;
@@ -18,6 +19,7 @@ class AppColors {
   static Color? messageBoxContainerBackgroundColor = Colors.white;
 
   static lightMode() {
+    chatroomTileBackgroundColor = Colors.grey[50];
     chatTimestampColor = Colors.grey;
     notReadButtonColor = Colors.grey[800];
     refreshIndicatorColor = Colors.white;
@@ -33,6 +35,7 @@ class AppColors {
   }
 
   static darkMode() {
+    chatroomTileBackgroundColor = Colors.grey[850];
     chatTimestampColor = Colors.grey[700];
     notReadButtonColor = Colors.grey[200];
     refreshIndicatorColor = Colors.grey[900];

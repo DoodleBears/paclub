@@ -37,6 +37,33 @@ class _ChatroomBodyState extends State<ChatroomBody>
     super.dispose();
   }
 
+  ///  在聊天室的时候，若App生命周期发生变化，需要做出isInRoom的设定，暂停App即算离开房间
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    print('didChangeAppLifecycleState');
+    setState(() {
+      switch (state) {
+        case AppLifecycleState.resumed:
+          chatroomController.enterLeaveRoom(true);
+          print('AppLifecycleState.resumed');
+          break;
+        case AppLifecycleState.inactive:
+          print('AppLifecycleState.inactive');
+          chatroomController.enterLeaveRoom(false);
+
+          break;
+        case AppLifecycleState.paused:
+          print('AppLifecycleState.paused');
+          chatroomController.enterLeaveRoom(false);
+
+          break;
+        case AppLifecycleState.detached:
+          print('AppLifecycleState.detached');
+          break;
+      }
+    });
+  }
+
   // 每次 重建ListView（一般是有新消息进入，则会重新计算高度）
   afterBuild() {
     if (chatroomScrollController.scrollController.hasClients) {

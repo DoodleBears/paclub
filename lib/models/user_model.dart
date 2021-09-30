@@ -1,4 +1,3 @@
-import 'package:paclub/utils/logger.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserModel {
@@ -24,7 +23,7 @@ class UserModel {
       bio = data['bio'];
       lastLoginAt = data['lastLoginAt'];
       createdAt = data['createdAt'];
-      logger.d(email);
+      // logger.d(email);
     } else {
       throw Exception('Null DocumentSnapshot');
     }

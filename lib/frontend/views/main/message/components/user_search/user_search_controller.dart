@@ -2,6 +2,7 @@ import 'package:paclub/backend/repository/remote/chatroom_repository.dart';
 import 'package:paclub/backend/repository/remote/user_repository.dart';
 import 'package:paclub/frontend/widgets/widgets.dart';
 import 'package:paclub/helper/app_constants.dart';
+import 'package:paclub/models/chatroom_model.dart';
 import 'package:paclub/models/user_model.dart';
 import 'package:paclub/utils/app_response.dart';
 import 'package:paclub/utils/logger.dart';
@@ -43,7 +44,8 @@ class UserSearchController extends GetxController {
       AppResponse appResponse = await userRepository.searchByName(searchText);
       logger.d(appResponse.message);
       if (appResponse.data != null) {
-        userList = appResponse.data;
+        userList = List<UserModel>.from(appResponse.data);
+        logger.d('搜索列表长度: ${userList.length}');
         isAddUserLoading = List.filled(userList.length, false);
       }
 
@@ -55,22 +57,15 @@ class UserSearchController extends GetxController {
     }
   }
 
-  String getChatRoomId(String strOne, String strTwo) {
-    if (strOne.compareTo(strTwo) > 0) {
-      return "$strTwo\_$strOne";
-    } else {
-      return "$strOne\_$strTwo";
-    }
-  }
-
   /// 添加好友（聊天室）
   Future<AppResponse> addFriend(
       String userName, String userUid, bool isChatroomExist, int index) async {
-    String chatRoomId = getChatRoomId(AppConstants.uuid, userUid);
+    String chatroomId =
+        ChatroomRepository.getChatRoomId(AppConstants.uuid, userUid);
     Map<String, dynamic> chatroomInfo = {
       "userUid": userUid,
       "userName": userName,
-      "chatroomId": chatRoomId,
+      "chatroomId": chatroomId,
     };
     if (isChatroomExist) {
       logger.w('聊天室已存在');
@@ -80,17 +75,19 @@ class UserSearchController extends GetxController {
     isAddUserLoading[index] = true;
     update();
     // 创建 user 列表，存储聊天室的用户列表
-    Map<String, dynamic> chatroomData = {
-      "users": [AppConstants.uuid, userUid],
-      "usersName": {
-        '${AppConstants.uuid}': AppConstants.userName,
-        '$userUid': userName
-      },
-      "chatroomId": chatRoomId,
-    };
 
-    AppResponse appResponse =
-        await chatroomRepository.addChatRoom(chatroomData, chatRoomId);
+    Map<String, dynamic> userNameMap = Map();
+    userNameMap[AppConstants.uuid] = AppConstants.userName;
+    userNameMap[userUid] = userName;
+    ChatroomModel chatroomModel = ChatroomModel(
+        users: [AppConstants.uuid, userUid],
+        usersName: userNameMap,
+        chatroomId: chatroomId);
+
+    AppResponse appResponse = await chatroomRepository.addChatRoom(
+      chatroomModel,
+      chatroomId,
+    );
     isAddUserLoading[index] = false;
     update();
     logger.d(appResponse.message);

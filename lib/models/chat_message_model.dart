@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ChatMessageModel {
   late DocumentSnapshot documentSnapshot;
-  late String id;
   late String message;
   late String sendBy;
   late Timestamp time;
@@ -16,7 +15,6 @@ class ChatMessageModel {
     if (documentSnapshot.data() != null) {
       Map data = documentSnapshot.data() as Map;
       this.documentSnapshot = documentSnapshot;
-      id = documentSnapshot.id;
       message = data['message'];
       sendBy = data["sendBy"];
       time = data["time"];

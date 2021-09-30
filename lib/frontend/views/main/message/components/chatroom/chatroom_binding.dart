@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import 'package:paclub/backend/repository/remote/chatroom_repository.dart';
+import 'package:paclub/backend/repository/remote/user_repository.dart';
 import 'package:paclub/frontend/views/main/message/components/chatroom/chatroom_controller.dart';
 import 'package:paclub/frontend/views/main/message/components/chatroom/chatroom_scroll_controller.dart';
 import 'package:paclub/utils/logger.dart';
@@ -14,6 +15,7 @@ class ChatroomBinding implements Bindings {
     // Get.lazyPut<MessageController>(() => MessageController());
 
     /// View 用到的 Controller
+    Get.lazyPut<UserRepository>(() => UserRepository());
     Get.put<ChatroomRepository>(ChatroomRepository());
 
     /// 一定要先注入 ChatroomScroller, 因为 ChatroomController 有用到 ChatroomScroller
