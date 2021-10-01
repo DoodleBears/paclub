@@ -84,7 +84,7 @@ class UserSearchController extends GetxController {
         usersName: userNameMap,
         chatroomId: chatroomId);
 
-    AppResponse appResponse = await chatroomRepository.addChatRoom(
+    AppResponse appResponse = await chatroomRepository.addChatroom(
       chatroomModel,
       chatroomId,
     );

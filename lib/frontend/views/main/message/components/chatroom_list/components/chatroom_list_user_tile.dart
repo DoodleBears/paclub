@@ -35,6 +35,7 @@ class ChatroomsListUserTile extends StatelessWidget {
             'userName': userName,
             'chatroomId': chatroomId,
             'userUid': userUid,
+            'messageNotRead': messageNotRead,
           },
         );
         // 离开房间
@@ -53,14 +54,14 @@ class ChatroomsListUserTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  height: 48.0,
+                  height: 54.0,
                   child: Row(
                     children: [
                       // 头像
                       Container(
                         margin: EdgeInsets.only(right: 12.0),
-                        height: 48.0,
-                        width: 48.0,
+                        height: 54.0,
+                        width: 54.0,
                         decoration: BoxDecoration(
                             color: accentColor,
                             borderRadius: BorderRadius.circular(30)),
@@ -68,12 +69,10 @@ class ChatroomsListUserTile extends StatelessWidget {
                           child: Text(userName.substring(0, 1),
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                  fontSize: 20,
-                                  fontFamily: 'OverpassRegular',
-                                  fontWeight: FontWeight.w300)),
+                                  fontSize: 20, fontWeight: FontWeight.bold)),
                         ),
                       ),
-                      // 姓名和最后消息
+                      // 姓名和最后消息时间
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -102,34 +101,41 @@ class ChatroomsListUserTile extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            // const SizedBox(height: 14.0),
-                            Text(
-                              lastMessage,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(fontSize: 16),
+                            // 最后消息 和 未读数量
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    lastMessage,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(fontSize: 16),
+                                  ),
+                                ),
+                                // 未读消息
+                                Visibility(
+                                  visible: messageNotRead != 0,
+                                  child: Container(
+                                    padding: EdgeInsets.all(5.0),
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.red,
+                                    ),
+                                    child: Text(
+                                      messageNotRead > 99
+                                          ? '99+'
+                                          : '$messageNotRead',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                )
+                              ],
                             ),
                           ],
                         ),
                       ),
-                      // 未读消息
-                      Visibility(
-                        visible: messageNotRead != 0,
-                        child: Container(
-                          margin: EdgeInsets.only(left: 12.0),
-                          padding: EdgeInsets.all(8.0),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.red,
-                          ),
-                          child: Text(
-                            messageNotRead.toString(),
-                            style: TextStyle(
-                              color: Colors.white,
-                            ),
-                          ),
-                        ),
-                      )
                     ],
                   ),
                 ),

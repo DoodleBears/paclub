@@ -17,11 +17,14 @@ class ChatroomPage extends GetView<ChatroomController> {
       builder: (_) {
         return Scaffold(
           appBar: AppBar(
+            centerTitle: true,
             titleTextStyle: TextStyle(
-                fontSize: 20.0,
-                fontWeight: FontWeight.bold,
-                color: AppColors.chatroomAppBarTitleColor),
-            title: Text(controller.userName),
+              fontSize: 20.0,
+              fontWeight: FontWeight.bold,
+              color: AppColors.chatroomAppBarTitleColor,
+              overflow: TextOverflow.clip,
+            ),
+            title: Text(controller.chatUserName),
             elevation: 0,
           ),
           body: ChatroomBody(),

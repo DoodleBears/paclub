@@ -136,7 +136,7 @@ class Tabs extends GetView<TabsController> {
                                             child: Text(
                                               userController.messageNotReadAll >
                                                       99
-                                                  ? ''
+                                                  ? '  '
                                                   : '${userController.messageNotReadAll}',
                                               style: TextStyle(
                                                 color: Colors.white,

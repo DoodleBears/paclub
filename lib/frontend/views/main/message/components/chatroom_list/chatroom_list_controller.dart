@@ -19,8 +19,8 @@ class ChatroomListController extends GetxController {
     // chatroomRepository.getChatroomList(Constants.myUid);
 
     friendsStream.listen((_) => listenFriendStream(_));
-    friendsStream
-        .bindStream(chatroomRepository.getChatroomList(AppConstants.uuid));
+    friendsStream.bindStream(
+        chatroomRepository.getChatroomListStream(AppConstants.uuid));
     update();
 
     super.onInit();

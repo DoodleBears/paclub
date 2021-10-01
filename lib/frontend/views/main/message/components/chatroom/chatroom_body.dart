@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter/painting.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:paclub/frontend/constants/colors.dart';
 import 'package:paclub/frontend/views/auth/login/components/components.dart';
@@ -26,7 +28,6 @@ class _ChatroomBodyState extends State<ChatroomBody>
   final ChatroomController chatroomController = Get.find<ChatroomController>();
   final ChatroomScrollController chatroomScrollController =
       Get.find<ChatroomScrollController>();
-
   @override
   void initState() {
     super.initState();
@@ -199,11 +200,11 @@ class _ChatroomBodyState extends State<ChatroomBody>
                                 return Column(
                                   children: [
                                     Padding(
-                                      padding:
-                                          EdgeInsets.symmetric(vertical: 24.0),
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 24.0),
                                       child: LineDivider(
                                         lineColor: Colors.grey,
-                                        padding: EdgeInsets.symmetric(
+                                        padding: const EdgeInsets.symmetric(
                                             horizontal: 20.0),
                                         child: Text(
                                           chatMessageDividerFormatTime(
@@ -222,7 +223,6 @@ class _ChatroomBodyState extends State<ChatroomBody>
                                   ],
                                 );
                               }
-
                               return child;
                             },
                                 childCount:
@@ -247,20 +247,36 @@ class _ChatroomBodyState extends State<ChatroomBody>
                                 );
                                 // 如果两条消息之间跨度大
                                 bool isDividerShow = false;
-                                if (index + 1 <
-                                    chatroomController.oldMessageList.length) {
-                                  isDividerShow = isChatMessageDividerShow(
-                                    current: chatroomController
-                                        .oldMessageList[index].time,
-                                    previous: chatroomController
-                                        .oldMessageList[index + 1].time,
-                                  );
-                                } else if (chatroomController.isHistoryExist ==
-                                    false) {
-                                  // 如果没有历史记录了，则显示最旧消息的Time
+                                String dividerText = '';
+                                if (index ==
+                                        chatroomController.messageNotRead - 1 &&
+                                    chatroomController.messageNotRead > 12) {
                                   isDividerShow = true;
+                                  dividerText = '上次阅读位置';
+                                } else {
+                                  dividerText = chatMessageDividerFormatTime(
+                                    current: Timestamp.now(),
+                                    previous: chatroomController
+                                        .oldMessageList[index].time,
+                                  );
+                                  if (index + 1 <
+                                      chatroomController
+                                          .oldMessageList.length) {
+                                    isDividerShow = isChatMessageDividerShow(
+                                      current: chatroomController
+                                          .oldMessageList[index].time,
+                                      previous: chatroomController
+                                          .oldMessageList[index + 1].time,
+                                    );
+                                  } else if (chatroomController
+                                          .isHistoryExist ==
+                                      false) {
+                                    // 如果没有历史记录了，则显示最旧消息的Time
+                                    isDividerShow = true;
+                                  }
                                 }
                                 if (isDividerShow) {
+                                  bool isLastTimeRead = dividerText == '上次阅读位置';
                                   // 显示分隔日期
                                   return Column(
                                     children: [
@@ -268,18 +284,21 @@ class _ChatroomBodyState extends State<ChatroomBody>
                                         padding: EdgeInsets.symmetric(
                                             vertical: 24.0),
                                         child: LineDivider(
-                                          lineColor: Colors.grey,
+                                          lineColor: isLastTimeRead
+                                              ? accentColor
+                                              : Colors.grey,
                                           padding: EdgeInsets.symmetric(
                                               horizontal: 20.0),
                                           child: Text(
-                                            chatMessageDividerFormatTime(
-                                              current: Timestamp.now(),
-                                              previous: chatroomController
-                                                  .oldMessageList[index].time,
-                                            ),
+                                            dividerText,
                                             style: TextStyle(
-                                              color: Colors.grey,
+                                              color: isLastTimeRead
+                                                  ? accentColor
+                                                  : Colors.grey,
                                               fontSize: 12.0,
+                                              fontWeight: isLastTimeRead
+                                                  ? FontWeight.bold
+                                                  : null,
                                             ),
                                           ),
                                         ),
@@ -321,9 +340,10 @@ class _ChatroomBodyState extends State<ChatroomBody>
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 300),
                         curve: Curves.ease,
-                        width: chatroomScrollController.messagesNotRead == 0
-                            ? 36.0
-                            : 70.0,
+                        width:
+                            chatroomScrollController.currentMessageNotRead == 0
+                                ? 36.0
+                                : 70.0,
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -331,22 +351,24 @@ class _ChatroomBodyState extends State<ChatroomBody>
                             Flexible(
                               child: Center(
                                 child: Icon(
-                                  Icons.arrow_drop_down,
+                                  Icons.arrow_drop_down_rounded,
                                   size: 32.0,
                                 ),
                               ),
                             ),
                             Visibility(
-                              visible:
-                                  chatroomScrollController.messagesNotRead != 0,
+                              visible: chatroomScrollController
+                                      .currentMessageNotRead !=
+                                  0,
                               child: Flexible(
                                 flex: 2,
                                 child: Center(
                                   child: Text(
-                                    chatroomScrollController.messagesNotRead >
+                                    chatroomScrollController
+                                                .currentMessageNotRead >
                                             99
                                         ? '99+'
-                                        : '${chatroomScrollController.messagesNotRead}',
+                                        : '${chatroomScrollController.currentMessageNotRead}',
                                     maxLines: 1,
                                     style: TextStyle(
                                       fontSize: 18.0,
@@ -369,6 +391,83 @@ class _ChatroomBodyState extends State<ChatroomBody>
               // 顶部黑色线条
               Positioned(
                 child: Container(height: 1.0, color: AppColors.divideLineColor),
+              ),
+              // 未读消息 & 回到上次阅读
+              GetBuilder<ChatroomController>(
+                builder: (_) {
+                  return AnimatedPositioned(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.ease,
+                    right: 10.0,
+                    top: chatroomController.messageNotRead == 0 ||
+                            chatroomController.isJumpBackShow == false
+                        ? -100.0
+                        : 14.0,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        elevation: 2.0,
+                        primary: AppColors.notReadButtonColor,
+                        padding: EdgeInsets.symmetric(horizontal: 4.0),
+                        minimumSize: Size(100.0, 36.0),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Flexible(
+                            child: Center(
+                              child: Icon(
+                                Icons.arrow_drop_up_rounded,
+                                size: 32.0,
+                              ),
+                            ),
+                          ),
+                          Flexible(
+                            flex: 2,
+                            child: Text(
+                              chatroomController.messageNotRead > 99
+                                  ? '99+'
+                                  : '${chatroomController.messageNotRead}' +
+                                      ' Unread',
+                              maxLines: 1,
+                              style: TextStyle(
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          Flexible(
+                            flex: 2,
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 6.0),
+                              child: ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  padding: EdgeInsets.zero,
+                                  primary: Colors.red[400],
+                                  elevation: 0,
+                                ),
+                                onPressed: () =>
+                                    chatroomController.clearNotRead(),
+                                child: Text(
+                                  'close',
+                                  style: TextStyle(
+                                    fontSize: 18.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                      onPressed: () {
+                        chatroomController.clearNotRead();
+                        chatroomScrollController.jumpToTop();
+                      },
+                    ),
+                  );
+                },
               ),
             ],
           ),

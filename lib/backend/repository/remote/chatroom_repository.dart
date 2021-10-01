@@ -19,14 +19,20 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 /// 能夠給其他Function調用Firebase所儲存的資料
 /// TODO 编写 API 注释
 class ChatroomRepository extends GetxController {
-  static const String kAddChatroomFail = 'add_chatroom_fail';
-  static const String kAddChatroomSuccess = 'add_chatroom_success';
   static const String kGetChatroomListFail = 'get_chatroom_list_fail';
   static const String kGetChatroomListSuccess = 'get_chatroom_list_success';
-  static const String kUpdateChatroomListFail = 'update_chatroom_fail';
-  static const String kUpdateChatroomListSuccess = 'update_chatroom_success';
+  static const String kGetChatroomNotReadFail = 'get_chatroom_not_read_fail';
+  static const String kGetChatroomNotReadSuccess =
+      'get_chatroom_not_read_success';
+
+  static const String kAddChatroomFail = 'add_chatroom_fail';
+  static const String kAddChatroomSuccess = 'add_chatroom_success';
   static const String kAddMessageFail = 'add_message_fail';
   static const String kAddMessageSuccess = 'add_message_success';
+
+  static const String kUpdateChatroomListFail = 'update_chatroom_fail';
+  static const String kUpdateChatroomListSuccess = 'update_chatroom_success';
+
   static const String kNoMoreHistoryMessage = 'no_more_history_message';
   static const String kLoadHistoryMessageFail = 'load_history_message_fail';
   static const String kLoadHistoryMessageSuccess =
@@ -61,7 +67,7 @@ class ChatroomRepository extends GetxController {
     super.onClose();
   }
 
-  Stream<List<FriendModel>> getChatroomList(String uid) {
+  Stream<List<FriendModel>> getChatroomListStream(String uid) {
     logger.i('获取聊天列表资料 uid:' + uid);
 
     return _usersCollection
@@ -74,42 +80,6 @@ class ChatroomRepository extends GetxController {
     }).map((QuerySnapshot querySnapshot) => querySnapshot.docs
             .map((doc) => FriendModel.fromDoucumentSnapshot(doc))
             .toList());
-  }
-
-  Future<AppResponse> addChatRoom(
-      ChatroomModel chatroomModel, String chatroomId) async {
-    logger.i('添加聊天室 id: $chatroomId');
-
-    return _chatroomsCollection
-        .doc(chatroomId)
-        .set(chatroomModel.toJson())
-        .then(
-      (_) async {
-        final UserRepository userRepository = Get.find<UserRepository>();
-        AppResponse appResponse_1 = await userRepository.addFriend(
-          uid: chatroomModel.users[0],
-          friendUid: chatroomModel.users[1],
-          friendName: chatroomModel.usersName['${chatroomModel.users[1]}'],
-        );
-
-        AppResponse appResponse_2 = await userRepository.addFriend(
-          uid: chatroomModel.users[1],
-          friendUid: chatroomModel.users[0],
-          friendName: chatroomModel.usersName['${chatroomModel.users[0]}'],
-        );
-        if (appResponse_1.data == null || appResponse_2.data == null) {
-          return AppResponse(kAddChatroomFail, null);
-        } else {
-          logger.i('添加好友成功');
-
-          return AppResponse(kAddChatroomSuccess, chatroomId);
-        }
-      },
-      onError: (e) {
-        logger.e('添加聊天室失败, error: ' + e.runtimeType.toString());
-        return AppResponse(kAddChatroomFail, null);
-      },
-    );
   }
 
   Stream<List<ChatMessageModel>> getNewMessageStream(String chatroomId) {
@@ -195,6 +165,96 @@ class ChatroomRepository extends GetxController {
     }
   }
 
+  // TODO 获取未读消息数量
+  Future<AppResponse> getChatroomNotRead(String chatUserUid) async {
+    return await _usersCollection
+        .doc(AppConstants.uuid)
+        .collection('friends')
+        .doc(chatUserUid)
+        .get()
+        .then((DocumentSnapshot doc) {
+      if (doc.exists) {
+        FriendModel friendModel = FriendModel.fromDoucumentSnapshot(doc);
+        return AppResponse(
+            kGetChatroomNotReadSuccess, friendModel.messageNotRead);
+      }
+      logger3.e('获取未读消息失败: 不存在该 document');
+      return AppResponse(kGetChatroomNotReadFail, null);
+    }, onError: (_) {
+      logger3.e('获取未读消息失败');
+      return AppResponse(kGetChatroomNotReadFail, null);
+    });
+  }
+
+  Future<AppResponse> addChatroom(
+      ChatroomModel chatroomModel, String chatroomId) async {
+    logger.i('添加聊天室 id: $chatroomId');
+
+    return _chatroomsCollection
+        .doc(chatroomId)
+        .set(chatroomModel.toJson())
+        .then(
+      (_) async {
+        final UserRepository userRepository = Get.find<UserRepository>();
+        AppResponse appResponse_1 = await userRepository.addFriend(
+          uid: chatroomModel.users[0],
+          friendUid: chatroomModel.users[1],
+          friendName: chatroomModel.usersName['${chatroomModel.users[1]}'],
+        );
+
+        AppResponse appResponse_2 = await userRepository.addFriend(
+          uid: chatroomModel.users[1],
+          friendUid: chatroomModel.users[0],
+          friendName: chatroomModel.usersName['${chatroomModel.users[0]}'],
+        );
+        if (appResponse_1.data == null || appResponse_2.data == null) {
+          return AppResponse(kAddChatroomFail, null);
+        } else {
+          logger.i('添加好友成功');
+
+          return AppResponse(kAddChatroomSuccess, chatroomId);
+        }
+      },
+      onError: (e) {
+        logger.e('添加聊天室失败, error: ' + e.runtimeType.toString());
+        return AppResponse(kAddChatroomFail, null);
+      },
+    );
+  }
+
+  Future<AppResponse> addMessage(String chatroomId,
+      ChatMessageModel chatMessageModel, String chatUserUid) async {
+    return _chatroomsCollection
+        .doc(chatroomId)
+        .collection("chats")
+        .add(chatMessageModel.toJson())
+        .then(
+      (_) async {
+        // 更新自己的user - friend 资料
+        AppResponse appResponse_1 = await updateUserFriend(
+          userUid: AppConstants.uuid,
+          chatWithUserUid: chatUserUid,
+          message: chatMessageModel.message,
+        );
+        // 更新friend 的 user - friend 资料
+        AppResponse appResponse_2 = await updateUserFriend(
+          userUid: chatUserUid,
+          chatWithUserUid: AppConstants.uuid,
+          message: chatMessageModel.message,
+        );
+        if (appResponse_1.data == null || appResponse_2.data == null) {
+          return AppResponse(kAddMessageFail, null);
+        } else {
+          return AppResponse(kAddMessageSuccess, chatUserUid);
+        }
+      },
+      onError: (e) {
+        logger.e('添加新消息失败 : ' + e.runtimeType.toString());
+        return AppResponse(kAddMessageFail, null);
+      },
+    );
+  }
+
   Future<AppResponse> updateUserFriend({
     required String message,
     required String chatWithUserUid,
@@ -245,39 +305,5 @@ class ChatroomRepository extends GetxController {
     }
 
     // 自己肯定在房间
-  }
-
-//TODO[epic=example] 这是标准的 Firestore 写法
-  Future<AppResponse> addMessage(String chatroomId,
-      ChatMessageModel chatMessageModel, String chatUserUid) async {
-    return _chatroomsCollection
-        .doc(chatroomId)
-        .collection("chats")
-        .add(chatMessageModel.toJson())
-        .then(
-      (_) async {
-        // 更新自己的user - friend 资料
-        AppResponse appResponse_1 = await updateUserFriend(
-          userUid: AppConstants.uuid,
-          chatWithUserUid: chatUserUid,
-          message: chatMessageModel.message,
-        );
-        // 更新friend 的 user - friend 资料
-        AppResponse appResponse_2 = await updateUserFriend(
-          userUid: chatUserUid,
-          chatWithUserUid: AppConstants.uuid,
-          message: chatMessageModel.message,
-        );
-        if (appResponse_1.data == null || appResponse_2.data == null) {
-          return AppResponse(kAddMessageFail, null);
-        } else {
-          return AppResponse(kAddMessageSuccess, chatUserUid);
-        }
-      },
-      onError: (e) {
-        logger.e('添加新消息失败 : ' + e.runtimeType.toString());
-        return AppResponse(kAddMessageFail, null);
-      },
-    );
   }
 }

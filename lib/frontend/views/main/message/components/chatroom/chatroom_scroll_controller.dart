@@ -6,7 +6,7 @@ class ChatroomScrollController extends GetxController {
   final ScrollController scrollController = ScrollController();
   bool isReadHistory = false; // 是否正在浏览历史记录
   bool isAutoScrolling = false;
-  int messagesNotRead = 0; // 未读消息数量
+  int currentMessageNotRead = 0; // 当前房间内未读消息数量
   bool isEdge = true; // 是否在边缘（顶部边缘，底部边缘）
   bool isTop = true; // 是否在顶部
   bool isCloseToButtom = true; // 是否接近底部
@@ -46,8 +46,8 @@ class ChatroomScrollController extends GetxController {
       logger0.d('页面滚动-返回底部, isReadHistory:' +
           isReadHistory.toString() +
           '\n清空未读消息数量: ' +
-          messagesNotRead.toString());
-      messagesNotRead = 0;
+          currentMessageNotRead.toString());
+      currentMessageNotRead = 0;
       update();
       // final ChatroomController chatroomController =
       //     Get.find<ChatroomController>();
@@ -87,7 +87,7 @@ class ChatroomScrollController extends GetxController {
     scrollController.animateTo(scrollController.position.minScrollExtent,
         duration: const Duration(milliseconds: 300), curve: Curves.ease);
     isReadHistory = false;
-    messagesNotRead = 0;
+    currentMessageNotRead = 0;
   }
 
   void jumpToBottom() {
@@ -95,8 +95,12 @@ class ChatroomScrollController extends GetxController {
     // scrollController.jumpTo(scrollController.position.minScrollExtent);
     scrollController.position.moveTo(double.negativeInfinity);
     // focusNode.unfocus();
-    messagesNotRead = 0;
+    currentMessageNotRead = 0;
     isReadHistory = false;
+  }
+
+  void jumpToTop() {
+    scrollController.position.moveTo(double.infinity);
   }
 
   @override

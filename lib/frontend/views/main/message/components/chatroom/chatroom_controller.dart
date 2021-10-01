@@ -12,15 +12,17 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ChatroomController extends GetxController {
   final UserRepository userRepository = Get.find<UserRepository>();
+  final ChatroomRepository chatroomRepository = Get.find<ChatroomRepository>();
 
   final ChatroomScrollController chatroomScroller =
       Get.find<ChatroomScrollController>();
-  final ChatroomRepository chatroomRepository = Get.find<ChatroomRepository>();
   final RefreshController refreshController = RefreshController();
   static final switchMessageNum = 12;
   String chatroomId = '';
-  String userName = '';
+  String chatUserName = '';
   String chatUserUid = '';
+  int messageNotRead = 0;
+  bool isJumpBackShow = false;
   int newMessageNum = 0;
   int allMessageNum = 0;
   int skipMessageNum = 0;
@@ -39,8 +41,17 @@ class ChatroomController extends GetxController {
   void onInit() async {
     Map<String, dynamic> chatroomInfo = Get.arguments;
     this.chatroomId = chatroomInfo['chatroomId'];
-    this.userName = chatroomInfo['userName'];
+    this.chatUserName = chatroomInfo['userName'];
     this.chatUserUid = chatroomInfo['userUid'];
+    if (chatroomInfo.containsKey('messageNotRead')) {
+      messageNotRead = chatroomInfo['messageNotRead'];
+    } else {
+      AppResponse appResponse =
+          await chatroomRepository.getChatroomNotRead(chatUserUid);
+      if (appResponse.data != null) {
+        messageNotRead = appResponse.data;
+      }
+    }
     logger.i('启用 ChatroomController\n开始获取房间ID: $chatroomId 的消息');
     // 进入房间
     userRepository.enterLeaveRoom(friendUid: chatUserUid, isEnterRoom: true);
@@ -51,15 +62,20 @@ class ChatroomController extends GetxController {
     messageStream
         .bindStream(chatroomRepository.getNewMessageStream(chatroomId));
     // 监听消息
-    messageStream.listen(listenMessageStream);
-    loadMoreHistoryMessages(); // 首次加载历史记录
+    messageStream.listen((list) => listenMessageStream(list));
+
+    await loadMoreHistoryMessages(
+        limit: messageNotRead > 12 ? messageNotRead : 30); // 首次加载历史记录
 
     super.onInit();
   }
 
-  void listenMessageStream(_) async {
+  void listenMessageStream(List<ChatMessageModel> list) async {
     // logger.i('old: ${oldMessageList.length}\nnew: ${newMessageList.length}');
     // logger.i('all: $allMessageNum');
+    if (messageNotRead >= list.length) {
+      isJumpBackShow = true;
+    }
 
     if (oldMessageList.length + messageStream.length < switchMessageNum) {
       newMessageList = newMessageList = List.from(messageStream.reversed);
@@ -86,11 +102,11 @@ class ChatroomController extends GetxController {
     // 首次加载消息
     if (chatroomScroller.isReadHistory == true) {
       //如果在阅读历史消息，则添加增加未读消息数量
-      chatroomScroller.messagesNotRead += newMessageNum;
+      chatroomScroller.currentMessageNotRead += newMessageNum;
       chatroomScroller.update(); // 更新显示未读消息数量
-      logger.i('未读消息数量：' + chatroomScroller.messagesNotRead.toString());
+      logger.i('未读消息数量：' + chatroomScroller.currentMessageNotRead.toString());
     } else {
-      chatroomScroller.messagesNotRead = 0;
+      chatroomScroller.currentMessageNotRead = 0;
     }
   }
 
@@ -136,6 +152,9 @@ class ChatroomController extends GetxController {
       toastCenter('Check Internet\n${appResponse.message}');
       refreshController.loadFailed();
     }
+    if (messageNotRead < oldMessageList.length) {
+      isJumpBackShow = false;
+    }
     isLoadingHistory = false;
     update();
 
@@ -164,6 +183,11 @@ class ChatroomController extends GetxController {
     }
     isSendingMessage = false;
     update(['chatSendingMessageField']);
+  }
+
+  void clearNotRead() {
+    isJumpBackShow = false;
+    update();
   }
 
   Future<void> enterLeaveRoom(bool isEnterRoom) async {
