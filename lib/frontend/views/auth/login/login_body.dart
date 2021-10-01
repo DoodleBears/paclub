@@ -9,7 +9,7 @@ import 'package:paclub/frontend/widgets/buttons/buttons.dart';
 import 'package:paclub/frontend/widgets/buttons/rounded_button.dart';
 import 'package:paclub/r.dart';
 import 'package:paclub/frontend/widgets/widgets.dart';
-import 'components/or_divider.dart';
+import 'components/line_divider.dart';
 
 const int countdownTime = 60;
 
@@ -160,7 +160,14 @@ class LoginBody extends GetView<LoginController> {
             ),
 
             SizedBox(height: Get.height * 0.03),
-            const OrDivider(), // OR 的分割线
+            const LineDivider(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: Text('OR',
+                    style: TextStyle(
+                        color: primaryDarkColor, fontWeight: FontWeight.w600)),
+              ),
+            ), // OR 的分割线
             SizedBox(height: Get.height * 0.02),
             CircleButton(
               height: Get.height * 0.085,

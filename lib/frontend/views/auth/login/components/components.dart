@@ -1,4 +1,4 @@
-export 'or_divider.dart';
+export 'line_divider.dart';
 export 'rounded_input_field.dart';
 export 'round_password_field.dart';
 export 'rounded_loading_button.dart';

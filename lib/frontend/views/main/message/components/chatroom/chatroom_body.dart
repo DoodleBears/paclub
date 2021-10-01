@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
@@ -5,6 +6,7 @@ import 'package:paclub/frontend/constants/colors.dart';
 import 'package:paclub/frontend/views/auth/login/components/components.dart';
 import 'package:paclub/frontend/views/main/message/components/chatroom/chatroom_scroll_controller.dart';
 import 'package:paclub/helper/app_constants.dart';
+import 'package:paclub/helper/chatroom_helper.dart';
 import 'package:paclub/utils/logger.dart';
 import 'package:paclub/frontend/views/main/message/components/chatroom/chatroom_controller.dart';
 import 'package:flutter/material.dart';
@@ -96,6 +98,7 @@ class _ChatroomBodyState extends State<ChatroomBody>
           child: Stack(
             // alignment: Alignment.topCenter,
             children: [
+              // 消息
               Container(
                 color: AppColors.chatBackgroundColor,
                 child: GetBuilder<ChatroomController>(
@@ -158,7 +161,7 @@ class _ChatroomBodyState extends State<ChatroomBody>
                                   chatroomController
                                       .newMessageList[index].sendBy;
 
-                              return ChatroomMessageTile(
+                              Widget child = ChatroomMessageTile(
                                 sendTime: chatroomController
                                     .newMessageList[index].time,
                                 senderName: chatroomController
@@ -167,6 +170,60 @@ class _ChatroomBodyState extends State<ChatroomBody>
                                     .newMessageList[index].message,
                                 sendByMe: isSendByMe,
                               );
+                              // 如果两条消息之间跨度大
+                              Timestamp previous;
+                              // 如果是第一天新消息
+                              if (index == 0) {
+                                // 有历史消息
+                                if (chatroomController
+                                    .oldMessageList.isNotEmpty) {
+                                  previous =
+                                      chatroomController.oldMessageList[0].time;
+                                } else {
+                                  // 没有历史消息
+                                  previous = chatroomController
+                                      .newMessageList[index].time;
+                                }
+                              } else {
+                                previous = chatroomController
+                                    .newMessageList[index - 1].time;
+                              }
+
+                              bool isDividerShow = isChatMessageDividerShow(
+                                current: chatroomController
+                                    .newMessageList[index].time,
+                                previous: previous,
+                              );
+                              if (isDividerShow) {
+                                // 显示分隔日期
+                                return Column(
+                                  children: [
+                                    Padding(
+                                      padding:
+                                          EdgeInsets.symmetric(vertical: 24.0),
+                                      child: LineDivider(
+                                        lineColor: Colors.grey,
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 20.0),
+                                        child: Text(
+                                          chatMessageDividerFormatTime(
+                                            current: Timestamp.now(),
+                                            previous: chatroomController
+                                                .newMessageList[index].time,
+                                          ),
+                                          style: TextStyle(
+                                            color: Colors.grey,
+                                            fontSize: 12.0,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    child,
+                                  ],
+                                );
+                              }
+
+                              return child;
                             },
                                 childCount:
                                     chatroomController.newMessageList.length),
@@ -188,6 +245,44 @@ class _ChatroomBodyState extends State<ChatroomBody>
                                       chatroomController
                                           .oldMessageList[index].sendBy,
                                 );
+                                // 如果两条消息之间跨度大
+                                if (index + 1 <
+                                    chatroomController.oldMessageList.length) {
+                                  bool isDividerShow = isChatMessageDividerShow(
+                                    current: chatroomController
+                                        .oldMessageList[index].time,
+                                    previous: chatroomController
+                                        .oldMessageList[index + 1].time,
+                                  );
+                                  if (isDividerShow) {
+                                    // 显示分隔日期
+                                    return Column(
+                                      children: [
+                                        Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              vertical: 24.0),
+                                          child: LineDivider(
+                                            lineColor: Colors.grey,
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 20.0),
+                                            child: Text(
+                                              chatMessageDividerFormatTime(
+                                                current: Timestamp.now(),
+                                                previous: chatroomController
+                                                    .oldMessageList[index].time,
+                                              ),
+                                              style: TextStyle(
+                                                color: Colors.grey,
+                                                fontSize: 12.0,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        child,
+                                      ],
+                                    );
+                                  }
+                                }
                                 if (index ==
                                     chatroomController.oldMessageList.length -
                                         1) {
@@ -210,7 +305,7 @@ class _ChatroomBodyState extends State<ChatroomBody>
                 ),
               ),
 
-              // 消息提示
+              // 未读消息 & 回到底部
               GetBuilder<ChatroomScrollController>(
                 builder: (_) {
                   return AnimatedPositioned(
