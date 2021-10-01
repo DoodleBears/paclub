@@ -26,7 +26,7 @@ String chatroomListFormatTime(Timestamp timestamp) {
   // 48小时天前
   if (currentTime.subtract(const Duration(days: 2)).millisecondsSinceEpoch >
       dataTimestamp.millisecondsSinceEpoch) {
-    return '${dataTimestamp.month}月${dataTimestamp.day}';
+    return '${dataTimestamp.month}月${dataTimestamp.day}日';
   }
   // 24小时 - 48小时前
   if (currentTime.subtract(const Duration(days: 1)).millisecondsSinceEpoch >
@@ -101,7 +101,7 @@ String chatMessageDividerFormatTime(
   // 48小时天前
   if (currentTime.subtract(const Duration(days: 2)).millisecondsSinceEpoch >
       previousTime.millisecondsSinceEpoch) {
-    return '${previousTime.month}月${previousTime.day}';
+    return '${previousTime.month}月${previousTime.day}日';
   }
   // 24小时 - 48小时前
   if (currentTime.subtract(const Duration(days: 1)).millisecondsSinceEpoch >

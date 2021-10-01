@@ -246,49 +246,46 @@ class _ChatroomBodyState extends State<ChatroomBody>
                                           .oldMessageList[index].sendBy,
                                 );
                                 // 如果两条消息之间跨度大
+                                bool isDividerShow = false;
                                 if (index + 1 <
                                     chatroomController.oldMessageList.length) {
-                                  bool isDividerShow = isChatMessageDividerShow(
+                                  isDividerShow = isChatMessageDividerShow(
                                     current: chatroomController
                                         .oldMessageList[index].time,
                                     previous: chatroomController
                                         .oldMessageList[index + 1].time,
                                   );
-                                  if (isDividerShow) {
-                                    // 显示分隔日期
-                                    return Column(
-                                      children: [
-                                        Padding(
+                                } else if (chatroomController.isHistoryExist ==
+                                    false) {
+                                  // 如果没有历史记录了，则显示最旧消息的Time
+                                  isDividerShow = true;
+                                }
+                                if (isDividerShow) {
+                                  // 显示分隔日期
+                                  return Column(
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            vertical: 24.0),
+                                        child: LineDivider(
+                                          lineColor: Colors.grey,
                                           padding: EdgeInsets.symmetric(
-                                              vertical: 24.0),
-                                          child: LineDivider(
-                                            lineColor: Colors.grey,
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 20.0),
-                                            child: Text(
-                                              chatMessageDividerFormatTime(
-                                                current: Timestamp.now(),
-                                                previous: chatroomController
-                                                    .oldMessageList[index].time,
-                                              ),
-                                              style: TextStyle(
-                                                color: Colors.grey,
-                                                fontSize: 12.0,
-                                              ),
+                                              horizontal: 20.0),
+                                          child: Text(
+                                            chatMessageDividerFormatTime(
+                                              current: Timestamp.now(),
+                                              previous: chatroomController
+                                                  .oldMessageList[index].time,
+                                            ),
+                                            style: TextStyle(
+                                              color: Colors.grey,
+                                              fontSize: 12.0,
                                             ),
                                           ),
                                         ),
-                                        child,
-                                      ],
-                                    );
-                                  }
-                                }
-                                if (index ==
-                                    chatroomController.oldMessageList.length -
-                                        1) {
-                                  return Padding(
-                                    padding: const EdgeInsets.only(top: 6.0),
-                                    child: child,
+                                      ),
+                                      child,
+                                    ],
                                   );
                                 }
 
