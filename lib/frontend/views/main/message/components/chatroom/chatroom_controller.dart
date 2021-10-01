@@ -65,7 +65,9 @@ class ChatroomController extends GetxController {
     messageStream.listen((list) => listenMessageStream(list));
 
     await loadMoreHistoryMessages(
-        limit: messageNotRead > 12 ? messageNotRead : 30); // 首次加载历史记录
+        limit: messageNotRead > switchMessageNum
+            ? messageNotRead
+            : 30); // 首次加载历史记录
 
     super.onInit();
   }
@@ -73,9 +75,6 @@ class ChatroomController extends GetxController {
   void listenMessageStream(List<ChatMessageModel> list) async {
     // logger.i('old: ${oldMessageList.length}\nnew: ${newMessageList.length}');
     // logger.i('all: $allMessageNum');
-    if (messageNotRead >= list.length) {
-      isJumpBackShow = true;
-    }
 
     if (oldMessageList.length + messageStream.length < switchMessageNum) {
       newMessageList = newMessageList = List.from(messageStream.reversed);
@@ -148,13 +147,17 @@ class ChatroomController extends GetxController {
       // 更新总消息长度
       allMessageNum = oldMessageList.length + newMessageList.length;
       refreshController.loadComplete();
+      if (messageNotRead >= oldMessageList.length &&
+          messageNotRead > switchMessageNum) {
+        isJumpBackShow = true;
+      } else {
+        isJumpBackShow = false;
+      }
     } else {
       toastCenter('Check Internet\n${appResponse.message}');
       refreshController.loadFailed();
     }
-    if (messageNotRead < oldMessageList.length) {
-      isJumpBackShow = false;
-    }
+
     isLoadingHistory = false;
     update();
 
