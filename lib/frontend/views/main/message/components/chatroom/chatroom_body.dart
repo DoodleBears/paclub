@@ -174,8 +174,9 @@ class _ChatroomBodyState extends State<ChatroomBody>
                               );
                               // 如果两条消息之间跨度大
                               Timestamp previous;
-                              // 如果是第一天新消息
-                              if (index == 0) {
+                              // 如果是第一条新消息
+                              if (chatroomController.allMessageNum >
+                                  ChatroomController.switchMessageNum) {
                                 // 有历史消息
                                 if (chatroomController
                                     .oldMessageList.isNotEmpty) {
@@ -187,8 +188,20 @@ class _ChatroomBodyState extends State<ChatroomBody>
                                       .newMessageList[index].time;
                                 }
                               } else {
-                                previous = chatroomController
-                                    .newMessageList[index - 1].time;
+                                if (index + 1 ==
+                                    chatroomController.newMessageList.length) {
+                                  if (chatroomController
+                                      .oldMessageList.isEmpty) {
+                                    previous = chatroomController
+                                        .newMessageList[index].time;
+                                  } else {
+                                    previous = chatroomController
+                                        .oldMessageList[0].time;
+                                  }
+                                } else {
+                                  previous = chatroomController
+                                      .newMessageList[index + 1].time;
+                                }
                               }
 
                               bool isDividerShow = isChatMessageDividerShow(
