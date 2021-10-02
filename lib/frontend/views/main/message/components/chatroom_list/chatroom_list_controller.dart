@@ -42,8 +42,8 @@ class ChatroomListController extends GetxController {
       logger.i('ChatroomList 状态变动');
       userController.messageNotReadAll = sum;
       userController.update();
-      update();
     }
+    update();
   }
 
   @override
