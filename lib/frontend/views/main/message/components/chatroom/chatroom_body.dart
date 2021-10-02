@@ -54,7 +54,6 @@ class _ChatroomBodyState extends State<ChatroomBody>
         case AppLifecycleState.inactive:
           print('AppLifecycleState.inactive');
           chatroomController.enterLeaveRoom(false);
-
           break;
         case AppLifecycleState.paused:
           print('AppLifecycleState.paused');
@@ -63,6 +62,7 @@ class _ChatroomBodyState extends State<ChatroomBody>
           break;
         case AppLifecycleState.detached:
           print('AppLifecycleState.detached');
+          chatroomController.enterLeaveRoom(false);
           break;
       }
     });
@@ -399,75 +399,63 @@ class _ChatroomBodyState extends State<ChatroomBody>
                   return AnimatedPositioned(
                     duration: const Duration(milliseconds: 300),
                     curve: Curves.ease,
-                    right: 10.0,
+                    right: 0.0,
                     top: chatroomController.messageNotRead == 0 ||
                             chatroomController.isJumpBackShow == false
                         ? -100.0
                         : 14.0,
-                    child: GestureDetector(
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          elevation: 2.0,
-                          primary: AppColors.notReadButtonColor,
-                          padding: EdgeInsets.symmetric(horizontal: 4.0),
-                          minimumSize: Size(100.0, 36.0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(borderRadius),
-                          ),
-                        ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Flexible(
-                              child: Center(
-                                child: Icon(
-                                  Icons.arrow_drop_up_rounded,
-                                  size: 24.0,
-                                ),
+                    child: Visibility(
+                      visible: chatroomController.isJumpBackShow,
+                      child: Dismissible(
+                        key: ValueKey('Back to Unread'),
+                        direction: DismissDirection.startToEnd,
+                        onDismissed: (DismissDirection direction) {
+                          chatroomController.clearNotRead();
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 14.0),
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              elevation: 2.0,
+                              primary: AppColors.notReadButtonColor,
+                              padding: EdgeInsets.symmetric(horizontal: 6.0),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4.0),
                               ),
                             ),
-                            Flexible(
-                              flex: 2,
-                              child: Text(
-                                chatroomController.messageNotRead > 99
-                                    ? '99+'
-                                    : '${chatroomController.messageNotRead}',
-                                maxLines: 1,
-                                style: TextStyle(
-                                  fontSize: 16.0,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 16.0),
-                            Flexible(
-                              flex: 2,
-                              child: ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  minimumSize: Size(48, 38),
-                                  padding: EdgeInsets.zero,
-                                  primary: AppColors.notReadButtonColor,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                    side: BorderSide(
-                                      color: Colors.red,
-                                      width: 1.5,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Flexible(
+                                  child: Center(
+                                    child: Icon(
+                                      Icons.arrow_drop_up_rounded,
+                                      size: 24.0,
                                     ),
                                   ),
                                 ),
-                                onPressed: () =>
-                                    chatroomController.clearNotRead(),
-                                child: Icon(Icons.remove_done),
-                              ),
+                                Flexible(
+                                  flex: 2,
+                                  child: Text(
+                                    chatroomController.messageNotRead > 99
+                                        ? '99+'
+                                        : '${chatroomController.messageNotRead}',
+                                    maxLines: 1,
+                                    style: TextStyle(
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
-                            const SizedBox(width: 4.0),
-                          ],
+                            onPressed: () {
+                              chatroomController.clearNotRead();
+                              chatroomScrollController.jumpToTop();
+                            },
+                          ),
                         ),
-                        onPressed: () {
-                          chatroomController.clearNotRead();
-                          chatroomScrollController.jumpToTop();
-                        },
                       ),
                     ),
                   );
@@ -528,6 +516,7 @@ class _ChatroomBodyState extends State<ChatroomBody>
                             decoration: InputDecoration(
                               border: InputBorder.none,
                             ),
+                            onChanged: chatroomController.toggleSendButton,
                           ),
                         ),
                       ),
@@ -540,23 +529,41 @@ class _ChatroomBodyState extends State<ChatroomBody>
                       ),
                       child: GetBuilder<ChatroomController>(
                         assignId: true,
-                        id: 'chatSendingMessageField', // 防止 ListView 多刷新一次
+                        id: 'send button',
                         builder: (_) {
-                          return RoundedLoadingButton(
-                              textStyle: TextStyle(
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.bold,
+                          return ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              primary: accentColor,
+                              elevation: 0,
+                              shape: RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.circular(borderRadius),
                               ),
                               padding: EdgeInsets.symmetric(
                                 horizontal: 12.0,
                                 vertical: 8.0,
                               ),
-                              isLoading: chatroomController.isSendingMessage,
-                              color: accentColor,
-                              onPressed: () async {
+                            ),
+                            onPressed: () async {
+                              if (chatroomController.isSendButtonShow) {
                                 await chatroomController.addMessage();
-                              },
-                              text: 'Send');
+                              } else {
+                                // 没有内容的时候
+                              }
+                            },
+                            child: chatroomController.isSendButtonShow
+                                ? Text(
+                                    'Send',
+                                    style: TextStyle(
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  )
+                                : Icon(
+                                    Icons.add,
+                                    size: 32.0,
+                                  ),
+                          );
                         },
                       ),
                     ),

@@ -228,6 +228,7 @@ class ChatroomRepository extends GetxController {
         .doc(chatroomId)
         .collection("chats")
         .add(chatMessageModel.toJson())
+        .timeout(const Duration(seconds: 10))
         .then(
       (_) async {
         // 更新自己的user - friend 资料
@@ -260,7 +261,7 @@ class ChatroomRepository extends GetxController {
     required String chatWithUserUid,
     required String userUid,
   }) async {
-    logger.i('更新Friend信息');
+    logger.i('更新 uid:$chatWithUserUid 信息');
     Map<String, dynamic> updateData = Map();
     updateData['lastMessage'] = message;
     updateData['lastMessageTime'] = FieldValue.serverTimestamp();

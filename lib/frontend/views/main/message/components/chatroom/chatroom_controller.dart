@@ -23,12 +23,12 @@ class ChatroomController extends GetxController {
   String chatUserUid = '';
   int messageNotRead = 0;
   bool isJumpBackShow = false;
+  bool isSendButtonShow = false;
   int newMessageNum = 0;
   int allMessageNum = 0;
   int skipMessageNum = 0;
   bool isOver12 = false;
   bool isLoadingHistory = false;
-  bool isSendingMessage = false;
   bool isHistoryExist = true;
   Key centerKey = ValueKey('onelist'); // 用两个list，不同延伸方向，来解决加载旧消息和接收新消息
   TextEditingController messageTextFieldController = TextEditingController();
@@ -165,27 +165,37 @@ class ChatroomController extends GetxController {
   }
 
   Future<void> addMessage() async {
-    if (isSendingMessage) return;
-    isSendingMessage = true;
-    update(['chatSendingMessageField']);
-    if (chatroomId.isEmpty) {
-      logger.e('chatroomId 为空子串');
-    }
     String message = messageTextFieldController.text;
+    messageTextFieldController.clear(); // 成功发送消息，才清空消息框内容
+    toggleSendButton('');
     if (message.isNotEmpty) {
       AppResponse appResponse = await chatroomRepository.addMessage(chatroomId,
           ChatMessageModel(message, AppConstants.userName), chatUserUid);
 
       if (appResponse.data != null) {
         logger.d(appResponse.message + ', 消息为: ' + message);
-        messageTextFieldController.clear(); // 成功发送消息，才清空消息框内容
       } else {
         toastCenter(appResponse.message);
         logger.e(appResponse.message);
+        // 回复发送失败的消息
+        messageTextFieldController.text = message;
       }
     }
-    isSendingMessage = false;
-    update(['chatSendingMessageField']);
+  }
+
+  void toggleSendButton(String text) {
+    // logger.d(text);
+    if (isSendButtonShow == false) {
+      if (text != '') {
+        isSendButtonShow = true;
+        update(['send button']);
+      }
+    } else {
+      if (text == '' || text.isEmpty) {
+        isSendButtonShow = false;
+        update(['send button']);
+      }
+    }
   }
 
   void clearNotRead() {
