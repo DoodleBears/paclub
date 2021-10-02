@@ -5,6 +5,7 @@ import 'package:paclub/frontend/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:paclub/frontend/views/main/user/user_controller.dart';
+import 'package:paclub/frontend/widgets/badges/badges.dart';
 import 'package:paclub/helper/chatroom_helper.dart';
 
 ///此Function為搜尋完畢後的用戶名單頁面
@@ -56,6 +57,7 @@ class ChatroomsListUserTile extends StatelessWidget {
                 Container(
                   height: 54.0,
                   child: Row(
+                    mainAxisSize: MainAxisSize.max,
                     children: [
                       // 头像
                       Container(
@@ -72,12 +74,13 @@ class ChatroomsListUserTile extends StatelessWidget {
                                   fontSize: 20, fontWeight: FontWeight.bold)),
                         ),
                       ),
-                      // 姓名和最后消息时间
+                      // 其他文本内容
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
+                            // 用户名 username 和 最后消息时间 lastMessageTime
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
@@ -101,9 +104,10 @@ class ChatroomsListUserTile extends StatelessWidget {
                                 ),
                               ],
                             ),
-                            // 最后消息 和 未读数量
+                            // 最后消息 lastMessage 和 未读数量 messageNotRead
                             Row(
                               children: [
+                                // 最后消息 lastMessage
                                 Expanded(
                                   child: Text(
                                     lastMessage,
@@ -112,24 +116,9 @@ class ChatroomsListUserTile extends StatelessWidget {
                                     style: TextStyle(fontSize: 16),
                                   ),
                                 ),
-                                // 未读消息
-                                Visibility(
-                                  visible: messageNotRead != 0,
-                                  child: Container(
-                                    padding: EdgeInsets.all(5.0),
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: Colors.red,
-                                    ),
-                                    child: Text(
-                                      messageNotRead > 99
-                                          ? '99+'
-                                          : '$messageNotRead',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ),
+                                // 未读数量 messageNotRead
+                                NumberBadge(
+                                  number: messageNotRead,
                                 )
                               ],
                             ),

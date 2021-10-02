@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:paclub/frontend/constants/colors.dart';
 import 'package:paclub/frontend/views/main/card/card_page.dart';
@@ -8,6 +9,7 @@ import 'package:paclub/frontend/views/main/notification/notification_page.dart';
 import 'package:paclub/frontend/views/main/tabs/tabs_controller.dart';
 import 'package:paclub/frontend/views/main/user/user_controller.dart';
 import 'package:paclub/frontend/views/main/user/user_page.dart';
+import 'package:paclub/frontend/widgets/widgets.dart';
 import 'package:paclub/utils/logger.dart';
 
 class Tabs extends GetView<TabsController> {
@@ -82,32 +84,11 @@ class Tabs extends GetView<TabsController> {
                                 children: [
                                   Icon(Icons.message_outlined),
                                   Positioned(
-                                    top: -8.0,
-                                    right: -8.0,
+                                    top: -6.0,
+                                    right: -10.0,
                                     child: GetBuilder<UserController>(
                                       builder: (_) {
-                                        logger.e('重新AllMessageNotRead');
-                                        return Visibility(
-                                          visible: userController
-                                                  .messageNotReadAll !=
-                                              0,
-                                          child: Container(
-                                            padding: EdgeInsets.all(5.0),
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color: Colors.red,
-                                            ),
-                                            child: Text(
-                                              userController.messageNotReadAll >
-                                                      99
-                                                  ? ''
-                                                  : '${userController.messageNotReadAll}',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          ),
-                                        );
+                                        return _buildBadge(userController);
                                       },
                                     ),
                                   )
@@ -118,32 +99,11 @@ class Tabs extends GetView<TabsController> {
                                 children: [
                                   Icon(Icons.message),
                                   Positioned(
-                                    right: -8.0,
-                                    top: -8.0,
+                                    right: -10.0,
+                                    top: -6.0,
                                     child: GetBuilder<UserController>(
                                       builder: (_) {
-                                        logger.e('重新AllMessageNotRead');
-                                        return Visibility(
-                                          visible: userController
-                                                  .messageNotReadAll !=
-                                              0,
-                                          child: Container(
-                                            padding: EdgeInsets.all(5.0),
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              color: Colors.red,
-                                            ),
-                                            child: Text(
-                                              userController.messageNotReadAll >
-                                                      99
-                                                  ? '  '
-                                                  : '${userController.messageNotReadAll}',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          ),
-                                        );
+                                        return _buildBadge(userController);
                                       },
                                     ),
                                   )
@@ -179,6 +139,27 @@ class Tabs extends GetView<TabsController> {
           );
         });
       }),
+    );
+  }
+
+  NumberBadge _buildBadge(UserController userController) {
+    return NumberBadge(
+      number: userController.messageNotReadAll,
+      maxNumber: 99,
+      padding: EdgeInsets.only(
+        top: 1.0,
+        left: 6.0,
+        right: 6.0,
+      ),
+      textStyle: TextStyle(
+        fontSize: 10.0,
+        fontWeight: FontWeight.bold,
+        color: Colors.white,
+      ),
+      border: BorderSide(
+        color: Colors.white,
+        width: 1.5,
+      ),
     );
   }
 }

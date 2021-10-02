@@ -5,6 +5,7 @@ import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:paclub/frontend/constants/colors.dart';
+import 'package:paclub/frontend/constants/constants.dart';
 import 'package:paclub/frontend/views/auth/login/components/components.dart';
 import 'package:paclub/frontend/views/main/message/components/chatroom/chatroom_scroll_controller.dart';
 import 'package:paclub/helper/app_constants.dart';
@@ -403,68 +404,71 @@ class _ChatroomBodyState extends State<ChatroomBody>
                             chatroomController.isJumpBackShow == false
                         ? -100.0
                         : 14.0,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        elevation: 2.0,
-                        primary: AppColors.notReadButtonColor,
-                        padding: EdgeInsets.symmetric(horizontal: 4.0),
-                        minimumSize: Size(100.0, 36.0),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Flexible(
-                            child: Center(
-                              child: Icon(
-                                Icons.arrow_drop_up_rounded,
-                                size: 32.0,
+                    child: GestureDetector(
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          elevation: 2.0,
+                          primary: AppColors.notReadButtonColor,
+                          padding: EdgeInsets.symmetric(horizontal: 4.0),
+                          minimumSize: Size(100.0, 36.0),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(borderRadius),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Flexible(
+                              child: Center(
+                                child: Icon(
+                                  Icons.arrow_drop_up_rounded,
+                                  size: 24.0,
+                                ),
                               ),
                             ),
-                          ),
-                          Flexible(
-                            flex: 2,
-                            child: Text(
-                              chatroomController.messageNotRead > 99
-                                  ? '99+'
-                                  : '${chatroomController.messageNotRead}' +
-                                      ' Unread',
-                              maxLines: 1,
-                              style: TextStyle(
-                                fontSize: 18.0,
-                                fontWeight: FontWeight.bold,
+                            Flexible(
+                              flex: 2,
+                              child: Text(
+                                chatroomController.messageNotRead > 99
+                                    ? '99+'
+                                    : '${chatroomController.messageNotRead}',
+                                maxLines: 1,
+                                style: TextStyle(
+                                  fontSize: 16.0,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                             ),
-                          ),
-                          Flexible(
-                            flex: 2,
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 6.0),
+                            const SizedBox(width: 16.0),
+                            Flexible(
+                              flex: 2,
                               child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
+                                  minimumSize: Size(48, 38),
                                   padding: EdgeInsets.zero,
-                                  primary: Colors.red[400],
-                                  elevation: 0,
+                                  primary: AppColors.notReadButtonColor,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                    side: BorderSide(
+                                      color: Colors.red,
+                                      width: 1.5,
+                                    ),
+                                  ),
                                 ),
                                 onPressed: () =>
                                     chatroomController.clearNotRead(),
-                                child: Text(
-                                  'close',
-                                  style: TextStyle(
-                                    fontSize: 18.0,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
+                                child: Icon(Icons.remove_done),
                               ),
                             ),
-                          )
-                        ],
+                            const SizedBox(width: 4.0),
+                          ],
+                        ),
+                        onPressed: () {
+                          chatroomController.clearNotRead();
+                          chatroomScrollController.jumpToTop();
+                        },
                       ),
-                      onPressed: () {
-                        chatroomController.clearNotRead();
-                        chatroomScrollController.jumpToTop();
-                      },
                     ),
                   );
                 },
