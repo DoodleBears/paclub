@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:paclub/frontend/constants/constants.dart';
+import 'package:paclub/frontend/widgets/tabs/rounded_tab_indicator.dart';
 
 final TextStyle darkThemTextStyle = TextStyle(
   color: Colors.grey[200],
@@ -11,12 +12,26 @@ final TextStyle lightThemTextStyle = TextStyle(
 
 class MyThemes {
   static final lightTheme = ThemeData(
+    textSelectionTheme: TextSelectionThemeData(
+      cursorColor: Colors.blue,
+      selectionHandleColor: Colors.blue,
+      selectionColor: Colors.blue.withAlpha(128),
+    ),
+    tabBarTheme: TabBarTheme(
+      indicator: RoundedUnderlineTabIndicator(
+        width: 40.0,
+        borderSide: BorderSide(
+          width: 2.5,
+          color: accentLightColor,
+        ),
+        insets: EdgeInsets.only(bottom: 6.0),
+      ),
+    ),
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
       unselectedItemColor: Colors.grey[800],
       backgroundColor: Colors.white,
     ),
     primaryColor: primaryColor,
-    accentColor: accentColor,
     appBarTheme: AppBarTheme(
       backgroundColor: Colors.white,
       foregroundColor: accentColor,
@@ -50,12 +65,27 @@ class MyThemes {
   );
 
   static final darkTheme = ThemeData(
+    textSelectionTheme: TextSelectionThemeData(
+      cursorColor: Colors.blue,
+      selectionHandleColor: Colors.blue,
+      selectionColor: Colors.blue.withAlpha(128),
+    ),
+
+    tabBarTheme: TabBarTheme(
+      indicator: RoundedUnderlineTabIndicator(
+        width: 40.0,
+        borderSide: BorderSide(
+          width: 2.5,
+          color: accentColor,
+        ),
+        insets: EdgeInsets.only(bottom: 6.0),
+      ),
+    ),
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
       unselectedItemColor: Colors.grey[400],
-      backgroundColor: Colors.black,
+      backgroundColor: Colors.grey[850],
     ),
     scaffoldBackgroundColor: Colors.grey.shade900,
-    accentColor: accentColor,
     appBarTheme: AppBarTheme(
       backgroundColor: Colors.grey.shade900,
       foregroundColor: accentColor,

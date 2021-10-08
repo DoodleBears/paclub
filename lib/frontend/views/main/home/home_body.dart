@@ -1,8 +1,10 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:paclub/frontend/views/main/home/home_controller.dart';
 import 'package:paclub/frontend/views/main/home/home_follow/home_follow_page.dart';
 import 'package:paclub/frontend/views/main/home/home_hot/home_hot_page.dart';
+import 'package:paclub/frontend/views/main/user/user_controller.dart';
 
 class HomeBody extends GetView<HomeController> {
   const HomeBody({Key? key}) : super(key: key);
@@ -16,20 +18,66 @@ class HomeBody extends GetView<HomeController> {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        appBar: AppBar(
-          actions: <Widget>[
-            IconButton(icon: Icon(Icons.search), onPressed: () {}),
-          ],
-          title: Text('盒群'),
-          bottom: TabBar(
-            tabs: <Widget>[Tab(text: '熱門'), Tab(text: '追蹤')],
+        body: NestedScrollView(
+          floatHeaderSlivers: true,
+          headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
+            return <Widget>[
+              SliverAppBar(
+                actions: <Widget>[
+                  IconButton(
+                      icon: Icon(
+                        Icons.search,
+                        size: 28.0,
+                      ),
+                      onPressed: () {
+                        print('点击了搜索按钮');
+                      }),
+                ],
+                pinned: true,
+                floating: true,
+                // flexibleSpace: Placeholder(),
+                forceElevated: true,
+                elevation: 1.0,
+                title: Text(
+                  'Paclub',
+                  style: TextStyle(fontSize: 24.0),
+                ),
+                bottom: TabBar(
+                  overlayColor: MaterialStateProperty.resolveWith((states) {
+                    return Colors.transparent;
+                  }),
+                  indicatorSize: TabBarIndicatorSize.label,
+                  tabs: [
+                    Tab(
+                      child: Text(
+                        '熱門',
+                        style: TextStyle(
+                            fontSize: 16.0, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    Tab(
+                      child: Text(
+                        '追蹤',
+                        style: TextStyle(
+                            fontSize: 16.0, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            ];
+          },
+          body: GetBuilder<UserController>(
+            builder: (_) {
+              return TabBarView(
+                dragStartBehavior: DragStartBehavior.down,
+                children: <Widget>[
+                  HomeHotPage(),
+                  HomeFollowPage(),
+                ],
+              );
+            },
           ),
-        ),
-        body: TabBarView(
-          children: <Widget>[
-            HomeHotPage(),
-            HomeFollowPage(),
-          ],
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () => {controller.signOut()},

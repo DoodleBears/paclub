@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:paclub/frontend/views/main/user/profile/profile_page.dart';
-import 'package:paclub/frontend/views/main/user/user_controller.dart';
 
 class UserPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    Get.put(UserController());
+    // Get.put(UserController());
     return ProfilePage();
   }
 }

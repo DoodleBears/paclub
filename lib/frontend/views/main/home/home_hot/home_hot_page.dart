@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:paclub/frontend/constants/colors.dart';
+import 'package:paclub/frontend/constants/numbers.dart';
 
 class HomeHotPage extends StatelessWidget {
   const HomeHotPage({Key? key}) : super(key: key);
@@ -11,49 +13,57 @@ class HomeHotPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return RefreshIndicator(
       onRefresh: getRefresh,
-      backgroundColor: Colors.blue,
-      color: Colors.black,
-      child: ListView.builder(
-        itemCount: 100,
-        itemBuilder: (context, index) {
-          return Card(
-            color: Colors.pink[100],
-            margin: EdgeInsets.all(15),
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-            clipBehavior: Clip.antiAlias,
-            elevation: 10,
-            child: Container(
-              height: 200,
-              alignment: Alignment.center,
-              padding: EdgeInsets.all(20),
-              child: ListTile(
-                title: Text(
-                  'Paclub Number $index',
-                  style: Theme.of(context).textTheme.headline1!.copyWith(
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                      ),
-                ),
-                subtitle: Text(
-                  'Little Subtitle Test $index and $index',
-                  maxLines: 1, //最多顯示行數
-                  overflow: TextOverflow.ellipsis, //以...顯示沒顯示的文字,,
-                  style: TextStyle(fontSize: 15),
-                ),
-                leading: Icon(
-                  Icons.account_box,
-                  size: 40,
-                  color: Colors.blue,
-                ),
-                trailing: Icon(
-                  Icons.chevron_right,
-                  size: 40,
+      backgroundColor: accentColor,
+      color: AppColors.refreshIndicatorColor,
+      child: Container(
+        color: AppColors.listViewBackgroundColor,
+        child: ListView.builder(
+          physics: BouncingScrollPhysics(),
+          padding: EdgeInsets.zero,
+          itemCount: 40,
+          itemBuilder: (context, index) {
+            return GestureDetector(
+              onTap: () {
+                print('点击了 $index');
+              },
+              child: Card(
+                margin: EdgeInsets.symmetric(horizontal: 14.0, vertical: 8.0),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(borderRadius)),
+                elevation: 1.0,
+                child: Container(
+                  height: index % 2 == 0 ? 200 : null,
+                  alignment: Alignment.center,
+                  padding: EdgeInsets.symmetric(vertical: 20.0),
+                  child: ListTile(
+                    title: Text(
+                      'Paclub Hot $index',
+                      style: Theme.of(context).textTheme.headline1!.copyWith(
+                            fontSize: 25,
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
+                    subtitle: Text(
+                      'Little Subtitle Test $index and $index',
+                      maxLines: 1, //最多顯示行數
+                      overflow: TextOverflow.ellipsis, //以...顯示沒顯示的文字,,
+                      style: TextStyle(fontSize: 15),
+                    ),
+                    leading: Icon(
+                      Icons.account_box,
+                      size: 40,
+                      color: Colors.blue,
+                    ),
+                    trailing: Icon(
+                      Icons.chevron_right,
+                      size: 40,
+                    ),
+                  ),
                 ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

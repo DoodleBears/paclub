@@ -22,9 +22,9 @@ void snackbar({
   return Get.snackbar(
     title,
     msg,
-    showProgressIndicator: true,
-    progressIndicatorValueColor: AlwaysStoppedAnimation<Color>(accentColor),
-    progressIndicatorBackgroundColor: primaryColor,
+    // showProgressIndicator: true,
+    // progressIndicatorValueColor: AlwaysStoppedAnimation<Color>(accentColor),
+    // progressIndicatorBackgroundColor: primaryColor,
     backgroundColor: primaryLightColor.withOpacity(0.4),
     borderRadius: borderRadius,
     padding: EdgeInsets.symmetric(vertical: 14),

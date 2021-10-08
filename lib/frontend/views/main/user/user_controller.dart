@@ -5,6 +5,7 @@ import 'package:paclub/models/user.dart';
 
 class UserController extends GetxController {
   User user = UserPreferences.getUserPreference();
+  int messageNotReadAll = 0;
   late String imagePath;
   late String name;
   late String email;

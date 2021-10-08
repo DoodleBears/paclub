@@ -4,6 +4,7 @@ import 'package:paclub/frontend/views/splash/splash_controller.dart';
 import 'package:paclub/r.dart';
 
 class SplashBody extends GetView<SplashController> {
+  // SplashController controller = Get.find<SplashController>();
   @override
   Widget build(BuildContext context) {
     return Container(

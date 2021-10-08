@@ -29,7 +29,8 @@ apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
     compileSdkVersion 29
-
+    // 修复 GitHub Action CI 的 Android Build 问题 ndkVersion
+    ndkVersion "22.1.7171670"
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
     }

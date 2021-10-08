@@ -21,8 +21,8 @@ class AuthModule extends GetxController {
   void reload() => _authApi.reload();
 
   Future<AppResponse> registerWithEmail(
-      String email, String password, String name) async {
-    return _authApi.registerWithEmail(email, password, name);
+      String email, String password, String name, String bio) async {
+    return _authApi.registerWithEmail(email, password, name, bio);
   }
 
   bool isEmailVerified() {
@@ -43,15 +43,12 @@ class AuthModule extends GetxController {
 
   Future<void> signOut() async {
     AppResponse appResponse = await _authApi.signOut();
+
     if (appResponse.data != null) {
-      // [清空所有页面] pop all the page in stack
-      Get.until((route) => false);
-      // 跳转到 authentication 页面
-      Get.toNamed(Routes.AUTH);
-      toastBottom('Sign out 成功');
-    } else {
-      toastBottom('Sign out 失败');
+      Get.until((route) => false); // [清空所有页面] pop all the page in stack
+      Get.toNamed(Routes.AUTH); // 跳转到 authentication 页面
     }
+    toastBottom(appResponse.message);
   }
 
   @override
