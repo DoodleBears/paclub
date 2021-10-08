@@ -22,6 +22,8 @@ class ChatroomController extends GetxController {
   String chatUserName = '';
   String chatUserUid = '';
   int messageNotRead = 0;
+
+  /// 是否显示返回到上次阅读位置的按钮
   bool isJumpBackShow = false;
   bool isSendButtonShow = false;
   int newMessageNum = 0;

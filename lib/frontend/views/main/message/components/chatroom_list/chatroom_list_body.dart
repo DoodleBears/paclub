@@ -22,13 +22,14 @@ class ChatroomListBody extends GetView<ChatroomListController> {
 
             final userName = friendModel.friendName;
             return ChatroomsListUserTile(
-                lastMessageTime: friendModel.lastMessageTime,
-                lastMessage: friendModel.lastMessage,
-                messageNotRead: friendModel.messageNotRead,
-                chatroomId:
-                    getChatRoomId(AppConstants.uuid, friendModel.friendUid),
-                userUid: friendModel.friendUid,
-                userName: userName);
+              lastMessageTime: friendModel.lastMessageTime,
+              lastMessage: friendModel.lastMessage,
+              messageNotRead: friendModel.messageNotRead,
+              chatroomId:
+                  getChatRoomId(AppConstants.uuid, friendModel.friendUid),
+              userUid: friendModel.friendUid,
+              userName: userName,
+            );
           },
         );
       }),
