@@ -100,7 +100,7 @@ String chatMessageDividerFormatTime(
   // 48小时天前
   if (currentTime.subtract(const Duration(days: 2)).millisecondsSinceEpoch >
       previousTime.millisecondsSinceEpoch) {
-    return '${previousTime.month}年${previousTime.month}月${previousTime.day}日';
+    return '${previousTime.year}年${previousTime.month}月${previousTime.day}日';
   }
   // 24小时 - 48小时前
   if (currentTime.subtract(const Duration(days: 1)).millisecondsSinceEpoch >
@@ -119,11 +119,11 @@ String chatMessageDividerFormatTime(
         previousTime.millisecondsSinceEpoch) {
       // 比如前天 14:30，我现在的时间是 14:20 ，也就是47hour50minute 以前
       // 比如前天 23:20，我现在的时间是 14:20 ，也就是39hour 以前
-      return '前天 ${chatMessageformatTime(previous)}';
+      return '前天';
     } else {
       // 比如昨天 1:30，我现在的时间是 14:20 ，也就是29hour50minute 以前
       // 比如昨天 6:30，我现在的时间是 14:20 ，也就是24hour50minute 以前
-      return '昨天 ${chatMessageformatTime(previous)}';
+      return '昨天';
     }
   }
   // 0 - 24小时 前
@@ -140,10 +140,10 @@ String chatMessageDividerFormatTime(
             ))
             .millisecondsSinceEpoch >
         previousTime.millisecondsSinceEpoch) {
-      return '昨天 ${chatMessageformatTime(previous)}';
+      return '昨天';
     }
   }
-  return '今天 ${chatMessageformatTime(previous)}';
+  return '今天';
 }
 
 bool isChatMessageDividerShow(
