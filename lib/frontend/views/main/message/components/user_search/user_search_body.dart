@@ -9,6 +9,7 @@ import 'package:paclub/utils/logger.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+// TODO 好友申请功能
 class UserSearchBody extends GetView<UserSearchController> {
   final ChatroomListController chatroomListController = Get.find();
   @override

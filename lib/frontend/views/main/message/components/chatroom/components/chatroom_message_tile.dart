@@ -5,6 +5,7 @@ import 'package:paclub/frontend/constants/numbers.dart';
 import 'package:paclub/helper/chatroom_helper.dart';
 import 'package:paclub/utils/logger.dart';
 
+// TODO 头像显示
 class ChatroomMessageTile extends StatelessWidget {
   final FocusNode focusNode = FocusNode();
 

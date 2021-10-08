@@ -9,6 +9,7 @@ import 'package:paclub/frontend/widgets/badges/badges.dart';
 import 'package:paclub/helper/chatroom_helper.dart';
 
 ///此Function為搜尋完畢後的用戶名單頁面
+// TODO 头像显示
 class ChatroomsListUserTile extends StatelessWidget {
   final String userUid;
   final String userName;
