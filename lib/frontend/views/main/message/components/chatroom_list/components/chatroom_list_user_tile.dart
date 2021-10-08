@@ -55,15 +55,15 @@ class ChatroomsListUserTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                  height: 54.0,
+                  height: 60.0,
                   child: Row(
                     mainAxisSize: MainAxisSize.max,
                     children: [
                       // 头像
                       Container(
                         margin: EdgeInsets.only(right: 12.0),
-                        height: 54.0,
-                        width: 54.0,
+                        height: 60.0,
+                        width: 60.0,
                         decoration: BoxDecoration(
                             color: accentColor,
                             borderRadius: BorderRadius.circular(30)),

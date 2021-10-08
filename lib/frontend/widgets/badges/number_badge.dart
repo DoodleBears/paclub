@@ -47,7 +47,7 @@ class NumberBadge extends StatelessWidget {
           color: color,
         ),
         child: Text(
-          number > maxNumber ? '${maxNumber}+' : '$number',
+          number > maxNumber ? '$maxNumber' + '+' : '$number',
           style: textStyle ??
               TextStyle(
                 color: Colors.white,
