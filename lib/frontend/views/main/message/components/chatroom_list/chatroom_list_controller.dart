@@ -34,9 +34,8 @@ class ChatroomListController extends GetxController {
     friendList = List<FriendModel>.from(list);
     friendList.sort(sortFriendList);
     int sum = 0;
-    for (var i = 0; i < friendList.length; i++) {
-      if (friendList[i].messageNotRead == 0) break;
-      sum += friendList[i].messageNotRead;
+    for (FriendModel friend in friendList) {
+      sum += friend.messageNotRead;
     }
     if (userController.messageNotReadAll != sum) {
       logger.i('ChatroomList 状态变动');
