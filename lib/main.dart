@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_app_badger/flutter_app_badger.dart';
 import 'package:get/get.dart';
 import 'package:paclub/backend/repository/local/user_preferences.dart';
 import 'package:paclub/frontend/constants/constants.dart';
@@ -52,6 +53,7 @@ class _AppState extends State<App> {
   @override
   void initState() {
     // 初始化亮暗模式
+    initPlatformState();
     var window = WidgetsBinding.instance!.window;
     Brightness brightness = window.platformBrightness;
     setState(() {
@@ -67,6 +69,28 @@ class _AppState extends State<App> {
     // 监听系统的亮暗模式
     window.onPlatformBrightnessChanged = listenToBrightness;
     super.initState();
+  }
+
+  initPlatformState() async {
+    String appBadgeSupported;
+    try {
+      bool res = await FlutterAppBadger.isAppBadgeSupported();
+      if (res) {
+        appBadgeSupported = 'Supported';
+      } else {
+        appBadgeSupported = 'Not supported';
+      }
+    } on PlatformException {
+      appBadgeSupported = 'Failed to get badge support.';
+    }
+    print(appBadgeSupported);
+    logger.e(appBadgeSupported);
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) return;
+
+    userController.appBadgeSupported = appBadgeSupported;
   }
 
   void listenToBrightness() {

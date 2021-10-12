@@ -39,8 +39,8 @@ class ChatroomListController extends GetxController {
     }
     if (userController.messageNotReadAll != sum) {
       logger.i('ChatroomList 状态变动');
-      userController.messageNotReadAll = sum;
-      userController.update();
+
+      userController.setAppBadge(count: sum);
     }
     update();
   }

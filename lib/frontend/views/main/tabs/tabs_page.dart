@@ -147,7 +147,7 @@ class Tabs extends GetView<TabsController> {
       number: userController.messageNotReadAll,
       maxNumber: 99,
       padding: EdgeInsets.only(
-        top: 1.0,
+        // bottom: 0.5,
         left: 6.0,
         right: 6.0,
       ),

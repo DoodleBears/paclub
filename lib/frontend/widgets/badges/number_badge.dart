@@ -38,20 +38,22 @@ class NumberBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     return Visibility(
       visible: showWhenZero ? true : number != 0,
-      child: Container(
-        padding: padding,
-        decoration: ShapeDecoration(
-          shape: StadiumBorder(
-            side: border ?? BorderSide.none,
+      child: Center(
+        child: Container(
+          padding: padding,
+          decoration: ShapeDecoration(
+            shape: StadiumBorder(
+              side: border ?? BorderSide.none,
+            ),
+            color: color,
           ),
-          color: color,
-        ),
-        child: Text(
-          number > maxNumber ? '$maxNumber' + '+' : '$number',
-          style: textStyle ??
-              TextStyle(
-                color: Colors.white,
-              ),
+          child: Text(
+            number > maxNumber ? '$maxNumber' + '+' : '$number',
+            style: textStyle ??
+                TextStyle(
+                  color: Colors.white,
+                ),
+          ),
         ),
       ),
     );
