@@ -99,6 +99,8 @@ class UserRepository extends GetxController {
     map['addAt'] = FieldValue.serverTimestamp();
     map['messageNotRead'] = 0;
     map['lastMessage'] = '';
+    // MARK: 当没有消息的时候，加好友的时间会作为显示在 聊天室列表最后消息的时间
+    map['lastMessageTime'] = FieldValue.serverTimestamp();
     map['isInRoom'] = false;
     map['friendType'] = 'default';
     map['friendName'] = friendName;
