@@ -1,11 +1,11 @@
 import 'package:flutter_app_badger/flutter_app_badger.dart';
 import 'package:get/get.dart';
 import 'package:paclub/utils/logger.dart';
-import 'package:paclub/backend/repository/local/user_preferences.dart';
-import 'package:paclub/models/user.dart';
+import 'package:paclub/backend/repository/local/user_preference.dart';
+import 'package:paclub/models/user_preference_model.dart';
 
 class UserController extends GetxController {
-  User user = UserPreferences.getUserPreference();
+  UserPreferenceModel user = UserPreference.getUserPreference();
   int messageNotReadAll = 0;
   String appBadgeSupported = 'Unknown';
   late String imagePath;
@@ -17,10 +17,9 @@ class UserController extends GetxController {
   void setAppBadge({required int count}) {
     messageNotReadAll = count;
     update();
-    // if (appBadgeSupported != 'Supported') {
-    //   return;
-    // }
-
+    if (appBadgeSupported != 'Supported') {
+      return;
+    }
     if (messageNotReadAll > 0) {
       FlutterAppBadger.updateBadgeCount(messageNotReadAll);
     } else {
@@ -28,8 +27,9 @@ class UserController extends GetxController {
     }
   }
 
+// TODO: 更新用户资料同步到 server
   void setUserPreference() {
-    UserPreferences.setUserPreference(user.copy(
+    UserPreference.setUserPreference(user.copy(
       imagePath: imagePath,
       name: name,
       email: email,

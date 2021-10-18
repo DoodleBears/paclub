@@ -6,7 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_app_badger/flutter_app_badger.dart';
 import 'package:get/get.dart';
-import 'package:paclub/backend/repository/local/user_preferences.dart';
+import 'package:paclub/backend/repository/local/user_preference.dart';
 import 'package:paclub/frontend/constants/constants.dart';
 import 'package:paclub/frontend/theme/themes.dart';
 import 'package:paclub/frontend/utils/gesture.dart';
@@ -34,8 +34,8 @@ Future<void> main() async {
 
   await DenpendencyInjection.init();
 
-  // 注入UserPreferences
-  await UserPreferences.init();
+  // 注入UserPreference
+  await UserPreference.init();
   Get.lazyPut<UserController>(() => UserController());
 
   runApp(App());
