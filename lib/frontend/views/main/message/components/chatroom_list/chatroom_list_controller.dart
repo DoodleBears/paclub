@@ -31,6 +31,7 @@ class ChatroomListController extends GetxController {
   }
 
   void listenFriendStream(List<FriendModel> list) {
+    logger.i('ChatroomList 状态变动');
     friendList = List<FriendModel>.from(list);
     friendList.sort(sortFriendList);
     int sum = 0;
@@ -38,8 +39,7 @@ class ChatroomListController extends GetxController {
       sum += friend.messageNotRead;
     }
     if (userController.messageNotReadAll != sum) {
-      logger.i('ChatroomList 状态变动');
-
+      logger.i('未读消息数量改变');
       userController.setAppBadge(count: sum);
     }
     update();

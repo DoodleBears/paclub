@@ -50,43 +50,47 @@ class UserSearchBody extends GetView<UserSearchController> {
             ),
           ),
           Expanded(
-            child: GetBuilder<UserSearchController>(
+            child: GetBuilder<ChatroomListController>(
               builder: (_) {
-                List<String> chatroomIdList = chatroomListController
-                    .friendsStream
-                    .map((FriendModel friendModel) => friendModel.friendUid)
-                    .toList();
-                logger.d(chatroomIdList);
-                return controller.isLoading
-                    ? Center(
-                        child: Container(
-                          height: 50.0,
-                          width: 50.0,
-                          child: FittedBox(
-                            fit: BoxFit.cover,
-                            child: CircularProgressIndicator(),
-                          ),
-                        ),
-                      )
-                    : ListView.builder(
-                        physics: BouncingScrollPhysics(),
-                        shrinkWrap: true,
-                        itemCount: controller.userList.length,
-                        itemBuilder: (context, index) {
-                          final UserModel userModel =
-                              controller.userList[index];
-                          return GestureDetector(
-                            child: SearchUserTile(
-                              index: index,
-                              isChatroomExist:
-                                  chatroomIdList.contains(userModel.uid),
-                              userUid: userModel.uid,
-                              userName: userModel.displayName,
-                              userEmail: userModel.email,
+                return GetBuilder<UserSearchController>(
+                  builder: (_) {
+                    List<String> chatroomIdList = chatroomListController
+                        .friendsStream
+                        .map((FriendModel friendModel) => friendModel.friendUid)
+                        .toList();
+                    logger.d(chatroomIdList);
+                    return controller.isLoading
+                        ? Center(
+                            child: Container(
+                              height: 50.0,
+                              width: 50.0,
+                              child: FittedBox(
+                                fit: BoxFit.cover,
+                                child: CircularProgressIndicator(),
+                              ),
                             ),
+                          )
+                        : ListView.builder(
+                            physics: BouncingScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount: controller.userList.length,
+                            itemBuilder: (context, index) {
+                              final UserModel userModel =
+                                  controller.userList[index];
+                              return GestureDetector(
+                                child: SearchUserTile(
+                                  index: index,
+                                  isChatroomExist:
+                                      chatroomIdList.contains(userModel.uid),
+                                  userUid: userModel.uid,
+                                  userName: userModel.displayName,
+                                  userEmail: userModel.email,
+                                ),
+                              );
+                            },
                           );
-                        },
-                      );
+                  },
+                );
               },
             ),
           )
