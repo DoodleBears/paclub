@@ -83,19 +83,39 @@ class UserSearchController extends GetxController {
         users: [AppConstants.uuid, userUid],
         usersName: userNameMap,
         chatroomId: chatroomId);
-
-    AppResponse appResponse = await chatroomRepository.addChatroom(
+    // NOTE: 添加 聊天室
+    AppResponse appResponseChatroom = await chatroomRepository.addChatroom(
       chatroomModel,
       chatroomId,
     );
     isAddUserLoading[index] = false;
     update();
-    logger.d(appResponse.message);
-    if (appResponse.data == null) {
-      toastBottom('failed to add user');
-      return AppResponse(appResponse.message, null);
+    // 如果添加 chatroom 失败, return
+    if (appResponseChatroom.data == null) {
+      toastBottom('failed to add Chatroom');
+      return AppResponse(appResponseChatroom.message, null);
+    }
+    // NOTE: AB加好友，添加 B 到 A 的好友列表
+    AppResponse appResponseUser1 = await userRepository.addFriend(
+      uid: chatroomModel.users[0],
+      friendUid: chatroomModel.users[1],
+      friendName: chatroomModel.usersName['${chatroomModel.users[1]}'],
+    );
+    // NOTE: AB加好友，添加 A 到 B 的好友列表
+    AppResponse appResponseUser2 = await userRepository.addFriend(
+      uid: chatroomModel.users[1],
+      friendUid: chatroomModel.users[0],
+      friendName: chatroomModel.usersName['${chatroomModel.users[0]}'],
+    );
+    if (appResponseUser1.data == null) {
+      toastBottom('failed to add Friend');
+      return AppResponse(appResponseUser1.message, null);
+    } else if (appResponseUser2.data == null) {
+      toastBottom('failed to add Friend');
+      return AppResponse(appResponseUser2.message, null);
     } else {
-      return AppResponse(appResponse.message, chatroomInfo);
+      logger.d(appResponseChatroom.message);
+      return AppResponse(appResponseChatroom.message, chatroomInfo);
     }
   }
 }

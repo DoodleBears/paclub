@@ -1,9 +1,7 @@
 import 'dart:async';
 
 import 'package:get/get.dart';
-import 'package:paclub/backend/repository/remote/user_repository.dart';
 import 'package:paclub/constants/emulator_constant.dart';
-import 'package:paclub/frontend/widgets/widgets.dart';
 import 'package:paclub/helper/app_constants.dart';
 import 'package:paclub/models/chat_message_model.dart';
 import 'package:paclub/models/chatroom_model.dart';
@@ -17,7 +15,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 /// ！！！static function 不能 access object data
 
 /// 能夠給其他Function調用Firebase所儲存的資料
-/// TODO 编写 API 注释
+/// TODO: 编写 ChatroomApi
 class ChatroomRepository extends GetxController {
   static const String kGetChatroomListFail = 'get_chatroom_list_fail';
   static const String kGetChatroomListSuccess = 'get_chatroom_list_success';
@@ -67,6 +65,7 @@ class ChatroomRepository extends GetxController {
     super.onClose();
   }
 
+  // NOTE: 获取聊天列表的 Stream
   Stream<List<FriendModel>> getChatroomListStream(String uid) {
     logger.i('获取聊天列表资料 uid:' + uid);
 
@@ -75,13 +74,13 @@ class ChatroomRepository extends GetxController {
         .collection('friends')
         .snapshots()
         .handleError((e) {
-      toastCenter(kGetChatroomListFail);
-      logger.e(e.runtimeType);
+      logger.e('${e.runtimeType}: $kGetChatroomListFail');
     }).map((QuerySnapshot querySnapshot) => querySnapshot.docs
             .map((doc) => FriendModel.fromDoucumentSnapshot(doc))
             .toList());
   }
 
+  // NOTE: 获取聊天室新消息的 Stream
   Stream<List<ChatMessageModel>> getNewMessageStream(String chatroomId) {
     return _chatroomsCollection
         .doc(chatroomId)
@@ -94,6 +93,7 @@ class ChatroomRepository extends GetxController {
             .toList());
   }
 
+  // NOTE: 获取聊天室历史消息
   /// 用 Pagination（分页）来实作新 message 和旧 message 的获取
   /// 每次获取 [limit] 条消息
   Future<AppResponse> getOldMessages(String chatroomId,
@@ -110,7 +110,7 @@ class ChatroomRepository extends GetxController {
         .orderBy('time', descending: true)
         .limit(limit);
 
-    // 如果是第一次拉取历史消息，如：刚进入聊天室（可以不用startbefore，所以区别开）
+    // NOTE: 如果是第一次拉取历史消息，如：刚进入聊天室（可以不用startbefore，所以区别开）
     if (firstTime) {
       try {
         List<ChatMessageModel> list = await baseQuery
@@ -136,8 +136,7 @@ class ChatroomRepository extends GetxController {
         return appResponse;
       }
     }
-    // 如果不是第一次拉取历史消息，如：加载更多历史消息（需要startbefore，所以区别开）
-
+    // NOTE: 如果不是第一次拉取历史消息，如：加载更多历史消息（需要startbefore，所以区别开）
     try {
       List<ChatMessageModel> list = await baseQuery
           .startAfterDocument(firstMessageDoc!)
@@ -165,7 +164,7 @@ class ChatroomRepository extends GetxController {
     }
   }
 
-  // TODO 获取未读消息数量
+  // NOTE: 获取未读消息数量
   Future<AppResponse> getChatroomNotRead(String chatUserUid) async {
     return await _usersCollection
         .doc(AppConstants.uuid)
@@ -186,6 +185,7 @@ class ChatroomRepository extends GetxController {
     });
   }
 
+  // NOTE: 添加聊天室
   Future<AppResponse> addChatroom(
       ChatroomModel chatroomModel, String chatroomId) async {
     logger.i('添加聊天室 id: $chatroomId');
@@ -195,25 +195,8 @@ class ChatroomRepository extends GetxController {
         .set(chatroomModel.toJson())
         .then(
       (_) async {
-        final UserRepository userRepository = Get.find<UserRepository>();
-        AppResponse appResponse_1 = await userRepository.addFriend(
-          uid: chatroomModel.users[0],
-          friendUid: chatroomModel.users[1],
-          friendName: chatroomModel.usersName['${chatroomModel.users[1]}'],
-        );
-
-        AppResponse appResponse_2 = await userRepository.addFriend(
-          uid: chatroomModel.users[1],
-          friendUid: chatroomModel.users[0],
-          friendName: chatroomModel.usersName['${chatroomModel.users[0]}'],
-        );
-        if (appResponse_1.data == null || appResponse_2.data == null) {
-          return AppResponse(kAddChatroomFail, null);
-        } else {
-          logger.i('添加好友成功');
-
-          return AppResponse(kAddChatroomSuccess, chatroomId);
-        }
+        logger.i('添加好友成功');
+        return AppResponse(kAddChatroomSuccess, chatroomId);
       },
       onError: (e) {
         logger.e('添加聊天室失败, error: ' + e.runtimeType.toString());
@@ -222,6 +205,7 @@ class ChatroomRepository extends GetxController {
     );
   }
 
+  // NOTE: 添加消息到聊天室（发送消息）
   Future<AppResponse> addMessage(String chatroomId,
       ChatMessageModel chatMessageModel, String chatUserUid) async {
     return _chatroomsCollection
@@ -232,36 +216,38 @@ class ChatroomRepository extends GetxController {
         .then(
       (_) async {
         // 更新自己的user - friend 资料
-        AppResponse appResponse_1 = await updateUserFriend(
+        AppResponse appResponseLastMessage1 = await updateLastMessage(
           userUid: AppConstants.uuid,
           chatWithUserUid: chatUserUid,
           message: chatMessageModel.message,
         );
         // 更新friend 的 user - friend 资料
-        AppResponse appResponse_2 = await updateUserFriend(
+        AppResponse appResponseLastMessage2 = await updateLastMessage(
           userUid: chatUserUid,
           chatWithUserUid: AppConstants.uuid,
           message: chatMessageModel.message,
         );
-        if (appResponse_1.data == null || appResponse_2.data == null) {
+        if (appResponseLastMessage1.data == null ||
+            appResponseLastMessage2.data == null) {
           return AppResponse(kAddMessageFail, null);
         } else {
           return AppResponse(kAddMessageSuccess, chatUserUid);
         }
       },
       onError: (e) {
-        logger.e('添加新消息失败 : ' + e.runtimeType.toString());
+        logger.e('添加新消息失败 : ${e.runtimeType}');
         return AppResponse(kAddMessageFail, null);
       },
     );
   }
 
-  Future<AppResponse> updateUserFriend({
+  // NOTE: 但有新 message 发送到聊天室时，需要更新聊天室的最后一条消息的时间和内容，以用于在聊天列表 chatroom list 显示
+  Future<AppResponse> updateLastMessage({
     required String message,
     required String chatWithUserUid,
     required String userUid,
   }) async {
-    logger.i('更新 uid:$chatWithUserUid 信息');
+    logger.i('更新 uid: $chatWithUserUid 信息');
     Map<String, dynamic> updateData = Map();
     updateData['lastMessage'] = message;
     updateData['lastMessageTime'] = FieldValue.serverTimestamp();
@@ -280,7 +266,7 @@ class ChatroomRepository extends GetxController {
           return AppResponse(kUpdateChatroomListSuccess, true);
         },
         onError: (e) {
-          logger.e('添加新消息失败 : ' + e.runtimeType.toString());
+          logger.e('添加新消息失败 : ${e.runtimeType}');
           return AppResponse(kAddMessageFail, null);
         },
       );
@@ -304,7 +290,5 @@ class ChatroomRepository extends GetxController {
         },
       );
     }
-
-    // 自己肯定在房间
   }
 }

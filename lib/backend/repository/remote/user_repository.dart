@@ -1,13 +1,15 @@
 import 'package:get/get.dart';
 import 'package:paclub/constants/emulator_constant.dart';
 import 'package:paclub/helper/app_constants.dart';
+import 'package:paclub/models/friend_model.dart';
 import 'package:paclub/models/user_model.dart';
 import 'package:paclub/utils/app_response.dart';
 import 'package:paclub/utils/logger.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 ///能夠給其他Function調用Firebase所儲存的資料
-
+// TODO: 支持用户上传头像
+// TODO: 拆分 User
 class UserRepository extends GetxController {
   static const String kAddUserFailed = 'add_user_failed';
   static const String kAddUserSuccessed = 'add_user_successed';
@@ -19,16 +21,19 @@ class UserRepository extends GetxController {
   static const String kUpdateFriendSuccessed = 'update_friend_successed';
   static const String kUpdateFriendFailed = 'update_friend_failed';
 
-  static const String kEnterRoomFailed = 'enter_room_failed';
-  static const String kEnterRoomSuccessed = 'enter_room_successed';
-  static const String kLeaveRoomFailed = 'leave_room_failed';
-  static const String kLeaveRoomSuccessed = 'leave_room_successed';
+  static const String kGetFriendListFail = 'get_firend_list_fail';
+  static const String kGetFriendListSuccess = 'get_firend_list_success';
+
+  static const String kEnterChatroomFailed = 'enter_room_failed';
+  static const String kEnterChatroomSuccessed = 'enter_room_successed';
+  static const String kLeaveChatroomFailed = 'leave_room_failed';
+  static const String kLeaveChatroomSuccessed = 'leave_room_successed';
 
   static const String kSearchUserFailed = 'search_user_failed';
   static const String kSearchUserSuccessed = 'search_user_successed';
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final CollectionReference _userCollection =
+  final CollectionReference _usersCollection =
       FirebaseFirestore.instance.collection('users');
 
   @override
@@ -48,12 +53,12 @@ class UserRepository extends GetxController {
     super.onClose();
   }
 
-  /// 添加新用户（设置信息）
+  /// NOTE: 添加新用户（设置信息）
   Future<AppResponse> addUser(UserModel userData) async {
     logger.i('addUser');
     // 判断是否要添加user
     bool isUserExist =
-        await _userCollection.doc(userData.uid).get().then((doc) {
+        await _usersCollection.doc(userData.uid).get().then((doc) {
       return doc.exists ? true : false;
     });
 
@@ -85,7 +90,7 @@ class UserRepository extends GetxController {
     }
   }
 
-  // 加好友
+  // NOTE: 加某用户为好友
   Future<AppResponse> addFriend(
       {required String uid,
       required String friendUid,
@@ -98,7 +103,7 @@ class UserRepository extends GetxController {
     map['friendType'] = 'default';
     map['friendName'] = friendName;
     map['friendUid'] = friendUid;
-    return _userCollection
+    return _usersCollection
         .doc(uid)
         .collection('friends')
         .doc(friendUid)
@@ -112,7 +117,21 @@ class UserRepository extends GetxController {
     );
   }
 
-  // 进入房间
+  // NOTE: 获取好友列表（聊天列表）
+  Stream<List<FriendModel>> getFriendListStream(String uid) {
+    logger.i('获取聊天列表资料 uid:' + uid);
+    return _usersCollection
+        .doc(uid)
+        .collection('friends')
+        .snapshots()
+        .handleError((e) {
+      logger.e('${e.runtimeType}: $kGetFriendListFail');
+    }).map((QuerySnapshot querySnapshot) => querySnapshot.docs
+            .map((doc) => FriendModel.fromDoucumentSnapshot(doc))
+            .toList());
+  }
+
+  // NOTE: 进入房间
   Future<AppResponse> enterLeaveRoom({
     required String friendUid,
     required bool isEnterRoom,
@@ -120,7 +139,7 @@ class UserRepository extends GetxController {
     Map<String, dynamic> map = Map();
     map['isInRoom'] = isEnterRoom;
     map['messageNotRead'] = 0;
-    return _userCollection
+    return _usersCollection
         .doc(AppConstants.uuid)
         .collection('friends')
         .doc(friendUid)
@@ -130,21 +149,21 @@ class UserRepository extends GetxController {
         // 进入/离开房间成功
         logger.i(isEnterRoom ? '进入房间成功' : '离开房间成功');
         return AppResponse(
-            isEnterRoom ? kEnterRoomSuccessed : kLeaveRoomSuccessed, friendUid);
+            isEnterRoom ? kEnterChatroomSuccessed : kLeaveChatroomSuccessed,
+            friendUid);
       },
       onError: (e) {
         logger3.e(e);
         // 进入/离开房间失败
         return AppResponse(
-            isEnterRoom ? kEnterRoomFailed : kLeaveRoomFailed, null);
+            isEnterRoom ? kEnterChatroomFailed : kLeaveChatroomFailed, null);
       },
     );
   }
 
-  /// Search時，能夠找到相符合的用戶名稱
-  // TODO 模糊搜索，搜索多个用户，
+  // TODO: 模糊搜索，搜索多个用户
   Future<AppResponse> searchByName(String searchText) async {
-    return _userCollection
+    return _usersCollection
         .where('displayName', isGreaterThanOrEqualTo: searchText)
         .limit(20)
         .get()
