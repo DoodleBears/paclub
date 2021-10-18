@@ -105,8 +105,8 @@ class SearchUserTile extends GetView<UserSearchController> {
                       // 离开房间
                       final UserRepository userRepository =
                           Get.find<UserRepository>();
-                      userRepository.enterLeaveRoom(
-                          friendUid: userUid, isEnterRoom: false);
+                      userRepository.updateUserInRoom(
+                          friendUid: userUid, isInRoom: false);
                     }
                   },
                   height: 44.0,

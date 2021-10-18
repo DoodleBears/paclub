@@ -1,11 +1,12 @@
 import 'dart:async';
 
 import 'package:get/get.dart';
+import 'package:paclub/backend/repository/remote/user_repository.dart';
+import 'package:paclub/constants/log_message.dart';
 import 'package:paclub/constants/emulator_constant.dart';
 import 'package:paclub/helper/app_constants.dart';
 import 'package:paclub/models/chat_message_model.dart';
 import 'package:paclub/models/chatroom_model.dart';
-import 'package:paclub/models/friend_model.dart';
 import 'package:paclub/utils/app_response.dart';
 import 'package:paclub/utils/logger.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -17,31 +18,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 /// 能夠給其他Function調用Firebase所儲存的資料
 /// TODO: 编写 ChatroomApi
 class ChatroomRepository extends GetxController {
-  static const String kGetChatroomListFail = 'get_chatroom_list_fail';
-  static const String kGetChatroomListSuccess = 'get_chatroom_list_success';
-  static const String kGetChatroomNotReadFail = 'get_chatroom_not_read_fail';
-  static const String kGetChatroomNotReadSuccess =
-      'get_chatroom_not_read_success';
-
-  static const String kAddChatroomFail = 'add_chatroom_fail';
-  static const String kAddChatroomSuccess = 'add_chatroom_success';
-  static const String kAddMessageFail = 'add_message_fail';
-  static const String kAddMessageSuccess = 'add_message_success';
-
-  static const String kUpdateChatroomListFail = 'update_chatroom_fail';
-  static const String kUpdateChatroomListSuccess = 'update_chatroom_success';
-
-  static const String kNoMoreHistoryMessage = 'no_more_history_message';
-  static const String kLoadHistoryMessageFail = 'load_history_message_fail';
-  static const String kLoadHistoryMessageSuccess =
-      'load_history_message_success';
-
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final CollectionReference _chatroomsCollection =
       FirebaseFirestore.instance.collection('chatrooms');
-  final CollectionReference _usersCollection =
-      FirebaseFirestore.instance.collection('users');
 
+// MARK: 初始化
   @override
   void onInit() {
     logger3.i('初始化 ChatroomRepository' +
@@ -65,20 +46,7 @@ class ChatroomRepository extends GetxController {
     super.onClose();
   }
 
-  // NOTE: 获取聊天列表的 Stream
-  Stream<List<FriendModel>> getChatroomListStream(String uid) {
-    logger.i('获取聊天列表资料 uid:' + uid);
-
-    return _usersCollection
-        .doc(uid)
-        .collection('friends')
-        .snapshots()
-        .handleError((e) {
-      logger.e('${e.runtimeType}: $kGetChatroomListFail');
-    }).map((QuerySnapshot querySnapshot) => querySnapshot.docs
-            .map((doc) => FriendModel.fromDoucumentSnapshot(doc))
-            .toList());
-  }
+// MARK: GET 部分
 
   // NOTE: 获取聊天室新消息的 Stream
   Stream<List<ChatMessageModel>> getNewMessageStream(String chatroomId) {
@@ -164,26 +132,7 @@ class ChatroomRepository extends GetxController {
     }
   }
 
-  // NOTE: 获取未读消息数量
-  Future<AppResponse> getChatroomNotRead(String chatUserUid) async {
-    return await _usersCollection
-        .doc(AppConstants.uuid)
-        .collection('friends')
-        .doc(chatUserUid)
-        .get()
-        .then((DocumentSnapshot doc) {
-      if (doc.exists) {
-        FriendModel friendModel = FriendModel.fromDoucumentSnapshot(doc);
-        return AppResponse(
-            kGetChatroomNotReadSuccess, friendModel.messageNotRead);
-      }
-      logger3.e('获取未读消息失败: 不存在该 document');
-      return AppResponse(kGetChatroomNotReadFail, null);
-    }, onError: (_) {
-      logger3.e('获取未读消息失败');
-      return AppResponse(kGetChatroomNotReadFail, null);
-    });
-  }
+// MARK: ADD 部分
 
   // NOTE: 添加聊天室
   Future<AppResponse> addChatroom(
@@ -216,13 +165,16 @@ class ChatroomRepository extends GetxController {
         .then(
       (_) async {
         // 更新自己的user - friend 资料
-        AppResponse appResponseLastMessage1 = await updateLastMessage(
+        UserRepository userRepository = Get.find<UserRepository>();
+        AppResponse appResponseLastMessage1 =
+            await userRepository.updateFriendLastMessage(
           userUid: AppConstants.uuid,
           chatWithUserUid: chatUserUid,
           message: chatMessageModel.message,
         );
         // 更新friend 的 user - friend 资料
-        AppResponse appResponseLastMessage2 = await updateLastMessage(
+        AppResponse appResponseLastMessage2 =
+            await userRepository.updateFriendLastMessage(
           userUid: chatUserUid,
           chatWithUserUid: AppConstants.uuid,
           message: chatMessageModel.message,
@@ -239,56 +191,5 @@ class ChatroomRepository extends GetxController {
         return AppResponse(kAddMessageFail, null);
       },
     );
-  }
-
-  // NOTE: 但有新 message 发送到聊天室时，需要更新聊天室的最后一条消息的时间和内容，以用于在聊天列表 chatroom list 显示
-  Future<AppResponse> updateLastMessage({
-    required String message,
-    required String chatWithUserUid,
-    required String userUid,
-  }) async {
-    logger.i('更新 uid: $chatWithUserUid 信息');
-    Map<String, dynamic> updateData = Map();
-    updateData['lastMessage'] = message;
-    updateData['lastMessageTime'] = FieldValue.serverTimestamp();
-    final DocumentReference documentReference = _usersCollection
-        .doc(userUid)
-        .collection('friends')
-        .doc(chatWithUserUid);
-    if (userUid == AppConstants.uuid) {
-      return await _usersCollection
-          .doc(userUid)
-          .collection('friends')
-          .doc(chatWithUserUid)
-          .update(updateData)
-          .then(
-        (_) {
-          return AppResponse(kUpdateChatroomListSuccess, true);
-        },
-        onError: (e) {
-          logger.e('添加新消息失败 : ${e.runtimeType}');
-          return AppResponse(kAddMessageFail, null);
-        },
-      );
-    } else {
-      return await _firestore.runTransaction(
-        (transaction) async {
-          DocumentSnapshot documentSnapshot =
-              await transaction.get(documentReference);
-          // 用 transaction 来确保 read 到的 未读消息数量是最新的，正确的（在同时多人发消息的时候）
-          if (documentSnapshot.exists) {
-            // 找到 User
-            FriendModel friendModel =
-                FriendModel.fromDoucumentSnapshot(documentSnapshot);
-            // 不是自己才更新 notRead
-            updateData['messageNotRead'] = friendModel.messageNotRead + 1;
-            transaction.update(documentReference, updateData);
-            return AppResponse(kUpdateChatroomListSuccess, true);
-          } else {
-            return AppResponse(kUpdateChatroomListFail, null);
-          }
-        },
-      );
-    }
   }
 }

@@ -42,7 +42,7 @@ class ChatroomsListUserTile extends StatelessWidget {
         );
         // 离开房间
         final UserRepository userRepository = Get.find<UserRepository>();
-        userRepository.enterLeaveRoom(friendUid: userUid, isEnterRoom: false);
+        userRepository.updateUserInRoom(friendUid: userUid, isInRoom: false);
       },
 
       ///每位用戶顯示於名單上的UI介面

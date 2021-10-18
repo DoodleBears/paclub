@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:paclub/constants/log_message.dart';
 import 'package:paclub/constants/emulator_constant.dart';
 import 'package:paclub/helper/app_constants.dart';
 import 'package:paclub/models/friend_model.dart';
@@ -9,33 +10,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 ///能夠給其他Function調用Firebase所儲存的資料
 // TODO: 支持用户上传头像
-// TODO: 拆分 User
+// TODO: 完善 UserApi
 class UserRepository extends GetxController {
-  static const String kAddUserFailed = 'add_user_failed';
-  static const String kAddUserSuccessed = 'add_user_successed';
-  static const String kUpdateUserSuccessed = 'update_user_successed';
-  static const String kUpdateUserFailed = 'update_user_failed';
-
-  static const String kAddFriendFailed = 'add_friend_failed';
-  static const String kAddFriendSuccessed = 'add_friend_successed';
-  static const String kUpdateFriendSuccessed = 'update_friend_successed';
-  static const String kUpdateFriendFailed = 'update_friend_failed';
-
-  static const String kGetFriendListFail = 'get_firend_list_fail';
-  static const String kGetFriendListSuccess = 'get_firend_list_success';
-
-  static const String kEnterChatroomFailed = 'enter_room_failed';
-  static const String kEnterChatroomSuccessed = 'enter_room_successed';
-  static const String kLeaveChatroomFailed = 'leave_room_failed';
-  static const String kLeaveChatroomSuccessed = 'leave_room_successed';
-
-  static const String kSearchUserFailed = 'search_user_failed';
-  static const String kSearchUserSuccessed = 'search_user_successed';
-
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final CollectionReference _usersCollection =
       FirebaseFirestore.instance.collection('users');
 
+// MARK: 初始化
   @override
   void onInit() {
     logger3.i('初始化 UserRepository' +
@@ -52,6 +33,66 @@ class UserRepository extends GetxController {
         (useFirestoreEmulator ? '(useFirestoreEmulator)' : ''));
     super.onClose();
   }
+
+// MARK: GET 部分
+  // NOTE: 获取好友列表（聊天列表）
+  Stream<List<FriendModel>> getFriendChatroomListStream(String uid) {
+    logger.i('获取聊天列表资料 uid:' + uid);
+    return _usersCollection
+        .doc(uid)
+        .collection('friends')
+        .snapshots()
+        .handleError((e) {
+      logger.e('${e.runtimeType}: $kGetFriendListFail');
+    }).map((QuerySnapshot querySnapshot) => querySnapshot.docs
+            .map((doc) => FriendModel.fromDoucumentSnapshot(doc))
+            .toList());
+  }
+
+  // NOTE: 获取未读消息数量
+  Future<AppResponse> getFriendChatroomNotRead(String chatUserUid) async {
+    return await _usersCollection
+        .doc(AppConstants.uuid)
+        .collection('friends')
+        .doc(chatUserUid)
+        .get()
+        .then((DocumentSnapshot doc) {
+      if (doc.exists) {
+        FriendModel friendModel = FriendModel.fromDoucumentSnapshot(doc);
+        return AppResponse(
+            kGetFirendChatroomNotReadSuccess, friendModel.messageNotRead);
+      }
+      logger3.e('获取未读消息失败: 不存在该 document');
+      return AppResponse(kGetFriendChatroomNotReadFail, null);
+    }, onError: (_) {
+      logger3.e('获取未读消息失败');
+      return AppResponse(kGetFriendChatroomNotReadFail, null);
+    });
+  }
+
+  // TODO: 搜索列表支持无限加载（上滑加载）
+  // TODO: 模糊搜索，搜索多个用户
+  Future<AppResponse> getUserSearchResult(String searchText) async {
+    return _usersCollection
+        .where('displayName', isGreaterThanOrEqualTo: searchText)
+        .limit(20)
+        .get()
+        .timeout(const Duration(seconds: 10))
+        .then(
+      (QuerySnapshot querySnapshot) {
+        List<UserModel> list = querySnapshot.docs
+            .map((doc) => UserModel.fromDoucumentSnapshot(doc))
+            .toList();
+        return AppResponse(kSearchUserSuccess, list);
+      },
+      onError: (e) {
+        logger3.e(e);
+        return AppResponse(kSearchUserFailed, null);
+      },
+    );
+  }
+
+// MARK: ADD 部分
 
   /// NOTE: 添加新用户（设置信息）
   Future<AppResponse> addUser(UserModel userData) async {
@@ -71,10 +112,10 @@ class UserRepository extends GetxController {
           .collection('users')
           .doc(userData.uid)
           .update(updatedData)
-          .then((value) => AppResponse(kUpdateUserSuccessed, userData),
+          .then((value) => AppResponse(kUpdateUserlastLoginAtSuccess, userData),
               onError: (e) {
         logger.e('更新用户信息失败，error: ' + e.runtimeType.toString());
-        return AppResponse(kUpdateUserFailed, null);
+        return AppResponse(kUpdateUserlastLoginAtFailed, null);
       });
     } else {
       logger.w('用户不存在，添加用户到 collection:users');
@@ -82,7 +123,7 @@ class UserRepository extends GetxController {
           .collection('users')
           .doc(userData.uid)
           .set(userData.toJson())
-          .then((value) => AppResponse(kAddUserSuccessed, userData),
+          .then((value) => AppResponse(kAddUserSuccess, userData),
               onError: (e) {
         logger.e('添加用户失败，error: ' + e.runtimeType.toString());
         return AppResponse(kAddUserFailed, null);
@@ -111,7 +152,7 @@ class UserRepository extends GetxController {
         .doc(friendUid)
         .set(map)
         .then(
-      (_) => AppResponse(kAddFriendSuccessed, friendUid),
+      (_) => AppResponse(kAddFriendSuccess, friendUid),
       onError: (e) {
         logger3.e(e);
         return AppResponse(kAddFriendFailed, null);
@@ -119,27 +160,67 @@ class UserRepository extends GetxController {
     );
   }
 
-  // NOTE: 获取好友列表（聊天列表）
-  Stream<List<FriendModel>> getFriendListStream(String uid) {
-    logger.i('获取聊天列表资料 uid:' + uid);
-    return _usersCollection
-        .doc(uid)
+// MARK: UPDATE 部分
+
+  // NOTE: 但有新 message 发送到聊天室时，需要更新更新双方的 messageNotRead 和 lastMessage, lastMessageTime
+  Future<AppResponse> updateFriendLastMessage({
+    required String message,
+    required String chatWithUserUid,
+    required String userUid,
+  }) async {
+    logger.i('更新 uid: $chatWithUserUid 信息');
+    Map<String, dynamic> updateData = Map();
+    updateData['lastMessage'] = message;
+    updateData['lastMessageTime'] = FieldValue.serverTimestamp();
+    final DocumentReference documentReference = _usersCollection
+        .doc(userUid)
         .collection('friends')
-        .snapshots()
-        .handleError((e) {
-      logger.e('${e.runtimeType}: $kGetFriendListFail');
-    }).map((QuerySnapshot querySnapshot) => querySnapshot.docs
-            .map((doc) => FriendModel.fromDoucumentSnapshot(doc))
-            .toList());
+        .doc(chatWithUserUid);
+    if (userUid == AppConstants.uuid) {
+      return await _usersCollection
+          .doc(userUid)
+          .collection('friends')
+          .doc(chatWithUserUid)
+          .update(updateData)
+          .then(
+        (_) {
+          return AppResponse(kUpdateFriendLastMessageSuccess, true);
+        },
+        onError: (e) {
+          logger.e('更新LastMessage失败 : ${e.runtimeType}');
+          return AppResponse(kUpdateFriendLastMessageFail, null);
+        },
+      );
+    } else {
+      return await _firestore.runTransaction(
+        (transaction) async {
+          DocumentSnapshot documentSnapshot =
+              await transaction.get(documentReference);
+          // 用 transaction 来确保 read 到的 未读消息数量是最新的，正确的（在同时多人发消息的时候）
+          if (documentSnapshot.exists) {
+            // 找到 User
+            FriendModel friendModel =
+                FriendModel.fromDoucumentSnapshot(documentSnapshot);
+            // 不是自己才更新 notRead
+            updateData['messageNotRead'] = friendModel.messageNotRead + 1;
+            transaction.update(documentReference, updateData);
+            return AppResponse(kUpdateFriendLastMessageSuccess, true);
+          } else {
+            return AppResponse(kUpdateFriendLastMessageFail, null);
+          }
+        },
+      );
+    }
   }
 
+  // MARK: 在当用户进入或离开某一个 Friend 的 Chatroom 时候触发（属于User行为，不属于User在Chatroom中的行为）
   // NOTE: 进入房间
-  Future<AppResponse> enterLeaveRoom({
+  Future<AppResponse> updateUserInRoom({
     required String friendUid,
-    required bool isEnterRoom,
+    required bool isInRoom,
   }) async {
     Map<String, dynamic> map = Map();
-    map['isInRoom'] = isEnterRoom;
+    map['isInRoom'] = isInRoom;
     map['messageNotRead'] = 0;
     return _usersCollection
         .doc(AppConstants.uuid)
@@ -149,37 +230,13 @@ class UserRepository extends GetxController {
         .then(
       (_) {
         // 进入/离开房间成功
-        logger.i(isEnterRoom ? '进入房间成功' : '离开房间成功');
-        return AppResponse(
-            isEnterRoom ? kEnterChatroomSuccessed : kLeaveChatroomSuccessed,
-            friendUid);
+        logger.i(isInRoom ? '进入房间成功' : '离开房间成功');
+        return AppResponse(kUpdateUserInRoomSuccess, friendUid);
       },
       onError: (e) {
         logger3.e(e);
         // 进入/离开房间失败
-        return AppResponse(
-            isEnterRoom ? kEnterChatroomFailed : kLeaveChatroomFailed, null);
-      },
-    );
-  }
-
-  // TODO: 模糊搜索，搜索多个用户
-  Future<AppResponse> searchByName(String searchText) async {
-    return _usersCollection
-        .where('displayName', isGreaterThanOrEqualTo: searchText)
-        .limit(20)
-        .get()
-        .timeout(const Duration(seconds: 10))
-        .then(
-      (QuerySnapshot querySnapshot) {
-        List<UserModel> list = querySnapshot.docs
-            .map((doc) => UserModel.fromDoucumentSnapshot(doc))
-            .toList();
-        return AppResponse(kSearchUserSuccessed, list);
-      },
-      onError: (e) {
-        logger3.e(e);
-        return AppResponse(kSearchUserFailed, null);
+        return AppResponse(kUpdateUserInRoomFailed, null);
       },
     );
   }

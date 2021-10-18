@@ -42,7 +42,8 @@ class UserSearchController extends GetxController {
       update();
 
       // 开始搜索
-      AppResponse appResponse = await userRepository.searchByName(searchText);
+      AppResponse appResponse =
+          await userRepository.getUserSearchResult(searchText);
       logger.d(appResponse.message);
       if (appResponse.data != null) {
         userList = List<UserModel>.from(appResponse.data);

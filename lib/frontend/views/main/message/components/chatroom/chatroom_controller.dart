@@ -48,15 +48,16 @@ class ChatroomController extends GetxController {
     if (chatroomInfo.containsKey('messageNotRead')) {
       messageNotRead = chatroomInfo['messageNotRead'];
     } else {
+      // MARK: 当从 搜索 界面进入聊天室的时候，需要从 server 获取未读消息数量
       AppResponse appResponse =
-          await chatroomRepository.getChatroomNotRead(chatUserUid);
+          await userRepository.getFriendChatroomNotRead(chatUserUid);
       if (appResponse.data != null) {
         messageNotRead = appResponse.data;
       }
     }
     logger.i('启用 ChatroomController\n开始获取房间ID: $chatroomId 的消息');
     // 进入房间
-    userRepository.enterLeaveRoom(friendUid: chatUserUid, isEnterRoom: true);
+    userRepository.updateUserInRoom(friendUid: chatUserUid, isInRoom: true);
 
     // TODO: 拆分 DatabaseMethods 成 Module API 的请求
 
@@ -206,8 +207,8 @@ class ChatroomController extends GetxController {
   }
 
   Future<void> enterLeaveRoom(bool isEnterRoom) async {
-    userRepository.enterLeaveRoom(
-        friendUid: chatUserUid, isEnterRoom: isEnterRoom);
+    userRepository.updateUserInRoom(
+        friendUid: chatUserUid, isInRoom: isEnterRoom);
   }
 
   @override

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:paclub/backend/repository/remote/user_repository.dart';
+import 'package:paclub/constants/log_message.dart';
 import 'package:paclub/constants/emulator_constant.dart';
 import 'package:paclub/helper/app_constants.dart';
 import 'package:paclub/models/user_model.dart';
@@ -26,15 +27,7 @@ class FirebaseAuthRepository extends GetxController {
   // 之所以 FirebaseAuthRepository 需要是 GetxService，
   // 是因为需要长时间存在（监听User State），不能用 static （class function）的形式调用
   // 所以依赖它的 API 也不行
-  static const String kSignInRequiredError = 'sign_in_required';
-  static const String kSignInCanceledError = 'sign_in_canceled';
-  static const String kSignInSuccessed = 'sign_in_successed';
-  static const String kSignInFailedError = 'sign_in_failed';
-  static const String kAddUserFailedError =
-      'Register success, but failed to add User Info';
-  static const String kSignOutSuccessed = 'sign_out_successed';
-  static const String kSignOutFailedError = 'sign_out_failed';
-  static const String kNetworkError = 'network_error';
+
   final FirebaseAuth _auth = FirebaseAuth.instance;
   // final Rx<User?> _user = FirebaseAuth.instance.currentUser.obs;
   User? _user = FirebaseAuth.instance.currentUser;
