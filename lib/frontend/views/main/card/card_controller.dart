@@ -5,7 +5,7 @@ import 'package:paclub/utils/logger.dart';
 class CardController extends GetxController {
   String testString = '这是从controller获得的string';
   final DragController dragController = DragController();
-  List imagelist = [];
+  final List imageList = [];
   final List imageData = [
     'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fn.sinaimg.cn%2Fsinacn20%2F170%2Fw1024h1546%2F20180318%2Fa00d-fyshfur3814572.jpg&refer=http%3A%2F%2Fn.sinaimg.cn&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1613903060&t=651082a2ee0be03315c114381adaea8dhttps://gimg2.baidu.com/image_search/src=http%3A%2F%2Fn.sinaimg.cn%2Fsinacn20%2F170%2Fw1024h1546%2F20180318%2Fa00d-fyshfur3814572.jpg&refer=http%3A%2F%2Fn.sinaimg.cn&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1613903060&t=651082a2ee0be03315c114381adaea8d',
     'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fn1.itc.cn%2Fimg8%2Fwb%2Frecom%2F2016%2F05%2F19%2F146364216575228138.JPEG&refer=http%3A%2F%2Fn1.itc.cn&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1614001788&t=3727c8bd4ef9b45d3749fa42a6f28081',
@@ -18,27 +18,29 @@ class CardController extends GetxController {
   ];
 
   Future<void> removeImage() async {
-    imagelist.remove(imagelist[0]);
+    imageList.remove(imageList[0]);
     update();
-    if (imagelist.length == 0) {
+    if (imageList.length == 0) {
       await loadData();
     }
   }
 
   Future<void> loadData() async {
+    logger.i('开始加载卡片');
     await Future.delayed(const Duration(milliseconds: 2000));
-    imagelist.addAll(imageData);
+    imageList.addAll(imageData);
     update();
+    logger.i('finish card load');
   }
 
   void swipeToRight() {
-    if (imagelist.length > 0) {
+    if (imageList.length > 0) {
       dragController.toRight();
     }
   }
 
   void swipeToLeft() {
-    if (imagelist.length > 0) {
+    if (imageList.length > 0) {
       dragController.toLeft();
     }
   }
