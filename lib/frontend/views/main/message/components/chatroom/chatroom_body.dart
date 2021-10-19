@@ -347,7 +347,7 @@ class _ChatroomBodyState extends State<ChatroomBody>
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
                         elevation: 2.0,
-                        primary: AppColors.notReadButtonColor,
+                        primary: AppColors.chatroomNotReadButtonColor,
                         padding: EdgeInsets.symmetric(horizontal: 4.0),
                         minimumSize: Size(30.0, 40.0),
                       ),
@@ -430,7 +430,7 @@ class _ChatroomBodyState extends State<ChatroomBody>
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               elevation: 2.0,
-                              primary: AppColors.notReadButtonColor,
+                              primary: AppColors.chatroomNotReadButtonColor,
                               padding: EdgeInsets.symmetric(horizontal: 6.0),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(4.0),
@@ -491,7 +491,7 @@ class _ChatroomBodyState extends State<ChatroomBody>
                 )
               ]),
               child: Container(
-                color: AppColors.messageBoxContainerBackgroundColor,
+                color: AppColors.messageSendingContainerBackgroundColor,
                 padding: const EdgeInsets.only(
                     left: 16.0, right: 16.0, top: 18.0, bottom: 28.0),
                 alignment: Alignment.topCenter,
@@ -508,7 +508,8 @@ class _ChatroomBodyState extends State<ChatroomBody>
                               horizontal: 12.0, vertical: 2.0),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(14.0),
-                            color: AppColors.messageBoxBackgroundColor,
+                            color: AppColors
+                                .messageSendingTextFieldBackgroundColor,
 
                             // border: Border.all(
                             //     width: 1.0, color: AppColors.messageBoxContainerBackground!),

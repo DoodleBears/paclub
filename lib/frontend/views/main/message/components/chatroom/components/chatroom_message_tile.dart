@@ -54,8 +54,8 @@ class ChatroomMessageTile extends StatelessWidget {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(borderRadius),
                       color: sendByMe
-                          ? AppColors.chatMeBackgroundColor
-                          : AppColors.chatOtherBackgroundColor,
+                          ? AppColors.chatroomMyMessageBackgroundColor
+                          : AppColors.chatroomOtherMessageBackgroundColor,
                     ),
                     child: SelectableText(
                       message,
@@ -92,7 +92,7 @@ class ChatroomMessageTile extends StatelessWidget {
                   ),
                   textAlign: TextAlign.start,
                   style: TextStyle(
-                    color: AppColors.chatTimestampColor,
+                    color: AppColors.chatroomMessageTimestampColor,
                     fontSize: 10.0,
                   ),
                 ),

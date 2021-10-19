@@ -16,7 +16,7 @@ class HomeFollowPage extends StatelessWidget {
       backgroundColor: accentColor,
       color: AppColors.refreshIndicatorColor,
       child: Container(
-        color: AppColors.listViewBackgroundColor,
+        color: AppColors.homeListViewBackgroundColor,
         child: ListView.builder(
           padding: EdgeInsets.zero,
           physics: BouncingScrollPhysics(),
