@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:get/get.dart';
-import 'package:paclub/backend/repository/remote/user_repository.dart';
+import 'package:paclub/backend/api/user_api.dart';
 import 'package:paclub/constants/log_message.dart';
 import 'package:paclub/constants/emulator_constant.dart';
 import 'package:paclub/helper/app_constants.dart';
@@ -156,7 +156,7 @@ class ChatroomRepository extends GetxController {
 
   // NOTE: 添加消息到聊天室（发送消息）
   Future<AppResponse> addMessage(String chatroomId,
-      ChatMessageModel chatMessageModel, String chatUserUid) async {
+      ChatMessageModel chatMessageModel, String chatWithUserUid) async {
     return _chatroomsCollection
         .doc(chatroomId)
         .collection("chats")
@@ -164,18 +164,18 @@ class ChatroomRepository extends GetxController {
         .timeout(const Duration(seconds: 10))
         .then(
       (_) async {
-        // 更新自己的user - friend 资料
-        UserRepository userRepository = Get.find<UserRepository>();
+        // 更新【自己的】user - friend 资料
+        UserApi userApi = Get.find<UserApi>();
         AppResponse appResponseLastMessage1 =
-            await userRepository.updateFriendLastMessage(
+            await userApi.updateFriendLastMessage(
           userUid: AppConstants.uuid,
-          chatWithUserUid: chatUserUid,
+          chatWithUserUid: chatWithUserUid,
           message: chatMessageModel.message,
         );
-        // 更新friend 的 user - friend 资料
+        // 更新【friend】 的 user - friend 资料
         AppResponse appResponseLastMessage2 =
-            await userRepository.updateFriendLastMessage(
-          userUid: chatUserUid,
+            await userApi.updateFriendLastMessage(
+          userUid: chatWithUserUid,
           chatWithUserUid: AppConstants.uuid,
           message: chatMessageModel.message,
         );
@@ -183,7 +183,7 @@ class ChatroomRepository extends GetxController {
             appResponseLastMessage2.data == null) {
           return AppResponse(kAddMessageFail, null);
         } else {
-          return AppResponse(kAddMessageSuccess, chatUserUid);
+          return AppResponse(kAddMessageSuccess, chatWithUserUid);
         }
       },
       onError: (e) {

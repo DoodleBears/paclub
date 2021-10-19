@@ -1,4 +1,4 @@
-import 'package:paclub/backend/repository/remote/user_repository.dart';
+import 'package:paclub/frontend/modules/user_module.dart';
 import 'package:paclub/frontend/views/main/message/components/chatroom/chatroom_scroll_controller.dart';
 import 'package:paclub/frontend/widgets/widgets.dart';
 import 'package:paclub/helper/app_constants.dart';
@@ -11,7 +11,7 @@ import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ChatroomController extends GetxController {
-  final UserRepository userRepository = Get.find<UserRepository>();
+  final UserModule userModule = Get.find<UserModule>();
   final ChatroomRepository chatroomRepository = Get.find<ChatroomRepository>();
 
   final ChatroomScrollController chatroomScroller =
@@ -50,16 +50,14 @@ class ChatroomController extends GetxController {
     } else {
       // MARK: 当从 搜索 界面进入聊天室的时候，需要从 server 获取未读消息数量
       AppResponse appResponse =
-          await userRepository.getFriendChatroomNotRead(chatUserUid);
+          await userModule.getFriendChatroomNotRead(chatUserUid: chatUserUid);
       if (appResponse.data != null) {
         messageNotRead = appResponse.data;
       }
     }
     logger.i('启用 ChatroomController\n开始获取房间ID: $chatroomId 的消息');
     // 进入房间
-    userRepository.updateUserInRoom(friendUid: chatUserUid, isInRoom: true);
-
-    // TODO: 拆分 DatabaseMethods 成 Module API 的请求
+    userModule.updateUserInRoom(friendUid: chatUserUid, isInRoom: true);
 
     // 绑定消息 Stream 到 Firebase 的数据库请求回传
     messageStream
@@ -207,8 +205,7 @@ class ChatroomController extends GetxController {
   }
 
   Future<void> enterLeaveRoom(bool isEnterRoom) async {
-    userRepository.updateUserInRoom(
-        friendUid: chatUserUid, isInRoom: isEnterRoom);
+    userModule.updateUserInRoom(friendUid: chatUserUid, isInRoom: isEnterRoom);
   }
 
   @override

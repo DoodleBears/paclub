@@ -1,6 +1,6 @@
-import 'package:paclub/backend/repository/remote/user_repository.dart';
 import 'package:paclub/frontend/constants/colors.dart';
 import 'package:paclub/frontend/constants/numbers.dart';
+import 'package:paclub/frontend/modules/user_module.dart';
 import 'package:paclub/frontend/routes/app_pages.dart';
 import 'package:paclub/frontend/views/auth/login/components/components.dart';
 import 'package:paclub/frontend/views/main/message/components/user_search/user_search_controller.dart';
@@ -103,9 +103,8 @@ class SearchUserTile extends GetView<UserSearchController> {
                               Routes.CHATROOM,
                           arguments: chatroomInfo);
                       // 离开房间
-                      final UserRepository userRepository =
-                          Get.find<UserRepository>();
-                      userRepository.updateUserInRoom(
+                      final UserModule userModule = Get.find<UserModule>();
+                      userModule.updateUserInRoom(
                           friendUid: userUid, isInRoom: false);
                     }
                   },

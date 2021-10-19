@@ -1,5 +1,5 @@
 import 'package:paclub/backend/repository/remote/chatroom_repository.dart';
-import 'package:paclub/backend/repository/remote/user_repository.dart';
+import 'package:paclub/frontend/modules/user_module.dart';
 import 'package:paclub/frontend/views/main/user/user_controller.dart';
 import 'package:paclub/helper/app_constants.dart';
 import 'package:paclub/models/friend_model.dart';
@@ -11,9 +11,9 @@ class ChatroomListController extends GetxController {
   final friendsStream = List<FriendModel>.empty().obs;
   List<FriendModel> friendList = <FriendModel>[];
 
-  // TODO: 替换为 Module
+  // TODO: 替换为 chatroomRepository 为 Module
   final ChatroomRepository chatroomRepository = Get.find<ChatroomRepository>();
-  final UserRepository userRepository = Get.find<UserRepository>();
+  final UserModule userModule = Get.find<UserModule>();
 
   final UserController userController = Get.find<UserController>();
 
@@ -23,8 +23,8 @@ class ChatroomListController extends GetxController {
     // chatroomRepository.getChatroomList(Constants.myUid);
 
     friendsStream.listen((_) => listenFriendStream(_));
-    friendsStream.bindStream(
-        userRepository.getFriendChatroomListStream(AppConstants.uuid));
+    friendsStream
+        .bindStream(userModule.getFriendChatroomListStream(AppConstants.uuid));
     update();
 
     super.onInit();

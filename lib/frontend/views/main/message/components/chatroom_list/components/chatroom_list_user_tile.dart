@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:paclub/backend/repository/remote/user_repository.dart';
 import 'package:paclub/frontend/constants/colors.dart';
+import 'package:paclub/frontend/modules/user_module.dart';
 import 'package:paclub/frontend/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -41,8 +41,8 @@ class ChatroomsListUserTile extends StatelessWidget {
           },
         );
         // 离开房间
-        final UserRepository userRepository = Get.find<UserRepository>();
-        userRepository.updateUserInRoom(friendUid: userUid, isInRoom: false);
+        final UserModule userModule = Get.find<UserModule>();
+        userModule.updateUserInRoom(friendUid: userUid, isInRoom: false);
       },
 
       ///每位用戶顯示於名單上的UI介面

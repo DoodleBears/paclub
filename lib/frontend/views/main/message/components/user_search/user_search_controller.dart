@@ -1,5 +1,5 @@
 import 'package:paclub/backend/repository/remote/chatroom_repository.dart';
-import 'package:paclub/backend/repository/remote/user_repository.dart';
+import 'package:paclub/frontend/modules/user_module.dart';
 import 'package:paclub/frontend/widgets/widgets.dart';
 import 'package:paclub/helper/app_constants.dart';
 import 'package:paclub/helper/chatroom_helper.dart';
@@ -18,7 +18,7 @@ class UserSearchController extends GetxController {
   List<UserModel> userList = List<UserModel>.empty();
   TextEditingController searchTextController = TextEditingController();
 
-  UserRepository userRepository = Get.find<UserRepository>();
+  UserModule userModule = Get.find<UserModule>();
   ChatroomRepository chatroomRepository = Get.find<ChatroomRepository>();
 
   @override
@@ -43,7 +43,7 @@ class UserSearchController extends GetxController {
 
       // 开始搜索
       AppResponse appResponse =
-          await userRepository.getUserSearchResult(searchText);
+          await userModule.getUserSearchResult(searchText: searchText);
       logger.d(appResponse.message);
       if (appResponse.data != null) {
         userList = List<UserModel>.from(appResponse.data);
@@ -97,13 +97,13 @@ class UserSearchController extends GetxController {
       return AppResponse(appResponseChatroom.message, null);
     }
     // NOTE: AB加好友，添加 B 到 A 的好友列表
-    AppResponse appResponseUser1 = await userRepository.addFriend(
+    AppResponse appResponseUser1 = await userModule.addFriend(
       uid: chatroomModel.users[0],
       friendUid: chatroomModel.users[1],
       friendName: chatroomModel.usersName['${chatroomModel.users[1]}'],
     );
     // NOTE: AB加好友，添加 A 到 B 的好友列表
-    AppResponse appResponseUser2 = await userRepository.addFriend(
+    AppResponse appResponseUser2 = await userModule.addFriend(
       uid: chatroomModel.users[1],
       friendUid: chatroomModel.users[0],
       friendName: chatroomModel.usersName['${chatroomModel.users[0]}'],

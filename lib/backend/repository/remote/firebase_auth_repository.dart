@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:paclub/backend/repository/remote/user_repository.dart';
+import 'package:paclub/backend/api/user_api.dart';
 import 'package:paclub/constants/log_message.dart';
 import 'package:paclub/constants/emulator_constant.dart';
 import 'package:paclub/helper/app_constants.dart';
@@ -29,7 +29,6 @@ class FirebaseAuthRepository extends GetxController {
   // 所以依赖它的 API 也不行
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  // final Rx<User?> _user = FirebaseAuth.instance.currentUser.obs;
   User? _user = FirebaseAuth.instance.currentUser;
 
   /// [取得用户类] 回传 User instance（Firebase）
@@ -104,8 +103,6 @@ class FirebaseAuthRepository extends GetxController {
   /// [Email 注册功能] —— 回传字串结果
   Future<AppResponse> registerWithEmail(
       String email, String password, String name, String bio) async {
-    final UserRepository userRepository = Get.find<UserRepository>();
-
     try {
       await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
@@ -114,9 +111,11 @@ class FirebaseAuthRepository extends GetxController {
       await user!.updateDisplayName(name);
       logger.d('更新账号信息成功, name是: $name');
       AppConstants.userName = name;
+      final UserApi userApi = Get.find<UserApi>();
 
-      AppResponse appResponse = await userRepository.addUser(
-          UserModel(uid: user!.uid, displayName: name, email: email, bio: bio));
+      AppResponse appResponse = await userApi.addUser(
+          userModel: UserModel(
+              uid: user!.uid, displayName: name, email: email, bio: bio));
 
       if (appResponse.data == null) {
         logger3.e('添加用户信息到 firestore/user 失败');
@@ -176,12 +175,14 @@ class FirebaseAuthRepository extends GetxController {
           email: email, password: password);
       // 添加用户到 Firestore
       final User user = userCredential.user!;
-      final UserRepository userRepository = Get.find<UserRepository>();
-      AppResponse appResponse = await userRepository.addUser(UserModel(
-          uid: user.uid,
-          displayName: user.displayName!,
-          email: email,
-          bio: ''));
+
+      final UserApi userApi = Get.find<UserApi>();
+      AppResponse appResponse = await userApi.addUser(
+          userModel: UserModel(
+              uid: user.uid,
+              displayName: user.displayName!,
+              email: email,
+              bio: ''));
 
       if (appResponse.data == null) {
         logger3.e('添加用户信息到 firestore/user 失败');
@@ -231,13 +232,14 @@ class FirebaseAuthRepository extends GetxController {
       final UserCredential userCredential =
           await _auth.signInWithCredential(credential);
 
-      final UserRepository userRepository = Get.find<UserRepository>();
       User user = userCredential.user!;
-      AppResponse appResponse = await userRepository.addUser(UserModel(
-          uid: user.uid,
-          displayName: user.displayName!,
-          email: user.email!,
-          bio: ''));
+      final UserApi userApi = Get.find<UserApi>();
+      AppResponse appResponse = await userApi.addUser(
+          userModel: UserModel(
+              uid: user.uid,
+              displayName: user.displayName!,
+              email: user.email!,
+              bio: ''));
 
       if (appResponse.data == null) {
         logger3.e('添加用户信息到 firestore/user 失败');

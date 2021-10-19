@@ -10,7 +10,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 ///能夠給其他Function調用Firebase所儲存的資料
 // TODO: 支持用户上传头像
-// TODO: 完善 UserApi
 class UserRepository extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final CollectionReference _usersCollection =
@@ -35,8 +34,8 @@ class UserRepository extends GetxController {
   }
 
 // MARK: GET 部分
-  // NOTE: 获取好友列表（聊天列表）
-  Stream<List<FriendModel>> getFriendChatroomListStream(String uid) {
+  /// NOTE: 获取好友列表（聊天列表）
+  Stream<List<FriendModel>> getFriendChatroomListStream({required String uid}) {
     logger.i('获取聊天列表资料 uid:' + uid);
     return _usersCollection
         .doc(uid)
@@ -49,8 +48,9 @@ class UserRepository extends GetxController {
             .toList());
   }
 
-  // NOTE: 获取未读消息数量
-  Future<AppResponse> getFriendChatroomNotRead(String chatUserUid) async {
+  /// NOTE: 获取未读消息数量
+  Future<AppResponse> getFriendChatroomNotRead(
+      {required String chatUserUid}) async {
     return await _usersCollection
         .doc(AppConstants.uuid)
         .collection('friends')
@@ -72,7 +72,8 @@ class UserRepository extends GetxController {
 
   // TODO: 搜索列表支持无限加载（上滑加载）
   // TODO: 模糊搜索，搜索多个用户
-  Future<AppResponse> getUserSearchResult(String searchText) async {
+  /// NOTE: 获取用户搜索结果(用于寻找用户-之后可添加好友)
+  Future<AppResponse> getUserSearchResult({required String searchText}) async {
     return _usersCollection
         .where('displayName', isGreaterThanOrEqualTo: searchText)
         .limit(20)
@@ -95,11 +96,11 @@ class UserRepository extends GetxController {
 // MARK: ADD 部分
 
   /// NOTE: 添加新用户（设置信息）
-  Future<AppResponse> addUser(UserModel userData) async {
+  Future<AppResponse> addUser({required UserModel userModel}) async {
     logger.i('addUser');
     // 判断是否要添加user
     bool isUserExist =
-        await _usersCollection.doc(userData.uid).get().then((doc) {
+        await _usersCollection.doc(userModel.uid).get().then((doc) {
       return doc.exists ? true : false;
     });
 
@@ -110,9 +111,10 @@ class UserRepository extends GetxController {
 
       return _firestore
           .collection('users')
-          .doc(userData.uid)
+          .doc(userModel.uid)
           .update(updatedData)
-          .then((value) => AppResponse(kUpdateUserlastLoginAtSuccess, userData),
+          .then(
+              (value) => AppResponse(kUpdateUserlastLoginAtSuccess, userModel),
               onError: (e) {
         logger.e('更新用户信息失败，error: ' + e.runtimeType.toString());
         return AppResponse(kUpdateUserlastLoginAtFailed, null);
@@ -121,9 +123,9 @@ class UserRepository extends GetxController {
       logger.w('用户不存在，添加用户到 collection:users');
       return _firestore
           .collection('users')
-          .doc(userData.uid)
-          .set(userData.toJson())
-          .then((value) => AppResponse(kAddUserSuccess, userData),
+          .doc(userModel.uid)
+          .set(userModel.toJson())
+          .then((value) => AppResponse(kAddUserSuccess, userModel),
               onError: (e) {
         logger.e('添加用户失败，error: ' + e.runtimeType.toString());
         return AppResponse(kAddUserFailed, null);
@@ -131,11 +133,12 @@ class UserRepository extends GetxController {
     }
   }
 
-  // NOTE: 加某用户为好友
+  /// NOTE: 加某用户为好友
   Future<AppResponse> addFriend(
       {required String uid,
       required String friendUid,
-      required String friendName}) async {
+      required String friendName,
+      required String friendType}) async {
     Map<String, dynamic> map = Map();
     map['addAt'] = FieldValue.serverTimestamp();
     map['messageNotRead'] = 0;
@@ -143,7 +146,7 @@ class UserRepository extends GetxController {
     // MARK: 当没有消息的时候，加好友的时间会作为显示在 聊天室列表最后消息的时间
     map['lastMessageTime'] = FieldValue.serverTimestamp();
     map['isInRoom'] = false;
-    map['friendType'] = 'default';
+    map['friendType'] = friendType;
     map['friendName'] = friendName;
     map['friendUid'] = friendUid;
     return _usersCollection
@@ -162,11 +165,11 @@ class UserRepository extends GetxController {
 
 // MARK: UPDATE 部分
 
-  // NOTE: 但有新 message 发送到聊天室时，需要更新更新双方的 messageNotRead 和 lastMessage, lastMessageTime
+  /// NOTE: 但有新 message 发送到聊天室时，需要更新更新双方的 messageNotRead 和 lastMessage, lastMessageTime
   Future<AppResponse> updateFriendLastMessage({
     required String message,
-    required String chatWithUserUid,
     required String userUid,
+    required String chatWithUserUid,
   }) async {
     logger.i('更新 uid: $chatWithUserUid 信息');
     Map<String, dynamic> updateData = Map();
@@ -214,7 +217,7 @@ class UserRepository extends GetxController {
   }
 
   // MARK: 在当用户进入或离开某一个 Friend 的 Chatroom 时候触发（属于User行为，不属于User在Chatroom中的行为）
-  // NOTE: 进入房间
+  /// NOTE: 进入房间
   Future<AppResponse> updateUserInRoom({
     required String friendUid,
     required bool isInRoom,
