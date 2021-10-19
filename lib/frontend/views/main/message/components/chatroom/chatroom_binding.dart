@@ -21,7 +21,8 @@ class ChatroomBinding implements Bindings {
     Get.lazyPut<UserApi>(() => UserApi());
     Get.lazyPut<UserModule>(() => UserModule());
 
-    Get.put<ChatroomRepository>(ChatroomRepository());
+    Get.lazyPut<UserApi>(() => UserApi());
+    Get.lazyPut<UserModule>(() => UserModule());
 
     /// 一定要先注入 ChatroomScroller, 因为 ChatroomController 有用到 ChatroomScroller
     Get.put<ChatroomScrollController>(ChatroomScrollController());

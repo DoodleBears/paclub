@@ -1,4 +1,5 @@
 import 'package:paclub/backend/repository/remote/chatroom_repository.dart';
+import 'package:paclub/frontend/modules/chatroom_module.dart';
 import 'package:paclub/frontend/modules/user_module.dart';
 import 'package:paclub/frontend/views/main/user/user_controller.dart';
 import 'package:paclub/helper/app_constants.dart';
@@ -12,7 +13,7 @@ class ChatroomListController extends GetxController {
   List<FriendModel> friendList = <FriendModel>[];
 
   // TODO: 替换为 chatroomRepository 为 Module
-  final ChatroomRepository chatroomRepository = Get.find<ChatroomRepository>();
+  final ChatroomModule chatroomModule = Get.find<ChatroomModule>();
   final UserModule userModule = Get.find<UserModule>();
 
   final UserController userController = Get.find<UserController>();

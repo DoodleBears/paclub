@@ -51,85 +51,77 @@ class ChatroomsListUserTile extends StatelessWidget {
           return Container(
             color: AppColors.chatroomTileBackgroundColor,
             padding: EdgeInsets.symmetric(horizontal: 14, vertical: 16),
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  height: 60.0,
-                  child: Row(
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      // 头像
-                      Container(
-                        margin: EdgeInsets.only(right: 12.0),
-                        height: 60.0,
-                        width: 60.0,
-                        decoration: BoxDecoration(
-                            color: accentColor,
-                            borderRadius: BorderRadius.circular(30)),
-                        child: Center(
-                          child: Text(userName.substring(0, 1),
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold)),
-                        ),
-                      ),
-                      // 其他文本内容
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            child: Container(
+              height: 60.0,
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  // 头像
+                  Container(
+                    margin: EdgeInsets.only(right: 12.0),
+                    height: 60.0,
+                    width: 60.0,
+                    decoration: BoxDecoration(
+                        color: accentColor,
+                        borderRadius: BorderRadius.circular(30)),
+                    child: Center(
+                      child: Text(userName.substring(0, 1),
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              fontSize: 20, fontWeight: FontWeight.bold)),
+                    ),
+                  ),
+                  // 其他文本内容
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        // 用户名 username 和 最后消息时间 lastMessageTime
+                        Row(
                           children: [
-                            // 用户名 username 和 最后消息时间 lastMessageTime
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Expanded(
-                                  child: Text(
-                                    '$userName',
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                                Text(
-                                  '${chatroomListFormatTime(lastMessageTime)}',
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                  ),
-                                ),
-                              ],
+                            Expanded(
+                              child: Text(
+                                '$userName',
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold),
+                              ),
                             ),
-                            // 最后消息 lastMessage 和 未读数量 messageNotRead
-                            Row(
-                              children: [
-                                // 最后消息 lastMessage
-                                Expanded(
-                                  child: Text(
-                                    lastMessage,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(fontSize: 16),
-                                  ),
-                                ),
-                                // 未读数量 messageNotRead
-                                NumberBadge(
-                                  number: messageNotRead,
-                                )
-                              ],
+                            Text(
+                              '${chatroomListFormatTime(lastMessageTime)}',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: 12,
+                              ),
                             ),
                           ],
                         ),
-                      ),
-                    ],
+                        // 最后消息 lastMessage 和 未读数量 messageNotRead
+                        Row(
+                          children: [
+                            // 最后消息 lastMessage
+                            Expanded(
+                              child: Text(
+                                lastMessage,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(fontSize: 16),
+                              ),
+                            ),
+                            // 未读数量 messageNotRead
+                            NumberBadge(
+                              number: messageNotRead,
+                            )
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           );
         },

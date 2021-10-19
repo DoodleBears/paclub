@@ -1,10 +1,7 @@
 import 'dart:async';
-
 import 'package:get/get.dart';
-import 'package:paclub/backend/api/user_api.dart';
 import 'package:paclub/constants/log_message.dart';
 import 'package:paclub/constants/emulator_constant.dart';
-import 'package:paclub/helper/app_constants.dart';
 import 'package:paclub/models/chat_message_model.dart';
 import 'package:paclub/models/chatroom_model.dart';
 import 'package:paclub/utils/app_response.dart';
@@ -22,7 +19,7 @@ class ChatroomRepository extends GetxController {
   final CollectionReference _chatroomsCollection =
       FirebaseFirestore.instance.collection('chatrooms');
 
-// MARK: 初始化
+  // MARK: 初始化
   @override
   void onInit() {
     logger3.i('初始化 ChatroomRepository' +
@@ -46,29 +43,39 @@ class ChatroomRepository extends GetxController {
     super.onClose();
   }
 
-// MARK: GET 部分
+  // MARK: GET 部分
 
-  // NOTE: 获取聊天室新消息的 Stream
-  Stream<List<ChatMessageModel>> getNewMessageStream(String chatroomId) {
+  /// ## NOTE: 获取聊天室新消息的 Stream
+  Stream<List<ChatMessageModel>> getNewMessageStream({
+    required String chatroomId,
+    required Timestamp enterRoomTimestamp,
+  }) {
     return _chatroomsCollection
         .doc(chatroomId)
         .collection("chats")
-        .where('time', isGreaterThanOrEqualTo: Timestamp.now())
-        .orderBy('time', descending: false)
+        .where('time', isGreaterThanOrEqualTo: enterRoomTimestamp)
+        .orderBy('time')
         .snapshots()
         .map((QuerySnapshot querySnapshot) => querySnapshot.docs
             .map((doc) => ChatMessageModel.fromDoucumentSnapshot(doc))
             .toList());
   }
 
-  // NOTE: 获取聊天室历史消息
+  /// ## NOTE: 获取聊天室历史消息
   /// 用 Pagination（分页）来实作新 message 和旧 message 的获取
-  /// 每次获取 [limit] 条消息
-  Future<AppResponse> getOldMessages(String chatroomId,
-      {DocumentSnapshot? firstMessageDoc,
-      bool firstTime = false,
-      int limit = 30}) async {
-    assert(firstTime == true || firstMessageDoc != null,
+  /// - 每次获取 [limit] 条消息
+  /// - [firstTime] 区分是否为第一次获取历史消息
+  Future<AppResponse> getOldMessages({
+    required String chatroomId,
+    required int limit,
+    required bool firstTime,
+    DocumentSnapshot? firstMessageDoc,
+    Timestamp? enterRoomTimestamp,
+  }) async {
+    assert(
+        (firstTime == true && enterRoomTimestamp != null) ||
+            firstMessageDoc != null ||
+            limit < 0,
         '请求更多历史消息需要有传入最旧(first)的消息做 pagination'); // 请求更多历史消息需要有传入最旧(first)的消息做 pagination
 
     // 基础 query, 参考教程: https://youtu.be/poqTHxtDXwU
@@ -78,10 +85,12 @@ class ChatroomRepository extends GetxController {
         .orderBy('time', descending: true)
         .limit(limit);
 
-    // NOTE: 如果是第一次拉取历史消息，如：刚进入聊天室（可以不用startbefore，所以区别开）
+    /// NOTE: 如果是第一次拉取历史消息，如：刚进入聊天室（可以不用startbefore，所以区别开）
+    /// NOTE: 换句话说, 如果当前没有历史消息的话
     if (firstTime) {
       try {
         List<ChatMessageModel> list = await baseQuery
+            .where('time', isLessThan: enterRoomTimestamp)
             .get(GetOptions(source: Source.server))
             .timeout(const Duration(seconds: 10)) // 10秒钟超时限制
             .then((QuerySnapshot querySnapshot) => querySnapshot.docs
@@ -104,7 +113,8 @@ class ChatroomRepository extends GetxController {
         return appResponse;
       }
     }
-    // NOTE: 如果不是第一次拉取历史消息，如：加载更多历史消息（需要startbefore，所以区别开）
+
+    /// ## NOTE: 如果不是第一次拉取历史消息，如：加载更多历史消息（需要startbefore，所以区别开）
     try {
       List<ChatMessageModel> list = await baseQuery
           .startAfterDocument(firstMessageDoc!)
@@ -132,11 +142,13 @@ class ChatroomRepository extends GetxController {
     }
   }
 
-// MARK: ADD 部分
+  // MARK: ADD 部分
 
-  // NOTE: 添加聊天室
-  Future<AppResponse> addChatroom(
-      ChatroomModel chatroomModel, String chatroomId) async {
+  /// ## NOTE: 添加聊天室
+  Future<AppResponse> addChatroom({
+    required ChatroomModel chatroomModel,
+    required String chatroomId,
+  }) async {
     logger.i('添加聊天室 id: $chatroomId');
 
     return _chatroomsCollection
@@ -154,9 +166,12 @@ class ChatroomRepository extends GetxController {
     );
   }
 
-  // NOTE: 添加消息到聊天室（发送消息）
-  Future<AppResponse> addMessage(String chatroomId,
-      ChatMessageModel chatMessageModel, String chatWithUserUid) async {
+  /// ## NOTE: 添加消息到聊天室（发送消息）
+  Future<AppResponse> addMessage({
+    required String chatroomId,
+    required String chatWithUserUid,
+    required ChatMessageModel chatMessageModel,
+  }) async {
     return _chatroomsCollection
         .doc(chatroomId)
         .collection("chats")
@@ -164,27 +179,9 @@ class ChatroomRepository extends GetxController {
         .timeout(const Duration(seconds: 10))
         .then(
       (_) async {
-        // 更新【自己的】user - friend 资料
-        UserApi userApi = Get.find<UserApi>();
-        AppResponse appResponseLastMessage1 =
-            await userApi.updateFriendLastMessage(
-          userUid: AppConstants.uuid,
-          chatWithUserUid: chatWithUserUid,
-          message: chatMessageModel.message,
-        );
-        // 更新【friend】 的 user - friend 资料
-        AppResponse appResponseLastMessage2 =
-            await userApi.updateFriendLastMessage(
-          userUid: chatWithUserUid,
-          chatWithUserUid: AppConstants.uuid,
-          message: chatMessageModel.message,
-        );
-        if (appResponseLastMessage1.data == null ||
-            appResponseLastMessage2.data == null) {
-          return AppResponse(kAddMessageFail, null);
-        } else {
-          return AppResponse(kAddMessageSuccess, chatWithUserUid);
-        }
+        // FIXME: 将 userApi.updateFriendLastMessage 拆分到 Module 中
+
+        return AppResponse(kAddMessageSuccess, chatWithUserUid);
       },
       onError: (e) {
         logger.e('添加新消息失败 : ${e.runtimeType}');

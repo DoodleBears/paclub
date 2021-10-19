@@ -13,9 +13,7 @@ class UserApi extends GetxController {
   /// - [uid] 好友 uid
   ///
   /// ## 回传值
-  /// - [AppResponse]
-  ///   - message: [String]错误代码
-  ///   - data: 成功: [Stream] List<FriendModel> | 失败: null
+  /// - [Stream]
   Stream<List<FriendModel>> getFriendChatroomListStream(
           {required String uid}) =>
       _userRepository.getFriendChatroomListStream(uid: uid);
@@ -116,6 +114,7 @@ class UserApi extends GetxController {
       _userRepository.updateUserInRoom(
           friendUid: friendUid, isInRoom: isInRoom);
 
+  // MARK: 初始化
   @override
   void onInit() {
     logger.i('接入 UserApi');

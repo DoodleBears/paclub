@@ -1,9 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:paclub/frontend/modules/chatroom_module.dart';
 import 'package:paclub/frontend/modules/user_module.dart';
 import 'package:paclub/frontend/views/main/message/components/chatroom/chatroom_scroll_controller.dart';
 import 'package:paclub/frontend/widgets/widgets.dart';
 import 'package:paclub/helper/app_constants.dart';
 import 'package:paclub/models/chat_message_model.dart';
-import 'package:paclub/backend/repository/remote/chatroom_repository.dart';
 import 'package:paclub/utils/app_response.dart';
 import 'package:paclub/utils/logger.dart';
 import 'package:flutter/material.dart';
@@ -12,15 +13,14 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ChatroomController extends GetxController {
   final UserModule userModule = Get.find<UserModule>();
-  final ChatroomRepository chatroomRepository = Get.find<ChatroomRepository>();
-
+  final ChatroomModule chatroomModule = Get.find<ChatroomModule>();
   final ChatroomScrollController chatroomScroller =
       Get.find<ChatroomScrollController>();
   final RefreshController refreshController = RefreshController();
   static final switchMessageNum = 12;
   String chatroomId = '';
   String chatUserName = '';
-  String chatUserUid = '';
+  String chatWithUserUid = '';
   int messageNotRead = 0;
 
   /// 是否显示返回到上次阅读位置的按钮
@@ -35,33 +35,34 @@ class ChatroomController extends GetxController {
   Key centerKey = ValueKey('onelist'); // 用两个list，不同延伸方向，来解决加载旧消息和接收新消息
   TextEditingController messageTextFieldController = TextEditingController();
 
+  // 进入房间的时间，在每次 controller 启用的时候初始化（用来确定历史消息和新消息的分界线）
+  late final Timestamp enterRoomTimestamp;
   final messageStream = <ChatMessageModel>[].obs;
   List<ChatMessageModel> oldMessageList = <ChatMessageModel>[];
   List<ChatMessageModel> newMessageList = <ChatMessageModel>[];
 
   @override
   void onInit() async {
+    enterRoomTimestamp = Timestamp.now();
     Map<String, dynamic> chatroomInfo = Get.arguments;
     this.chatroomId = chatroomInfo['chatroomId'];
     this.chatUserName = chatroomInfo['userName'];
-    this.chatUserUid = chatroomInfo['userUid'];
+    this.chatWithUserUid = chatroomInfo['userUid'];
     if (chatroomInfo.containsKey('messageNotRead')) {
       messageNotRead = chatroomInfo['messageNotRead'];
     } else {
       // MARK: 当从 搜索 界面进入聊天室的时候，需要从 server 获取未读消息数量
-      AppResponse appResponse =
-          await userModule.getFriendChatroomNotRead(chatUserUid: chatUserUid);
+      AppResponse appResponse = await userModule.getFriendChatroomNotRead(
+          chatUserUid: chatWithUserUid);
       if (appResponse.data != null) {
         messageNotRead = appResponse.data;
       }
     }
     logger.i('启用 ChatroomController\n开始获取房间ID: $chatroomId 的消息');
     // 进入房间
-    userModule.updateUserInRoom(friendUid: chatUserUid, isInRoom: true);
+    userModule.updateUserInRoom(friendUid: chatWithUserUid, isInRoom: true);
 
     // 绑定消息 Stream 到 Firebase 的数据库请求回传
-    messageStream
-        .bindStream(chatroomRepository.getNewMessageStream(chatroomId));
     // 监听消息
     messageStream.listen((list) => listenMessageStream(list));
 
@@ -69,6 +70,11 @@ class ChatroomController extends GetxController {
         limit: messageNotRead > switchMessageNum
             ? messageNotRead
             : 30); // 首次加载历史记录
+
+    messageStream.bindStream(chatroomModule.getNewMessageStream(
+      chatroomId: chatroomId,
+      enterRoomTimestamp: enterRoomTimestamp,
+    ));
 
     super.onInit();
   }
@@ -120,17 +126,17 @@ class ChatroomController extends GetxController {
     update();
     logger.i('开始加载历史消息');
     AppResponse appResponse;
-    // 当历史列表为空，有可能是第一次进入页面，或是网络重连后，再该页面刷新
+    // NOTE: 当历史列表为空，有可能是第一次进入页面，或是网络重连后，再该页面刷新
     if (oldMessageList.isEmpty) {
-      appResponse = await chatroomRepository.getOldMessages(
-        chatroomId,
-        firstTime: true,
+      appResponse = await chatroomModule.getOldMessagesFirstTime(
+        chatroomId: chatroomId,
+        enterRoomTimestamp: enterRoomTimestamp,
         limit: limit,
       );
     } else {
-      // 历史列表不为空，拉取更早的消息
-      appResponse = await chatroomRepository.getOldMessages(
-        chatroomId,
+      // NOTE: 历史列表不为空, 则基于最早的历史消息, 作为起点, 拉取更早的消息
+      appResponse = await chatroomModule.getMoreOldMessages(
+        chatroomId: chatroomId,
         firstMessageDoc: oldMessageList.last.documentSnapshot,
         limit: limit,
       );
@@ -170,8 +176,11 @@ class ChatroomController extends GetxController {
     messageTextFieldController.clear(); // 成功发送消息，才清空消息框内容
     toggleSendButton('');
     if (message.isNotEmpty) {
-      AppResponse appResponse = await chatroomRepository.addMessage(chatroomId,
-          ChatMessageModel(message, AppConstants.userName), chatUserUid);
+      AppResponse appResponse = await chatroomModule.addMessage(
+        chatroomId: chatroomId,
+        chatMessageModel: ChatMessageModel(message, AppConstants.userName),
+        chatWithUserUid: chatWithUserUid,
+      );
 
       if (appResponse.data != null) {
         logger.d(appResponse.message + ', 消息为: ' + message);
@@ -205,7 +214,8 @@ class ChatroomController extends GetxController {
   }
 
   Future<void> enterLeaveRoom(bool isEnterRoom) async {
-    userModule.updateUserInRoom(friendUid: chatUserUid, isInRoom: isEnterRoom);
+    userModule.updateUserInRoom(
+        friendUid: chatWithUserUid, isInRoom: isEnterRoom);
   }
 
   @override

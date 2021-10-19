@@ -1,4 +1,5 @@
 import 'package:paclub/backend/repository/remote/chatroom_repository.dart';
+import 'package:paclub/frontend/modules/chatroom_module.dart';
 import 'package:paclub/frontend/modules/user_module.dart';
 import 'package:paclub/frontend/widgets/widgets.dart';
 import 'package:paclub/helper/app_constants.dart';
@@ -19,7 +20,7 @@ class UserSearchController extends GetxController {
   TextEditingController searchTextController = TextEditingController();
 
   UserModule userModule = Get.find<UserModule>();
-  ChatroomRepository chatroomRepository = Get.find<ChatroomRepository>();
+  ChatroomModule chatroomModule = Get.find<ChatroomModule>();
 
   @override
   void onInit() {
@@ -85,10 +86,8 @@ class UserSearchController extends GetxController {
         usersName: userNameMap,
         chatroomId: chatroomId);
     // NOTE: 添加 聊天室
-    AppResponse appResponseChatroom = await chatroomRepository.addChatroom(
-      chatroomModel,
-      chatroomId,
-    );
+    AppResponse appResponseChatroom = await chatroomModule.addChatroom(
+        chatroomModel: chatroomModel, chatroomId: chatroomId);
     isAddUserLoading[index] = false;
     update();
     // 如果添加 chatroom 失败, return
