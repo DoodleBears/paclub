@@ -28,6 +28,7 @@ class LoginController extends GetxController {
   bool hidePassword = true;
   String username = '';
   String password = '';
+  String? errorText;
   bool isNeedToResend = false;
   bool isResendButtonShow = false;
   bool isPasswordOK = true;
@@ -37,7 +38,6 @@ class LoginController extends GetxController {
   late Timer timer;
 
   void onUsernameChanged(String username) {
-    // logger0.d(username);
     this.username = username.trim();
     if (isEmailOK == false) {
       isEmailOK = true;
@@ -47,7 +47,7 @@ class LoginController extends GetxController {
 
   void onPasswordChanged(String password) {
     this.password = password.trim();
-    if (isPasswordOK) {
+    if (isPasswordOK == false) {
       isPasswordOK = true;
       update();
     }
@@ -107,7 +107,14 @@ class LoginController extends GetxController {
         update();
       }
     } else {
-      toastBottom(appResponse.message);
+      if (appResponse.message == 'invalid-email') {
+        isEmailOK = false;
+      } else if (appResponse.message == 'user-not-found') {
+        isEmailOK = false;
+      } else if (appResponse.message == 'wrong-password') {
+        isPasswordOK = false;
+      }
+      errorText = appResponse.message;
     }
     isLoading = false;
     update();
@@ -116,11 +123,11 @@ class LoginController extends GetxController {
   bool checkSignInInfo() {
     isStyleOK = false;
     if (username.isEmpty) {
-      toastBottom('Email cannot be null');
+      errorText = 'Email cannot be empty';
       isEmailOK = false;
       update();
     } else if (password.isEmpty) {
-      toastBottom('Password cannot be null');
+      errorText = 'Password cannot be empty';
       isPasswordOK = false;
       update();
     } else {

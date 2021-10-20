@@ -43,12 +43,13 @@ class RegisterAccountBody extends GetView<RegisterAccountController> {
               builder: (_) {
                 return FadeInScaleContainer(
                   width: Get.width * 0.8,
-                  height: controller.isRegisterd ? 0.0 : 16 + Get.height * 0.07,
+                  height: controller.isRegisterd ? 0.0 : null,
                   isShow: controller.isRegisterd == false,
                   child: RoundedInputField(
                     textInputType: TextInputType.emailAddress,
                     error: controller.isEmailOK == false,
-                    hintText: 'Email',
+                    errorText: controller.errorText,
+                    labelText: 'Email',
                     icon: Icon(
                       Icons.person,
                       color: accentColor,
@@ -64,11 +65,12 @@ class RegisterAccountBody extends GetView<RegisterAccountController> {
               builder: (_) {
                 return FadeInScaleContainer(
                   width: Get.width * 0.8,
-                  height: controller.isRegisterd ? 0.0 : 16 + Get.height * 0.07,
+                  height: controller.isRegisterd ? 0.0 : null,
                   isShow: controller.isRegisterd == false,
                   child: RoundedPasswordField(
-                    hinttext: 'Password',
+                    hintText: 'Password',
                     error: controller.isPasswordOK == false,
+                    errorText: controller.errorText,
 
                     // onchanged 会在 input 内容改变时触发 function 并传 string
                     onChanged: controller.onPasswordChanged,
@@ -84,11 +86,12 @@ class RegisterAccountBody extends GetView<RegisterAccountController> {
               builder: (_) {
                 return FadeInScaleContainer(
                   width: Get.width * 0.8,
-                  height: controller.isRegisterd ? 0.0 : 16 + Get.height * 0.07,
+                  height: controller.isRegisterd ? 0.0 : null,
                   isShow: controller.isRegisterd == false,
                   child: RoundedPasswordField(
-                    hinttext: 'Repassword',
+                    hintText: 'Repassword',
                     error: controller.isRePasswordOK == false,
+                    errorText: controller.errorText,
                     // onchanged 会在 input 内容改变时触发 function 并传 string
                     onChanged: controller.onRePasswordChanged,
                     // 不显示眼睛（不允许显示密码）

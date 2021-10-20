@@ -8,21 +8,28 @@ import 'package:flutter/widgets.dart';
 // NOTE: 如需针对某 Widget 增加颜色适配请新增变量，并以 pageWidgetAttributeColor 的方式命名变量
 
 class AppColors {
+  // NOTE: Avatar
+  static Color? avatarBackgroundColor = Colors.grey[100];
+  // NOTE: Chatroom
   static Color? chatroomTileBackgroundColor = Colors.grey[50];
   static Color? chatroomMessageTimestampColor = Colors.grey;
   static Color? chatroomNotReadButtonColor = Colors.grey[800];
-  static Color? refreshIndicatorColor = Colors.white;
   static Color? chatBackgroundColor = Colors.grey[50];
   static Color? chatroomMyMessageBackgroundColor = accentColor;
   static Color? chatroomOtherMessageBackgroundColor = Colors.grey[200];
   static Color? chatroomAppBarTitleColor = Colors.black;
-  static Color? homeListViewBackgroundColor = Colors.grey[200];
-  static Color? bottomNavigationBarBackgroundColor = Colors.white;
-  static Color? divideLineColor = Colors.grey[200];
   static Color? messageSendingTextFieldBackgroundColor = Colors.grey[100];
   static Color? messageSendingContainerBackgroundColor = Colors.white;
+  // NOTE: Home
+  static Color? homeListViewBackgroundColor = Colors.grey[200];
+  // NOTE: General Widget
+  static Color? bottomNavigationBarBackgroundColor = Colors.white;
+  static Color? refreshIndicatorColor = Colors.white;
+  static Color? divideLineColor = Colors.grey[200];
   // MARK: lightMode - 通过调用 lightMode 和 UserController.update() 便可以进行App亮暗模式的调整
   static lightMode() {
+    // NOTE: Avatar
+    avatarBackgroundColor = Colors.grey[100];
     // NOTE: Chatroom
     chatroomTileBackgroundColor = Colors.grey[50];
     chatroomMessageTimestampColor = Colors.grey;
@@ -42,6 +49,8 @@ class AppColors {
   }
 
   static darkMode() {
+    // NOTE: Avatar
+    avatarBackgroundColor = Colors.grey[850];
     // NOTE: Chatroom
     chatroomTileBackgroundColor = Colors.grey[850];
     chatroomMessageTimestampColor = Colors.grey[700];

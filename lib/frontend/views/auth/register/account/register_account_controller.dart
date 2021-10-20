@@ -29,6 +29,7 @@ class RegisterAccountController extends GetxController {
   String _username = '';
   String _password = '';
   String _rePassword = '';
+  String? errorText;
   bool isEmailOK = true;
   bool isPasswordOK = true;
   bool isRePasswordOK = true;
@@ -113,7 +114,12 @@ class RegisterAccountController extends GetxController {
           msg: 'verification email was sent to:\n' + (authModule.user!.email!),
           icon: Icon(Icons.email, color: accentColor, size: Get.width * 0.08));
     } else {
-      toastBottom(appResponse.message);
+      if (appResponse.message == 'invalid-email') {
+        isEmailOK = false;
+      } else if (appResponse.message == 'email-already-in-use') {
+        isEmailOK = false;
+      }
+      errorText = appResponse.message;
     }
     isLoading = false;
     update();
@@ -123,24 +129,25 @@ class RegisterAccountController extends GetxController {
     bool check = true;
     if (_username.isEmpty) {
       check = false;
-      toastBottom('Email cannot be null');
+      errorText = 'Email cannot be empty';
       isEmailOK = false;
     } else if (_password.isEmpty) {
       check = false;
-      toastBottom('Password cannot be null');
+      errorText = 'Password cannot be empty';
       isPasswordOK = false;
     } else if (_rePassword.isEmpty) {
       check = false;
-      toastBottom('re-password cannot be null');
+      errorText = 're-password cannot be empty';
       isRePasswordOK = false;
     } else if (_password != _rePassword) {
       isRePasswordOK = false;
       check = false;
-      toastBottom('re-password is different to password');
+      errorText = 're-password is different to password';
     } else if (regExp.hasMatch(_password) == false) {
       isPasswordOK = false;
       check = false;
-      toastBottom(
+      errorText = 'Password is too weak';
+      toastTop(
           'password should include at least 8 characters, 1 uppercase, 1 number allow special characters');
     }
     update();

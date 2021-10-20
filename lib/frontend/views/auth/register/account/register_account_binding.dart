@@ -24,7 +24,7 @@ class RegisterAccountBinding implements Bindings {
     Get.lazyPut<AuthModule>(() => AuthModule());
 
     /// View 用到的 Controller
-    Get.lazyPut<AuthEmailController>(() => AuthEmailController());
-    Get.lazyPut<RegisterAccountController>(() => RegisterAccountController());
+    Get.put<AuthEmailController>(AuthEmailController());
+    Get.put<RegisterAccountController>(RegisterAccountController());
   }
 }

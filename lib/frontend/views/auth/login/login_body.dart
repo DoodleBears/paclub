@@ -47,6 +47,7 @@ class LoginBody extends GetView<LoginController> {
                 return RoundedInputField(
                   textInputType: TextInputType.emailAddress,
                   error: controller.isEmailOK == false,
+                  errorText: controller.errorText,
                   hintText: 'Email',
                   icon: Icon(
                     Icons.person,
@@ -65,7 +66,8 @@ class LoginBody extends GetView<LoginController> {
               builder: (_) {
                 return RoundedPasswordField(
                   error: controller.isPasswordOK == false,
-                  hinttext: 'Password',
+                  errorText: controller.errorText,
+                  hintText: 'Password',
                   // onchanged 会在 input 内容改变时触发 function 并传 string
                   onChanged: controller.onPasswordChanged,
                   // 传递 secure value 来控制是否显示密码

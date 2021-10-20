@@ -12,16 +12,20 @@ class RegisterForm1 extends GetView<RegisterFormController> {
 
   @override
   Widget build(BuildContext context) {
-    return Obx(
-      () {
+    return GetBuilder<RegisterFormController>(
+      assignId: true,
+      id: 'form_1',
+      builder: (_) {
         logger.w('重新渲染 form_1');
         return FadeInScaleContainer(
           width: Get.width * 0.8,
-          height: controller.page.value == 1 ? 16 + Get.height * 0.07 : 0.0,
-          isShow: controller.page.value == 1,
+          height: controller.page == 1 ? 16 + Get.height * 0.08 : 0.0,
+          isShow: controller.page == 1,
           child: RoundedInputField(
+            counterText: '${controller.name.length}/50',
             textInputType: TextInputType.name,
-            error: controller.isNameOK.value == false,
+            error: controller.isNameOK == false,
+            errorText: controller.errorText,
             hintText: 'Name',
             icon: Icon(
               Icons.person,

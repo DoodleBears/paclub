@@ -30,6 +30,7 @@ class FadeInScaleContainer extends StatelessWidget {
     this.scaleCurve = Curves.linearToEaseOut,
     this.opacityCurve = Curves.linearToEaseOut,
     this.color,
+    this.padding,
   }) : super(key: key);
 
   final bool isShow;
@@ -41,6 +42,7 @@ class FadeInScaleContainer extends StatelessWidget {
   final Duration opacityDuration;
   final Curve scaleCurve;
   final Curve opacityCurve;
+  final EdgeInsetsGeometry? padding;
 
   @override
   Widget build(BuildContext context) {
@@ -49,6 +51,7 @@ class FadeInScaleContainer extends StatelessWidget {
       isShow: isShow,
       curve: opacityCurve,
       child: AnimatedContainer(
+        padding: padding ?? EdgeInsets.all(0.0),
         curve: scaleCurve,
         duration: scaleDuration,
         // 在给定 isShow 的时候也可以动态赋予 height
