@@ -5,6 +5,7 @@ import 'package:paclub/frontend/views/main/message/components/chatroom/chatroom_
 import 'package:paclub/frontend/widgets/widgets.dart';
 import 'package:paclub/helper/app_constants.dart';
 import 'package:paclub/models/chat_message_model.dart';
+import 'package:paclub/models/user_model.dart';
 import 'package:paclub/utils/app_response.dart';
 import 'package:paclub/utils/logger.dart';
 import 'package:flutter/material.dart';
@@ -12,8 +13,8 @@ import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class ChatroomController extends GetxController {
-  final UserModule userModule = Get.find<UserModule>();
-  final ChatroomModule chatroomModule = Get.find<ChatroomModule>();
+  final UserModule _userModule = Get.find<UserModule>();
+  final ChatroomModule _chatroomModule = Get.find<ChatroomModule>();
   final ChatroomScrollController chatroomScroller =
       Get.find<ChatroomScrollController>();
   final RefreshController refreshController = RefreshController();
@@ -21,6 +22,7 @@ class ChatroomController extends GetxController {
   String chatroomId = '';
   String chatUserName = '';
   String chatWithUserUid = '';
+  String avatarURL = '';
   int messageNotRead = 0;
 
   /// 是否显示返回到上次阅读位置的按钮
@@ -44,23 +46,8 @@ class ChatroomController extends GetxController {
   @override
   void onInit() async {
     enterRoomTimestamp = Timestamp.now();
-    Map<String, dynamic> chatroomInfo = Get.arguments;
-    this.chatroomId = chatroomInfo['chatroomId'];
-    this.chatUserName = chatroomInfo['userName'];
-    this.chatWithUserUid = chatroomInfo['userUid'];
-    if (chatroomInfo.containsKey('messageNotRead')) {
-      messageNotRead = chatroomInfo['messageNotRead'];
-    } else {
-      // MARK: 当从 搜索 界面进入聊天室的时候，需要从 server 获取未读消息数量
-      AppResponse appResponse = await userModule.getFriendChatroomNotRead(
-          chatUserUid: chatWithUserUid);
-      if (appResponse.data != null) {
-        messageNotRead = appResponse.data;
-      }
-    }
-    logger.i('启用 ChatroomController\n开始获取房间ID: $chatroomId 的消息');
-    // 进入房间
-    userModule.updateUserInRoom(friendUid: chatWithUserUid, isInRoom: true);
+    await _getPageInfo();
+    _updateFriendProfile();
 
     // 绑定消息 Stream 到 Firebase 的数据库请求回传
     // 监听消息
@@ -71,12 +58,64 @@ class ChatroomController extends GetxController {
             ? messageNotRead
             : 30); // 首次加载历史记录
 
-    messageStream.bindStream(chatroomModule.getNewMessageStream(
+    messageStream.bindStream(_chatroomModule.getNewMessageStream(
       chatroomId: chatroomId,
       enterRoomTimestamp: enterRoomTimestamp,
     ));
 
     super.onInit();
+  }
+
+  Future<void> _getPageInfo() async {
+    Map<String, dynamic> chatroomInfo = Get.arguments;
+    this.chatroomId = chatroomInfo['chatroomId'];
+    this.chatUserName = chatroomInfo['userName'];
+    this.chatWithUserUid = chatroomInfo['userUid'];
+    this.avatarURL = chatroomInfo['avatarURL'];
+    // NOTE: 获取未读消息数量
+    if (chatroomInfo.containsKey('messageNotRead')) {
+      messageNotRead = chatroomInfo['messageNotRead'];
+    } else {
+      // MARK: 当从 搜索 界面进入聊天室的时候，需要从 server 获取未读消息数量
+      AppResponse appResponseNotRead = await _userModule
+          .getFriendChatroomNotRead(chatUserUid: chatWithUserUid);
+      if (appResponseNotRead.data != null) {
+        messageNotRead = appResponseNotRead.data;
+      }
+    }
+    logger.i('启用 ChatroomController\n开始获取房间ID: $chatroomId 的消息');
+  }
+
+  Future<void> _updateFriendProfile() async {
+    AppResponse appResponseUserProfile =
+        await _userModule.getUserProfile(uid: chatWithUserUid);
+
+    if (appResponseUserProfile.data != null) {
+      UserModel friendModel = appResponseUserProfile.data;
+      // NOTE: 进入房间
+      Map<String, dynamic> updateMap = {
+        'isInRoom': true,
+        'messageNotRead': 0,
+      };
+      // NOTE: 更新 Friend 的头像 Link 和 displayName
+      if (chatUserName != friendModel.displayName) {
+        updateMap['friendName'] = friendModel.displayName;
+        chatUserName = friendModel.displayName;
+      }
+      if (avatarURL != friendModel.avatarURL) {
+        updateMap['avatarURL'] = friendModel.avatarURL;
+        avatarURL = friendModel.avatarURL;
+      }
+      AppResponse appResponseUpdateFriendProfile =
+          await _userModule.updateFriendProfile(
+              friendUid: chatWithUserUid, updateMap: updateMap);
+      if (appResponseUpdateFriendProfile.data == null) {
+        update();
+        toastTop(appResponseUpdateFriendProfile.message);
+      }
+    } else {
+      toastTop(appResponseUserProfile.message);
+    }
   }
 
   void listenMessageStream(List<ChatMessageModel> list) async {
@@ -92,8 +131,6 @@ class ChatroomController extends GetxController {
       skipMessageNum = newMessageList.length;
       oldMessageList.insertAll(0, newMessageList.reversed);
       newMessageList = List.from(messageStream.skip(skipMessageNum));
-
-      update();
     } else {
       newMessageList = List.from(messageStream.skip(skipMessageNum));
     }
@@ -128,14 +165,14 @@ class ChatroomController extends GetxController {
     AppResponse appResponse;
     // NOTE: 当历史列表为空，有可能是第一次进入页面，或是网络重连后，再该页面刷新
     if (oldMessageList.isEmpty) {
-      appResponse = await chatroomModule.getOldMessagesFirstTime(
+      appResponse = await _chatroomModule.getOldMessagesFirstTime(
         chatroomId: chatroomId,
         enterRoomTimestamp: enterRoomTimestamp,
         limit: limit,
       );
     } else {
       // NOTE: 历史列表不为空, 则基于最早的历史消息, 作为起点, 拉取更早的消息
-      appResponse = await chatroomModule.getMoreOldMessages(
+      appResponse = await _chatroomModule.getMoreOldMessages(
         chatroomId: chatroomId,
         firstMessageDoc: oldMessageList.last.documentSnapshot,
         limit: limit,
@@ -176,7 +213,7 @@ class ChatroomController extends GetxController {
     messageTextFieldController.clear(); // 成功发送消息，才清空消息框内容
     toggleSendButton('');
     if (message.isNotEmpty) {
-      AppResponse appResponse = await chatroomModule.addMessage(
+      AppResponse appResponse = await _chatroomModule.addMessage(
         chatroomId: chatroomId,
         chatMessageModel: ChatMessageModel(message, AppConstants.userName),
         chatWithUserUid: chatWithUserUid,
@@ -214,7 +251,7 @@ class ChatroomController extends GetxController {
   }
 
   Future<void> enterLeaveRoom(bool isEnterRoom) async {
-    userModule.updateUserInRoom(
+    _userModule.updateUserInRoom(
         friendUid: chatWithUserUid, isInRoom: isEnterRoom);
   }
 

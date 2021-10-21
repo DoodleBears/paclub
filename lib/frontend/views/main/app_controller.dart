@@ -8,7 +8,6 @@ class AppController extends GetxController {
   PreferenceModel userPreferenceModel = UserPreference.getUserPreference();
   int messageNotReadAll = 0;
   String appBadgeSupported = 'Unknown';
-  // TODO: 将该 imagePath 来源改为 Link (Firebase Storage)
 
   late bool isDarkMode;
 

@@ -164,6 +164,7 @@ class _ChatroomBodyState extends State<ChatroomBody>
                                       .newMessageList[index].sendBy;
 
                               Widget child = ChatroomMessageTile(
+                                friendAvatarURL: chatroomController.avatarURL,
                                 sendTime: chatroomController
                                     .newMessageList[index].time,
                                 senderName: chatroomController
@@ -174,20 +175,25 @@ class _ChatroomBodyState extends State<ChatroomBody>
                               );
                               // 如果两条消息之间跨度大
                               Timestamp previous;
-                              // 如果是第一条新消息
+                              // 是否总消息数量超过阈值
                               if (chatroomController.allMessageNum >
                                   ChatroomController.switchMessageNum) {
-                                // 有历史消息
-                                if (chatroomController
-                                    .oldMessageList.isNotEmpty) {
-                                  previous =
-                                      chatroomController.oldMessageList[0].time;
+                                if (index == 0) {
+                                  if (chatroomController
+                                      .oldMessageList.isNotEmpty) {
+                                    previous = chatroomController
+                                        .oldMessageList[0].time;
+                                  } else {
+                                    // 没有历史消息
+                                    previous = chatroomController
+                                        .newMessageList[index].time;
+                                  }
                                 } else {
-                                  // 没有历史消息
                                   previous = chatroomController
-                                      .newMessageList[index].time;
+                                      .newMessageList[index - 1].time;
                                 }
                               } else {
+                                // 是第一条新消息
                                 if (index + 1 ==
                                     chatroomController.newMessageList.length) {
                                   if (chatroomController
@@ -249,6 +255,7 @@ class _ChatroomBodyState extends State<ChatroomBody>
                               (_, index) {
                                 // logger0.d('newindex: $index');
                                 Widget child = ChatroomMessageTile(
+                                  friendAvatarURL: chatroomController.avatarURL,
                                   sendTime: chatroomController
                                       .oldMessageList[index].time,
                                   senderName: chatroomController

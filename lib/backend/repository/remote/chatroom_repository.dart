@@ -13,7 +13,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 /// ！！！static function 不能 access object data
 
 /// 能夠給其他Function調用Firebase所儲存的資料
-/// TODO: 编写 ChatroomApi
 class ChatroomRepository extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final CollectionReference _chatroomsCollection =

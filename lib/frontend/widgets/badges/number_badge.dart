@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:paclub/frontend/constants/colors.dart';
 
 class NumberBadge extends StatelessWidget {
   const NumberBadge({
     Key? key,
-    this.color = Colors.red,
+    this.color = accentColor,
     required this.number,
     this.maxNumber = 999,
     this.border,

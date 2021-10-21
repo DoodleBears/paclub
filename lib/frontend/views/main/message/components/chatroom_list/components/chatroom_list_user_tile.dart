@@ -8,9 +8,8 @@ import 'package:paclub/frontend/views/main/app_controller.dart';
 import 'package:paclub/frontend/widgets/badges/badges.dart';
 import 'package:paclub/helper/chatroom_helper.dart';
 
-///此Function為搜尋完畢後的用戶名單頁面
-// TODO 头像显示
 class ChatroomsListUserTile extends StatelessWidget {
+  final String avatarURL;
   final String userUid;
   final String userName;
   final String chatroomId;
@@ -18,13 +17,15 @@ class ChatroomsListUserTile extends StatelessWidget {
   final Timestamp lastMessageTime;
   final int messageNotRead;
 
-  ChatroomsListUserTile(
-      {required this.userName,
-      required this.chatroomId,
-      required this.userUid,
-      required this.lastMessage,
-      required this.messageNotRead,
-      required this.lastMessageTime});
+  ChatroomsListUserTile({
+    required this.userName,
+    required this.chatroomId,
+    required this.userUid,
+    required this.lastMessage,
+    required this.messageNotRead,
+    required this.lastMessageTime,
+    required this.avatarURL,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +39,7 @@ class ChatroomsListUserTile extends StatelessWidget {
             'chatroomId': chatroomId,
             'userUid': userUid,
             'messageNotRead': messageNotRead,
+            'avatarURL': avatarURL,
           },
         );
         // 离开房间
@@ -59,16 +61,32 @@ class ChatroomsListUserTile extends StatelessWidget {
                   // 头像
                   Container(
                     margin: EdgeInsets.only(right: 12.0),
-                    height: 60.0,
-                    width: 60.0,
-                    decoration: BoxDecoration(
-                        color: accentColor,
-                        borderRadius: BorderRadius.circular(30)),
-                    child: Center(
-                      child: Text(userName.substring(0, 1),
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold)),
+                    child: ClipOval(
+                      child: Material(
+                        color: primaryDarkColor,
+                        child: avatarURL == ''
+                            ? Container(
+                                width: 60.0,
+                                height: 60.0,
+                                child: Center(
+                                  child: Text(
+                                      userName.substring(0, 1).toUpperCase(),
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize: 24.0,
+                                          fontWeight: FontWeight.bold)),
+                                ),
+                              )
+                            : Ink.image(
+                                image: NetworkImage(avatarURL),
+                                fit: BoxFit.cover,
+                                width: 60.0,
+                                height: 60.0,
+                                child: InkWell(
+                                  onTap: () async {},
+                                ),
+                              ),
+                      ),
                     ),
                   ),
                   // 其他文本内容

@@ -11,7 +11,6 @@ class ChatroomListController extends GetxController {
   final friendsStream = List<FriendModel>.empty().obs;
   List<FriendModel> friendList = <FriendModel>[];
 
-  // TODO: 替换为 chatroomRepository 为 Module
   final ChatroomModule chatroomModule = Get.find<ChatroomModule>();
   final UserModule userModule = Get.find<UserModule>();
 

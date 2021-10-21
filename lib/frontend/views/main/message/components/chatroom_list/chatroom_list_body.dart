@@ -22,6 +22,7 @@ class ChatroomListBody extends GetView<ChatroomListController> {
 
             final userName = friendModel.friendName;
             return ChatroomsListUserTile(
+              avatarURL: friendModel.avatarURL,
               lastMessageTime: friendModel.lastMessageTime,
               lastMessage: friendModel.lastMessage,
               messageNotRead: friendModel.messageNotRead,

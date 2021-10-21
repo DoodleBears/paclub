@@ -7,6 +7,11 @@ const String kUpdateUserlastLoginAtFailed = 'update_user_last_login_failed';
 const String kUpdateUserProfileSuccess = 'update_user_profile_success';
 const String kUpdateUserProfileFailed = 'update_user_profile_failed';
 
+const String kUpdateUserFriendProfileSuccess =
+    'update_user_friend_profile_success';
+const String kUpdateUserFriendProfileFailed =
+    'update_user_friend_profile_failed';
+
 const String kUploadImageSuccess = 'upload_image_success';
 const String kUploadImageFailed = 'upload_image_failed';
 

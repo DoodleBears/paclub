@@ -25,7 +25,8 @@ class UserModule extends GetxController {
 
   // MARK: UserApi
   // MARK: GET 部分
-  Future<AppResponse> getUserProfile() async => _userApi.getUserProfile();
+  Future<AppResponse> getUserProfile({required String uid}) async =>
+      _userApi.getUserProfile(uid: uid);
 
   Stream<List<FriendModel>> getFriendChatroomListStream(String uid) =>
       _userApi.getFriendChatroomListStream(uid: uid);
@@ -53,6 +54,12 @@ class UserModule extends GetxController {
           friendType: friendType);
 
   // MARK: UPDATE 部分
+  Future<AppResponse> updateFriendProfile({
+    required String friendUid,
+    required Map<String, dynamic> updateMap,
+  }) async =>
+      _userApi.updateFriendProfile(friendUid: friendUid, updateMap: updateMap);
+
   Future<AppResponse> updateUserProfile(
       {File? imageFile, required Map<String, dynamic> updateMap}) async {
     // NOTE: 如果有更新头像图片, 则先连接 Firebase Storage 上传图片
@@ -66,6 +73,7 @@ class UserModule extends GetxController {
     }
     // NOTE: 更新 Profile
     return _userApi.updateUserProfile(
+      uid: AppConstants.uuid,
       updateMap: updateMap,
     );
   }

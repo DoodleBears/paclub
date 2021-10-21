@@ -5,6 +5,7 @@ import 'package:flutter_app_badger/flutter_app_badger.dart';
 import 'package:get/get.dart';
 import 'package:paclub/frontend/modules/user_module.dart';
 import 'package:paclub/frontend/widgets/widgets.dart';
+import 'package:paclub/helper/app_constants.dart';
 import 'package:paclub/helper/image_helper.dart';
 import 'package:paclub/models/user_model.dart';
 import 'package:paclub/utils/app_response.dart';
@@ -22,10 +23,8 @@ class UserController extends GetxController {
   bool isProfileEdited = false;
   bool isInitialized = false;
   bool isSaveLoading = false;
-  // TODO: 将该 imagePath 来源改为 Link (Firebase Storage)
   File? imageFile;
 
-  // TODO: 更新用户资料同步到 server
   Future<void> updateUserProfile() async {
     if (isSaveLoading || isProfileEdited == false) {
       return;
@@ -102,8 +101,8 @@ class UserController extends GetxController {
 
   @override
   void onInit() async {
-    // TODO: 从服务器请求用户 Profile Data
-    AppResponse appResponse = await _userModule.getUserProfile();
+    AppResponse appResponse =
+        await _userModule.getUserProfile(uid: AppConstants.uuid);
     if (appResponse.data != null) {
       currentUserModel = appResponse.data;
       avatarURLNew = currentUserModel.avatarURL;

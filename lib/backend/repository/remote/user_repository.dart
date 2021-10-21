@@ -8,8 +8,6 @@ import 'package:paclub/utils/app_response.dart';
 import 'package:paclub/utils/logger.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-///能夠給其他Function調用Firebase所儲存的資料
-// TODO: 支持用户上传头像
 class UserRepository extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   // final FirebaseStorage _storage = FirebaseStorage.instance;
@@ -36,8 +34,8 @@ class UserRepository extends GetxController {
 
 // MARK: GET 部分
   /// NOTE: 获取用户信息
-  Future<AppResponse> getUserProfile() async {
-    return _usersCollection.doc(AppConstants.uuid).get().then(
+  Future<AppResponse> getUserProfile({required String uid}) async {
+    return _usersCollection.doc(uid).get().then(
       (doc) => AppResponse(
           kGetUserProfileSuccess, UserModel.fromDoucumentSnapshot(doc)),
       onError: (e) {
@@ -178,15 +176,35 @@ class UserRepository extends GetxController {
 
   // MARK: UPDATE 部分
 
-  /// NOTE: 修改用户头像
-  // TODO: 更新用户信息
+  /// NOTE: 修改用户的 Friend 的 Profile
+  Future<AppResponse> updateFirendProfile({
+    required String friendUid,
+    required Map<String, dynamic> updateMap,
+  }) async {
+    logger.i('开始更新 Friend 的 Profile Data');
+
+    return await _usersCollection
+        .doc(AppConstants.uuid)
+        .collection('friends')
+        .doc(friendUid)
+        .update(updateMap)
+        .then((_) {
+      logger.i('更新 Friend 的 Profile Data 成功');
+      return AppResponse(kUpdateUserFriendProfileSuccess, updateMap);
+    }, onError: (e) {
+      logger.e('更新 Friend 的 Profile Data 失败, error: ${e.runtimeType}');
+      return AppResponse(kUpdateUserFriendProfileFailed, null);
+    });
+  }
+
+  /// NOTE: 修改用户 Profile
   Future<AppResponse> updateUserProfile({
+    required String uid,
     required Map<String, dynamic> updateMap,
   }) async {
     logger.i('开始更新 Profile Data');
 
-    // NOTE: 将头像的 Url 存放在 Firestore
-    return await _usersCollection.doc(AppConstants.uuid).update(updateMap).then(
+    return await _usersCollection.doc(uid).update(updateMap).then(
         (_) => AppResponse(kUpdateUserProfileSuccess, updateMap), onError: (e) {
       logger.e('更新 ProfileData 失败, error: ${e.runtimeType}');
       return AppResponse(kUpdateUserProfileFailed, null);

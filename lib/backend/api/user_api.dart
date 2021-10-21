@@ -14,8 +14,8 @@ class UserApi extends GetxController {
   /// - [AppResponse]
   ///   - message: [String]错误代码
   ///   - data: 成功: [UserModel] 用户信息 | 失败: null
-  Future<AppResponse> getUserProfile() async =>
-      _userRepository.getUserProfile();
+  Future<AppResponse> getUserProfile({required String uid}) async =>
+      _userRepository.getUserProfile(uid: uid);
 
   /// ## NOTE: 获取好友列表（聊天列表）
   /// ## 传入参数
@@ -51,17 +51,37 @@ class UserApi extends GetxController {
       _userRepository.getUserSearchResult(searchText: searchText);
 
   // MARK: SET 部分
-  /// NOTE: 修改用户头像
+  /// NOTE: 修改用户的 Friend 的 Profile
   /// ## 传入参数
-  /// - [imageFile] 图片源文件
+  /// - [friendUid] 朋友的 uid
+  /// - [updateMap] 需要更新的 key-value Map
   ///
   /// ## 回传值
   /// - [AppResponse]
   ///   - message: [String]错误代码
-  ///   - data: 成功: [String] 图片的URL | 失败: null
-  Future<AppResponse> updateUserProfile(
-          {required Map<String, dynamic> updateMap}) async =>
+  ///   - data: 成功: [Map] 被更新的 key-value Map | 失败: null
+  Future<AppResponse> updateFriendProfile({
+    required String friendUid,
+    required Map<String, dynamic> updateMap,
+  }) async =>
+      _userRepository.updateFirendProfile(
+          friendUid: friendUid, updateMap: updateMap);
+
+  /// NOTE: 修改用户 Profile
+  /// ## 传入参数
+  /// - [uid] 需要更新的 User 的 uid
+  /// - [updateMap] 需要更新的 key-value Map
+  ///
+  /// ## 回传值
+  /// - [AppResponse]
+  ///   - message: [String]错误代码
+  ///   - data: 成功: [Map] 被更新的 key-value Map | 失败: null
+  Future<AppResponse> updateUserProfile({
+    required String uid,
+    required Map<String, dynamic> updateMap,
+  }) async =>
       _userRepository.updateUserProfile(
+        uid: uid,
         updateMap: updateMap,
       );
   // MARK: ADD 部分
