@@ -1,7 +1,6 @@
-import 'package:paclub/backend/repository/remote/chatroom_repository.dart';
 import 'package:paclub/frontend/modules/chatroom_module.dart';
 import 'package:paclub/frontend/modules/user_module.dart';
-import 'package:paclub/frontend/views/main/user/user_controller.dart';
+import 'package:paclub/frontend/views/main/app_controller.dart';
 import 'package:paclub/helper/app_constants.dart';
 import 'package:paclub/models/friend_model.dart';
 import 'package:paclub/utils/logger.dart';
@@ -16,7 +15,7 @@ class ChatroomListController extends GetxController {
   final ChatroomModule chatroomModule = Get.find<ChatroomModule>();
   final UserModule userModule = Get.find<UserModule>();
 
-  final UserController userController = Get.find<UserController>();
+  final AppController userController = Get.find<AppController>();
 
   @override
   void onInit() async {

@@ -22,10 +22,6 @@ class RegisterFormController extends GetxController {
         hideKeyboard(context);
         update(['form_1', 'form_2', 'progress_bar']);
       } else if (page == 2) {
-        page++;
-        hideKeyboard(context);
-        update(['form_2', 'form_3', 'progress_bar']);
-      } else if (page == 3) {
         // NOTE: 最后一页，选择完头像之后，便结束了注册表单的填写
         Get.toNamed(Routes.AUTH + Routes.REGISTER_ACCOUNT);
       }
@@ -36,9 +32,6 @@ class RegisterFormController extends GetxController {
     if (page == 2) {
       page--;
       update(['form_1', 'form_2', 'progress_bar']);
-    } else if (page == 3) {
-      page--;
-      update(['form_2', 'form_3', 'progress_bar']);
     }
   }
 

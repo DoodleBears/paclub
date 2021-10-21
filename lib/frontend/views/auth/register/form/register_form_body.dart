@@ -4,7 +4,6 @@ import 'package:paclub/frontend/constants/constants.dart';
 import 'package:paclub/frontend/views/auth/login/components/components.dart';
 import 'package:paclub/frontend/views/auth/register/form/components/register_form_1.dart';
 import 'package:paclub/frontend/views/auth/register/form/components/register_form_2.dart';
-import 'package:paclub/frontend/views/auth/register/form/components/register_form_3.dart';
 import 'package:paclub/frontend/views/auth/register/form/register_form_controller.dart';
 import 'package:paclub/frontend/widgets/widgets.dart';
 
@@ -24,8 +23,6 @@ class RegisterFormBody extends GetView<RegisterFormController> {
               RegisterForm1(),
               // 自我介绍
               RegisterForm2(),
-              // 头像选择
-              RegisterForm3(),
               SizedBox(height: 3 + Get.height * 0.02),
               // 下一页按钮
               RoundedLoadingButton(
@@ -48,7 +45,7 @@ class RegisterFormBody extends GetView<RegisterFormController> {
                   isShow: true,
                   color: accentColor,
                   height: 4.0,
-                  width: Get.width * (controller.page / 3),
+                  width: Get.width * (controller.page / 2),
                 ),
               );
             },

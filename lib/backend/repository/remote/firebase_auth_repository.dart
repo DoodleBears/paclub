@@ -178,11 +178,13 @@ class FirebaseAuthRepository extends GetxController {
 
       final UserApi userApi = Get.find<UserApi>();
       AppResponse appResponse = await userApi.addUser(
-          userModel: UserModel(
-              uid: user.uid,
-              displayName: user.displayName!,
-              email: email,
-              bio: ''));
+        userModel: UserModel(
+            uid: user.uid,
+            displayName: user.displayName!,
+            avatarURL: '',
+            email: email,
+            bio: ''),
+      );
 
       if (appResponse.data == null) {
         logger3.e('添加用户信息到 firestore/user 失败');
@@ -238,6 +240,7 @@ class FirebaseAuthRepository extends GetxController {
           userModel: UserModel(
               uid: user.uid,
               displayName: user.displayName!,
+              avatarURL: user.photoURL ?? '',
               email: user.email!,
               bio: ''));
 

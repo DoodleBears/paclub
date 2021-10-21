@@ -4,6 +4,12 @@ const String kAddUserSuccess = 'add_user_success';
 const String kUpdateUserlastLoginAtSuccess = 'update_user_last_login_success';
 const String kUpdateUserlastLoginAtFailed = 'update_user_last_login_failed';
 
+const String kUpdateUserProfileSuccess = 'update_user_profile_success';
+const String kUpdateUserProfileFailed = 'update_user_profile_failed';
+
+const String kUploadImageSuccess = 'upload_image_success';
+const String kUploadImageFailed = 'upload_image_failed';
+
 const String kAddFriendFailed = 'add_friend_failed';
 const String kAddFriendSuccess = 'add_friend_success';
 
@@ -20,6 +26,9 @@ const String kGetFirendChatroomNotReadSuccess = 'get_chatroom_not_read_success';
 
 const String kUpdateUserInRoomFailed = 'update_user_in_room_failed';
 const String kUpdateUserInRoomSuccess = 'update_user_in_room_success';
+
+const String kGetUserProfileFailed = 'get_user_profile_failed';
+const String kGetUserProfileSuccess = 'get_user_profile_success';
 
 const String kSearchUserFailed = 'search_user_failed';
 const String kSearchUserSuccess = 'search_user_success';

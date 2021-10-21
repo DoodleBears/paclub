@@ -8,6 +8,15 @@ import 'package:paclub/utils/logger.dart';
 class UserApi extends GetxController {
   final UserRepository _userRepository = Get.find<UserRepository>();
   // MARK: GET 部分
+  /// NOTE: 获取用户信息
+  ///
+  /// ## 回传值
+  /// - [AppResponse]
+  ///   - message: [String]错误代码
+  ///   - data: 成功: [UserModel] 用户信息 | 失败: null
+  Future<AppResponse> getUserProfile() async =>
+      _userRepository.getUserProfile();
+
   /// ## NOTE: 获取好友列表（聊天列表）
   /// ## 传入参数
   /// - [uid] 好友 uid
@@ -41,6 +50,20 @@ class UserApi extends GetxController {
   Future<AppResponse> getUserSearchResult({required String searchText}) async =>
       _userRepository.getUserSearchResult(searchText: searchText);
 
+  // MARK: SET 部分
+  /// NOTE: 修改用户头像
+  /// ## 传入参数
+  /// - [imageFile] 图片源文件
+  ///
+  /// ## 回传值
+  /// - [AppResponse]
+  ///   - message: [String]错误代码
+  ///   - data: 成功: [String] 图片的URL | 失败: null
+  Future<AppResponse> updateUserProfile(
+          {required Map<String, dynamic> updateMap}) async =>
+      _userRepository.updateUserProfile(
+        updateMap: updateMap,
+      );
   // MARK: ADD 部分
   /// ## NOTE: 添加新用户（设置信息）
   /// 如果用户登录，则更新上次登录时间

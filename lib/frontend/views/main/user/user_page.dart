@@ -4,7 +4,6 @@ import 'package:paclub/frontend/views/main/user/profile/profile_page.dart';
 class UserPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // Get.put(UserController());
     return ProfilePage();
   }
 }

@@ -1,4 +1,3 @@
-import 'package:paclub/backend/repository/remote/chatroom_repository.dart';
 import 'package:paclub/frontend/modules/chatroom_module.dart';
 import 'package:paclub/frontend/modules/user_module.dart';
 import 'package:paclub/frontend/widgets/widgets.dart';

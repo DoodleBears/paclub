@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
 import 'package:paclub/backend/api/user_api.dart';
-import 'package:paclub/backend/repository/remote/chatroom_repository.dart';
 import 'package:paclub/backend/repository/remote/user_repository.dart';
 import 'package:paclub/frontend/modules/user_module.dart';
 import 'package:paclub/frontend/views/main/message/components/chatroom/chatroom_controller.dart';

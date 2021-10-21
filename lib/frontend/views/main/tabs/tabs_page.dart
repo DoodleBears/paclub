@@ -7,7 +7,7 @@ import 'package:paclub/frontend/views/main/home/home_page.dart';
 import 'package:paclub/frontend/views/main/message/message_page.dart';
 import 'package:paclub/frontend/views/main/notification/notification_page.dart';
 import 'package:paclub/frontend/views/main/tabs/tabs_controller.dart';
-import 'package:paclub/frontend/views/main/user/user_controller.dart';
+import 'package:paclub/frontend/views/main/app_controller.dart';
 import 'package:paclub/frontend/views/main/user/user_page.dart';
 import 'package:paclub/frontend/widgets/widgets.dart';
 import 'package:paclub/utils/logger.dart';
@@ -23,7 +23,7 @@ class Tabs extends GetView<TabsController> {
 
   @override
   Widget build(BuildContext context) {
-    UserController userController = Get.find<UserController>();
+    AppController userController = Get.find<AppController>();
     logger.i('渲染 —— Tabs');
     return WillPopScope(
       // * 如果用户不在Home页面时，使用系统返回键会先返回Home，不会直接退出
@@ -36,7 +36,7 @@ class Tabs extends GetView<TabsController> {
         }
         return false;
       },
-      child: GetBuilder<UserController>(builder: (_) {
+      child: GetBuilder<AppController>(builder: (_) {
         return GetBuilder<TabsController>(builder: (_) {
           return Scaffold(
             backgroundColor: AppColors.bottomNavigationBarBackgroundColor,
@@ -86,7 +86,7 @@ class Tabs extends GetView<TabsController> {
                                   Positioned(
                                     top: -6.0,
                                     right: -10.0,
-                                    child: GetBuilder<UserController>(
+                                    child: GetBuilder<AppController>(
                                       builder: (_) {
                                         return _buildBadge(userController);
                                       },
@@ -101,7 +101,7 @@ class Tabs extends GetView<TabsController> {
                                   Positioned(
                                     right: -10.0,
                                     top: -6.0,
-                                    child: GetBuilder<UserController>(
+                                    child: GetBuilder<AppController>(
                                       builder: (_) {
                                         return _buildBadge(userController);
                                       },
@@ -142,7 +142,7 @@ class Tabs extends GetView<TabsController> {
     );
   }
 
-  NumberBadge _buildBadge(UserController userController) {
+  NumberBadge _buildBadge(AppController userController) {
     return NumberBadge(
       number: userController.messageNotReadAll,
       maxNumber: 99,

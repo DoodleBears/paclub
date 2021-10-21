@@ -14,6 +14,7 @@ class RoundedInputField extends StatelessWidget {
   final int maxLines;
   final bool error;
   final String? errorText;
+  final TextEditingController? controller;
   final String? counterText;
   final FloatingLabelBehavior floatingLabelBehavior;
   final int maxLength;
@@ -42,6 +43,7 @@ class RoundedInputField extends StatelessWidget {
     this.errorText,
     this.counterText,
     this.floatingLabelBehavior = FloatingLabelBehavior.always,
+    this.controller,
   }) : super(key: key);
 
   @override
@@ -49,6 +51,7 @@ class RoundedInputField extends StatelessWidget {
     return Container(
       width: Get.width * 0.8,
       child: TextField(
+        controller: controller,
         inputFormatters: [
           LengthLimitingTextFieldFormatterFixed(maxLength),
         ],

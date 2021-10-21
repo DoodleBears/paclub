@@ -4,7 +4,7 @@ import 'package:paclub/frontend/modules/user_module.dart';
 import 'package:paclub/frontend/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:paclub/frontend/views/main/user/user_controller.dart';
+import 'package:paclub/frontend/views/main/app_controller.dart';
 import 'package:paclub/frontend/widgets/badges/badges.dart';
 import 'package:paclub/helper/chatroom_helper.dart';
 
@@ -46,7 +46,7 @@ class ChatroomsListUserTile extends StatelessWidget {
       },
 
       ///每位用戶顯示於名單上的UI介面
-      child: GetBuilder<UserController>(
+      child: GetBuilder<AppController>(
         builder: (_) {
           return Container(
             color: AppColors.chatroomTileBackgroundColor,

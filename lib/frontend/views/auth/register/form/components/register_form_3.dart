@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:paclub/frontend/constants/colors.dart';
 import 'package:paclub/frontend/views/auth/register/form/register_form_controller.dart';
-import 'package:paclub/frontend/views/main/user/user_controller.dart';
+import 'package:paclub/frontend/views/main/app_controller.dart';
 import 'package:paclub/frontend/widgets/containers/fade_in_scale_container.dart';
 import 'package:paclub/utils/logger.dart';
 
@@ -12,7 +12,7 @@ class RegisterForm3 extends GetView<RegisterFormController> {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<UserController>(
+    return GetBuilder<AppController>(
       builder: (_) {
         return GetBuilder<RegisterFormController>(
           assignId: true,

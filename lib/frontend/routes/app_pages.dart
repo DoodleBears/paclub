@@ -18,6 +18,7 @@ import 'package:paclub/frontend/views/main/notification/notification_page.dart';
 import 'package:paclub/frontend/views/main/tabs/tabs_binding.dart';
 import 'package:paclub/frontend/views/auth/login/login_binding.dart';
 import 'package:paclub/frontend/views/auth/login/login_page.dart';
+import 'package:paclub/frontend/views/main/user/edit_profile/edit_profile_binding.dart';
 import 'package:paclub/frontend/views/main/user/edit_profile/edit_profile_page.dart';
 import 'package:paclub/frontend/views/main/user/user_binding.dart';
 import 'package:paclub/frontend/views/main/user/user_page.dart';
@@ -140,7 +141,7 @@ abstract class AppPages {
               children: [
                 GetPage(
                   name: Routes.EDIT_PROFILE,
-                  // binding: TabsBinding(),
+                  binding: EditProfileBinding(),
                   page: () => EditProfilePage(),
                   customTransition: TopLeftMaskBelowLeftLinearTransitions(),
                   popGesture: true,

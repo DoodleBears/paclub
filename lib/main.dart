@@ -13,7 +13,7 @@ import 'package:paclub/frontend/utils/gesture.dart';
 import 'package:paclub/frontend/routes/app_binding.dart';
 import 'package:paclub/frontend/routes/app_pages.dart';
 import 'package:paclub/frontend/utils/dependency_injection.dart';
-import 'package:paclub/frontend/views/main/user/user_controller.dart';
+import 'package:paclub/frontend/views/main/app_controller.dart';
 import 'package:paclub/utils/logger.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -36,7 +36,7 @@ Future<void> main() async {
 
   // 注入UserPreference
   await UserPreference.init();
-  Get.lazyPut<UserController>(() => UserController());
+  Get.lazyPut<AppController>(() => AppController());
 
   runApp(App());
 }
@@ -48,7 +48,7 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   final Future<FirebaseApp> _initialization = Firebase.initializeApp();
-  final UserController userController = Get.find<UserController>();
+  final AppController userController = Get.find<AppController>();
 
   @override
   void initState() {
@@ -57,6 +57,7 @@ class _AppState extends State<App> {
     var window = WidgetsBinding.instance!.window;
     Brightness brightness = window.platformBrightness;
     setState(() {
+      // TODO: 用户自定义亮暗模式（不跟随系统）
       if (brightness == Brightness.light) {
         AppColors.lightMode();
         userController.isDarkMode = false;
@@ -111,7 +112,7 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     logger.i('渲染 App');
 
-    return GetBuilder<UserController>(
+    return GetBuilder<AppController>(
       builder: (_) {
         return FutureBuilder(
           future: _initialization,

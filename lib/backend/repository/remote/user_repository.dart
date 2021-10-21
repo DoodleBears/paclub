@@ -12,6 +12,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 // TODO: 支持用户上传头像
 class UserRepository extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  // final FirebaseStorage _storage = FirebaseStorage.instance;
   final CollectionReference _usersCollection =
       FirebaseFirestore.instance.collection('users');
 
@@ -34,6 +35,18 @@ class UserRepository extends GetxController {
   }
 
 // MARK: GET 部分
+  /// NOTE: 获取用户信息
+  Future<AppResponse> getUserProfile() async {
+    return _usersCollection.doc(AppConstants.uuid).get().then(
+      (doc) => AppResponse(
+          kGetUserProfileSuccess, UserModel.fromDoucumentSnapshot(doc)),
+      onError: (e) {
+        logger3.e('获取用户消息失败');
+        return AppResponse(kGetUserProfileFailed, null);
+      },
+    );
+  }
+
   /// NOTE: 获取好友列表（聊天列表）
   Stream<List<FriendModel>> getFriendChatroomListStream({required String uid}) {
     logger.i('获取聊天列表资料 uid:' + uid);
@@ -163,7 +176,22 @@ class UserRepository extends GetxController {
     );
   }
 
-// MARK: UPDATE 部分
+  // MARK: UPDATE 部分
+
+  /// NOTE: 修改用户头像
+  // TODO: 更新用户信息
+  Future<AppResponse> updateUserProfile({
+    required Map<String, dynamic> updateMap,
+  }) async {
+    logger.i('开始更新 Profile Data');
+
+    // NOTE: 将头像的 Url 存放在 Firestore
+    return await _usersCollection.doc(AppConstants.uuid).update(updateMap).then(
+        (_) => AppResponse(kUpdateUserProfileSuccess, updateMap), onError: (e) {
+      logger.e('更新 ProfileData 失败, error: ${e.runtimeType}');
+      return AppResponse(kUpdateUserProfileFailed, null);
+    });
+  }
 
   /// NOTE: 但有新 message 发送到聊天室时，需要更新更新双方的 messageNotRead 和 lastMessage, lastMessageTime
   Future<AppResponse> updateFriendLastMessage({

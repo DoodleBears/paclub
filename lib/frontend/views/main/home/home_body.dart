@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:paclub/frontend/views/main/home/home_controller.dart';
 import 'package:paclub/frontend/views/main/home/home_follow/home_follow_page.dart';
 import 'package:paclub/frontend/views/main/home/home_hot/home_hot_page.dart';
-import 'package:paclub/frontend/views/main/user/user_controller.dart';
+import 'package:paclub/frontend/views/main/app_controller.dart';
 
 class HomeBody extends GetView<HomeController> {
   const HomeBody({Key? key}) : super(key: key);
@@ -67,7 +67,7 @@ class HomeBody extends GetView<HomeController> {
               )
             ];
           },
-          body: GetBuilder<UserController>(
+          body: GetBuilder<AppController>(
             builder: (_) {
               return TabBarView(
                 dragStartBehavior: DragStartBehavior.down,

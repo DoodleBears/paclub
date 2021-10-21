@@ -1,5 +1,9 @@
+import 'dart:io';
+
 import 'package:get/get.dart';
+import 'package:paclub/backend/api/firebase_storage_api.dart';
 import 'package:paclub/backend/api/user_api.dart';
+import 'package:paclub/helper/app_constants.dart';
 import 'package:paclub/models/friend_model.dart';
 import 'package:paclub/models/user_model.dart';
 import 'package:paclub/utils/app_response.dart';
@@ -7,6 +11,21 @@ import 'package:paclub/utils/logger.dart';
 
 class UserModule extends GetxController {
   final UserApi _userApi = Get.find<UserApi>();
+
+  // MARK: FirebaseStorageApi
+  Future<AppResponse> uploadAvatar({
+    required File imageFile,
+  }) async {
+    final FirebaseStorageApi _firebaseStorageApi =
+        Get.find<FirebaseStorageApi>();
+
+    return _firebaseStorageApi.uploadImage(
+        imageFile: imageFile, filePath: 'userAvatar/${AppConstants.uuid}');
+  }
+
+  // MARK: UserApi
+  // MARK: GET 部分
+  Future<AppResponse> getUserProfile() async => _userApi.getUserProfile();
 
   Stream<List<FriendModel>> getFriendChatroomListStream(String uid) =>
       _userApi.getFriendChatroomListStream(uid: uid);
@@ -18,6 +37,7 @@ class UserModule extends GetxController {
   Future<AppResponse> getUserSearchResult({required String searchText}) async =>
       _userApi.getUserSearchResult(searchText: searchText);
 
+  // MARK: ADD 部分
   Future<AppResponse> addUser(UserModel userModel) async =>
       _userApi.addUser(userModel: userModel);
 
@@ -31,6 +51,24 @@ class UserModule extends GetxController {
           friendUid: friendUid,
           friendName: friendName,
           friendType: friendType);
+
+  // MARK: UPDATE 部分
+  Future<AppResponse> updateUserProfile(
+      {File? imageFile, required Map<String, dynamic> updateMap}) async {
+    // NOTE: 如果有更新头像图片, 则先连接 Firebase Storage 上传图片
+    if (imageFile != null) {
+      AppResponse appResponseUpload = await uploadAvatar(imageFile: imageFile);
+      if (appResponseUpload.data != null) {
+        updateMap['avatarURL'] = appResponseUpload.data;
+      } else {
+        return appResponseUpload;
+      }
+    }
+    // NOTE: 更新 Profile
+    return _userApi.updateUserProfile(
+      updateMap: updateMap,
+    );
+  }
 
   Future<AppResponse> updateFriendLastMessage({
     required String message,
@@ -46,6 +84,7 @@ class UserModule extends GetxController {
   }) async =>
       _userApi.updateUserInRoom(friendUid: friendUid, isInRoom: isInRoom);
 
+  // MARK: 初始化
   @override
   void onInit() {
     logger.i('调用 UserModule');
