@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
-import 'package:paclub/backend/api/auth_api.dart';
+import 'package:paclub/backend/api/firebase_auth_api.dart';
 import 'package:paclub/frontend/routes/app_pages.dart';
 import 'package:paclub/frontend/widgets/notifications/notifications.dart';
 import 'package:paclub/utils/logger.dart';
@@ -8,7 +8,7 @@ import 'package:paclub/utils/app_response.dart';
 
 /// [认证模块]
 class AuthModule extends GetxController {
-  final AuthApi _authApi = Get.find<AuthApi>();
+  final FirebaseAuthApi _authApi = Get.find<FirebaseAuthApi>();
 
   bool isLogin() {
     return _authApi.isLogin();

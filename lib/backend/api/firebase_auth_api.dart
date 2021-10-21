@@ -4,7 +4,7 @@ import 'package:paclub/backend/repository/remote/firebase_auth_repository.dart';
 import 'package:paclub/utils/logger.dart';
 import 'package:paclub/utils/app_response.dart';
 
-class AuthApi extends GetxController {
+class FirebaseAuthApi extends GetxController {
   // 依赖于 FirebaseAuthRepository，所以不能是 static function
   // 在这里我们选择API要接入的实际操作后端（有SQL代码）的Repository，调用其function
   // API 对 Repository 是一对多的关系（同理 Module 对 API 也是一对多）

@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:paclub/backend/api/auth_api.dart';
+import 'package:paclub/backend/api/firebase_auth_api.dart';
 import 'package:paclub/backend/repository/remote/firebase_auth_repository.dart';
 import 'package:paclub/frontend/modules/auth_module.dart';
 import 'package:paclub/frontend/views/main/home/home_controller.dart';
@@ -13,7 +13,7 @@ class HomeBinding implements Bindings {
 
     /// Controller 用到的 Module 和 API
     Get.lazyPut<FirebaseAuthRepository>(() => FirebaseAuthRepository());
-    Get.lazyPut<AuthApi>(() => AuthApi());
+    Get.lazyPut<FirebaseAuthApi>(() => FirebaseAuthApi());
     Get.lazyPut<AuthModule>(() => AuthModule());
 
     /// View 用到的 Controller

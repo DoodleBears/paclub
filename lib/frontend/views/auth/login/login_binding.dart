@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:paclub/backend/api/auth_api.dart';
+import 'package:paclub/backend/api/firebase_auth_api.dart';
 import 'package:paclub/backend/api/user_api.dart';
 import 'package:paclub/backend/repository/remote/firebase_auth_repository.dart';
 import 'package:paclub/backend/repository/remote/user_repository.dart';
@@ -21,7 +21,7 @@ class LoginBinding implements Bindings {
     Get.lazyPut<UserModule>(() => UserModule());
 
     Get.lazyPut<FirebaseAuthRepository>(() => FirebaseAuthRepository());
-    Get.lazyPut<AuthApi>(() => AuthApi());
+    Get.lazyPut<FirebaseAuthApi>(() => FirebaseAuthApi());
     Get.lazyPut<AuthModule>(() => AuthModule());
 
     /// View 用到的 Controller
