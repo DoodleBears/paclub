@@ -1,5 +1,6 @@
 import 'package:paclub/frontend/modules/chatroom_module.dart';
 import 'package:paclub/frontend/modules/user_module.dart';
+import 'package:paclub/frontend/utils/gesture.dart';
 import 'package:paclub/frontend/widgets/widgets.dart';
 import 'package:paclub/helper/app_constants.dart';
 import 'package:paclub/helper/chatroom_helper.dart';
@@ -33,7 +34,8 @@ class UserSearchController extends GetxController {
     super.onClose();
   }
 
-  void searchByName() async {
+  void searchByName(BuildContext context) async {
+    hideKeyboard(context);
     searchText = searchTextController.text;
     if (searchText.isNotEmpty && isLoading == false) {
       // 告诉用户，开始加载搜索结果

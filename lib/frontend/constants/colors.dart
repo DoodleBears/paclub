@@ -23,6 +23,7 @@ class AppColors {
   // NOTE: Home
   static Color? homeListViewBackgroundColor = Colors.grey[200];
   // NOTE: General Widget
+  static Color? bottomNavigationBarTabColor = Colors.black;
   static Color? bottomNavigationBarBackgroundColor = Colors.white;
   static Color? refreshIndicatorColor = Colors.white;
   static Color? divideLineColor = Colors.grey[200];
@@ -43,8 +44,9 @@ class AppColors {
     // NOTE: Home
     homeListViewBackgroundColor = Colors.grey[200];
     // NOTE: General Widget
-    refreshIndicatorColor = Colors.white;
+    bottomNavigationBarTabColor = Colors.black;
     bottomNavigationBarBackgroundColor = Colors.white;
+    refreshIndicatorColor = Colors.white;
     divideLineColor = Colors.grey[200];
   }
 
@@ -64,8 +66,9 @@ class AppColors {
     // NOTE: Home
     homeListViewBackgroundColor = Colors.black;
     // NOTE: General Widget
-    refreshIndicatorColor = Colors.grey[900];
+    bottomNavigationBarTabColor = Colors.white;
     bottomNavigationBarBackgroundColor = Colors.black;
+    refreshIndicatorColor = Colors.grey[900];
     divideLineColor = Colors.grey[850];
   }
 }

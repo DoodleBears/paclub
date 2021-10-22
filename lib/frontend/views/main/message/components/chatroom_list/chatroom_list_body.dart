@@ -1,3 +1,4 @@
+import 'package:paclub/frontend/widgets/others/app_scroll_behavior.dart';
 import 'package:paclub/helper/app_constants.dart';
 import 'package:paclub/helper/chatroom_helper.dart';
 import 'package:paclub/models/friend_model.dart';
@@ -13,25 +14,28 @@ class ChatroomListBody extends GetView<ChatroomListController> {
     logger.d('渲染 charRoomsListBody');
     return Container(
       child: GetBuilder<ChatroomListController>(builder: (_) {
-        return ListView.builder(
-          physics: BouncingScrollPhysics(),
-          itemCount: controller.friendList.length,
-          shrinkWrap: true,
-          itemBuilder: (context, index) {
-            FriendModel friendModel = controller.friendList[index];
+        return ScrollConfiguration(
+          behavior: NoGlowScrollBehavior(),
+          child: ListView.builder(
+            physics: ClampingScrollPhysics(),
+            itemCount: controller.friendList.length,
+            shrinkWrap: true,
+            itemBuilder: (context, index) {
+              FriendModel friendModel = controller.friendList[index];
 
-            final userName = friendModel.friendName;
-            return ChatroomsListUserTile(
-              avatarURL: friendModel.avatarURL,
-              lastMessageTime: friendModel.lastMessageTime,
-              lastMessage: friendModel.lastMessage,
-              messageNotRead: friendModel.messageNotRead,
-              chatroomId:
-                  getChatRoomId(AppConstants.uuid, friendModel.friendUid),
-              userUid: friendModel.friendUid,
-              userName: userName,
-            );
-          },
+              final userName = friendModel.friendName;
+              return ChatroomsListUserTile(
+                avatarURL: friendModel.avatarURL,
+                lastMessageTime: friendModel.lastMessageTime,
+                lastMessage: friendModel.lastMessage,
+                messageNotRead: friendModel.messageNotRead,
+                chatroomId:
+                    getChatRoomId(AppConstants.uuid, friendModel.friendUid),
+                userUid: friendModel.friendUid,
+                userName: userName,
+              );
+            },
+          ),
         );
       }),
     );

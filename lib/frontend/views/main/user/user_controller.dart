@@ -16,12 +16,14 @@ class UserController extends GetxController {
   final TextEditingController displayNameTextController =
       TextEditingController();
   final TextEditingController bioTextController = TextEditingController();
-  late UserModel currentUserModel;
+  String uid = '';
+  UserModel myUserModel = UserModel(uid: '', displayName: '', email: '');
+  UserModel otherUserModel = UserModel(uid: '', displayName: '', email: '');
   late String avatarURLNew;
   late String displayNameNew;
   late String bioNew;
+  bool isLoadProfile = true;
   bool isProfileEdited = false;
-  bool isInitialized = false;
   bool isSaveLoading = false;
   File? imageFile;
 
@@ -30,10 +32,10 @@ class UserController extends GetxController {
       return;
     }
     Map<String, dynamic> updateData = {};
-    if (currentUserModel.displayName != displayNameNew) {
+    if (myUserModel.displayName != displayNameNew) {
       updateData['displayName'] = displayNameNew;
     }
-    if (currentUserModel.bio != bioNew) {
+    if (myUserModel.bio != bioNew) {
       updateData['bio'] = bioNew;
     }
     // NOTE: 没有任何更新，返回
@@ -53,14 +55,14 @@ class UserController extends GetxController {
       logger.d('成功 updateUserProfile');
       isProfileEdited = false;
       Map<String, dynamic> newProfileData = appResponse.data;
-      if (currentUserModel.displayName != displayNameNew) {
-        currentUserModel.displayName = newProfileData['displayName'];
+      if (myUserModel.displayName != displayNameNew) {
+        myUserModel.displayName = newProfileData['displayName'];
       }
-      if (currentUserModel.bio != bioNew) {
-        currentUserModel.bio = newProfileData['bio'];
+      if (myUserModel.bio != bioNew) {
+        myUserModel.bio = newProfileData['bio'];
       }
       if (imageFile != null) {
-        currentUserModel.avatarURL = newProfileData['avatarURL'];
+        myUserModel.avatarURL = newProfileData['avatarURL'];
       }
     } else {
       toastCenter(appResponse.message);
@@ -89,9 +91,9 @@ class UserController extends GetxController {
   }
 
   void checkEdited() {
-    if (currentUserModel.bio != bioNew ||
-        currentUserModel.avatarURL != avatarURLNew ||
-        currentUserModel.displayName != displayNameNew) {
+    if (myUserModel.bio != bioNew ||
+        myUserModel.avatarURL != avatarURLNew ||
+        myUserModel.displayName != displayNameNew) {
       isProfileEdited = true;
     } else {
       isProfileEdited = false;
@@ -101,23 +103,51 @@ class UserController extends GetxController {
 
   @override
   void onInit() async {
-    AppResponse appResponse =
-        await _userModule.getUserProfile(uid: AppConstants.uuid);
-    if (appResponse.data != null) {
-      currentUserModel = appResponse.data;
-      avatarURLNew = currentUserModel.avatarURL;
-      bioNew = currentUserModel.bio;
-      bioTextController.text = bioNew;
-      displayNameNew = currentUserModel.displayName;
-      displayNameTextController.text = displayNameNew;
-      isInitialized = true;
-    } else {
-      toastCenter(appResponse.message);
-    }
-
     logger.i('启用 UserController');
     FlutterAppBadger.isAppBadgeSupported();
     super.onInit();
+  }
+
+  Future<void> getUserProfile({required bool isMe}) async {
+    if (isMe && myUserModel.avatarURL != '') {
+      return;
+    }
+    if (await _getPageParameter() == false) {
+      return;
+    }
+    isLoadProfile = true;
+    update();
+    AppResponse appResponse =
+        await _userModule.getUserProfile(uid: isMe ? AppConstants.uuid : uid);
+    if (appResponse.data != null) {
+      otherUserModel = appResponse.data;
+
+      if (isMe == true) {
+        myUserModel = appResponse.data;
+        bioNew = myUserModel.bio;
+        avatarURLNew = myUserModel.avatarURL;
+        displayNameNew = myUserModel.displayName;
+        bioTextController.text = bioNew;
+        displayNameTextController.text = displayNameNew;
+      }
+      isLoadProfile = false;
+      update();
+    } else {
+      toastCenter(appResponse.message);
+    }
+  }
+
+  Future<bool> _getPageParameter() async {
+    if (Get.parameters.containsKey('uid')) {
+      if (uid != Get.parameters['uid']) {
+        uid = Get.parameters['uid'] ?? AppConstants.uuid;
+        return true;
+      }
+      return false;
+    } else {
+      uid = AppConstants.uuid;
+      return true;
+    }
   }
 
   @override

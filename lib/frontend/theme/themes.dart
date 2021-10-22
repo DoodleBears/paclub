@@ -12,6 +12,9 @@ final TextStyle lightThemTextStyle = TextStyle(
 
 class MyThemes {
   static final lightTheme = ThemeData(
+    splashFactory: NoSplash.splashFactory,
+    highlightColor: Colors.transparent,
+    splashColor: Colors.transparent,
     textSelectionTheme: TextSelectionThemeData(
       cursorColor: Colors.blue,
       selectionHandleColor: Colors.blue,
@@ -29,6 +32,7 @@ class MyThemes {
     ),
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
       unselectedItemColor: Colors.grey[800],
+      enableFeedback: false,
       backgroundColor: Colors.white,
     ),
     primaryColor: primaryColor,
@@ -59,12 +63,18 @@ class MyThemes {
     ),
     scaffoldBackgroundColor: Colors.white,
     colorScheme: ColorScheme.light(
+      secondary: accentColor,
+      secondaryVariant: accentColor,
+      primaryVariant: accentColor,
       primary: accentColor,
     ),
     dividerColor: Colors.black,
   );
 
   static final darkTheme = ThemeData(
+    splashFactory: NoSplash.splashFactory,
+    highlightColor: Colors.transparent,
+    splashColor: Colors.transparent,
     textSelectionTheme: TextSelectionThemeData(
       cursorColor: Colors.blue,
       selectionHandleColor: Colors.blue,
@@ -83,6 +93,7 @@ class MyThemes {
     ),
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
       unselectedItemColor: Colors.grey[400],
+      enableFeedback: false,
       backgroundColor: Colors.grey[850],
     ),
     scaffoldBackgroundColor: Colors.grey.shade900,
@@ -101,6 +112,9 @@ class MyThemes {
       },
     ),
     colorScheme: ColorScheme.dark(
+      secondary: accentColor,
+      secondaryVariant: accentColor,
+      primaryVariant: accentColor,
       primary: accentColor,
     ),
     textTheme: GoogleFonts.poppinsTextTheme().copyWith(

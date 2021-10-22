@@ -2,22 +2,37 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:paclub/frontend/constants/colors.dart';
+import 'package:paclub/frontend/routes/app_pages.dart';
 import 'package:paclub/frontend/views/main/app_controller.dart';
 import 'package:paclub/frontend/views/main/user/components/numbers_widget.dart';
 import 'package:paclub/frontend/views/main/user/user_controller.dart';
+import 'package:paclub/helper/app_constants.dart';
 import 'package:paclub/utils/logger.dart';
 
-class ProfilePage extends GetView<UserController> {
-  const ProfilePage({Key? key}) : super(key: key);
+class MyProfilePage extends GetView<UserController> {
+  const MyProfilePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    logger.i('渲染 —— ProfilePage');
+    logger.i('渲染 —— MyProfilePage');
+    controller.imageFile = null;
+    controller.isProfileEdited = false;
 
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0, // z-index高度的感觉，影响 AppBar 的阴影
+        actions: [
+          IconButton(
+            onPressed: () {
+              Get.toNamed(Routes.TABS + Routes.USER + Routes.EDIT_PROFILE);
+            },
+            icon: Icon(
+              Icons.menu,
+              size: 32.0,
+            ),
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -28,14 +43,14 @@ class ProfilePage extends GetView<UserController> {
                   return ClipOval(
                     child: Material(
                       color: AppColors.avatarBackgroundColor,
-                      child: controller.otherUserModel.avatarURL == ''
+                      child: controller.myUserModel.avatarURL == ''
                           ? Container(
                               width: 128,
                               height: 128,
                             )
                           : Ink.image(
                               image: CachedNetworkImageProvider(
-                                  controller.otherUserModel.avatarURL),
+                                  controller.myUserModel.avatarURL),
                               fit: BoxFit.cover,
                               width: 128,
                               height: 128,
@@ -52,12 +67,12 @@ class ProfilePage extends GetView<UserController> {
           const SizedBox(height: 24),
           GetBuilder<UserController>(
               builder: (_) =>
-                  buildDisplayName(controller.otherUserModel.displayName)),
+                  buildDisplayName(controller.myUserModel.displayName)),
           const SizedBox(height: 24),
           NumbersWidget(),
           const SizedBox(height: 48),
           GetBuilder<UserController>(
-              builder: (_) => buildAbout(controller.otherUserModel.bio)),
+              builder: (_) => buildAbout(controller.myUserModel.bio)),
         ],
       ),
     );

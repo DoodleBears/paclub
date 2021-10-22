@@ -134,21 +134,25 @@ abstract class AppPages {
             customTransition: TopLeftMaskBelowLeftTransitions(),
           ),
           GetPage(
-              name: Routes.MYUSER,
-              binding: UserBinding(),
-              page: () => UserPage(),
-              customTransition: TopLeftMaskBelowLeftTransitions(),
-              children: [
-                GetPage(
-                  name: Routes.EDIT_PROFILE,
-                  binding: EditProfileBinding(),
-                  page: () => EditProfilePage(),
-                  customTransition: TopLeftMaskBelowLeftLinearTransitions(),
-                  popGesture: true,
-                  gestureWidth: gestureWidth(170),
-                  transitionDuration: const Duration(milliseconds: 250),
-                ),
-              ]),
+            name: Routes.USER,
+            binding: UserBinding(),
+            page: () => UserPage(),
+            popGesture: true,
+            gestureWidth: gestureWidth(170),
+            customTransition: TopLeftMaskBelowLeftLinearTransitions(),
+            transitionDuration: const Duration(milliseconds: 250),
+            children: [
+              GetPage(
+                name: Routes.EDIT_PROFILE,
+                binding: EditProfileBinding(),
+                page: () => EditProfilePage(),
+                customTransition: TopLeftMaskBelowLeftLinearTransitions(),
+                popGesture: true,
+                gestureWidth: gestureWidth(170),
+                transitionDuration: const Duration(milliseconds: 250),
+              ),
+            ],
+          ),
         ]),
   ];
 }

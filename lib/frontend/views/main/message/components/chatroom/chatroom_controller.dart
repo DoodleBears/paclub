@@ -46,7 +46,7 @@ class ChatroomController extends GetxController {
   @override
   void onInit() async {
     enterRoomTimestamp = Timestamp.now();
-    await _getPageInfo();
+    await _getPageParameter();
     _updateFriendProfile();
 
     // 绑定消息 Stream 到 Firebase 的数据库请求回传
@@ -66,7 +66,7 @@ class ChatroomController extends GetxController {
     super.onInit();
   }
 
-  Future<void> _getPageInfo() async {
+  Future<void> _getPageParameter() async {
     Map<String, dynamic> chatroomInfo = Get.arguments;
     this.chatroomId = chatroomInfo['chatroomId'];
     this.chatUserName = chatroomInfo['userName'];
@@ -215,7 +215,10 @@ class ChatroomController extends GetxController {
     if (message.isNotEmpty) {
       AppResponse appResponse = await _chatroomModule.addMessage(
         chatroomId: chatroomId,
-        chatMessageModel: ChatMessageModel(message, AppConstants.userName),
+        chatMessageModel: ChatMessageModel(
+            message: message,
+            sendBy: AppConstants.userName,
+            sendByUid: AppConstants.uuid),
         chatWithUserUid: chatWithUserUid,
       );
 

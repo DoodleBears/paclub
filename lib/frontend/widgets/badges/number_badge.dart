@@ -53,6 +53,7 @@ class NumberBadge extends StatelessWidget {
             style: textStyle ??
                 TextStyle(
                   color: Colors.white,
+                  fontSize: 12.0,
                 ),
           ),
         ),

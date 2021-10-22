@@ -6,7 +6,9 @@ import 'package:paclub/frontend/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:paclub/frontend/views/main/app_controller.dart';
+import 'package:paclub/frontend/views/main/tabs/tabs_controller.dart';
 import 'package:paclub/frontend/widgets/badges/badges.dart';
+import 'package:paclub/helper/app_constants.dart';
 import 'package:paclub/helper/chatroom_helper.dart';
 
 class ChatroomsListUserTile extends StatelessWidget {
@@ -53,94 +55,104 @@ class ChatroomsListUserTile extends StatelessWidget {
         builder: (_) {
           return Container(
             color: AppColors.chatroomTileBackgroundColor,
-            padding: EdgeInsets.symmetric(horizontal: 14, vertical: 16),
-            child: Container(
-              height: 60.0,
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                children: [
-                  // 头像
-                  Container(
-                    margin: EdgeInsets.only(right: 12.0),
-                    child: ClipOval(
-                      child: Material(
-                        color: primaryDarkColor,
-                        child: avatarURL == ''
-                            ? Container(
-                                width: 60.0,
-                                height: 60.0,
-                                child: Center(
-                                  child: Text(
-                                      userName.substring(0, 1).toUpperCase(),
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          fontSize: 24.0,
-                                          fontWeight: FontWeight.bold)),
-                                ),
-                              )
-                            : Ink.image(
-                                image: CachedNetworkImageProvider(avatarURL),
-                                fit: BoxFit.cover,
-                                width: 60.0,
-                                height: 60.0,
-                                child: InkWell(
-                                  onTap: () async {},
-                                ),
+            padding: EdgeInsets.symmetric(horizontal: 14.0, vertical: 10.0),
+            child: Row(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // 头像
+                Container(
+                  margin: EdgeInsets.only(right: 12.0),
+                  child: ClipOval(
+                    child: Material(
+                      color: primaryDarkColor,
+                      child: avatarURL == ''
+                          ? Container(
+                              width: 54.0,
+                              height: 54.0,
+                              child: Center(
+                                child: Text(
+                                    userName.substring(0, 1).toUpperCase(),
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                        fontSize: 24.0,
+                                        fontWeight: FontWeight.bold)),
                               ),
-                      ),
-                    ),
-                  ),
-                  // 其他文本内容
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        // 用户名 username 和 最后消息时间 lastMessageTime
-                        Row(
-                          children: [
-                            Expanded(
-                              child: Text(
-                                '$userName',
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.bold),
+                            )
+                          : Ink.image(
+                              image: CachedNetworkImageProvider(avatarURL),
+                              fit: BoxFit.cover,
+                              width: 54.0,
+                              height: 54.0,
+                              child: InkWell(
+                                onTap: () {
+                                  if (userUid == AppConstants.uuid) {
+                                    final TabsController tabsController =
+                                        Get.find<TabsController>();
+                                    tabsController.setIndex(4);
+                                    return;
+                                  }
+                                  Get.toNamed(Routes.TABS +
+                                      Routes.USER +
+                                      '?uid=$userUid');
+                                },
                               ),
                             ),
-                            Text(
-                              '${chatroomListFormatTime(lastMessageTime)}',
+                    ),
+                  ),
+                ),
+                // 其他文本内容
+                Expanded(
+                  child: Column(
+                    children: [
+                      // 用户名 username 和 最后消息时间 lastMessageTime
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              '$userName',
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
-                                fontSize: 12,
-                              ),
+                                  fontSize: 16, fontWeight: FontWeight.bold),
                             ),
-                          ],
-                        ),
-                        // 最后消息 lastMessage 和 未读数量 messageNotRead
-                        Row(
-                          children: [
-                            // 最后消息 lastMessage
-                            Expanded(
-                              child: Text(
-                                lastMessage,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(fontSize: 16),
-                              ),
+                          ),
+                          Text(
+                            '${chatroomListFormatTime(lastMessageTime)}',
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 12,
                             ),
-                            // 未读数量 messageNotRead
-                            NumberBadge(
+                          ),
+                        ],
+                      ),
+                      // 最后消息 lastMessage 和 未读数量 messageNotRead
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          // 最后消息 lastMessage
+                          Expanded(
+                            child: Text(
+                              lastMessage,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(fontSize: 14),
+                            ),
+                          ),
+                          // 未读数量 messageNotRead
+                          Padding(
+                            padding: const EdgeInsets.only(left: 12.0),
+                            child: NumberBadge(
                               number: messageNotRead,
-                            )
-                          ],
-                        ),
-                      ],
-                    ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           );
         },

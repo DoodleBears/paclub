@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:paclub/frontend/constants/colors.dart';
@@ -28,7 +29,7 @@ class EditProfilePage extends GetView<UserController> {
                     return ClipOval(
                       child: Material(
                         color: AppColors.avatarBackgroundColor,
-                        child: controller.currentUserModel.avatarURL == '' &&
+                        child: controller.myUserModel.avatarURL == '' &&
                                 controller.imageFile == null
                             ? Container(
                                 width: 128,
@@ -36,7 +37,8 @@ class EditProfilePage extends GetView<UserController> {
                               )
                             : Ink.image(
                                 image: controller.imageFile == null
-                                    ? NetworkImage(controller.avatarURLNew)
+                                    ? CachedNetworkImageProvider(
+                                        controller.avatarURLNew)
                                     : FileImage(controller.imageFile!)
                                         as ImageProvider,
                                 fit: BoxFit.cover,
