@@ -1,5 +1,5 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:paclub/frontend/constants/colors.dart';
-import 'package:paclub/frontend/constants/numbers.dart';
 import 'package:paclub/frontend/modules/user_module.dart';
 import 'package:paclub/frontend/routes/app_pages.dart';
 import 'package:paclub/frontend/views/auth/login/components/components.dart';
@@ -11,42 +11,51 @@ import 'package:paclub/utils/app_response.dart';
 class SearchUserTile extends GetView<UserSearchController> {
   final int index;
   final bool isChatroomExist;
+  final String userAvatarURL;
   final String userUid;
   final String userName;
-  final String userEmail;
+  final String userBio;
 
   const SearchUserTile({
     Key? key,
+    required this.userAvatarURL,
     required this.index,
     required this.isChatroomExist,
     required this.userUid,
     required this.userName,
-    required this.userEmail,
+    required this.userBio,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.fromLTRB(10.0, 0.0, 10.0, 10.0),
-      decoration: BoxDecoration(
-        color: primaryLightColor,
-        borderRadius: BorderRadius.circular(borderRadius),
-      ),
+      color: primaryLightColor,
       padding: EdgeInsets.symmetric(horizontal: 14, vertical: 14),
       child: Row(
         children: [
-          Container(
-            height: 48.0,
-            width: 48.0,
-            decoration: BoxDecoration(
-                color: accentColor, borderRadius: BorderRadius.circular(30)),
-            child: Center(
-              child: Text(userName.substring(0, 1),
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w300)),
+          ClipOval(
+            child: Material(
+              color: primaryDarkColor,
+              child: userAvatarURL == ''
+                  ? Container(
+                      width: 60.0,
+                      height: 60.0,
+                      child: Center(
+                        child: Text(userName.substring(0, 1).toUpperCase(),
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 24.0, fontWeight: FontWeight.bold)),
+                      ),
+                    )
+                  : Ink.image(
+                      image: CachedNetworkImageProvider(userAvatarURL),
+                      fit: BoxFit.cover,
+                      width: 60.0,
+                      height: 60.0,
+                      child: InkWell(
+                        onTap: () async {},
+                      ),
+                    ),
             ),
           ),
           const SizedBox(width: 12),
@@ -65,7 +74,7 @@ class SearchUserTile extends GetView<UserSearchController> {
                   ),
                 ),
                 Text(
-                  userEmail,
+                  userBio,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: TextStyle(color: Colors.black, fontSize: 16),

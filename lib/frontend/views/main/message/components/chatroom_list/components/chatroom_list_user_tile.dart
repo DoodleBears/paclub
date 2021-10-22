@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:paclub/frontend/constants/colors.dart';
 import 'package:paclub/frontend/modules/user_module.dart';
@@ -78,7 +79,7 @@ class ChatroomsListUserTile extends StatelessWidget {
                                 ),
                               )
                             : Ink.image(
-                                image: NetworkImage(avatarURL),
+                                image: CachedNetworkImageProvider(avatarURL),
                                 fit: BoxFit.cover,
                                 width: 60.0,
                                 height: 60.0,

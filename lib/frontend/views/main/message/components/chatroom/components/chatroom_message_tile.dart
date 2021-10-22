@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:paclub/frontend/constants/colors.dart';
@@ -61,7 +62,8 @@ class ChatroomMessageTile extends StatelessWidget {
                                 ),
                               )
                             : Ink.image(
-                                image: NetworkImage(friendAvatarURL),
+                                image:
+                                    CachedNetworkImageProvider(friendAvatarURL),
                                 fit: BoxFit.cover,
                                 width: 40.0,
                                 height: 40.0,
