@@ -3,6 +3,7 @@ import 'package:paclub/frontend/constants/numbers.dart';
 import 'package:paclub/frontend/views/main/message/components/chatroom_list/chatroom_list_controller.dart';
 import 'package:paclub/frontend/views/main/message/components/user_search/components/search_user_tile.dart';
 import 'package:paclub/frontend/views/main/message/components/user_search/user_search_controller.dart';
+import 'package:paclub/helper/app_constants.dart';
 import 'package:paclub/models/friend_model.dart';
 import 'package:paclub/models/user_model.dart';
 import 'package:paclub/utils/logger.dart';
@@ -42,7 +43,7 @@ class UserSearchBody extends GetView<UserSearchController> {
                         borderRadius: BorderRadius.circular(borderRadius),
                       ),
                     ),
-                    onPressed: () async => controller.searchByName(),
+                    onPressed: () async => controller.searchByName(context),
                     child: Icon(Icons.search),
                   ),
                 ),
@@ -77,6 +78,9 @@ class UserSearchBody extends GetView<UserSearchController> {
                             itemBuilder: (context, index) {
                               final UserModel userModel =
                                   controller.userList[index];
+                              if (userModel.uid == AppConstants.uuid) {
+                                return SizedBox.shrink();
+                              }
                               return GestureDetector(
                                 child: SearchUserTile(
                                   index: index,
