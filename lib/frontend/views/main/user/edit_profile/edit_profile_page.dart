@@ -53,14 +53,14 @@ class EditProfilePage extends GetView<UserController> {
               const SizedBox(height: 24),
               RoundedInputField(
                 controller: controller.displayNameTextController,
-                textInputType: TextInputType.name,
+                textInputType: TextInputType.text,
                 labelText: 'Full Name',
                 onChanged: controller.onDisplayNameChanged,
               ),
               const SizedBox(height: 24),
               RoundedInputField(
                 controller: controller.bioTextController,
-                textInputType: TextInputType.name,
+                textInputType: TextInputType.text,
                 labelText: 'Bio',
                 maxLines: 5,
                 onChanged: controller.onBioChanged,

@@ -27,6 +27,12 @@ class UserController extends GetxController {
   bool isSaveLoading = false;
   File? imageFile;
 
+  void resetEditPage() {
+    imageFile = null;
+    isProfileEdited = false;
+    avatarURLNew = myUserModel.avatarURL;
+  }
+
   Future<void> updateUserProfile() async {
     if (isSaveLoading || isProfileEdited == false) {
       return;

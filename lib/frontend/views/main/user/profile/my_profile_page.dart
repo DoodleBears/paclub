@@ -6,7 +6,6 @@ import 'package:paclub/frontend/routes/app_pages.dart';
 import 'package:paclub/frontend/views/main/app_controller.dart';
 import 'package:paclub/frontend/views/main/user/components/numbers_widget.dart';
 import 'package:paclub/frontend/views/main/user/user_controller.dart';
-import 'package:paclub/helper/app_constants.dart';
 import 'package:paclub/utils/logger.dart';
 
 class MyProfilePage extends GetView<UserController> {
@@ -15,8 +14,6 @@ class MyProfilePage extends GetView<UserController> {
   @override
   Widget build(BuildContext context) {
     logger.i('渲染 —— MyProfilePage');
-    controller.imageFile = null;
-    controller.isProfileEdited = false;
 
     return Scaffold(
       appBar: AppBar(
@@ -25,6 +22,7 @@ class MyProfilePage extends GetView<UserController> {
         actions: [
           IconButton(
             onPressed: () {
+              controller.resetEditPage();
               Get.toNamed(Routes.TABS + Routes.USER + Routes.EDIT_PROFILE);
             },
             icon: Icon(
