@@ -57,7 +57,6 @@ class _AppState extends State<App> {
     var window = WidgetsBinding.instance!.window;
     Brightness brightness = window.platformBrightness;
     setState(() {
-      // TODO: 用户自定义亮暗模式（不跟随系统）
       if (brightness == Brightness.light) {
         AppColors.lightMode();
         userController.isDarkMode = false;

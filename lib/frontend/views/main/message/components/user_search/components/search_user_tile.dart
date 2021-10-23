@@ -110,7 +110,12 @@ class SearchUserTile extends GetView<UserSearchController> {
                         return; //防止频繁和列表交互
                       }
                       AppResponse appResponse = await controller.addFriend(
-                          userName, userUid, isChatroomExist, index);
+                        userName: userName,
+                        userUid: userUid,
+                        avatarURL: userAvatarURL,
+                        isChatroomExist: isChatroomExist,
+                        index: index,
+                      );
                       if (appResponse.data != null) {
                         Map<String, dynamic> chatroomInfo = appResponse.data;
                         await Get.toNamed(

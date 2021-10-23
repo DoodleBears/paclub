@@ -19,7 +19,6 @@ abstract class Routes {
   static const USERSEARCH = '/user_search';
   static const NOTIFICATION = '/notification';
   // static const MYUSER = '/user/';
-  // TODO: 实现查看其他用户的个人信息页面
   static const USER = '/user/';
   static const EDIT_PROFILE = '/edit_profile';
 }

@@ -63,12 +63,17 @@ class UserSearchController extends GetxController {
 
   /// 添加好友（聊天室）
   Future<AppResponse> addFriend(
-      String userName, String userUid, bool isChatroomExist, int index) async {
+      {required String userName,
+      required String userUid,
+      required String avatarURL,
+      required bool isChatroomExist,
+      required int index}) async {
     String chatroomId = getChatRoomId(AppConstants.uuid, userUid);
     Map<String, dynamic> chatroomInfo = {
       "userUid": userUid,
       "userName": userName,
       "chatroomId": chatroomId,
+      "avatarURL": avatarURL,
     };
     if (isChatroomExist) {
       logger.w('聊天室已存在');
