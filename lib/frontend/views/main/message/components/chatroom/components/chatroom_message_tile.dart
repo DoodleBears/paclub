@@ -57,7 +57,7 @@ class ChatroomMessageTile extends StatelessWidget {
                                 Routes.TABS + Routes.USER + '?uid=$friendUid'),
                             child: ClipOval(
                               child: Material(
-                                color: primaryDarkColor,
+                                color: primaryColor,
                                 child: friendAvatarURL == ''
                                     ? Container(
                                         width: 40.0,

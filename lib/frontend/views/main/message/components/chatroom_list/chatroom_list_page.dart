@@ -27,7 +27,7 @@ class ChatroomListPage extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Text(
                 'Welcome ${AppConstants.userName}',
-                style: TextStyle(color: primaryDarkColor),
+                style: TextStyle(color: primaryColor),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -40,7 +40,7 @@ class ChatroomListPage extends StatelessWidget {
       body: ChatroomListBody(),
       floatingActionButton: FloatingActionButton(
         ///搜尋用戶的Button，點擊跳轉到搜尋介面
-        backgroundColor: primaryDarkColor,
+        backgroundColor: accentColor,
         elevation: 1.5,
         child: Icon(Icons.search),
         onPressed: () => Get.toNamed(Routes.TABS +

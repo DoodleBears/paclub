@@ -28,7 +28,7 @@ class EditProfilePage extends GetView<UserController> {
                   builder: (_) {
                     return ClipOval(
                       child: Material(
-                        color: AppColors.avatarBackgroundColor,
+                        color: AppColors.profileAvatarBackgroundColor,
                         child: controller.myUserModel.avatarURL == '' &&
                                 controller.imageFile == null
                             ? Container(

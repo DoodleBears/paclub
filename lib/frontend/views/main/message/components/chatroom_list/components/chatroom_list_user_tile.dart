@@ -65,7 +65,7 @@ class ChatroomsListUserTile extends StatelessWidget {
                   margin: EdgeInsets.only(right: 12.0),
                   child: ClipOval(
                     child: Material(
-                      color: primaryDarkColor,
+                      color: AppColors.chatAvatarBackgroundColor,
                       child: avatarURL == ''
                           ? Container(
                               width: 54.0,

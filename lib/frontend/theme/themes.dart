@@ -21,6 +21,7 @@ class MyThemes {
       selectionColor: Colors.blue.withAlpha(128),
     ),
     tabBarTheme: TabBarTheme(
+      labelColor: Colors.black,
       indicator: RoundedUnderlineTabIndicator(
         width: 40.0,
         borderSide: BorderSide(
@@ -82,6 +83,7 @@ class MyThemes {
     ),
 
     tabBarTheme: TabBarTheme(
+      labelColor: Colors.white,
       indicator: RoundedUnderlineTabIndicator(
         width: 40.0,
         borderSide: BorderSide(
@@ -131,6 +133,6 @@ class MyThemes {
       caption: darkThemTextStyle,
     ),
     dividerColor: Colors.white,
-    primaryColorDark: primaryDarkColor,
+    primaryColorDark: primaryColor,
   );
 }

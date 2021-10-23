@@ -167,7 +167,7 @@ class LoginBody extends GetView<LoginController> {
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: Text('OR',
                     style: TextStyle(
-                        color: primaryDarkColor, fontWeight: FontWeight.w600)),
+                        color: primaryColor, fontWeight: FontWeight.w600)),
               ),
             ), // OR 的分割线
             SizedBox(height: Get.height * 0.02),

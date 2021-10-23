@@ -33,7 +33,7 @@ class RegisterForm3 extends GetView<RegisterFormController> {
                   ),
                 ),
                 child: CircleAvatar(
-                  backgroundColor: AppColors.avatarBackgroundColor,
+                  backgroundColor: AppColors.profileAvatarBackgroundColor,
                 ),
               ),
             );

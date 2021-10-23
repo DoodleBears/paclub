@@ -27,7 +27,7 @@ class ProfilePage extends GetView<UserController> {
                 builder: (_) {
                   return ClipOval(
                     child: Material(
-                      color: AppColors.avatarBackgroundColor,
+                      color: AppColors.profileAvatarBackgroundColor,
                       child: controller.otherUserModel.avatarURL == ''
                           ? Container(
                               width: 128,

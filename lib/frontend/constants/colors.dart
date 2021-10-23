@@ -9,7 +9,8 @@ import 'package:flutter/widgets.dart';
 
 class AppColors {
   // NOTE: Avatar
-  static Color? avatarBackgroundColor = Colors.grey[100];
+  static Color? chatAvatarBackgroundColor = primaryColor;
+  static Color? profileAvatarBackgroundColor = Colors.grey[100];
   // NOTE: Chatroom
   static Color? chatroomTileBackgroundColor = Colors.grey[50];
   static Color? chatroomMessageTimestampColor = Colors.grey;
@@ -30,7 +31,8 @@ class AppColors {
   // MARK: lightMode - 通过调用 lightMode 和 UserController.update() 便可以进行App亮暗模式的调整
   static lightMode() {
     // NOTE: Avatar
-    avatarBackgroundColor = Colors.grey[100];
+    chatAvatarBackgroundColor = primaryColor;
+    profileAvatarBackgroundColor = Colors.grey[100];
     // NOTE: Chatroom
     chatroomTileBackgroundColor = Colors.grey[50];
     chatroomMessageTimestampColor = Colors.grey;
@@ -52,7 +54,8 @@ class AppColors {
 
   static darkMode() {
     // NOTE: Avatar
-    avatarBackgroundColor = Colors.grey[850];
+    chatAvatarBackgroundColor = primaryDarkColor;
+    profileAvatarBackgroundColor = Colors.grey[850];
     // NOTE: Chatroom
     chatroomTileBackgroundColor = Colors.grey[850];
     chatroomMessageTimestampColor = Colors.grey[700];
@@ -77,9 +80,9 @@ class AppColors {
 const accentColor = Color(0xFF96C336);
 const accentLightColor = Color(0xFFB3D270);
 const accentDarkColor = Color(0xFF75D118);
-const primaryColor = Color(0xFFF0BF84);
+const primaryColor = Color(0xFFb8966f);
 const primaryLightColor = Color(0xFFFCF4E9);
-const primaryDarkColor = Color(0xFF9F7C53);
+const primaryDarkColor = Color(0xFF9c835b);
 const black = Colors.black;
 const grey100 = Color(0xFFF5F5F5);
 const grey700 = Color(0xFF333333);

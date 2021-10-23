@@ -10,7 +10,8 @@ class UserSearchPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         foregroundColor: Colors.white,
-        backgroundColor: primaryDarkColor,
+        backgroundColor: AppColors.chatAvatarBackgroundColor,
+        elevation: 1,
         title: Text(
           '搜索好友',
           style: TextStyle(
