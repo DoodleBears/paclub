@@ -80,6 +80,13 @@ class ChatroomController extends GetxController {
     ));
   }
 
+  void webLoading() {
+    chatroomScroller.jumpToTop();
+    refreshController.requestLoading(
+      curve: Curves.ease,
+    );
+  }
+
   Future<void> _getPageParameter() async {
     Map<String, dynamic> chatroomInfo = Get.arguments;
     this.chatroomId = chatroomInfo['chatroomId'];

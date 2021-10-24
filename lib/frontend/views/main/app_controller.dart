@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_app_badger/flutter_app_badger.dart';
 import 'package:get/get.dart';
 import 'package:paclub/utils/logger.dart';
@@ -26,16 +27,18 @@ class AppController extends GetxController {
 
   @override
   void onInit() async {
+    logger.i('启用 AppController');
     isDarkMode = userPreferenceModel.isDarkMode;
 
-    logger.i('启用 UserController');
-    FlutterAppBadger.isAppBadgeSupported();
+    if (kIsWeb == false) {
+      FlutterAppBadger.isAppBadgeSupported();
+    }
     super.onInit();
   }
 
   @override
   void onClose() {
-    logger.w('关闭 UserController');
+    logger.w('关闭 AppController');
     super.onClose();
   }
 }

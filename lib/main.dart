@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 
 import 'package:firebase_core/firebase_core.dart';
@@ -72,25 +73,27 @@ class _AppState extends State<App> {
   }
 
   initPlatformState() async {
-    String appBadgeSupported;
-    try {
-      bool res = await FlutterAppBadger.isAppBadgeSupported();
-      if (res) {
-        appBadgeSupported = 'Supported';
-      } else {
-        appBadgeSupported = 'Not supported';
+    if (Platform.isAndroid || Platform.isIOS) {
+      String appBadgeSupported;
+      try {
+        bool res = await FlutterAppBadger.isAppBadgeSupported();
+        if (res) {
+          appBadgeSupported = 'Supported';
+        } else {
+          appBadgeSupported = 'Not supported';
+        }
+      } on PlatformException {
+        appBadgeSupported = 'Failed to get badge support.';
       }
-    } on PlatformException {
-      appBadgeSupported = 'Failed to get badge support.';
-    }
-    print(appBadgeSupported);
-    logger.e(appBadgeSupported);
-    // If the widget was removed from the tree while the asynchronous platform
-    // message was in flight, we want to discard the reply rather than calling
-    // setState to update our non-existent appearance.
-    if (!mounted) return;
+      print(appBadgeSupported);
+      logger.e(appBadgeSupported);
+      // If the widget was removed from the tree while the asynchronous platform
+      // message was in flight, we want to discard the reply rather than calling
+      // setState to update our non-existent appearance.
+      if (!mounted) return;
 
-    userController.appBadgeSupported = appBadgeSupported;
+      userController.appBadgeSupported = appBadgeSupported;
+    }
   }
 
   void listenToBrightness() {

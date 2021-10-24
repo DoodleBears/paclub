@@ -27,9 +27,18 @@ class FirebaseAuthRepository extends GetxController {
   // 之所以 FirebaseAuthRepository 需要是 GetxService，
   // 是因为需要长时间存在（监听User State），不能用 static （class function）的形式调用
   // 所以依赖它的 API 也不行
+  GoogleSignIn _googleSignIn = GoogleSignIn(
+    // Optional clientId
+    clientId: '161942683104-4pg008m87p5vviu7p271qu01rvevg33q',
+    scopes: <String>[
+      'email',
+      'https://www.googleapis.com/auth/contacts.readonly',
+    ],
+  );
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   User? _user = FirebaseAuth.instance.currentUser;
+  GoogleSignInAccount? _currentUser;
 
   /// [取得用户类] 回传 User instance（Firebase）
   User? get user {
@@ -46,8 +55,18 @@ class FirebaseAuthRepository extends GetxController {
       logger.w('设定 FirebaseAuth 为 useAuthEmulator');
       await _auth.useAuthEmulator(localhost, authPort);
     }
+    _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount? account) {
+      _currentUser = account;
+      if (_currentUser != null) {
+        logger.i('Web 登录成功');
+      } else {
+        logger.e('Web 登录失败');
+      }
+    });
+    _googleSignIn.signInSilently();
 
     // 一旦 _auth 状态改变, _user 就会被重新赋值
+
     _auth.authStateChanges().listen((User? user) {
       _user = user;
 
@@ -211,8 +230,9 @@ class FirebaseAuthRepository extends GetxController {
   /// [使用Google账号登录功能] —— 回传Google的 User认证 instance
   Future<AppResponse> signInWithGoogle() async {
     try {
+      logger.i('开始 Google Sign In');
       // 调用Google登陆认证, 弹窗并等待用户选择账号
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
       // 等待用户完整Google授权的response, 如果用户取消, 则 googleUser 为 null
 
@@ -221,6 +241,7 @@ class FirebaseAuthRepository extends GetxController {
         logger3.w(appResponse.toString());
         return appResponse;
       }
+      logger.i('开始 Google Sign In 验证');
 
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
