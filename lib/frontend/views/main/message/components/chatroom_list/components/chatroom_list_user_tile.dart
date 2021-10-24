@@ -64,8 +64,7 @@ class ChatroomsListUserTile extends StatelessWidget {
                   child: GestureDetector(
                     onTap: () {
                       Get.toNamed(
-                        Routes.TABS + Routes.OTHERUSER,
-                        parameters: {'uid': userUid},
+                        Routes.TABS + Routes.USER + userUid,
                         arguments: {
                           'userName': userName,
                           'avatarURL': avatarURL,

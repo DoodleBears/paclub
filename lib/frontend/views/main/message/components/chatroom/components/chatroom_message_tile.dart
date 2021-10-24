@@ -55,8 +55,7 @@ class ChatroomMessageTile extends StatelessWidget {
                         ? GestureDetector(
                             onTap: () {
                               Get.toNamed(
-                                Routes.TABS + Routes.OTHERUSER,
-                                parameters: {'uid': friendUid},
+                                Routes.TABS + Routes.USER + friendUid,
                                 arguments: {
                                   'userName': senderName,
                                   'avatarURL': friendAvatarURL,

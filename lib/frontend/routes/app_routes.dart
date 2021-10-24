@@ -18,7 +18,7 @@ abstract class Routes {
   static const CHATROOM = '/chatroom';
   static const USERSEARCH = '/user_search';
   static const NOTIFICATION = '/notification';
-  static const OTHERUSER = '/user/uid';
+  static const OTHERUSER = '/user/:uid';
   static const USER = '/user/';
   static const EDIT_PROFILE = '/edit_profile';
 }
