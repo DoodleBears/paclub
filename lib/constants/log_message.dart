@@ -40,6 +40,12 @@ const String kSearchUserSuccess = 'search_user_success';
 
 // MARK: ChatroomRepository 用到的 String
 
+const String kGetChatroomInfoFail = 'get_chatroom_info_fail';
+const String kGetChatroomInfoSuccess = 'get_chatroom_sucinfo_cess';
+
+const String kUpdateChatroomInfoFail = 'update_chatroom_info_fail';
+const String kUpdateChatroomInfoSuccess = 'update_chatroom_sucinfo_cess';
+
 const String kAddChatroomFail = 'add_chatroom_fail';
 const String kAddChatroomSuccess = 'add_chatroom_success';
 const String kAddMessageFail = 'add_message_fail';

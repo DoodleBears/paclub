@@ -22,7 +22,6 @@ class UserController extends GetxController {
   late String avatarURLNew;
   late String displayNameNew;
   late String bioNew;
-  bool isLoadProfile = true;
   bool isProfileEdited = false;
   bool isSaveLoading = false;
   File? imageFile;
@@ -58,7 +57,7 @@ class UserController extends GetxController {
       updateMap: updateData,
     );
     if (appResponse.data != null) {
-      logger.d('成功 updateUserProfile');
+      logger.d('成功 updateMyUserProfile');
       isProfileEdited = false;
       Map<String, dynamic> newProfileData = appResponse.data;
       if (myUserModel.displayName != displayNameNew) {
@@ -110,23 +109,36 @@ class UserController extends GetxController {
   @override
   void onInit() async {
     logger.i('启用 UserController');
+
     FlutterAppBadger.isAppBadgeSupported();
     super.onInit();
   }
 
   Future<void> getUserProfile({required bool isMe}) async {
-    if (isMe && myUserModel.avatarURL != '') {
+    if (await _getPageParameter(isMe: isMe) == false) {
       return;
     }
-    if (await _getPageParameter() == false) {
-      return;
-    }
-    isLoadProfile = true;
-    update();
     AppResponse appResponse =
         await _userModule.getUserProfile(uid: isMe ? AppConstants.uuid : uid);
     if (appResponse.data != null) {
-      otherUserModel = appResponse.data;
+      UserModel friendModel = appResponse.data;
+      // NOTE: 如果不是自己，则考虑更新 Friend 的头像 Link 和 displayName, 如果该 user 有更改过信息
+      if (isMe == false) {
+        Map<String, dynamic> updateMap = {};
+        if (otherUserModel.displayName != friendModel.displayName) {
+          updateMap['friendName'] = friendModel.displayName;
+          otherUserModel.displayName = friendModel.displayName;
+        }
+        if (otherUserModel.avatarURL != friendModel.avatarURL) {
+          updateMap['avatarURL'] = friendModel.avatarURL;
+          otherUserModel.avatarURL = friendModel.avatarURL;
+        }
+        if (updateMap.isNotEmpty) {
+          _userModule.updateFriendProfile(friendUid: uid, updateMap: updateMap);
+        }
+      }
+
+      otherUserModel.bio = friendModel.bio;
 
       if (isMe == true) {
         myUserModel = appResponse.data;
@@ -136,24 +148,31 @@ class UserController extends GetxController {
         bioTextController.text = bioNew;
         displayNameTextController.text = displayNameNew;
       }
-      isLoadProfile = false;
       update();
     } else {
       toastCenter(appResponse.message);
     }
   }
 
-  Future<bool> _getPageParameter() async {
-    if (Get.parameters.containsKey('uid')) {
-      if (uid != Get.parameters['uid']) {
-        uid = Get.parameters['uid'] ?? AppConstants.uuid;
+  Future<bool> _getPageParameter({required bool isMe}) async {
+    // NOTE: 如果是个人页面
+    if (isMe) {
+      if (myUserModel.avatarURL == '') {
         return true;
       }
       return false;
-    } else {
-      uid = AppConstants.uuid;
+    }
+    // NOTE: 如果是其他人的页面
+    if (uid != Get.parameters['uid']) {
+      // logger.d('${Get.parameters}\n${Get.arguments}');
+      // NOTE: 清空otherUserModel，防止查看不同的User的个人信息的时候，出现残留信息
+      otherUserModel = UserModel(uid: '', displayName: '', email: '');
+      otherUserModel.avatarURL = Get.arguments['avatarURL']!;
+      otherUserModel.displayName = Get.arguments['userName']!;
+      uid = Get.parameters['uid']!;
       return true;
     }
+    return false;
   }
 
   @override

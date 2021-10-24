@@ -53,8 +53,16 @@ class ChatroomMessageTile extends StatelessWidget {
                     ),
                     child: isAvatarShow
                         ? GestureDetector(
-                            onTap: () => Get.toNamed(
-                                Routes.TABS + Routes.USER + '?uid=$friendUid'),
+                            onTap: () {
+                              Get.toNamed(
+                                Routes.TABS + Routes.OTHERUSER,
+                                parameters: {'uid': friendUid},
+                                arguments: {
+                                  'userName': senderName,
+                                  'avatarURL': friendAvatarURL,
+                                },
+                              );
+                            },
                             child: ClipOval(
                               child: Material(
                                 color: primaryColor,

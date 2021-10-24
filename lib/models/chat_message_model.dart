@@ -4,18 +4,15 @@ class ChatMessageModel {
   late DocumentSnapshot documentSnapshot;
   late String message;
   late String sendByUid;
-  late String sendBy;
   late Timestamp time;
 
-  ChatMessageModel(
-      {required this.message, required this.sendBy, required this.sendByUid});
+  ChatMessageModel({required this.message, required this.sendByUid});
 
   ChatMessageModel.fromDoucumentSnapshot(DocumentSnapshot documentSnapshot) {
     if (documentSnapshot.data() != null) {
       Map data = documentSnapshot.data() as Map;
       this.documentSnapshot = documentSnapshot;
       message = data['message'];
-      sendBy = data["sendBy"];
       sendByUid = data["sendByUid"] ?? '';
       time = data["time"];
       // logger.d(message);
@@ -25,7 +22,6 @@ class ChatMessageModel {
   }
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['sendBy'] = sendBy;
     data['sendByUid'] = sendByUid;
     data['message'] = message;
     // data['time'] = DateTime.now().millisecondsSinceEpoch;

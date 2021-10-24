@@ -69,11 +69,31 @@ class ChatroomApi extends GetxController {
         limit: limit,
       );
 
+  /// ## NOTE: 获取聊天室资料
+  /// ## 传入参数
+  /// - [chatroomId] 聊天室 uid
+  ///
+  /// ## 回传值
+  /// - [AppResponse]
+  ///   - message: [String] 错误代码
+  ///   - data: 成功: [ChatroomModel] 聊天室信息 | 失败: null
+  Future<AppResponse> getChatroomInfo({
+    required String chatroomId,
+  }) async =>
+      _chatroomRepository.getChatroomInfo(chatroomId: chatroomId);
+  // MARK: UPDATE 部分
+  /// ## NOTE: 更新聊天室 Profile
+  Future<AppResponse> updateChatroom({
+    required Map<String, dynamic> updateMap,
+    required String chatroomId,
+  }) async =>
+      _chatroomRepository.updateChatroom(
+          updateMap: updateMap, chatroomId: chatroomId);
   // MARK: ADD 部分
 
   /// ## NOTE: 添加聊天室
   /// ## 传入参数
-  /// - [chatroomId] 聊天对象 uid
+  /// - [chatroomId] 聊天室 uid
   /// - [chatroomModel] 聊天室信息
   ///
   /// ## 回传值

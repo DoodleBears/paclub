@@ -20,6 +20,7 @@ import 'package:paclub/frontend/views/auth/login/login_binding.dart';
 import 'package:paclub/frontend/views/auth/login/login_page.dart';
 import 'package:paclub/frontend/views/main/user/edit_profile/edit_profile_binding.dart';
 import 'package:paclub/frontend/views/main/user/edit_profile/edit_profile_page.dart';
+import 'package:paclub/frontend/views/main/user/my_user_page.dart';
 import 'package:paclub/frontend/views/main/user/user_binding.dart';
 import 'package:paclub/frontend/views/main/user/user_page.dart';
 import 'package:paclub/frontend/views/auth/register/account/register_account_binding.dart';
@@ -83,76 +84,86 @@ abstract class AppPages {
           ),
         ]),
     GetPage(
-        name: Routes.TABS,
-        binding: TabsBinding(),
-        page: () => Tabs(),
-        customTransition: TopLeftMaskBelowLeftLinearTransitions(),
-        transitionDuration: const Duration(milliseconds: 250),
-        children: [
-          GetPage(
-            name: Routes.CARD,
-            binding: CardBinding(),
-            page: () => CardPage(),
-            customTransition: TopLeftMaskBelowLeftTransitions(),
-          ),
-          GetPage(
-            name: Routes.MESSAGE,
-            binding: MessageBinding(),
-            page: () => MessagePage(),
-            customTransition: TopLeftMaskBelowLeftTransitions(),
-            children: [
-              GetPage(
-                name: Routes.CHATROOMLIST,
-                binding: ChatroomListBinding(),
-                page: () => ChatroomListPage(),
-                customTransition: TopLeftMaskBelowLeftTransitions(),
-                children: [
-                  GetPage(
-                    name: Routes.CHATROOM,
-                    binding: ChatroomBinding(),
-                    page: () => ChatroomPage(),
-                    customTransition: TopLeftMaskBelowLeftLinearTransitions(),
-                    transitionDuration: const Duration(milliseconds: 250),
-                    gestureWidth: gestureWidth(170),
-                  ),
-                  GetPage(
-                    name: Routes.USERSEARCH,
-                    binding: UserSearchBinding(),
-                    page: () => UserSearchPage(),
-                    customTransition: TopLeftMaskBelowLeftLinearTransitions(),
-                    transitionDuration: const Duration(milliseconds: 250),
-                    gestureWidth: gestureWidth(170),
-                  ),
-                ],
-              ),
-            ],
-          ),
-          GetPage(
-            name: Routes.NOTIFICATION,
-            binding: NotificationBinding(),
-            page: () => NotificationPage(),
-            customTransition: TopLeftMaskBelowLeftTransitions(),
-          ),
-          GetPage(
-            name: Routes.USER,
-            binding: UserBinding(),
-            page: () => UserPage(),
-            popGesture: true,
-            gestureWidth: gestureWidth(170),
-            customTransition: TopLeftMaskBelowLeftLinearTransitions(),
-            transitionDuration: const Duration(milliseconds: 250),
-            children: [
-              GetPage(
-                name: Routes.EDIT_PROFILE,
-                binding: EditProfileBinding(),
-                page: () => EditProfilePage(),
-                customTransition: TopLeftMaskBelowLeftLinearTransitions(),
-                popGesture: true,
-                gestureWidth: gestureWidth(170),
-                transitionDuration: const Duration(milliseconds: 250),
-              ),
-            ],
-          ),
-        ]),
+      name: Routes.TABS,
+      binding: TabsBinding(),
+      page: () => Tabs(),
+      customTransition: TopLeftMaskBelowLeftLinearTransitions(),
+      transitionDuration: const Duration(milliseconds: 250),
+      children: [
+        GetPage(
+          name: Routes.CARD,
+          binding: CardBinding(),
+          page: () => CardPage(),
+          customTransition: TopLeftMaskBelowLeftTransitions(),
+        ),
+        GetPage(
+          name: Routes.MESSAGE,
+          binding: MessageBinding(),
+          page: () => MessagePage(),
+          customTransition: TopLeftMaskBelowLeftTransitions(),
+          children: [
+            GetPage(
+              name: Routes.CHATROOMLIST,
+              binding: ChatroomListBinding(),
+              page: () => ChatroomListPage(),
+              customTransition: TopLeftMaskBelowLeftTransitions(),
+              children: [
+                GetPage(
+                  name: Routes.CHATROOM,
+                  binding: ChatroomBinding(),
+                  page: () => ChatroomPage(),
+                  customTransition: TopLeftMaskBelowLeftLinearTransitions(),
+                  transitionDuration: const Duration(milliseconds: 250),
+                  gestureWidth: gestureWidth(170),
+                ),
+                GetPage(
+                  name: Routes.USERSEARCH,
+                  binding: UserSearchBinding(),
+                  page: () => UserSearchPage(),
+                  customTransition: TopLeftMaskBelowLeftLinearTransitions(),
+                  transitionDuration: const Duration(milliseconds: 250),
+                  gestureWidth: gestureWidth(170),
+                ),
+              ],
+            ),
+          ],
+        ),
+        GetPage(
+          name: Routes.NOTIFICATION,
+          binding: NotificationBinding(),
+          page: () => NotificationPage(),
+          customTransition: TopLeftMaskBelowLeftTransitions(),
+        ),
+        GetPage(
+          name: Routes.USER,
+          binding: UserBinding(),
+          page: () => MyUserPage(),
+          popGesture: true,
+          gestureWidth: gestureWidth(170),
+          customTransition: TopLeftMaskBelowLeftLinearTransitions(),
+          transitionDuration: const Duration(milliseconds: 250),
+          children: [
+            GetPage(
+              name: Routes.EDIT_PROFILE,
+              binding: EditProfileBinding(),
+              page: () => EditProfilePage(),
+              customTransition: TopLeftMaskBelowLeftLinearTransitions(),
+              popGesture: true,
+              gestureWidth: gestureWidth(170),
+              transitionDuration: const Duration(milliseconds: 250),
+            ),
+          ],
+        ),
+        GetPage(
+          name: Routes.OTHERUSER,
+          binding: UserBinding(),
+          page: () => UserPage(),
+          popGesture: true,
+          gestureWidth: gestureWidth(170),
+          customTransition: TopLeftMaskBelowLeftLinearTransitions(),
+          transitionDuration: const Duration(milliseconds: 250),
+        ),
+      ],
+    ),
   ];
 }

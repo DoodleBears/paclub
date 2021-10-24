@@ -7,8 +7,6 @@ import 'package:paclub/frontend/views/main/app_controller.dart';
 import 'package:paclub/frontend/views/main/message/components/user_search/user_search_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:paclub/frontend/views/main/tabs/tabs_controller.dart';
-import 'package:paclub/helper/app_constants.dart';
 import 'package:paclub/utils/app_response.dart';
 
 class SearchUserTile extends GetView<UserSearchController> {
@@ -32,12 +30,14 @@ class SearchUserTile extends GetView<UserSearchController> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(onTap: () {
-      if (userUid == AppConstants.uuid) {
-        final TabsController tabsController = Get.find<TabsController>();
-        tabsController.setIndex(4);
-        return;
-      }
-      Get.toNamed(Routes.TABS + Routes.USER + '?uid=$userUid');
+      Get.toNamed(
+        Routes.TABS + Routes.OTHERUSER,
+        parameters: {'uid': userUid},
+        arguments: {
+          'userName': userName,
+          'avatarURL': userAvatarURL,
+        },
+      );
     }, child: GetBuilder<AppController>(
       builder: (_) {
         return Container(

@@ -6,9 +6,7 @@ import 'package:paclub/frontend/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:paclub/frontend/views/main/app_controller.dart';
-import 'package:paclub/frontend/views/main/tabs/tabs_controller.dart';
 import 'package:paclub/frontend/widgets/badges/badges.dart';
-import 'package:paclub/helper/app_constants.dart';
 import 'package:paclub/helper/chatroom_helper.dart';
 
 class ChatroomsListUserTile extends StatelessWidget {
@@ -63,41 +61,40 @@ class ChatroomsListUserTile extends StatelessWidget {
                 // 头像
                 Container(
                   margin: EdgeInsets.only(right: 12.0),
-                  child: ClipOval(
-                    child: Material(
-                      color: AppColors.chatAvatarBackgroundColor,
-                      child: avatarURL == ''
-                          ? Container(
-                              width: 54.0,
-                              height: 54.0,
-                              child: Center(
-                                child: Text(
-                                    userName.substring(0, 1).toUpperCase(),
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                        fontSize: 24.0,
-                                        fontWeight: FontWeight.bold)),
+                  child: GestureDetector(
+                    onTap: () {
+                      Get.toNamed(
+                        Routes.TABS + Routes.OTHERUSER,
+                        parameters: {'uid': userUid},
+                        arguments: {
+                          'userName': userName,
+                          'avatarURL': avatarURL,
+                        },
+                      );
+                    },
+                    child: ClipOval(
+                      child: Material(
+                        color: AppColors.chatAvatarBackgroundColor,
+                        child: avatarURL == ''
+                            ? Container(
+                                width: 54.0,
+                                height: 54.0,
+                                child: Center(
+                                  child: Text(
+                                      userName.substring(0, 1).toUpperCase(),
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontSize: 24.0,
+                                          fontWeight: FontWeight.bold)),
+                                ),
+                              )
+                            : Ink.image(
+                                image: CachedNetworkImageProvider(avatarURL),
+                                fit: BoxFit.cover,
+                                width: 54.0,
+                                height: 54.0,
                               ),
-                            )
-                          : Ink.image(
-                              image: CachedNetworkImageProvider(avatarURL),
-                              fit: BoxFit.cover,
-                              width: 54.0,
-                              height: 54.0,
-                              child: InkWell(
-                                onTap: () {
-                                  if (userUid == AppConstants.uuid) {
-                                    final TabsController tabsController =
-                                        Get.find<TabsController>();
-                                    tabsController.setIndex(4);
-                                    return;
-                                  }
-                                  Get.toNamed(Routes.TABS +
-                                      Routes.USER +
-                                      '?uid=$userUid');
-                                },
-                              ),
-                            ),
+                      ),
                     ),
                   ),
                 ),

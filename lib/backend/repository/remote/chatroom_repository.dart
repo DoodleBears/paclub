@@ -141,6 +141,45 @@ class ChatroomRepository extends GetxController {
     }
   }
 
+  /// ## NOTE: 获取聊天室资料
+  Future<AppResponse> getChatroomInfo({
+    required String chatroomId,
+  }) async {
+    logger.i('开始获取聊天室 Profile');
+
+    return _chatroomsCollection.doc(chatroomId).get().then(
+      (doc) {
+        logger.i('成功获取聊天室 Profile');
+
+        return AppResponse(
+            kGetChatroomInfoSuccess, ChatroomModel.fromDoucumentSnapshot(doc));
+      },
+      onError: (e) {
+        logger3.e('获取聊天室 Profile 失败');
+        return AppResponse(kGetChatroomInfoFail, null);
+      },
+    );
+  }
+
+  // MARK: UPDATE 部分
+  /// ## NOTE: 更新聊天室 Profile
+  Future<AppResponse> updateChatroom({
+    required Map<String, dynamic> updateMap,
+    required String chatroomId,
+  }) async {
+    logger.i('更新聊天室 id: $chatroomId');
+
+    return _chatroomsCollection.doc(chatroomId).update(updateMap).then(
+      (_) async {
+        logger.i('更新聊天室成功');
+        return AppResponse(kUpdateChatroomInfoSuccess, chatroomId);
+      },
+      onError: (e) {
+        logger.e('更新聊天室失败, error: ' + e.runtimeType.toString());
+        return AppResponse(kUpdateChatroomInfoFail, null);
+      },
+    );
+  }
   // MARK: ADD 部分
 
   /// ## NOTE: 添加聊天室
@@ -155,7 +194,7 @@ class ChatroomRepository extends GetxController {
         .set(chatroomModel.toJson())
         .then(
       (_) async {
-        logger.i('添加好友成功');
+        logger.i('添加聊天室成功');
         return AppResponse(kAddChatroomSuccess, chatroomId);
       },
       onError: (e) {

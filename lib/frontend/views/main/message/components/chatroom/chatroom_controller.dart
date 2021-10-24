@@ -5,6 +5,7 @@ import 'package:paclub/frontend/views/main/message/components/chatroom/chatroom_
 import 'package:paclub/frontend/widgets/widgets.dart';
 import 'package:paclub/helper/app_constants.dart';
 import 'package:paclub/models/chat_message_model.dart';
+import 'package:paclub/models/chatroom_model.dart';
 import 'package:paclub/models/user_model.dart';
 import 'package:paclub/utils/app_response.dart';
 import 'package:paclub/utils/logger.dart';
@@ -19,6 +20,7 @@ class ChatroomController extends GetxController {
       Get.find<ChatroomScrollController>();
   final RefreshController refreshController = RefreshController();
   static final switchMessageNum = 12;
+  late final ChatroomModel chatroomModel;
   String chatroomId = '';
   String chatUserName = '';
   String chatWithUserUid = '';
@@ -26,6 +28,7 @@ class ChatroomController extends GetxController {
   int messageNotRead = 0;
 
   /// 是否显示返回到上次阅读位置的按钮
+  bool isOnInit = true;
   bool isJumpBackShow = false;
   bool isSendButtonShow = false;
   int newMessageNum = 0;
@@ -45,25 +48,36 @@ class ChatroomController extends GetxController {
 
   @override
   void onInit() async {
+    logger.w('启用 ChatroomController');
     enterRoomTimestamp = Timestamp.now();
     await _getPageParameter();
-    _updateFriendProfile();
 
+    super.onInit();
+  }
+
+  @override
+  void onReady() async {
+    _updateFriendProfile();
+    AppResponse appResponseChatroomInfo =
+        await _chatroomModule.getChatroomInfo(chatroomId: chatroomId);
+    if (appResponseChatroomInfo.data != null) {
+      chatroomModel = appResponseChatroomInfo.data;
+      _updateChatroomProfile();
+    } else {
+      toastTop(appResponseChatroomInfo.message);
+    }
     // 绑定消息 Stream 到 Firebase 的数据库请求回传
     // 监听消息
-    messageStream.listen((list) => listenMessageStream(list));
+    messageStream.listen((list) => listenNewMessageStream(list));
 
     await loadMoreHistoryMessages(
         limit: messageNotRead > switchMessageNum
             ? messageNotRead
             : 30); // 首次加载历史记录
-
     messageStream.bindStream(_chatroomModule.getNewMessageStream(
       chatroomId: chatroomId,
       enterRoomTimestamp: enterRoomTimestamp,
     ));
-
-    super.onInit();
   }
 
   Future<void> _getPageParameter() async {
@@ -83,9 +97,12 @@ class ChatroomController extends GetxController {
         messageNotRead = appResponseNotRead.data;
       }
     }
-    logger.i('启用 ChatroomController\n开始获取房间ID: $chatroomId 的消息');
+    logger.i('开始获取房间ID: $chatroomId 的消息');
   }
 
+  // NOTE: 之所以在这里更新用户信息
+  // NOTE: 是因为当用户 A 更新用户名的时候，理论上需要更新 A 的朋友的 friends Collection 下面对应的 displayName, 这个 SQL 会非常耗时且消耗大、
+  // NOTE: 通过是A的好友的用户进入聊天室
   Future<void> _updateFriendProfile() async {
     AppResponse appResponseUserProfile =
         await _userModule.getUserProfile(uid: chatWithUserUid);
@@ -118,7 +135,21 @@ class ChatroomController extends GetxController {
     }
   }
 
-  void listenMessageStream(List<ChatMessageModel> list) async {
+  void _updateChatroomProfile() {
+    if (chatroomModel.usersName[chatWithUserUid] != chatUserName) {
+      Map<String, dynamic> usersName = chatroomModel.usersName;
+      usersName[chatWithUserUid] = chatUserName;
+
+      Map<String, dynamic> updateMap = {
+        'usersName': usersName,
+      };
+      _chatroomModule.updateChatroom(
+          chatroomId: chatroomId, updateMap: updateMap);
+    }
+  }
+
+  // NOTE: 监听新消息
+  void listenNewMessageStream(List<ChatMessageModel> list) async {
     // logger.i('old: ${oldMessageList.length}\nnew: ${newMessageList.length}');
     // logger.i('all: $allMessageNum');
 
@@ -153,6 +184,7 @@ class ChatroomController extends GetxController {
     }
   }
 
+  // NOTE: 加载更多历史消息
   Future<void> loadMoreHistoryMessages({int limit = 30}) async {
     if (isLoadingHistory) return;
     if (isHistoryExist == false) {
@@ -197,6 +229,9 @@ class ChatroomController extends GetxController {
       } else {
         isJumpBackShow = false;
       }
+      if (isOnInit == true) {
+        isOnInit = false;
+      }
     } else {
       toastCenter('Check Internet\n${appResponse.message}');
       refreshController.loadFailed();
@@ -208,6 +243,7 @@ class ChatroomController extends GetxController {
     return;
   }
 
+  // NOTE: 发送消息
   Future<void> addMessage() async {
     String message = messageTextFieldController.text;
     messageTextFieldController.clear(); // 成功发送消息，才清空消息框内容
@@ -215,10 +251,8 @@ class ChatroomController extends GetxController {
     if (message.isNotEmpty) {
       AppResponse appResponse = await _chatroomModule.addMessage(
         chatroomId: chatroomId,
-        chatMessageModel: ChatMessageModel(
-            message: message,
-            sendBy: AppConstants.userName,
-            sendByUid: AppConstants.uuid),
+        chatMessageModel:
+            ChatMessageModel(message: message, sendByUid: AppConstants.uuid),
         chatWithUserUid: chatWithUserUid,
       );
 
@@ -233,6 +267,7 @@ class ChatroomController extends GetxController {
     }
   }
 
+  // NOTE: 切换发送按钮的样式（在消息发送栏没有消息的时候，显示 + Icon；消息发送栏有消息的时候显示 send）
   void toggleSendButton(String text) {
     // logger.d(text);
     if (isSendButtonShow == false) {
@@ -253,6 +288,7 @@ class ChatroomController extends GetxController {
     update();
   }
 
+  // NOTE: 进出房间的时候，要更新 Firebase 的 isInRoom 的 Value 用于判断是否在房间
   Future<void> enterLeaveRoom(bool isEnterRoom) async {
     _userModule.updateUserInRoom(
         friendUid: chatWithUserUid, isInRoom: isEnterRoom);
@@ -261,7 +297,6 @@ class ChatroomController extends GetxController {
   @override
   void onClose() {
     logger.w('关闭 ChatroomController');
-    // userRepository.enterLeaveRoom(friendUid: chatUserUid, isEnterRoom: false);
     messageStream.close();
     super.onClose();
   }

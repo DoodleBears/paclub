@@ -35,6 +35,17 @@ class ChatroomModule extends GetxController {
       _chatroomApi.getMoreOldMessages(
           chatroomId: chatroomId, firstMessageDoc: firstMessageDoc);
 
+  Future<AppResponse> getChatroomInfo({
+    required String chatroomId,
+  }) async =>
+      _chatroomApi.getChatroomInfo(chatroomId: chatroomId);
+
+  Future<AppResponse> updateChatroom({
+    required Map<String, dynamic> updateMap,
+    required String chatroomId,
+  }) async =>
+      _chatroomApi.updateChatroom(updateMap: updateMap, chatroomId: chatroomId);
+
   Future<AppResponse> addChatroom({
     required ChatroomModel chatroomModel,
     required String chatroomId,
