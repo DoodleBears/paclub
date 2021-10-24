@@ -16,7 +16,7 @@ class CardBody extends GetView<CardController> {
     return Scaffold(
       appBar: AppBar(
         elevation: 1,
-        title: const Text('DragLike Example'),
+        title: const Text('抽卡'),
       ),
       body: Center(
         child: Container(
@@ -65,51 +65,84 @@ class CardBody extends GetView<CardController> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor:
-                                MaterialStateProperty.all(Colors.blueAccent),
-                            elevation: MaterialStateProperty.all(0),
-                            shape: MaterialStateProperty.all(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(25),
-                                side: BorderSide(color: Colors.transparent),
-                              ),
-                            ),
-                            padding:
-                                MaterialStateProperty.all(EdgeInsets.all(20)),
-                          ),
-                          child: Text(
-                            'Left',
-                            style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 30),
-                          ),
-                          onPressed: () async => controller.swipeToLeft()),
-                      ElevatedButton(
-                          style: ButtonStyle(
-                            backgroundColor:
-                                MaterialStateProperty.all(Colors.pinkAccent),
-                            elevation: MaterialStateProperty.all(0),
-                            shape: MaterialStateProperty.all(
-                              RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(25),
-                                side: BorderSide(color: Colors.transparent),
-                              ),
-                            ),
-                            padding:
-                                MaterialStateProperty.all(EdgeInsets.all(20)),
-                          ),
-                          child: Text(
-                            'right',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 30,
-                            ),
-                          ),
-                          onPressed: () async => controller.swipeToRight()),
+                      // ElevatedButton(
+                      //     style: ButtonStyle(
+                      //       backgroundColor:
+                      //           MaterialStateProperty.all(Colors.blueAccent),
+                      //       elevation: MaterialStateProperty.all(0),
+                      //       shape: MaterialStateProperty.all(
+                      //         RoundedRectangleBorder(
+                      //           borderRadius: BorderRadius.circular(25),
+                      //           side: BorderSide(color: Colors.transparent),
+                      //         ),
+                      //       ),
+                      //       padding:
+                      //           MaterialStateProperty.all(EdgeInsets.all(20)),
+                      //     ),
+                      //     child: Text(
+                      //       'Left',
+                      //       style: TextStyle(
+                      //           color: Colors.white,
+                      //           fontWeight: FontWeight.w600,
+                      //           fontSize: 30),
+                      //     ),
+                      //     onPressed: () async => controller.swipeToLeft()),
+                      Container(
+                        height: 80,
+                        width: 80,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white),
+                        ),
+                        child: GestureDetector(
+                            onTap: () async => controller.swipeToLeft(),
+                            child: Image.asset('assets/dislike.png')),
+                      ),
+                      Container(
+                        height: 80,
+                        width: 80,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white),
+                        ),
+                        child: GestureDetector(
+                            onTap: () async => controller.swipeToRight(),
+                            child: Image.asset('assets/like.png')),
+                      )
+                      // Container(
+                      //     height: 60,
+                      //     width: 60,
+                      //     decoration: BoxDecoration(
+                      //         shape: BoxShape.circle,
+                      //         border: Border.all(color: Colors.white)),
+                      //     child: IconButton(
+                      //         iconSize: 30,
+                      //         onPressed: () async => controller.swipeToRight(),
+                      //         icon: Icon(Icons.favorite),
+                      //         color: Colors.green))
+                      // ElevatedButton(
+                      //     style: ButtonStyle(
+                      //       backgroundColor:
+                      //           MaterialStateProperty.all(Colors.pinkAccent),
+                      //       elevation: MaterialStateProperty.all(0),
+                      //       shape: MaterialStateProperty.all(
+                      //         RoundedRectangleBorder(
+                      //           borderRadius: BorderRadius.circular(25),
+                      //           side: BorderSide(color: Colors.transparent),
+                      //         ),
+                      //       ),
+                      //       padding:
+                      //           MaterialStateProperty.all(EdgeInsets.all(20)),
+                      //     ),
+                      // child: Text(
+                      //   'right',
+                      //   style: TextStyle(
+                      //     color: Colors.white,
+                      //     fontWeight: FontWeight.w600,
+                      //     fontSize: 30,
+                      //   ),
+                      // ),
+                      // onPressed: () async => controller.swipeToRight()),
                     ],
                   ),
                 ),

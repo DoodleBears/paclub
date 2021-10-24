@@ -16,6 +16,7 @@ class CardController extends GetxController {
     'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fpic1.win4000.com%2Fwallpaper%2F2017-12-11%2F5a2e3dc01ae8c.jpg&refer=http%3A%2F%2Fpic1.win4000.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1614001866&t=f2eaf54e9c947e66a4ac87ccc4faa8dc',
     'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fphoto.meifajie.com%2Fpictures%2F2018-05%2F180507_152555_31502.jpg&refer=http%3A%2F%2Fphoto.meifajie.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1614001866&t=7ffe32272026d19d863d4566ba675f31',
   ];
+  
 
   Future<void> removeImage() async {
     imageList.remove(imageList[0]);
@@ -42,7 +43,9 @@ class CardController extends GetxController {
   void swipeToLeft() {
     if (imageList.length > 0) {
       dragController.toLeft();
+
     }
+
   }
 
   @override
