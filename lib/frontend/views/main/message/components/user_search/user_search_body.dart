@@ -71,28 +71,30 @@ class UserSearchBody extends GetView<UserSearchController> {
                               ),
                             ),
                           )
-                        : ListView.builder(
-                            physics: BouncingScrollPhysics(),
-                            shrinkWrap: true,
-                            itemCount: controller.userList.length,
-                            itemBuilder: (context, index) {
-                              final UserModel userModel =
-                                  controller.userList[index];
-                              if (userModel.uid == AppConstants.uuid) {
-                                return SizedBox.shrink();
-                              }
-                              return GestureDetector(
-                                child: SearchUserTile(
-                                  index: index,
-                                  isChatroomExist:
-                                      chatroomIdList.contains(userModel.uid),
-                                  userAvatarURL: userModel.avatarURL,
-                                  userUid: userModel.uid,
-                                  userName: userModel.displayName,
-                                  userBio: userModel.bio,
-                                ),
-                              );
-                            },
+                        : Scrollbar(
+                            child: ListView.builder(
+                              physics: BouncingScrollPhysics(),
+                              shrinkWrap: true,
+                              itemCount: controller.userList.length,
+                              itemBuilder: (context, index) {
+                                final UserModel userModel =
+                                    controller.userList[index];
+                                if (userModel.uid == AppConstants.uuid) {
+                                  return SizedBox.shrink();
+                                }
+                                return GestureDetector(
+                                  child: SearchUserTile(
+                                    index: index,
+                                    isChatroomExist:
+                                        chatroomIdList.contains(userModel.uid),
+                                    userAvatarURL: userModel.avatarURL,
+                                    userUid: userModel.uid,
+                                    userName: userModel.displayName,
+                                    userBio: userModel.bio,
+                                  ),
+                                );
+                              },
+                            ),
                           );
                   },
                 );

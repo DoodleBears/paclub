@@ -14,6 +14,7 @@ class MyThemes {
   static final lightTheme = ThemeData(
     splashFactory: NoSplash.splashFactory,
     highlightColor: Colors.transparent,
+    primaryColor: primaryColor,
     splashColor: Colors.transparent,
     textSelectionTheme: TextSelectionThemeData(
       cursorColor: Colors.blue,
@@ -36,7 +37,12 @@ class MyThemes {
       enableFeedback: false,
       backgroundColor: Colors.white,
     ),
-    primaryColor: primaryColor,
+    scrollbarTheme: ScrollbarThemeData(
+      radius: Radius.circular(borderRadius),
+      thickness: MaterialStateProperty.all(6.0),
+      isAlwaysShown: false,
+      thumbColor: MaterialStateProperty.all(Colors.black26),
+    ),
     appBarTheme: AppBarTheme(
       backgroundColor: Colors.white,
       foregroundColor: accentColor,
@@ -76,6 +82,9 @@ class MyThemes {
     splashFactory: NoSplash.splashFactory,
     highlightColor: Colors.transparent,
     splashColor: Colors.transparent,
+    dividerColor: Colors.white,
+    primaryColorDark: primaryColor,
+    scaffoldBackgroundColor: Colors.grey.shade900,
     textSelectionTheme: TextSelectionThemeData(
       cursorColor: Colors.blue,
       selectionHandleColor: Colors.blue,
@@ -98,7 +107,12 @@ class MyThemes {
       enableFeedback: false,
       backgroundColor: Colors.grey[850],
     ),
-    scaffoldBackgroundColor: Colors.grey.shade900,
+    scrollbarTheme: ScrollbarThemeData(
+      radius: Radius.circular(borderRadius),
+      thickness: MaterialStateProperty.all(6.0),
+      isAlwaysShown: false,
+      thumbColor: MaterialStateProperty.all(Colors.grey),
+    ),
     appBarTheme: AppBarTheme(
       backgroundColor: Colors.grey.shade900,
       foregroundColor: accentColor,
@@ -132,7 +146,5 @@ class MyThemes {
       bodyText2: darkThemTextStyle,
       caption: darkThemTextStyle,
     ),
-    dividerColor: Colors.white,
-    primaryColorDark: primaryColor,
   );
 }
