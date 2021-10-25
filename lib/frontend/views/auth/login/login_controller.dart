@@ -78,6 +78,13 @@ class LoginController extends GetxController {
     update();
   }
 
+  void login() {
+    if (authEmailController.isEmailVerified()) {
+      Get.until((route) => false);
+      Get.toNamed(Routes.TABS);
+    }
+  }
+
   void signInWithEmail(BuildContext context) async {
     // loading 中防止重复请求
     if (isLoading) {

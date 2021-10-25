@@ -121,7 +121,13 @@ class LoginBody extends GetView<LoginController> {
                   height: Get.height * 0.08,
                   // height: Get.pixelRatio * 16,
                   text: 'Login',
-                  onPressed: () => controller.signInWithEmail(context),
+                  onPressed: () {
+                    if (controller.isResendButtonShow) {
+                      controller.login();
+                    } else {
+                      controller.signInWithEmail(context);
+                    }
+                  },
                   isLoading: controller.isLoading,
                 );
               },
