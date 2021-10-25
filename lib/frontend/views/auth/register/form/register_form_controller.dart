@@ -58,13 +58,17 @@ class RegisterFormController extends GetxController {
   }
 
   bool check() {
-    if (name.isEmpty && isNameOK) {
-      isNameOK = false;
-      errorText = 'Name cannot be empty';
-      update(['form_1']);
-    } else if (isNameOK == false) {
-      isNameOK = true;
-      update(['form_1']);
+    if (name.isEmpty) {
+      if (isNameOK) {
+        isNameOK = false;
+        errorText = 'Name cannot be empty';
+        update(['form_1']);
+      }
+    } else {
+      if (isNameOK == false) {
+        isNameOK = true;
+        update(['form_1']);
+      }
     }
 
     return isNameOK;
