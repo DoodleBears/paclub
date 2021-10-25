@@ -42,7 +42,10 @@ class ChatroomListPage extends StatelessWidget {
         ///搜尋用戶的Button，點擊跳轉到搜尋介面
         backgroundColor: accentColor,
         elevation: 1.5,
-        child: Icon(Icons.search),
+        child: Icon(
+          Icons.search,
+          color: Colors.white,
+        ),
         onPressed: () => Get.toNamed(Routes.TABS +
             Routes.MESSAGE +
             Routes.CHATROOMLIST +

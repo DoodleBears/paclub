@@ -14,7 +14,7 @@ class HomeHotPage extends StatelessWidget {
     return RefreshIndicator(
       onRefresh: getRefresh,
       backgroundColor: accentColor,
-      color: AppColors.refreshIndicatorColor,
+      color: Colors.white,
       child: Container(
         color: AppColors.homeListViewBackgroundColor,
         child: ListView.builder(

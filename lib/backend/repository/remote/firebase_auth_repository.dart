@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -29,7 +30,7 @@ class FirebaseAuthRepository extends GetxController {
   // 所以依赖它的 API 也不行
   GoogleSignIn _googleSignIn = GoogleSignIn(
     // Optional clientId
-    clientId: '161942683104-4pg008m87p5vviu7p271qu01rvevg33q',
+    clientId: kIsWeb ? '161942683104-4pg008m87p5vviu7p271qu01rvevg33q' : null,
     scopes: <String>[
       'email',
       'https://www.googleapis.com/auth/contacts.readonly',

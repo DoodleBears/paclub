@@ -74,8 +74,14 @@ class Tabs extends GetView<TabsController> {
                           label: '首頁',
                         ),
                         BottomNavigationBarItem(
-                          icon: Icon(Icons.star_outline),
-                          activeIcon: Icon(Icons.star),
+                          icon: Icon(
+                            Icons.bookmarks_outlined,
+                            size: 25.5,
+                          ),
+                          activeIcon: Icon(
+                            Icons.bookmarks,
+                            size: 25.5,
+                          ),
                           label: '抽卡',
                         ),
                         BottomNavigationBarItem(

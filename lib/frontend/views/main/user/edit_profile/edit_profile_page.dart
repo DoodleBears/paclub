@@ -10,6 +10,7 @@ class EditProfilePage extends GetView<UserController> {
   @override
   Widget build(BuildContext context) {
     logger.i('渲染 —— EditProfilePage');
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,

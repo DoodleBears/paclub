@@ -18,7 +18,10 @@ class MyProfilePage extends GetView<UserController> {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () => {controller.signOut()},
-        child: Icon(Icons.exit_to_app),
+        child: Icon(
+          Icons.exit_to_app,
+          color: Colors.white,
+        ),
       ),
       appBar: AppBar(
         backgroundColor: Colors.transparent,

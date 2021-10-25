@@ -43,9 +43,11 @@ class HomeBody extends GetView<HomeController> {
                   style: TextStyle(fontSize: 24.0),
                 ),
                 bottom: TabBar(
-                  overlayColor: MaterialStateProperty.resolveWith((states) {
-                    return Colors.transparent;
-                  }),
+                  overlayColor: MaterialStateProperty.resolveWith(
+                    (states) {
+                      return Colors.transparent;
+                    },
+                  ),
                   indicatorSize: TabBarIndicatorSize.label,
                   tabs: [
                     Tab(
@@ -84,6 +86,7 @@ class HomeBody extends GetView<HomeController> {
           elevation: 1,
           child: Icon(
             Icons.post_add,
+            color: Colors.white,
             size: 28.0,
           ),
         ),

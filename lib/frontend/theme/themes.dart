@@ -27,7 +27,7 @@ class MyThemes {
         width: 40.0,
         borderSide: BorderSide(
           width: 2.5,
-          color: accentLightColor,
+          color: accentColor,
         ),
         insets: EdgeInsets.only(bottom: 6.0),
       ),

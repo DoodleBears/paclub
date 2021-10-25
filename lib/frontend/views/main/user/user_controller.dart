@@ -35,6 +35,10 @@ class UserController extends GetxController {
   void resetEditPage() {
     imageFile = null;
     isProfileEdited = false;
+    displayNameNew = myUserModel.displayName;
+    bioNew = myUserModel.bio;
+    bioTextController.text = bioNew;
+    displayNameTextController.text = displayNameNew;
     avatarURLNew = myUserModel.avatarURL;
   }
 

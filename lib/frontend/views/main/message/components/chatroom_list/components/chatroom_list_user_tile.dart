@@ -83,6 +83,7 @@ class ChatroomsListUserTile extends StatelessWidget {
                                       userName.substring(0, 1).toUpperCase(),
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
+                                          color: Colors.white,
                                           fontSize: 24.0,
                                           fontWeight: FontWeight.bold)),
                                 ),

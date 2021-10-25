@@ -84,6 +84,7 @@ class RoundedLoadingButton extends StatelessWidget {
                   text,
                   style: textStyle ??
                       TextStyle(
+                        color: Colors.white,
                         fontSize: 24.0,
                         fontWeight: FontWeight.bold,
                       ),

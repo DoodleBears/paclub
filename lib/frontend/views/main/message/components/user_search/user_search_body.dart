@@ -44,7 +44,7 @@ class UserSearchBody extends GetView<UserSearchController> {
                       ),
                     ),
                     onPressed: () async => controller.searchByName(context),
-                    child: Icon(Icons.search),
+                    child: Icon(Icons.search, color: Colors.white),
                   ),
                 ),
               ),
