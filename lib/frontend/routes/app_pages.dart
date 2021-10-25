@@ -30,6 +30,8 @@ import 'package:paclub/frontend/views/auth/register/form/register_form_page.dart
 import 'package:paclub/frontend/views/splash/splash_binding.dart';
 import 'package:paclub/frontend/views/splash/splash_page.dart';
 import 'package:paclub/frontend/views/main/tabs/tabs_page.dart';
+import 'package:paclub/frontend/views/write_post/write_post_binding.dart';
+import 'package:paclub/frontend/views/write_post/write_post_page.dart';
 
 part './app_routes.dart';
 
@@ -53,7 +55,7 @@ abstract class AppPages {
         name: Routes.AUTH,
         page: () => AuthPage(),
         binding: AuthBinding(),
-        customTransition: FadeInMaskBelowSmallTransitions(),
+        customTransition: TopUpMaskBelowStayTransitions(),
         children: [
           GetPage(
             name: Routes.LOGIN,
@@ -87,7 +89,7 @@ abstract class AppPages {
       name: Routes.TABS,
       binding: TabsBinding(),
       page: () => Tabs(),
-      customTransition: TopLeftMaskBelowLeftLinearTransitions(),
+      customTransition: TopUpMaskBelowStayTransitions(),
       transitionDuration: const Duration(milliseconds: 250),
       children: [
         GetPage(
@@ -164,6 +166,13 @@ abstract class AppPages {
           transitionDuration: const Duration(milliseconds: 250),
         ),
       ],
+    ),
+    GetPage(
+      name: Routes.WRITEPOST,
+      page: () => WritePostPage(),
+      binding: WritePostBinding(),
+      customTransition: TopUpMaskBelowStayTransitions(),
+      transitionDuration: const Duration(milliseconds: 400),
     ),
   ];
 }

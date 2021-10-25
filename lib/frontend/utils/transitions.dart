@@ -20,6 +20,7 @@ class FadeInMaskBelowSmallTransitions extends CustomTransition {
     return Stack(
       children: <Widget>[
         // 在中间加一层黑色的透明层
+        DarkCurtainFade(animation: animation),
         FadeTransition(
           opacity: Tween<double>(
             begin: 0.0,
@@ -27,16 +28,16 @@ class FadeInMaskBelowSmallTransitions extends CustomTransition {
           ).animate(
             CurvedAnimation(
               parent: animation,
-              curve: curve ?? Curves.easeOutCubic,
-              reverseCurve: Curves.easeInCubic,
+              curve: curve ?? Curves.easeOutBack,
+              reverseCurve: Curves.easeOutBack,
             ),
           ),
           child: ScaleTransition(
             scale: Tween<double>(begin: 1.0, end: 0.9).animate(
               CurvedAnimation(
                 parent: secondaryAnimation,
-                curve: curve ?? Curves.easeOutCubic,
-                reverseCurve: Curves.easeInCubic,
+                curve: curve ?? Curves.easeOutBack,
+                reverseCurve: Curves.easeOutBack,
               ),
             ),
             alignment: alignment ?? Alignment.center,
@@ -197,6 +198,48 @@ class TopLeftMaskBelowLeftTransitions extends CustomTransition {
             ),
             child: child,
           ),
+        )
+      ],
+    );
+  }
+}
+
+/// 仿 iOS 上 Twitter 式的界面 Transition（视差效果）动画
+/// - Coming(Enter) push进来时执行的入场动画
+///   - position: (0, 1) -> (0, 0), 位置从下往上 1个页面
+/// - Leaving(Exit) 被pop出去时执行的离场动画
+///   - position: (0, 0) -> (0, 0), 位置不变
+class TopUpMaskBelowStayTransitions extends CustomTransition {
+  @override
+  Widget buildTransition(
+      BuildContext context,
+      Curve? curve,
+      Alignment? alignment,
+      Animation<double> animation, // coming page
+      Animation<double> secondaryAnimation, // leaving page
+      Widget child) {
+    return Stack(
+      children: <Widget>[
+        // 在中间加一层黑色的透明层
+        DarkCurtainFade(
+          animation: animation,
+          curve: Curves.easeOutCubic,
+          reverseCurve: Curves.easeInCubic,
+          begin: 0.0,
+          end: 1.0,
+        ),
+        SlideTransition(
+          position: Tween<Offset>(
+            begin: const Offset(0.0, 1.0),
+            end: Offset.zero,
+          ).animate(
+            CurvedAnimation(
+              parent: animation,
+              curve: Curves.easeOutCubic,
+              reverseCurve: Curves.easeInCubic,
+            ),
+          ),
+          child: child,
         )
       ],
     );

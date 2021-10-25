@@ -80,8 +80,12 @@ class HomeBody extends GetView<HomeController> {
           ),
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () => {controller.signOut()},
-          child: Icon(Icons.exit_to_app),
+          onPressed: () => {controller.navigateToPostPage()},
+          elevation: 1,
+          child: Icon(
+            Icons.post_add,
+            size: 28.0,
+          ),
         ),
       ),
     );
