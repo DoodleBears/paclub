@@ -72,7 +72,8 @@ class FirebaseAuthApi extends GetxController {
   /// - [AppResponse]
   ///   - message: [String] 错误代码
   ///   - data: 成功: [String]邮箱 | 失败: null
-  Future<AppResponse> signInWithEmail(String email, String password) async =>
+  Future<AppResponse> signInWithEmailAndPassword(
+          String email, String password) async =>
       firebaseAuthRepository.signInWithEmailAndPassword(email, password);
 
   /// # 使用Google账号登录功能

@@ -5,6 +5,7 @@ import 'package:paclub/frontend/routes/app_pages.dart';
 import 'package:paclub/frontend/views/auth/auth_email_controller.dart';
 import 'package:paclub/frontend/views/auth/login/components/components.dart';
 import 'package:paclub/frontend/views/auth/login/login_controller.dart';
+import 'package:paclub/frontend/views/main/app_controller.dart';
 import 'package:paclub/frontend/widgets/buttons/buttons.dart';
 import 'package:paclub/frontend/widgets/buttons/rounded_button.dart';
 import 'package:paclub/r.dart';
@@ -116,10 +117,10 @@ class LoginBody extends GetView<LoginController> {
             GetBuilder<LoginController>(
               builder: (_) {
                 return RoundedLoadingButton(
+                  color: primaryColor,
                   width:
                       controller.isLoading ? Get.width * 0.4 : Get.width * 0.8,
                   height: Get.height * 0.08,
-                  // height: Get.pixelRatio * 16,
                   text: 'Login',
                   onPressed: () {
                     if (controller.isResendButtonShow) {
@@ -177,11 +178,15 @@ class LoginBody extends GetView<LoginController> {
               ),
             ), // OR 的分割线
             SizedBox(height: Get.height * 0.02),
-            CircleButton(
-              height: Get.height * 0.085,
-              onPressed: () => controller.signInWithGoogle(),
-              imageUrl: R.googleIcon,
-              color: white,
+            GetBuilder<AppController>(
+              builder: (_) {
+                return CircleButton(
+                  height: Get.height * 0.085,
+                  onPressed: () => controller.signInWithGoogle(),
+                  imageUrl: R.googleIcon,
+                  color: AppColors.circleButtonBackgoundColor,
+                );
+              },
             ),
 
             // 跳过登录，直接进入主页

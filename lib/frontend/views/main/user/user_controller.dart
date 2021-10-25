@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_badger/flutter_app_badger.dart';
 import 'package:get/get.dart';
+import 'package:paclub/frontend/modules/auth_module.dart';
 import 'package:paclub/frontend/modules/user_module.dart';
 import 'package:paclub/frontend/widgets/widgets.dart';
 import 'package:paclub/helper/app_constants.dart';
@@ -13,6 +14,7 @@ import 'package:paclub/utils/logger.dart';
 
 class UserController extends GetxController {
   final UserModule _userModule = Get.find<UserModule>();
+  final AuthModule _authModule = Get.find<AuthModule>();
   final TextEditingController displayNameTextController =
       TextEditingController();
   final TextEditingController bioTextController = TextEditingController();
@@ -25,6 +27,10 @@ class UserController extends GetxController {
   bool isProfileEdited = false;
   bool isSaveLoading = false;
   File? imageFile;
+
+  Future<void> signOut() async {
+    await _authModule.signOut();
+  }
 
   void resetEditPage() {
     imageFile = null;

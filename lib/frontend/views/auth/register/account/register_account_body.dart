@@ -13,6 +13,7 @@ const int countdownTime = 60;
 
 class RegisterAccountBody extends GetView<RegisterAccountController> {
   final AuthEmailController authController = Get.find();
+  final double inputFieldHeight = Get.height * 0.1;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -43,17 +44,13 @@ class RegisterAccountBody extends GetView<RegisterAccountController> {
               builder: (_) {
                 return FadeInScaleContainer(
                   width: Get.width * 0.8,
-                  height: controller.isRegisterd ? 0.0 : null,
+                  height: controller.isRegisterd ? 0.0 : inputFieldHeight,
                   isShow: controller.isRegisterd == false,
                   child: RoundedInputField(
                     textInputType: TextInputType.emailAddress,
                     error: controller.isEmailOK == false,
                     errorText: controller.errorText,
                     labelText: 'Email',
-                    icon: Icon(
-                      Icons.person,
-                      color: accentColor,
-                    ),
                     onChanged: controller.onUsernameChanged,
                   ),
                 );
@@ -65,7 +62,7 @@ class RegisterAccountBody extends GetView<RegisterAccountController> {
               builder: (_) {
                 return FadeInScaleContainer(
                   width: Get.width * 0.8,
-                  height: controller.isRegisterd ? 0.0 : null,
+                  height: controller.isRegisterd ? 0.0 : inputFieldHeight,
                   isShow: controller.isRegisterd == false,
                   child: RoundedPasswordField(
                     hintText: 'Password',
@@ -86,7 +83,7 @@ class RegisterAccountBody extends GetView<RegisterAccountController> {
               builder: (_) {
                 return FadeInScaleContainer(
                   width: Get.width * 0.8,
-                  height: controller.isRegisterd ? 0.0 : null,
+                  height: controller.isRegisterd ? 0.0 : inputFieldHeight,
                   isShow: controller.isRegisterd == false,
                   child: RoundedPasswordField(
                     hintText: 'Repassword',
@@ -101,12 +98,28 @@ class RegisterAccountBody extends GetView<RegisterAccountController> {
               },
             ),
             SizedBox(height: 3 + Get.height * 0.02),
-
+            // *  注册按钮
+            GetBuilder<RegisterAccountController>(
+              builder: (_) {
+                return RoundedLoadingButton(
+                  width:
+                      controller.isLoading ? Get.width * 0.4 : Get.width * 0.8,
+                  height: Get.height * 0.08,
+                  text: controller.isRegisterd ? 'Login' : 'Sign Up',
+                  color: primaryColor,
+                  // 点击后确认登录
+                  onPressed: controller.isRegisterd
+                      ? () async => controller.loginAfterSignUp()
+                      : () async => await controller.registerWithEmail(context),
+                  // 在点击后触发loading效果，加载结束后再次触发，取消loading
+                  isLoading: controller.isLoading,
+                );
+              },
+            ),
             GetBuilder<RegisterAccountController>(
               builder: (_) {
                 return Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  verticalDirection: VerticalDirection.up,
                   children: [
                     AnimatedSizedBox(
                       width: Get.width * 0.8,
@@ -118,6 +131,8 @@ class RegisterAccountBody extends GetView<RegisterAccountController> {
                     GetBuilder<AuthEmailController>(
                       builder: (_) {
                         return FadeInCountdownButton(
+                          buttonColor: accentColor,
+                          textColor: Colors.white,
                           icon: Icon(Icons.send),
                           isShow: controller.isResendButtonShow,
                           height: Get.height * 0.08,
@@ -149,11 +164,10 @@ class RegisterAccountBody extends GetView<RegisterAccountController> {
                           child: RoundedButton(
                             onPressed: () =>
                                 controller.loginSkipAuthorization(),
-                            color: primaryColor,
+                            color: Colors.grey,
                             child: Text(
                               'Skip',
                               style: TextStyle(
-                                color: Colors.white,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 24.0,
                               ),
@@ -163,23 +177,6 @@ class RegisterAccountBody extends GetView<RegisterAccountController> {
                       },
                     ),
                   ],
-                );
-              },
-            ),
-            // *  注册按钮
-            GetBuilder<RegisterAccountController>(
-              builder: (_) {
-                return RoundedLoadingButton(
-                  width:
-                      controller.isLoading ? Get.width * 0.4 : Get.width * 0.8,
-                  height: Get.height * 0.08,
-                  text: controller.isRegisterd ? 'Login' : 'Sign Up',
-                  // 点击后确认登录
-                  onPressed: controller.isRegisterd
-                      ? () async => controller.loginAfterSignUp()
-                      : () async => await controller.registerWithEmail(context),
-                  // 在点击后触发loading效果，加载结束后再次触发，取消loading
-                  isLoading: controller.isLoading,
                 );
               },
             ),

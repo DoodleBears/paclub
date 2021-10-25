@@ -72,7 +72,6 @@ class LoginController extends GetxController {
       Get.until((route) => false);
       Get.toNamed(Routes.TABS);
     }
-    toastBottom(appResponse.message);
 
     isLoading = false;
     update();
@@ -100,7 +99,7 @@ class LoginController extends GetxController {
     logger.d('提交登录信息，开始进行登录验证');
 
     final AppResponse appResponse =
-        await authModule.signInWithEmail(username, password);
+        await authModule.signInWithEmailAndPassword(username, password);
     if (appResponse.data != null) {
       if (authEmailController.isEmailVerified()) {
         Get.until((route) => false);

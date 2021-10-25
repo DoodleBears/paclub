@@ -24,6 +24,7 @@ class AppColors {
   // NOTE: Home
   static Color? homeListViewBackgroundColor = Colors.grey[200];
   // NOTE: General Widget
+  static Color? circleButtonBackgoundColor = Colors.white;
   static Color? bottomNavigationBarTabColor = Colors.black;
   static Color? bottomNavigationBarBackgroundColor = Colors.white;
   static Color? refreshIndicatorColor = Colors.white;
@@ -46,6 +47,7 @@ class AppColors {
     // NOTE: Home
     homeListViewBackgroundColor = Colors.grey[200];
     // NOTE: General Widget
+    circleButtonBackgoundColor = Colors.white;
     bottomNavigationBarTabColor = Colors.black;
     bottomNavigationBarBackgroundColor = Colors.white;
     refreshIndicatorColor = Colors.white;
@@ -69,6 +71,7 @@ class AppColors {
     // NOTE: Home
     homeListViewBackgroundColor = Colors.black;
     // NOTE: General Widget
+    circleButtonBackgoundColor = Colors.grey[850];
     bottomNavigationBarTabColor = Colors.white;
     bottomNavigationBarBackgroundColor = Colors.black;
     refreshIndicatorColor = Colors.grey[900];
@@ -81,7 +84,7 @@ const accentColor = Color(0xFF96C336);
 const accentLightColor = Color(0xFFB3D270);
 const accentDarkColor = Color(0xFF75D118);
 const primaryColor = Color(0xFFb8966f);
-const primaryLightColor = Color(0xFFFCF4E9);
+const primaryLightColor = Color(0xFFd9b890);
 const primaryDarkColor = Color(0xFF9c835b);
 const black = Colors.black;
 const grey100 = Color(0xFFF5F5F5);

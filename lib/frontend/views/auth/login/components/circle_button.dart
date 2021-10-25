@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 class CircleButton extends StatelessWidget {
   final VoidCallback onPressed;
   final String imageUrl;
-  final Color color;
+  final Color? color;
   final double height;
 
   const CircleButton({

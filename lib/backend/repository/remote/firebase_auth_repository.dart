@@ -55,15 +55,15 @@ class FirebaseAuthRepository extends GetxController {
       logger.w('设定 FirebaseAuth 为 useAuthEmulator');
       await _auth.useAuthEmulator(localhost, authPort);
     }
-    _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount? account) {
-      _currentUser = account;
-      if (_currentUser != null) {
-        logger.i('Web 登录成功');
-      } else {
-        logger.e('Web 登录失败');
-      }
-    });
-    _googleSignIn.signInSilently();
+    // _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount? account) {
+    //   _currentUser = account;
+    //   if (_currentUser != null) {
+    //     logger.i('Web 登录成功');
+    //   } else {
+    //     logger.e('Web 登录失败');
+    //   }
+    // });
+    // _googleSignIn.signInSilently();
 
     // 一旦 _auth 状态改变, _user 就会被重新赋值
 

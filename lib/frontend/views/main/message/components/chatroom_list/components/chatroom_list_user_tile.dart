@@ -133,7 +133,10 @@ class ChatroomsListUserTile extends StatelessWidget {
                               lastMessage,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
-                              style: TextStyle(fontSize: 14),
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey,
+                              ),
                             ),
                           ),
                           // 未读数量 messageNotRead

@@ -16,7 +16,8 @@ class CountdownButton extends StatelessWidget {
   /// - [countdown] 显示的倒计时数字
   /// - [isLoading] loading判断条件
   /// - [icon] button 上的 icon (会在文字左侧)
-  /// - [color] 文字颜色
+  /// - [textColor] 文字颜色
+  /// - [buttonColor] 按钮颜色
   const CountdownButton({
     Key? key,
     required this.text,
@@ -24,14 +25,16 @@ class CountdownButton extends StatelessWidget {
     required this.countdown,
     required this.isLoading,
     this.icon,
-    this.color = accentColor,
+    this.textColor,
+    this.buttonColor = accentColor,
   }) : super(key: key);
 
   final int countdown;
   final String text;
   final VoidCallback onPressed;
   final bool isLoading;
-  final Color color;
+  final Color? textColor;
+  final Color buttonColor;
   final Icon? icon;
 
   @override
@@ -40,10 +43,11 @@ class CountdownButton extends StatelessWidget {
       onPressed: onPressed,
       style: TextButton.styleFrom(
         shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(borderRadius)),
+          borderRadius: BorderRadius.circular(borderRadius),
+        ),
         shadowColor: Colors.transparent,
-        primary: countdown == 0 ? color : Colors.grey[600],
-        backgroundColor: countdown == 0 ? Colors.grey[100] : primaryLightColor,
+        primary: countdown == 0 ? textColor : Colors.grey[400],
+        backgroundColor: countdown == 0 ? buttonColor : Colors.grey[600],
       ),
       // FittedBox 防止内容溢出
       child: FittedBox(

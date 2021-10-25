@@ -16,6 +16,10 @@ class MyProfilePage extends GetView<UserController> {
     logger.i('渲染 —— MyProfilePage');
 
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => {controller.signOut()},
+        child: Icon(Icons.exit_to_app),
+      ),
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0, // z-index高度的感觉，影响 AppBar 的阴影

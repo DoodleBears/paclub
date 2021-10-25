@@ -29,6 +29,7 @@ class RegisterFormBody extends GetView<RegisterFormController> {
                 width: Get.width * 0.8,
                 height: Get.height * 0.08,
                 text: 'Next',
+                color: primaryColor,
                 // 点击后确认用户名不为空
                 onPressed: () => controller.nextPage(context),
                 isLoading: false,
