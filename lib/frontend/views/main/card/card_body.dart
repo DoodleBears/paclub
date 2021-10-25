@@ -37,12 +37,18 @@ class CardBody extends GetView<CardController> {
                           ? Text('加载中...')
                           : ClipRRect(
                               borderRadius: BorderRadius.circular(10),
-                              child: DragCard(src: controller.imageList[0])),
+                              child: Padding(
+                                padding: const EdgeInsets.only(bottom: 100),
+                                child: DragCard(src: controller.imageList[0]),
+                              )),
                       secondChild: controller.imageList.length <= 1
                           ? Container()
                           : ClipRRect(
                               borderRadius: BorderRadius.circular(10),
-                              child: DragCard(src: controller.imageList[1])),
+                              child: Padding(
+                                padding: const EdgeInsets.only(bottom: 100),
+                                child: DragCard(src: controller.imageList[1]),
+                              )),
                       screenWidth: Get.width,
                       outValue: 0.8,
                       dragSpeed: 1000,
@@ -59,34 +65,12 @@ class CardBody extends GetView<CardController> {
               ),
               Positioned(
                 left: 0,
-                bottom: MediaQueryData.fromWindow(window).padding.bottom + 50,
+                bottom: MediaQueryData.fromWindow(window).padding.bottom + 20,
                 child: Container(
                   width: MediaQueryData.fromWindow(window).size.width,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
-                      // ElevatedButton(
-                      //     style: ButtonStyle(
-                      //       backgroundColor:
-                      //           MaterialStateProperty.all(Colors.blueAccent),
-                      //       elevation: MaterialStateProperty.all(0),
-                      //       shape: MaterialStateProperty.all(
-                      //         RoundedRectangleBorder(
-                      //           borderRadius: BorderRadius.circular(25),
-                      //           side: BorderSide(color: Colors.transparent),
-                      //         ),
-                      //       ),
-                      //       padding:
-                      //           MaterialStateProperty.all(EdgeInsets.all(20)),
-                      //     ),
-                      //     child: Text(
-                      //       'Left',
-                      //       style: TextStyle(
-                      //           color: Colors.white,
-                      //           fontWeight: FontWeight.w600,
-                      //           fontSize: 30),
-                      //     ),
-                      //     onPressed: () async => controller.swipeToLeft()),
                       Container(
                         height: 80,
                         width: 80,
