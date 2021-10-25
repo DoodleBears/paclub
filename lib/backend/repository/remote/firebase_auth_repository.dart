@@ -38,7 +38,7 @@ class FirebaseAuthRepository extends GetxController {
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
   User? _user = FirebaseAuth.instance.currentUser;
-  GoogleSignInAccount? _currentUser;
+  // GoogleSignInAccount? _currentUser;
 
   /// [取得用户类] 回传 User instance（Firebase）
   User? get user {
