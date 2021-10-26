@@ -30,11 +30,14 @@ class FirebaseAuthRepository extends GetxController {
   // 所以依赖它的 API 也不行
   GoogleSignIn _googleSignIn = GoogleSignIn(
     // Optional clientId
+
     clientId: kIsWeb ? '161942683104-4pg008m87p5vviu7p271qu01rvevg33q' : null,
-    scopes: <String>[
-      'email',
-      'https://www.googleapis.com/auth/contacts.readonly',
-    ],
+    scopes: kIsWeb
+        ? <String>[
+            'email',
+            'https://www.googleapis.com/auth/contacts.readonly',
+          ]
+        : <String>[],
   );
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -283,6 +286,9 @@ class FirebaseAuthRepository extends GetxController {
       AppResponse appResponse =
           AppResponse(e.code, null, e.runtimeType.toString());
       logger3.w(appResponse.toString());
+      logger3.e(e.code);
+      logger3.e(e.message);
+      logger3.e(e.details);
       return appResponse;
     }
   }

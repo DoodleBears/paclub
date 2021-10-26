@@ -102,6 +102,7 @@ class LoginBody extends GetView<LoginController> {
                           onPressed: () => authEmailController
                               .sendEmailVerification(countdownTime),
                           text: 'Resend',
+                          textColor: Colors.white,
                           countdown: authEmailController.countdown,
                           isLoading:
                               authEmailController.countdown == countdownTime,

@@ -16,7 +16,6 @@ class ProfilePage extends GetView<UserController> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
         elevation: 0, // z-index高度的感觉，影响 AppBar 的阴影
       ),
       body: Column(
