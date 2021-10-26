@@ -78,19 +78,15 @@ class UserModule extends GetxController {
     );
   }
 
-  Future<AppResponse> updateFriendLastMessage({
-    required String message,
-    required String userUid,
-    required String chatWithUserUid,
-  }) async =>
-      _userApi.updateFriendLastMessage(
-          message: message, userUid: userUid, chatWithUserUid: chatWithUserUid);
-
-  Future<AppResponse> updateUserInRoom({
+  Future<AppResponse> enterUserRoom({
     required String friendUid,
-    required bool isInRoom,
   }) async =>
-      _userApi.updateUserInRoom(friendUid: friendUid, isInRoom: isInRoom);
+      _userApi.updateUserInRoom(friendUid: friendUid, isInRoom: true);
+
+  Future<AppResponse> leaveUserRoom({
+    required String friendUid,
+  }) async =>
+      _userApi.updateUserInRoom(friendUid: friendUid, isInRoom: false);
 
   // MARK: 初始化
   @override

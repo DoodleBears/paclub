@@ -139,7 +139,10 @@ class UserApi extends GetxController {
     required String chatWithUserUid,
   }) async =>
       _userRepository.updateFriendLastMessage(
-          message: message, userUid: userUid, chatWithUserUid: chatWithUserUid);
+        message: message,
+        userUid: userUid,
+        chatWithUserUid: chatWithUserUid,
+      );
 
   /// ## NOTE: 进入房间
   /// ## 传入参数
@@ -155,7 +158,9 @@ class UserApi extends GetxController {
     required bool isInRoom,
   }) async =>
       _userRepository.updateUserInRoom(
-          friendUid: friendUid, isInRoom: isInRoom);
+        friendUid: friendUid,
+        isInRoom: isInRoom,
+      );
 
   // MARK: 初始化
   @override

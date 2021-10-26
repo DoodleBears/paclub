@@ -45,7 +45,7 @@ class ChatroomsListUserTile extends StatelessWidget {
         );
         // 离开房间
         final UserModule userModule = Get.find<UserModule>();
-        userModule.updateUserInRoom(friendUid: userUid, isInRoom: false);
+        userModule.leaveUserRoom(friendUid: userUid);
       },
 
       ///每位用戶顯示於名單上的UI介面

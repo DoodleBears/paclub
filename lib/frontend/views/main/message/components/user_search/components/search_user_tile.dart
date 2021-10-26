@@ -128,8 +128,7 @@ class SearchUserTile extends GetView<UserSearchController> {
                               arguments: chatroomInfo);
                           // 离开房间
                           final UserModule userModule = Get.find<UserModule>();
-                          userModule.updateUserInRoom(
-                              friendUid: userUid, isInRoom: false);
+                          userModule.leaveUserRoom(friendUid: userUid);
                         }
                       },
                       height: 44.0,

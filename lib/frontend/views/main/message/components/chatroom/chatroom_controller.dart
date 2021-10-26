@@ -295,10 +295,12 @@ class ChatroomController extends GetxController {
     update();
   }
 
-  // NOTE: 进出房间的时候，要更新 Firebase 的 isInRoom 的 Value 用于判断是否在房间
-  Future<void> enterLeaveRoom(bool isEnterRoom) async {
-    _userModule.updateUserInRoom(
-        friendUid: chatWithUserUid, isInRoom: isEnterRoom);
+  Future<void> enterRoom() async {
+    _userModule.enterUserRoom(friendUid: chatWithUserUid);
+  }
+
+  Future<void> leaveRoom() async {
+    _userModule.leaveUserRoom(friendUid: chatWithUserUid);
   }
 
   @override

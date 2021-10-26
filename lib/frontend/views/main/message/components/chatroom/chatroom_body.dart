@@ -44,25 +44,25 @@ class _ChatroomBodyState extends State<ChatroomBody>
   ///  在聊天室的时候，若App生命周期发生变化，需要做出isInRoom的设定，暂停App即算离开房间
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    print('didChangeAppLifecycleState');
+    // print('didChangeAppLifecycleState');
     setState(() {
       switch (state) {
         case AppLifecycleState.resumed:
-          chatroomController.enterLeaveRoom(true);
-          print('AppLifecycleState.resumed');
+          chatroomController.enterRoom();
+          // print('AppLifecycleState.resumed');
           break;
         case AppLifecycleState.inactive:
-          print('AppLifecycleState.inactive');
-          chatroomController.enterLeaveRoom(false);
+          // print('AppLifecycleState.inactive');
+          chatroomController.leaveRoom();
           break;
         case AppLifecycleState.paused:
-          print('AppLifecycleState.paused');
-          chatroomController.enterLeaveRoom(false);
+          // print('AppLifecycleState.paused');
+          chatroomController.leaveRoom();
 
           break;
         case AppLifecycleState.detached:
-          print('AppLifecycleState.detached');
-          chatroomController.enterLeaveRoom(false);
+          // print('AppLifecycleState.detached');
+          chatroomController.leaveRoom();
           break;
       }
     });

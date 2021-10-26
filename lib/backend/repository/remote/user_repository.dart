@@ -221,45 +221,24 @@ class UserRepository extends GetxController {
     Map<String, dynamic> updateData = Map();
     updateData['lastMessage'] = message;
     updateData['lastMessageTime'] = FieldValue.serverTimestamp();
-    final DocumentReference documentReference = _usersCollection
+    // NOTE: 如果不是自己则未读消息数量+1
+    if (userUid != AppConstants.uuid) {
+      updateData['messageNotRead'] = FieldValue.increment(1);
+    }
+    return await _usersCollection
         .doc(userUid)
         .collection('friends')
-        .doc(chatWithUserUid);
-    if (userUid == AppConstants.uuid) {
-      return await _usersCollection
-          .doc(userUid)
-          .collection('friends')
-          .doc(chatWithUserUid)
-          .update(updateData)
-          .then(
-        (_) {
-          return AppResponse(kUpdateFriendLastMessageSuccess, true);
-        },
-        onError: (e) {
-          logger.e('更新LastMessage失败 : ${e.runtimeType}');
-          return AppResponse(kUpdateFriendLastMessageFail, null);
-        },
-      );
-    } else {
-      return await _firestore.runTransaction(
-        (transaction) async {
-          DocumentSnapshot documentSnapshot =
-              await transaction.get(documentReference);
-          // 用 transaction 来确保 read 到的 未读消息数量是最新的，正确的（在同时多人发消息的时候）
-          if (documentSnapshot.exists) {
-            // 找到 User
-            FriendModel friendModel =
-                FriendModel.fromDoucumentSnapshot(documentSnapshot);
-            // 不是自己才更新 notRead
-            updateData['messageNotRead'] = friendModel.messageNotRead + 1;
-            transaction.update(documentReference, updateData);
-            return AppResponse(kUpdateFriendLastMessageSuccess, true);
-          } else {
-            return AppResponse(kUpdateFriendLastMessageFail, null);
-          }
-        },
-      );
-    }
+        .doc(chatWithUserUid)
+        .update(updateData)
+        .then(
+      (_) {
+        return AppResponse(kUpdateFriendLastMessageSuccess, true);
+      },
+      onError: (e) {
+        logger.e('更新LastMessage失败 : ${e.runtimeType}');
+        return AppResponse(kUpdateFriendLastMessageFail, null);
+      },
+    );
   }
 
   // MARK: 在当用户进入或离开某一个 Friend 的 Chatroom 时候触发（属于User行为，不属于User在Chatroom中的行为）

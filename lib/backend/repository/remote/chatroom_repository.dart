@@ -217,8 +217,6 @@ class ChatroomRepository extends GetxController {
         .timeout(const Duration(seconds: 10))
         .then(
       (_) async {
-        // FIXME: 将 userApi.updateFriendLastMessage 拆分到 Module 中
-
         return AppResponse(kAddMessageSuccess, chatWithUserUid);
       },
       onError: (e) {
