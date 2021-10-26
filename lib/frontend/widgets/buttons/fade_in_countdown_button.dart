@@ -23,7 +23,8 @@ class FadeInCountdownButton extends StatelessWidget {
   /// - [isLoading] 是否加载中（显示圆圈加载动画）
   /// - [icon] 文字左侧的 icon
   /// - [width] 按钮宽度
-  /// - [color] 文字颜色
+  /// - [textColor] 文字颜色
+  /// - [buttonColor] 按钮颜色
   const FadeInCountdownButton({
     Key? key,
     required this.isShow,
@@ -34,7 +35,8 @@ class FadeInCountdownButton extends StatelessWidget {
     required this.isLoading,
     this.icon,
     this.width,
-    this.color = accentColor,
+    this.textColor,
+    this.buttonColor = accentColor,
   }) : super(key: key);
 
   final bool isShow;
@@ -44,7 +46,8 @@ class FadeInCountdownButton extends StatelessWidget {
   final int countdown;
   final Icon? icon;
   final String text;
-  final Color color;
+  final Color? textColor;
+  final Color buttonColor;
   final VoidCallback onPressed;
 
   @override
@@ -57,13 +60,13 @@ class FadeInCountdownButton extends StatelessWidget {
               : Get.width * 0.8),
       height: height,
       child: CountdownButton(
-        onPressed: onPressed,
-        countdown: countdown,
-        isLoading: isLoading,
-        icon: icon,
-        text: text,
-        color: color,
-      ),
+          onPressed: onPressed,
+          countdown: countdown,
+          isLoading: isLoading,
+          icon: icon,
+          text: text,
+          textColor: textColor,
+          buttonColor: buttonColor),
     );
   }
 }

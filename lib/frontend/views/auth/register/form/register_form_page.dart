@@ -11,7 +11,7 @@ class RegisterFormPage extends GetView<RegisterFormController> {
     logger.i('渲染 —— RegisterFormPage');
     return WillPopScope(
       onWillPop: () async {
-        if (controller.page.value == 1) {
+        if (controller.page == 1) {
           return true;
         } else {
           controller.prevPage();
@@ -34,9 +34,8 @@ class RegisterFormPage extends GetView<RegisterFormController> {
                 highlightColor: Colors.transparent,
                 icon: Icon(Icons.arrow_back),
                 color: accentColor,
-                onPressed: () => controller.page.value == 1
-                    ? Get.back()
-                    : controller.prevPage(),
+                onPressed: () =>
+                    controller.page == 1 ? Get.back() : controller.prevPage(),
               ),
             ),
           ),

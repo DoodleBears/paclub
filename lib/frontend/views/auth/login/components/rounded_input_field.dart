@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:paclub/frontend/constants/constants.dart';
 import 'package:paclub/frontend/utils/length_limit_textfield_formatter.dart';
-import 'package:paclub/frontend/views/auth/login/components/text_field_container.dart';
 
 class RoundedInputField extends StatelessWidget {
   final TextInputType textInputType;
@@ -14,6 +13,10 @@ class RoundedInputField extends StatelessWidget {
   final Icon? icon;
   final int maxLines;
   final bool error;
+  final String? errorText;
+  final TextEditingController? controller;
+  final String? counterText;
+  final FloatingLabelBehavior floatingLabelBehavior;
   final int maxLength;
 
   /// [圆角输入框，用于 (Email) 的输入]
@@ -37,38 +40,53 @@ class RoundedInputField extends StatelessWidget {
     this.labelText,
     this.maxLength = 50,
     this.error = false,
+    this.errorText,
+    this.counterText,
+    this.floatingLabelBehavior = FloatingLabelBehavior.always,
+    this.controller,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return TextFieldContainer(
-      color: primaryLightColor,
-      error: error,
-      height: height ?? 16 + Get.height * 0.07,
+    return Container(
+      width: Get.width * 0.8,
       child: TextField(
+        controller: controller,
         inputFormatters: [
           LengthLimitingTextFieldFormatterFixed(maxLength),
         ],
         keyboardType: textInputType,
         style: TextStyle(
-          fontSize: Get.height * 0.022,
-          color: Colors.black,
+          fontSize: Get.height * 0.028,
         ),
-        cursorHeight: Get.height * 0.033,
         onChanged: onChanged,
         maxLines: maxLines,
         decoration: InputDecoration(
-          icon: icon,
-          hintText: labelText ?? hintText,
-          hintStyle: TextStyle(
-            fontSize: Get.height * 0.022,
-            color: Colors.black,
+          // counterText: counterText,
+          labelText: labelText ?? hintText,
+          labelStyle: TextStyle(
+            color: error ? Colors.red : null,
           ),
-          labelText: labelText,
-          labelStyle: TextStyle(color: accentColor),
+          floatingLabelBehavior: floatingLabelBehavior,
+          floatingLabelStyle: TextStyle(
+            color: error ? Colors.red : null,
+          ),
           hintMaxLines: 20,
-          floatingLabelBehavior: FloatingLabelBehavior.always,
-          border: InputBorder.none,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(borderRadius),
+            borderSide: BorderSide(
+              width: 2.0,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(borderRadius),
+            borderSide: BorderSide(
+              color: error ? Colors.red : accentColor,
+              width: 2.0,
+            ),
+          ),
+
+          errorText: error ? errorText : null,
         ),
       ),
     );

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FriendModel {
   late int messageNotRead;
+  late String avatarURL;
   late String friendName;
   late String friendUid;
   late String lastMessage;
@@ -19,6 +20,7 @@ class FriendModel {
     if (documentSnapshot.data() != null) {
       Map data = documentSnapshot.data() as Map;
 
+      avatarURL = data['avatarURL'] ?? '';
       messageNotRead = data['messageNotRead'];
       friendName = data['friendName'];
       friendUid = data['friendUid'];

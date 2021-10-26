@@ -23,6 +23,11 @@
   <meta name="apple-mobile-web-app-title" content="flutter_app">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
+  <!-- web meta setting -->
+  <!-- google sign in -->
+  <meta name="google-signin-scope" content="profile email">
+  <meta name="google-signin-client_id" content="161942683104-4pg008m87p5vviu7p271qu01rvevg33q.apps.googleusercontent.com.apps.googleusercontent.com">
+
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
 
@@ -39,6 +44,33 @@
         navigator.serviceWorker.register('flutter_service_worker.js');
       });
     }
+  </script>
+  <script src="https://apis.google.com/js/platform.js" async defer></script>
+  <!-- Add this line -->
+  <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-performance.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-firestore.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-analytics.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.6.1/firebase-storage.js"></script>
+  
+  <!-- Firebase Configuration -->
+  <script>
+    
+    var firebaseConfig = {
+      apiKey: "AIzaSyCjc8fvgeJTMhx7_8odaItZBtlFDUdJQAU",
+      authDomain: "paclub-20546.firebaseapp.com",
+      databaseURL: "https://paclub-20546.firebaseio.com",
+      projectId: "paclub-20546",
+      storageBucket: "paclub-20546.appspot.com",
+      // messagingSenderId: "...",
+      appId: "1:161942683104:web:5627856cac76681879ff85",
+      // measurementId: "G-...",
+    };
+
+    // Initialize Firebase
+    const app = firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore()
   </script>
   <script src="main.dart.js" type="application/javascript"></script>
 </body>

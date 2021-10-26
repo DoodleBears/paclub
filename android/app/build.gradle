@@ -64,7 +64,7 @@ flutter {
 
 dependencies {
     // Import the Firebase BoM
-    implementation platform('com.google.firebase:firebase-bom:28.2.1')
+    implementation platform('com.google.firebase:firebase-bom:28.4.2')
     
     // https://developers.google.com/android/guides/setup
     implementation 'com.google.android.gms:play-services-location:18.0.0'
@@ -81,6 +81,7 @@ dependencies {
     // For example, declare the dependencies for Firebase Authentication and Cloud Firestore
     implementation 'com.google.firebase:firebase-auth'
     implementation 'com.google.firebase:firebase-firestore'
+    implementation 'com.google.firebase:firebase-storage'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.android.support:multidex:1.0.3'
     

@@ -1,8 +1,10 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:paclub/backend/repository/remote/user_repository.dart';
+import 'package:paclub/backend/api/user_api.dart';
+import 'package:paclub/constants/log_message.dart';
 import 'package:paclub/constants/emulator_constant.dart';
 import 'package:paclub/helper/app_constants.dart';
 import 'package:paclub/models/user_model.dart';
@@ -26,18 +28,21 @@ class FirebaseAuthRepository extends GetxController {
   // 之所以 FirebaseAuthRepository 需要是 GetxService，
   // 是因为需要长时间存在（监听User State），不能用 static （class function）的形式调用
   // 所以依赖它的 API 也不行
-  static const String kSignInRequiredError = 'sign_in_required';
-  static const String kSignInCanceledError = 'sign_in_canceled';
-  static const String kSignInSuccessed = 'sign_in_successed';
-  static const String kSignInFailedError = 'sign_in_failed';
-  static const String kAddUserFailedError =
-      'Register success, but failed to add User Info';
-  static const String kSignOutSuccessed = 'sign_out_successed';
-  static const String kSignOutFailedError = 'sign_out_failed';
-  static const String kNetworkError = 'network_error';
+  GoogleSignIn _googleSignIn = GoogleSignIn(
+    // Optional clientId
+
+    clientId: kIsWeb ? '161942683104-4pg008m87p5vviu7p271qu01rvevg33q' : null,
+    scopes: kIsWeb
+        ? <String>[
+            'email',
+            'https://www.googleapis.com/auth/contacts.readonly',
+          ]
+        : <String>[],
+  );
+
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  // final Rx<User?> _user = FirebaseAuth.instance.currentUser.obs;
   User? _user = FirebaseAuth.instance.currentUser;
+  // GoogleSignInAccount? _currentUser;
 
   /// [取得用户类] 回传 User instance（Firebase）
   User? get user {
@@ -54,8 +59,18 @@ class FirebaseAuthRepository extends GetxController {
       logger.w('设定 FirebaseAuth 为 useAuthEmulator');
       await _auth.useAuthEmulator(localhost, authPort);
     }
+    // _googleSignIn.onCurrentUserChanged.listen((GoogleSignInAccount? account) {
+    //   _currentUser = account;
+    //   if (_currentUser != null) {
+    //     logger.i('Web 登录成功');
+    //   } else {
+    //     logger.e('Web 登录失败');
+    //   }
+    // });
+    // _googleSignIn.signInSilently();
 
     // 一旦 _auth 状态改变, _user 就会被重新赋值
+
     _auth.authStateChanges().listen((User? user) {
       _user = user;
 
@@ -111,8 +126,6 @@ class FirebaseAuthRepository extends GetxController {
   /// [Email 注册功能] —— 回传字串结果
   Future<AppResponse> registerWithEmail(
       String email, String password, String name, String bio) async {
-    final UserRepository userRepository = Get.find<UserRepository>();
-
     try {
       await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
@@ -121,9 +134,11 @@ class FirebaseAuthRepository extends GetxController {
       await user!.updateDisplayName(name);
       logger.d('更新账号信息成功, name是: $name');
       AppConstants.userName = name;
+      final UserApi userApi = Get.find<UserApi>();
 
-      AppResponse appResponse = await userRepository.addUser(
-          UserModel(uid: user!.uid, displayName: name, email: email, bio: bio));
+      AppResponse appResponse = await userApi.addUser(
+          userModel: UserModel(
+              uid: user!.uid, displayName: name, email: email, bio: bio));
 
       if (appResponse.data == null) {
         logger3.e('添加用户信息到 firestore/user 失败');
@@ -183,12 +198,16 @@ class FirebaseAuthRepository extends GetxController {
           email: email, password: password);
       // 添加用户到 Firestore
       final User user = userCredential.user!;
-      final UserRepository userRepository = Get.find<UserRepository>();
-      AppResponse appResponse = await userRepository.addUser(UserModel(
-          uid: user.uid,
-          displayName: user.displayName!,
-          email: email,
-          bio: ''));
+
+      final UserApi userApi = Get.find<UserApi>();
+      AppResponse appResponse = await userApi.addUser(
+        userModel: UserModel(
+            uid: user.uid,
+            displayName: user.displayName!,
+            avatarURL: '',
+            email: email,
+            bio: ''),
+      );
 
       if (appResponse.data == null) {
         logger3.e('添加用户信息到 firestore/user 失败');
@@ -215,8 +234,9 @@ class FirebaseAuthRepository extends GetxController {
   /// [使用Google账号登录功能] —— 回传Google的 User认证 instance
   Future<AppResponse> signInWithGoogle() async {
     try {
+      logger.i('开始 Google Sign In');
       // 调用Google登陆认证, 弹窗并等待用户选择账号
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
       // 等待用户完整Google授权的response, 如果用户取消, 则 googleUser 为 null
 
@@ -225,6 +245,7 @@ class FirebaseAuthRepository extends GetxController {
         logger3.w(appResponse.toString());
         return appResponse;
       }
+      logger.i('开始 Google Sign In 验证');
 
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
@@ -238,13 +259,15 @@ class FirebaseAuthRepository extends GetxController {
       final UserCredential userCredential =
           await _auth.signInWithCredential(credential);
 
-      final UserRepository userRepository = Get.find<UserRepository>();
       User user = userCredential.user!;
-      AppResponse appResponse = await userRepository.addUser(UserModel(
-          uid: user.uid,
-          displayName: user.displayName!,
-          email: user.email!,
-          bio: ''));
+      final UserApi userApi = Get.find<UserApi>();
+      AppResponse appResponse = await userApi.addUser(
+          userModel: UserModel(
+              uid: user.uid,
+              displayName: user.displayName!,
+              avatarURL: user.photoURL ?? '',
+              email: user.email!,
+              bio: ''));
 
       if (appResponse.data == null) {
         logger3.e('添加用户信息到 firestore/user 失败');
@@ -263,6 +286,9 @@ class FirebaseAuthRepository extends GetxController {
       AppResponse appResponse =
           AppResponse(e.code, null, e.runtimeType.toString());
       logger3.w(appResponse.toString());
+      logger3.e(e.code);
+      logger3.e(e.message);
+      logger3.e(e.details);
       return appResponse;
     }
   }

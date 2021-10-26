@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import 'package:paclub/frontend/views/main/home/home_controller.dart';
 import 'package:paclub/frontend/views/main/home/home_follow/home_follow_page.dart';
 import 'package:paclub/frontend/views/main/home/home_hot/home_hot_page.dart';
-import 'package:paclub/frontend/views/main/user/user_controller.dart';
+import 'package:paclub/frontend/views/main/app_controller.dart';
 
 class HomeBody extends GetView<HomeController> {
   const HomeBody({Key? key}) : super(key: key);
@@ -43,9 +43,11 @@ class HomeBody extends GetView<HomeController> {
                   style: TextStyle(fontSize: 24.0),
                 ),
                 bottom: TabBar(
-                  overlayColor: MaterialStateProperty.resolveWith((states) {
-                    return Colors.transparent;
-                  }),
+                  overlayColor: MaterialStateProperty.resolveWith(
+                    (states) {
+                      return Colors.transparent;
+                    },
+                  ),
                   indicatorSize: TabBarIndicatorSize.label,
                   tabs: [
                     Tab(
@@ -67,7 +69,7 @@ class HomeBody extends GetView<HomeController> {
               )
             ];
           },
-          body: GetBuilder<UserController>(
+          body: GetBuilder<AppController>(
             builder: (_) {
               return TabBarView(
                 dragStartBehavior: DragStartBehavior.down,
@@ -80,8 +82,13 @@ class HomeBody extends GetView<HomeController> {
           ),
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () => {controller.signOut()},
-          child: Icon(Icons.exit_to_app),
+          onPressed: () => {controller.navigateToPostPage()},
+          elevation: 1,
+          child: Icon(
+            Icons.post_add,
+            color: Colors.white,
+            size: 28.0,
+          ),
         ),
       ),
     );

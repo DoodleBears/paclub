@@ -7,7 +7,6 @@ import 'package:paclub/frontend/modules/auth_module.dart';
 import 'package:paclub/frontend/routes/app_pages.dart';
 import 'package:paclub/frontend/utils/timer.dart';
 import 'package:paclub/frontend/views/auth/auth_email_controller.dart';
-import 'package:paclub/frontend/widgets/notifications/notifications.dart';
 import 'package:paclub/utils/logger.dart';
 import 'package:paclub/utils/app_response.dart';
 
@@ -28,6 +27,7 @@ class LoginController extends GetxController {
   bool hidePassword = true;
   String username = '';
   String password = '';
+  String? errorText;
   bool isNeedToResend = false;
   bool isResendButtonShow = false;
   bool isPasswordOK = true;
@@ -37,7 +37,6 @@ class LoginController extends GetxController {
   late Timer timer;
 
   void onUsernameChanged(String username) {
-    // logger0.d(username);
     this.username = username.trim();
     if (isEmailOK == false) {
       isEmailOK = true;
@@ -47,7 +46,7 @@ class LoginController extends GetxController {
 
   void onPasswordChanged(String password) {
     this.password = password.trim();
-    if (isPasswordOK) {
+    if (isPasswordOK == false) {
       isPasswordOK = true;
       update();
     }
@@ -72,10 +71,16 @@ class LoginController extends GetxController {
       Get.until((route) => false);
       Get.toNamed(Routes.TABS);
     }
-    toastBottom(appResponse.message);
 
     isLoading = false;
     update();
+  }
+
+  void login() {
+    if (authEmailController.isEmailVerified()) {
+      Get.until((route) => false);
+      Get.toNamed(Routes.TABS);
+    }
   }
 
   void signInWithEmail(BuildContext context) async {
@@ -93,7 +98,7 @@ class LoginController extends GetxController {
     logger.d('提交登录信息，开始进行登录验证');
 
     final AppResponse appResponse =
-        await authModule.signInWithEmail(username, password);
+        await authModule.signInWithEmailAndPassword(username, password);
     if (appResponse.data != null) {
       if (authEmailController.isEmailVerified()) {
         Get.until((route) => false);
@@ -107,7 +112,14 @@ class LoginController extends GetxController {
         update();
       }
     } else {
-      toastBottom(appResponse.message);
+      if (appResponse.message == 'invalid-email') {
+        isEmailOK = false;
+      } else if (appResponse.message == 'user-not-found') {
+        isEmailOK = false;
+      } else if (appResponse.message == 'wrong-password') {
+        isPasswordOK = false;
+      }
+      errorText = appResponse.message;
     }
     isLoading = false;
     update();
@@ -116,11 +128,11 @@ class LoginController extends GetxController {
   bool checkSignInInfo() {
     isStyleOK = false;
     if (username.isEmpty) {
-      toastBottom('Email cannot be null');
+      errorText = 'Email cannot be empty';
       isEmailOK = false;
       update();
     } else if (password.isEmpty) {
-      toastBottom('Password cannot be null');
+      errorText = 'Password cannot be empty';
       isPasswordOK = false;
       update();
     } else {

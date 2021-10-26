@@ -12,26 +12,37 @@ final TextStyle lightThemTextStyle = TextStyle(
 
 class MyThemes {
   static final lightTheme = ThemeData(
+    splashFactory: NoSplash.splashFactory,
+    highlightColor: Colors.transparent,
+    primaryColor: primaryColor,
+    splashColor: Colors.transparent,
     textSelectionTheme: TextSelectionThemeData(
       cursorColor: Colors.blue,
       selectionHandleColor: Colors.blue,
       selectionColor: Colors.blue.withAlpha(128),
     ),
     tabBarTheme: TabBarTheme(
+      labelColor: Colors.black,
       indicator: RoundedUnderlineTabIndicator(
         width: 40.0,
         borderSide: BorderSide(
           width: 2.5,
-          color: accentLightColor,
+          color: accentColor,
         ),
         insets: EdgeInsets.only(bottom: 6.0),
       ),
     ),
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
       unselectedItemColor: Colors.grey[800],
+      enableFeedback: false,
       backgroundColor: Colors.white,
     ),
-    primaryColor: primaryColor,
+    scrollbarTheme: ScrollbarThemeData(
+      radius: Radius.circular(borderRadius),
+      thickness: MaterialStateProperty.all(6.0),
+      isAlwaysShown: false,
+      thumbColor: MaterialStateProperty.all(Colors.black26),
+    ),
     appBarTheme: AppBarTheme(
       backgroundColor: Colors.white,
       foregroundColor: accentColor,
@@ -59,12 +70,21 @@ class MyThemes {
     ),
     scaffoldBackgroundColor: Colors.white,
     colorScheme: ColorScheme.light(
+      secondary: accentColor,
+      secondaryVariant: accentColor,
+      primaryVariant: accentColor,
       primary: accentColor,
     ),
     dividerColor: Colors.black,
   );
 
   static final darkTheme = ThemeData(
+    splashFactory: NoSplash.splashFactory,
+    highlightColor: Colors.transparent,
+    splashColor: Colors.transparent,
+    dividerColor: Colors.white,
+    primaryColorDark: primaryColor,
+    scaffoldBackgroundColor: Colors.grey.shade900,
     textSelectionTheme: TextSelectionThemeData(
       cursorColor: Colors.blue,
       selectionHandleColor: Colors.blue,
@@ -72,6 +92,7 @@ class MyThemes {
     ),
 
     tabBarTheme: TabBarTheme(
+      labelColor: Colors.white,
       indicator: RoundedUnderlineTabIndicator(
         width: 40.0,
         borderSide: BorderSide(
@@ -83,9 +104,15 @@ class MyThemes {
     ),
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
       unselectedItemColor: Colors.grey[400],
+      enableFeedback: false,
       backgroundColor: Colors.grey[850],
     ),
-    scaffoldBackgroundColor: Colors.grey.shade900,
+    scrollbarTheme: ScrollbarThemeData(
+      radius: Radius.circular(borderRadius),
+      thickness: MaterialStateProperty.all(6.0),
+      isAlwaysShown: false,
+      thumbColor: MaterialStateProperty.all(Colors.grey),
+    ),
     appBarTheme: AppBarTheme(
       backgroundColor: Colors.grey.shade900,
       foregroundColor: accentColor,
@@ -101,6 +128,9 @@ class MyThemes {
       },
     ),
     colorScheme: ColorScheme.dark(
+      secondary: accentColor,
+      secondaryVariant: accentColor,
+      primaryVariant: accentColor,
       primary: accentColor,
     ),
     textTheme: GoogleFonts.poppinsTextTheme().copyWith(
@@ -116,7 +146,5 @@ class MyThemes {
       bodyText2: darkThemTextStyle,
       caption: darkThemTextStyle,
     ),
-    dividerColor: Colors.white,
-    primaryColorDark: primaryDarkColor,
   );
 }

@@ -1,5 +1,6 @@
-import 'package:paclub/backend/repository/remote/chatroom_repository.dart';
-import 'package:paclub/backend/repository/remote/user_repository.dart';
+import 'package:paclub/frontend/modules/chatroom_module.dart';
+import 'package:paclub/frontend/modules/user_module.dart';
+import 'package:paclub/frontend/utils/gesture.dart';
 import 'package:paclub/frontend/widgets/widgets.dart';
 import 'package:paclub/helper/app_constants.dart';
 import 'package:paclub/helper/chatroom_helper.dart';
@@ -18,8 +19,8 @@ class UserSearchController extends GetxController {
   List<UserModel> userList = List<UserModel>.empty();
   TextEditingController searchTextController = TextEditingController();
 
-  UserRepository userRepository = Get.find<UserRepository>();
-  ChatroomRepository chatroomRepository = Get.find<ChatroomRepository>();
+  UserModule userModule = Get.find<UserModule>();
+  ChatroomModule chatroomModule = Get.find<ChatroomModule>();
 
   @override
   void onInit() {
@@ -33,7 +34,8 @@ class UserSearchController extends GetxController {
     super.onClose();
   }
 
-  void searchByName() async {
+  void searchByName(BuildContext context) async {
+    hideKeyboard(context);
     searchText = searchTextController.text;
     if (searchText.isNotEmpty && isLoading == false) {
       // 告诉用户，开始加载搜索结果
@@ -42,7 +44,8 @@ class UserSearchController extends GetxController {
       update();
 
       // 开始搜索
-      AppResponse appResponse = await userRepository.searchByName(searchText);
+      AppResponse appResponse =
+          await userModule.getUserSearchResult(searchText: searchText);
       logger.d(appResponse.message);
       if (appResponse.data != null) {
         userList = List<UserModel>.from(appResponse.data);
@@ -60,12 +63,17 @@ class UserSearchController extends GetxController {
 
   /// 添加好友（聊天室）
   Future<AppResponse> addFriend(
-      String userName, String userUid, bool isChatroomExist, int index) async {
+      {required String userName,
+      required String userUid,
+      required String avatarURL,
+      required bool isChatroomExist,
+      required int index}) async {
     String chatroomId = getChatRoomId(AppConstants.uuid, userUid);
     Map<String, dynamic> chatroomInfo = {
       "userUid": userUid,
       "userName": userName,
       "chatroomId": chatroomId,
+      "avatarURL": avatarURL,
     };
     if (isChatroomExist) {
       logger.w('聊天室已存在');
@@ -83,19 +91,37 @@ class UserSearchController extends GetxController {
         users: [AppConstants.uuid, userUid],
         usersName: userNameMap,
         chatroomId: chatroomId);
-
-    AppResponse appResponse = await chatroomRepository.addChatroom(
-      chatroomModel,
-      chatroomId,
-    );
+    // NOTE: 添加 聊天室
+    AppResponse appResponseChatroom = await chatroomModule.addChatroom(
+        chatroomModel: chatroomModel, chatroomId: chatroomId);
     isAddUserLoading[index] = false;
     update();
-    logger.d(appResponse.message);
-    if (appResponse.data == null) {
-      toastBottom('failed to add user');
-      return AppResponse(appResponse.message, null);
+    // 如果添加 chatroom 失败, return
+    if (appResponseChatroom.data == null) {
+      toastBottom('failed to add Chatroom');
+      return AppResponse(appResponseChatroom.message, null);
+    }
+    // NOTE: AB加好友，添加 B 到 A 的好友列表
+    AppResponse appResponseUser1 = await userModule.addFriend(
+      uid: chatroomModel.users[0],
+      friendUid: chatroomModel.users[1],
+      friendName: chatroomModel.usersName['${chatroomModel.users[1]}'],
+    );
+    // NOTE: AB加好友，添加 A 到 B 的好友列表
+    AppResponse appResponseUser2 = await userModule.addFriend(
+      uid: chatroomModel.users[1],
+      friendUid: chatroomModel.users[0],
+      friendName: chatroomModel.usersName['${chatroomModel.users[0]}'],
+    );
+    if (appResponseUser1.data == null) {
+      toastBottom('failed to add Friend');
+      return AppResponse(appResponseUser1.message, null);
+    } else if (appResponseUser2.data == null) {
+      toastBottom('failed to add Friend');
+      return AppResponse(appResponseUser2.message, null);
     } else {
-      return AppResponse(appResponse.message, chatroomInfo);
+      logger.d(appResponseChatroom.message);
+      return AppResponse(appResponseChatroom.message, chatroomInfo);
     }
   }
 }

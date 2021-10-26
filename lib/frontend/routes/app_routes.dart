@@ -10,6 +10,7 @@ abstract class Routes {
   // static const REGISTER = '/register';
   static const REGISTER_FORM = '/register/form';
   static const REGISTER_ACCOUNT = '/register/account';
+  static const WRITEPOST = '/wtire_post';
   static const TABS = '/tabs';
   static const HOME = '/home';
   static const CARD = '/card';
@@ -18,8 +19,7 @@ abstract class Routes {
   static const CHATROOM = '/chatroom';
   static const USERSEARCH = '/user_search';
   static const NOTIFICATION = '/notification';
-  static const MYUSER = '/user/';
-  // TODO: 实现查看其他用户的个人信息页面
-  static const USER = '/user/:user';
+  static const OTHERUSER = '/user/:uid';
+  static const USER = '/user/';
   static const EDIT_PROFILE = '/edit_profile';
 }

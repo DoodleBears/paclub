@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:paclub/backend/repository/remote/chatroom_repository.dart';
 import 'package:paclub/frontend/views/main/card/card_binding.dart';
 import 'package:paclub/frontend/views/main/home/home_binding.dart';
 import 'package:paclub/frontend/views/main/message/message_binding.dart';
@@ -15,6 +16,9 @@ class TabsBinding implements Bindings {
 
     /// View 用到的 Controller
     Get.put<TabsController>(TabsController());
+    // NOTE: Chatroom 未读消息是在一旦进入 Tabs 界面就会启用的
+    Get.put<ChatroomRepository>(ChatroomRepository());
+
     // 具体 5个Tab 的依赖
     CardBinding().dependencies();
     HomeBinding().dependencies();

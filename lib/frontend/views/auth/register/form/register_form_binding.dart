@@ -7,6 +7,6 @@ class RegisterFormBinding implements Bindings {
   void dependencies() {
     logger.wtf('[自动绑定]依赖注入 —— RegisterFormBinding');
 
-    Get.lazyPut<RegisterFormController>(() => RegisterFormController());
+    Get.put<RegisterFormController>(RegisterFormController());
   }
 }

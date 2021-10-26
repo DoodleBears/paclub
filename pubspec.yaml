@@ -27,37 +27,48 @@ dependencies:
     sdk: flutter
   animations: ^2.0.1
   flutter_svg: ^0.22.0
-  cloud_firestore: ^2.5.3
   cupertino_icons: ^1.0.3
-  firebase_analytics: ^8.3.3
-  firebase_auth: ^3.1.3
-  firebase_core: ^1.7.0
-  firebase_crashlytics: ^2.2.3
-  firebase_performance: ^0.7.1
+  # Firebase
+  firebase_analytics: ^8.3.4
+  firebase_auth: ^3.1.4
+  firebase_core: ^1.8.0
+  cloud_firestore: ^2.5.4
+  firebase_storage: ^10.0.6
+  firebase_crashlytics: ^2.2.4
+  firebase_performance: ^0.7.1+2
   fluttertoast: ^8.0.8
+  # Pull to Refresh & Drag to Load More
   pull_to_refresh: ^2.0.0
+  # Logic State Management
   get: ^4.3.8
+  # Google
   google_fonts: ^2.1.0
-  google_sign_in: ^5.1.1
+  google_sign_in: ^5.2.0
+  # log better in console
   logger: ^1.1.0
   # persist locally data
   shared_preferences: ^2.0.6
-  connectivity_plus: ^1.1.0
-  # switch animation between light and dark theme
-  # animated_theme_switcher: ^2.0.1
+  # check for internet connection
+  connectivity_plus: ^2.0.2
   # pick image
-  image_picker: ^0.8.3+3
+  image_picker: ^0.8.4+3
+  # crop image
+  image_cropper: ^1.4.1
+  # cache image
+  cached_network_image: ^3.1.0
   # store image
-  path_provider: ^2.0.2
-  # chatroom listView Scroll
-  # scroll_to_index: ^2.1.0
+  path_provider: ^2.0.5
   # timestamp
   timeago: ^3.1.0
+  # show number of messages not been read
+  flutter_app_badger: ^1.3.0
+  # chatroom listView Scroll
+  # scroll_to_index: ^2.1.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_launcher_icons: ^0.9.0
+  flutter_launcher_icons: ^0.9.2
   # pedantic: ^1.11.0
 
 flutter_launcher_name:
@@ -66,7 +77,7 @@ flutter_launcher_name:
 flutter_icons:
   android: 'launcher_icon'
   ios: true
-  image_path: 'assets/icon/app_icon/app_icon_2.png'
+  image_path: 'assets/app-icon.jpg'
   # image_path_android: "assets/icon/android_icon_bg.png"
   # image_path_ios: "assets/icon/android_icon_bg.png"
   adaptive_icon_background: '#ffffff'

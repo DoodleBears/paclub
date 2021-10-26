@@ -5,6 +5,7 @@ import 'package:paclub/frontend/routes/app_pages.dart';
 import 'package:paclub/frontend/views/auth/auth_email_controller.dart';
 import 'package:paclub/frontend/views/auth/login/components/components.dart';
 import 'package:paclub/frontend/views/auth/login/login_controller.dart';
+import 'package:paclub/frontend/views/main/app_controller.dart';
 import 'package:paclub/frontend/widgets/buttons/buttons.dart';
 import 'package:paclub/frontend/widgets/buttons/rounded_button.dart';
 import 'package:paclub/r.dart';
@@ -47,6 +48,7 @@ class LoginBody extends GetView<LoginController> {
                 return RoundedInputField(
                   textInputType: TextInputType.emailAddress,
                   error: controller.isEmailOK == false,
+                  errorText: controller.errorText,
                   hintText: 'Email',
                   icon: Icon(
                     Icons.person,
@@ -65,7 +67,8 @@ class LoginBody extends GetView<LoginController> {
               builder: (_) {
                 return RoundedPasswordField(
                   error: controller.isPasswordOK == false,
-                  hinttext: 'Password',
+                  errorText: controller.errorText,
+                  hintText: 'Password',
                   // onchanged 会在 input 内容改变时触发 function 并传 string
                   onChanged: controller.onPasswordChanged,
                   // 传递 secure value 来控制是否显示密码
@@ -99,6 +102,7 @@ class LoginBody extends GetView<LoginController> {
                           onPressed: () => authEmailController
                               .sendEmailVerification(countdownTime),
                           text: 'Resend',
+                          textColor: Colors.white,
                           countdown: authEmailController.countdown,
                           isLoading:
                               authEmailController.countdown == countdownTime,
@@ -114,12 +118,18 @@ class LoginBody extends GetView<LoginController> {
             GetBuilder<LoginController>(
               builder: (_) {
                 return RoundedLoadingButton(
+                  color: primaryColor,
                   width:
                       controller.isLoading ? Get.width * 0.4 : Get.width * 0.8,
                   height: Get.height * 0.08,
-                  // height: Get.pixelRatio * 16,
                   text: 'Login',
-                  onPressed: () => controller.signInWithEmail(context),
+                  onPressed: () {
+                    if (controller.isResendButtonShow) {
+                      controller.login();
+                    } else {
+                      controller.signInWithEmail(context);
+                    }
+                  },
                   isLoading: controller.isLoading,
                 );
               },
@@ -165,15 +175,19 @@ class LoginBody extends GetView<LoginController> {
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: Text('OR',
                     style: TextStyle(
-                        color: primaryDarkColor, fontWeight: FontWeight.w600)),
+                        color: primaryColor, fontWeight: FontWeight.w600)),
               ),
             ), // OR 的分割线
             SizedBox(height: Get.height * 0.02),
-            CircleButton(
-              height: Get.height * 0.085,
-              onPressed: () => controller.signInWithGoogle(),
-              imageUrl: R.googleIcon,
-              color: white,
+            GetBuilder<AppController>(
+              builder: (_) {
+                return CircleButton(
+                  height: Get.height * 0.085,
+                  onPressed: () => controller.signInWithGoogle(),
+                  imageUrl: R.googleIcon,
+                  color: AppColors.circleButtonBackgoundColor,
+                );
+              },
             ),
 
             // 跳过登录，直接进入主页

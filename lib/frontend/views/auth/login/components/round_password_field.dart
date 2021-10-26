@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:paclub/frontend/constants/colors.dart';
-import 'package:paclub/frontend/views/auth/login/components/text_field_container.dart';
+import 'package:paclub/frontend/constants/constants.dart';
 
 // 圆角输入框，用于 (Email) 的输入
 // 可以控制显示/隐藏密码
@@ -13,7 +13,8 @@ class RoundedPasswordField extends StatelessWidget {
   final VoidCallback? iconOnPressed;
   final Color color;
   final bool error;
-  final String? hinttext;
+  final String? errorText;
+  final String? hintText;
   const RoundedPasswordField({
     Key? key,
     required this.onChanged,
@@ -22,32 +23,30 @@ class RoundedPasswordField extends StatelessWidget {
     this.allowHide = true,
     this.color = primaryLightColor,
     this.error = false,
-    this.hinttext,
+    this.hintText,
+    this.errorText,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return TextFieldContainer(
-      height: 16 + Get.height * 0.07,
-      color: color,
-      error: error,
+    return Container(
+      width: Get.width * 0.8,
       child: TextField(
         keyboardType: TextInputType.visiblePassword,
         style: TextStyle(
-          fontSize: Get.height * 0.022,
-          color: Colors.black,
+          fontSize: Get.height * 0.028,
         ),
-        cursorHeight: Get.height * 0.033,
         onChanged: onChanged,
         obscureText: hidePassword,
         decoration: InputDecoration(
-          hintText: hinttext,
-          hintStyle: TextStyle(
-            fontSize: Get.height * 0.022,
-            color: Colors.black,
+          labelText: hintText,
+          labelStyle: TextStyle(
+            color: error ? Colors.red : null,
           ),
-          // 左侧icon
-          icon: Icon(Icons.lock, color: accentColor),
+          floatingLabelBehavior: FloatingLabelBehavior.always,
+          floatingLabelStyle: TextStyle(
+            color: error ? Colors.red : null,
+          ),
           // 右侧icon
           suffixIcon: allowHide
               ? IconButton(
@@ -66,7 +65,21 @@ class RoundedPasswordField extends StatelessWidget {
                   color: accentColor,
                 )
               : null,
-          border: InputBorder.none,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(borderRadius),
+            borderSide: BorderSide(
+              width: 2.0,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(borderRadius),
+            borderSide: BorderSide(
+              color: error ? Colors.red : accentColor,
+              width: 2.0,
+            ),
+          ),
+
+          errorText: error ? errorText : null,
         ),
       ),
     );

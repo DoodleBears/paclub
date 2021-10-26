@@ -5,7 +5,7 @@ import 'package:paclub/frontend/constants/constants.dart';
 // 用于 Email, Password 的输入，接受一个 child 作为 input_field
 class TextFieldContainer extends StatelessWidget {
   final Widget child;
-  final Color color;
+  final Color? color;
   final bool error;
   final double height;
   TextFieldContainer({
@@ -20,7 +20,7 @@ class TextFieldContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       // margin: EdgeInsets.symmetric(vertical: Get.height * 0.013),
-      padding: EdgeInsets.symmetric(horizontal: Get.pixelRatio * 5),
+      // padding: EdgeInsets.symmetric(horizontal: Get.pixelRatio * 5),
       width: Get.width * 0.8,
       height: height,
       alignment: Alignment.center,

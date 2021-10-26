@@ -1,84 +1,93 @@
-import 'dart:io';
-
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:paclub/frontend/views/main/user/components/button_widget.dart';
-import 'package:paclub/frontend/views/main/user/components/profile_widget.dart';
-import 'package:paclub/frontend/views/main/user/components/textfield_widget.dart';
+import 'package:paclub/frontend/constants/colors.dart';
+import 'package:paclub/frontend/views/auth/login/components/components.dart';
 import 'package:paclub/frontend/views/main/user/user_controller.dart';
 import 'package:paclub/utils/logger.dart';
-import 'package:path_provider/path_provider.dart';
-
-import 'package:path/path.dart';
 
 class EditProfilePage extends GetView<UserController> {
   @override
   Widget build(BuildContext context) {
     logger.i('渲染 —— EditProfilePage');
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0, // z-index高度的感觉，影响 AppBar 的阴影
       ),
-      body: ListView(
-        padding: EdgeInsets.symmetric(horizontal: 32),
-        physics: BouncingScrollPhysics(),
-        children: [
-          GetBuilder<UserController>(
-            builder: (_) {
-              return ProfileWidget(
-                imagePath: controller.imagePath,
-                isEdit: true,
-                onClicked: () async {
-                  final image = await ImagePicker()
-                      .pickImage(source: ImageSource.gallery);
-
-                  if (image == null) return;
-
-                  final directory = await getApplicationDocumentsDirectory();
-                  final name = basename(image.path);
-                  final imageFile = File('${directory.path}/$name');
-                  final newImage = await File(image.path).copy(imageFile.path);
-
-                  controller.imagePath = newImage.path;
-                  controller.update();
-                  // setState(() => user = user.copy(imagePath: newImage.path));
+      body: Align(
+        alignment: Alignment.topCenter,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              GestureDetector(
+                onTap: () async {
+                  await controller.setAvatar();
                 },
-              );
-            },
+                child: GetBuilder<UserController>(
+                  builder: (_) {
+                    return ClipOval(
+                      child: Material(
+                        color: AppColors.profileAvatarBackgroundColor,
+                        child: controller.myUserModel.avatarURL == '' &&
+                                controller.imageFile == null
+                            ? Container(
+                                width: 128,
+                                height: 128,
+                              )
+                            : Ink.image(
+                                image: controller.imageFile == null
+                                    ? CachedNetworkImageProvider(
+                                        controller.avatarURLNew)
+                                    : FileImage(controller.imageFile!)
+                                        as ImageProvider,
+                                fit: BoxFit.cover,
+                                width: 128,
+                                height: 128,
+                              ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 24),
+              RoundedInputField(
+                controller: controller.displayNameTextController,
+                textInputType: TextInputType.text,
+                labelText: 'Full Name',
+                onChanged: controller.onDisplayNameChanged,
+              ),
+              const SizedBox(height: 24),
+              RoundedInputField(
+                controller: controller.bioTextController,
+                textInputType: TextInputType.text,
+                labelText: 'Bio',
+                maxLines: 5,
+                onChanged: controller.onBioChanged,
+              ),
+              const SizedBox(height: 24),
+              GetBuilder<UserController>(
+                builder: (_) {
+                  return RoundedLoadingButton(
+                    text: 'Update',
+                    color: controller.isProfileEdited
+                        ? accentColor
+                        : Colors.grey[400],
+                    isLoading: controller.isSaveLoading,
+                    width: controller.isSaveLoading
+                        ? Get.width * 0.4
+                        : Get.width * 0.8,
+                    height: Get.height * 0.08,
+                    onPressed: () async {
+                      await controller.updateUserProfile();
+                    },
+                  );
+                },
+              ),
+            ],
           ),
-          const SizedBox(height: 24),
-          GetBuilder<UserController>(
-            builder: (_) {
-              return TextFieldWidget(
-                label: 'Full Name',
-                text: controller.name,
-                onChanged: (name) => controller.name = name,
-              );
-            },
-          ),
-          const SizedBox(height: 24),
-          TextFieldWidget(
-            label: 'Email',
-            text: controller.email,
-            onChanged: (email) => controller.email = email,
-          ),
-          const SizedBox(height: 24),
-          TextFieldWidget(
-              label: 'About',
-              text: controller.about,
-              maxLines: 5,
-              onChanged: (about) => controller.about = about),
-          const SizedBox(height: 24),
-          ButtonWidget(
-            text: 'Save',
-            onClicked: () {
-              controller.setUserPreference();
-              Get.back();
-            },
-          ),
-        ],
+        ),
       ),
     );
   }

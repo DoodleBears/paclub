@@ -8,8 +8,12 @@ class NotificationBody extends GetView<NotificationController> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: ListView(
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        toolbarHeight: 0.0,
+      ),
+      body: ListView(
         children: [
           GetBuilder<NotificationController>(
             builder: (_) {

@@ -159,3 +159,26 @@ bool isChatMessageDividerShow(
   }
   return true;
 }
+
+bool isAvatarShow({
+  required Timestamp current,
+  required Timestamp previous,
+  required String currentSendByUid,
+  required String previousSendByUid,
+}) {
+  if (previousSendByUid != currentSendByUid) {
+    return true;
+  }
+  final currentTime = current.toDate().toLocal();
+  final DateTime previousTime = previous.toDate().toLocal();
+
+  // 如果是同一分钟
+  if ((currentTime.year == previousTime.year &&
+      currentTime.month == previousTime.month &&
+      currentTime.day == previousTime.day &&
+      currentTime.hour == previousTime.hour &&
+      currentTime.minute == previousTime.minute)) {
+    return false;
+  }
+  return true;
+}
