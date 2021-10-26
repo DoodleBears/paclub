@@ -14,19 +14,35 @@
       },
       "oauth_client": [
         {
+          "client_id": "161942683104-6gla504tgbmuv89c7asraugt8dorca0d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "club.paclubs.paclub",
+            "certificate_hash": "90e73fb3d123c23702a258253cc6f3c7c2daea62"
+          }
+        },
+        {
+          "client_id": "161942683104-aip2misek4990tfkl8unq8ob6kjdbqik.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "club.paclubs.paclub",
+            "certificate_hash": "f18ee97a8381b100fd4f9b6ad4034c997c65a5a1"
+          }
+        },
+        {
+          "client_id": "161942683104-b5a6letlenit5mim5oer81cpffbhgmom.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "club.paclubs.paclub",
+            "certificate_hash": "0ed253120a5683fc0dff9c48a5e93d823a1ec2c9"
+          }
+        },
+        {
           "client_id": "161942683104-hhcfcdh1v4en26jq9o3ae3mu6ha4l1k0.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "club.paclubs.paclub",
             "certificate_hash": "e393965be1dc44d5eaf1f668a7f610c7d0799b7a"
-          }
-        },
-        {
-          "client_id": "161942683104-lb16ej2fjb0ab2srpmiktuln9baodm3p.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "club.paclubs.paclub",
-            "certificate_hash": "7d88c13fe370674ac2bf7b5033f8849ea5de3551"
           }
         },
         {
