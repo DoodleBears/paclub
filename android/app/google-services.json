@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "161942683104-0hp19jtt6phrv2bkvv7rcmvpgu33ouf4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "club.paclubs.paclub",
+            "certificate_hash": "7d88c13fe370674ac2bf7b5033f8849ea5de3551"
+          }
+        },
+        {
           "client_id": "161942683104-6gla504tgbmuv89c7asraugt8dorca0d.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

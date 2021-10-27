@@ -1,14 +1,15 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:paclub/frontend/constants/colors.dart';
 import 'package:paclub/frontend/views/main/home/home_controller.dart';
 import 'package:paclub/frontend/views/main/home/home_follow/home_follow_page.dart';
 import 'package:paclub/frontend/views/main/home/home_hot/home_hot_page.dart';
 import 'package:paclub/frontend/views/main/app_controller.dart';
+import 'package:paclub/frontend/widgets/buttons/scale_floating_action_button.dart';
 
 class HomeBody extends GetView<HomeController> {
   const HomeBody({Key? key}) : super(key: key);
-
   Future<Null> getRefresh() async {
     await Future.delayed(Duration(seconds: 2));
   }
@@ -40,7 +41,7 @@ class HomeBody extends GetView<HomeController> {
                 elevation: 1.0,
                 title: Text(
                   'Paclub',
-                  style: TextStyle(fontSize: 24.0),
+                  style: TextStyle(fontSize: 24.0, color: accentColor),
                 ),
                 bottom: TabBar(
                   overlayColor: MaterialStateProperty.resolveWith(
@@ -81,14 +82,10 @@ class HomeBody extends GetView<HomeController> {
             },
           ),
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () => {controller.navigateToPostPage()},
-          elevation: 1,
-          child: Icon(
-            Icons.post_add,
-            color: Colors.white,
-            size: 28.0,
-          ),
+        floatingActionButton: ScaleFloatingActionButton(
+          onPressed: () {
+            controller.navigateToPostPage();
+          },
         ),
       ),
     );

@@ -23,7 +23,11 @@ class AppColors {
   static Color? messageSendingContainerBackgroundColor = Colors.white;
   // NOTE: Home
   static Color? homeListViewBackgroundColor = Colors.grey[200];
+  // NOTE: Bottom Sheet
+  static Color? bottomSheetHandlerColor = Colors.grey[300];
+  static Color? bottomSheetBackgoundColor = Colors.white;
   // NOTE: General Widget
+  static Color? maskCurtainColor = Colors.grey.withAlpha(164);
   static Color? circleButtonBackgoundColor = Colors.white;
   static Color? bottomNavigationBarTabColor = Colors.black;
   static Color? bottomNavigationBarBackgroundColor = Colors.white;
@@ -46,7 +50,11 @@ class AppColors {
     messageSendingContainerBackgroundColor = Colors.white;
     // NOTE: Home
     homeListViewBackgroundColor = Colors.grey[200];
+    // NOTE: Bottom Sheet
+    bottomSheetHandlerColor = Colors.grey[300];
+    bottomSheetBackgoundColor = Colors.white;
     // NOTE: General Widget
+    maskCurtainColor = Colors.grey.withAlpha(164);
     circleButtonBackgoundColor = Colors.white;
     bottomNavigationBarTabColor = Colors.black;
     bottomNavigationBarBackgroundColor = Colors.white;
@@ -70,7 +78,11 @@ class AppColors {
     messageSendingContainerBackgroundColor = Colors.grey[850];
     // NOTE: Home
     homeListViewBackgroundColor = Colors.black;
+    // NOTE: Bottom Sheet
+    bottomSheetHandlerColor = Colors.grey[700];
+    bottomSheetBackgoundColor = Colors.grey[900];
     // NOTE: General Widget
+    maskCurtainColor = Colors.black.withAlpha(164);
     circleButtonBackgoundColor = Colors.grey[850];
     bottomNavigationBarTabColor = Colors.white;
     bottomNavigationBarBackgroundColor = Colors.black;

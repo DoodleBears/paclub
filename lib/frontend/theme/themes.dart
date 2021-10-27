@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:paclub/frontend/constants/constants.dart';
@@ -17,9 +19,19 @@ class MyThemes {
     primaryColor: primaryColor,
     splashColor: Colors.transparent,
     textSelectionTheme: TextSelectionThemeData(
-      cursorColor: Colors.blue,
-      selectionHandleColor: Colors.blue,
-      selectionColor: Colors.blue.withAlpha(128),
+      cursorColor: accentColor,
+      selectionHandleColor: accentColor,
+      selectionColor: accentColor.withAlpha(128),
+    ),
+    textButtonTheme: TextButtonThemeData(
+      style: ButtonStyle(
+        textStyle: MaterialStateProperty.all(
+          TextStyle(
+            color: Colors.grey[800],
+          ),
+        ),
+        overlayColor: MaterialStateProperty.all(Colors.grey[200]),
+      ),
     ),
     tabBarTheme: TabBarTheme(
       labelColor: Colors.black,
@@ -45,7 +57,7 @@ class MyThemes {
     ),
     appBarTheme: AppBarTheme(
       backgroundColor: Colors.white,
-      foregroundColor: accentColor,
+      foregroundColor: Colors.black,
     ),
     textTheme: GoogleFonts.poppinsTextTheme().copyWith(
       headline1: lightThemTextStyle,
@@ -86,11 +98,20 @@ class MyThemes {
     primaryColorDark: primaryColor,
     scaffoldBackgroundColor: Colors.grey.shade900,
     textSelectionTheme: TextSelectionThemeData(
-      cursorColor: Colors.blue,
-      selectionHandleColor: Colors.blue,
-      selectionColor: Colors.blue.withAlpha(128),
+      cursorColor: accentColor,
+      selectionHandleColor: accentColor,
+      selectionColor: accentColor.withAlpha(128),
     ),
-
+    textButtonTheme: TextButtonThemeData(
+      style: ButtonStyle(
+        textStyle: MaterialStateProperty.all(
+          TextStyle(
+            color: Colors.grey[200],
+          ),
+        ),
+        overlayColor: MaterialStateProperty.all(Colors.grey[800]),
+      ),
+    ),
     tabBarTheme: TabBarTheme(
       labelColor: Colors.white,
       indicator: RoundedUnderlineTabIndicator(
@@ -115,7 +136,7 @@ class MyThemes {
     ),
     appBarTheme: AppBarTheme(
       backgroundColor: Colors.grey.shade900,
-      foregroundColor: accentColor,
+      foregroundColor: Colors.white,
     ),
 
     // textTheme: GoogleFonts.poppinsTextTheme(),

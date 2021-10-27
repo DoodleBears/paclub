@@ -31,6 +31,7 @@ class FadeInScaleContainer extends StatelessWidget {
     this.opacityCurve = Curves.linearToEaseOut,
     this.color,
     this.padding,
+    this.decoration,
   }) : super(key: key);
 
   final bool isShow;
@@ -38,6 +39,7 @@ class FadeInScaleContainer extends StatelessWidget {
   final double? height;
   final Color? color;
   final Widget? child;
+  final Decoration? decoration;
   final Duration scaleDuration;
   final Duration opacityDuration;
   final Curve scaleCurve;
@@ -51,6 +53,7 @@ class FadeInScaleContainer extends StatelessWidget {
       isShow: isShow,
       curve: opacityCurve,
       child: AnimatedContainer(
+        decoration: decoration,
         padding: padding ?? EdgeInsets.all(0.0),
         curve: scaleCurve,
         duration: scaleDuration,

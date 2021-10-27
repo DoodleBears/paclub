@@ -11,6 +11,7 @@ class HomeController extends GetxController {
   String testString = '这是从controller获得的string';
 
   Future<void> navigateToPostPage() async {
+    await Future.delayed(const Duration(milliseconds: 100));
     Get.toNamed(Routes.WRITEPOST);
   }
 

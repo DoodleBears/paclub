@@ -3,7 +3,7 @@ import 'package:paclub/frontend/widgets/buttons/rounded_button.dart';
 import 'package:paclub/frontend/widgets/containers/containers.dart';
 
 class RoundedLoadingButton extends StatelessWidget {
-  final VoidCallback onPressed;
+  final VoidCallback? onPressed;
   final String text;
   final Color? color;
   final bool isLoading;
