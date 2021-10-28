@@ -6,13 +6,12 @@ import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:paclub/frontend/constants/colors.dart';
 import 'package:paclub/frontend/utils/length_limit_textfield_formatter.dart';
 import 'package:paclub/frontend/views/main/app_controller.dart';
-import 'package:paclub/frontend/views/write_post/components/choose_pack_bottom_sheet.dart';
+import 'package:paclub/frontend/views/write_post/components/draggable_scrollable_attachable_sheet.dart';
 import 'package:paclub/frontend/views/write_post/write_post_controller.dart';
 import 'package:paclub/frontend/widgets/buttons/stadium_button.dart';
 import 'package:paclub/frontend/widgets/others/app_scroll_behavior.dart';
 import 'package:paclub/frontend/widgets/widgets.dart';
 import 'package:paclub/r.dart';
-import 'package:paclub/utils/logger.dart';
 
 class WritePostBody extends GetView<WritePostController> {
   const WritePostBody({Key? key}) : super(key: key);
@@ -21,7 +20,7 @@ class WritePostBody extends GetView<WritePostController> {
     return WillPopScope(
       onWillPop: () async {
         if (controller.isBottomSheetShow) {
-          controller.toggleBottomSheet();
+          controller.toggleBottomSheet(context);
           return false;
         } else {
           return true;
@@ -176,8 +175,7 @@ class WritePostBody extends GetView<WritePostController> {
                       minimumSize: MaterialStateProperty.all(Size.infinite),
                     ),
                     onPressed: () {
-                      logger0.d('按下 Choose Pack');
-                      controller.toggleBottomSheet();
+                      controller.toggleBottomSheet(context);
                     },
                     child: Text(
                       'Choose Pack',
@@ -194,10 +192,12 @@ class WritePostBody extends GetView<WritePostController> {
           GetBuilder<AppController>(
             builder: (_) {
               return GetBuilder<WritePostController>(
+                assignId: true,
+                id: 'bottomSheet',
                 builder: (_) {
                   return GestureDetector(
                     onTap: () {
-                      controller.toggleBottomSheet();
+                      controller.toggleBottomSheet(context);
                     },
                     child: FadeInScaleContainer(
                       opacityDuration: const Duration(milliseconds: 300),
@@ -210,15 +210,44 @@ class WritePostBody extends GetView<WritePostController> {
             },
           ),
           GetBuilder<WritePostController>(
+            assignId: true,
+            id: 'bottomSheet',
             builder: (_) {
-              return ChoosePackBottomSheet(
-                isBottomSheetShow: controller.isBottomSheetShow,
-                height: Get.height * 0.6,
-                fullyOpenHeight: Get.height * 0.9,
+              return DraggableScrollableAttachableSheet(
+                bottomSheetController: controller.bottomSheetController,
+                height: Get.height * 0.5,
+                onDrag: (offset) {},
                 onDragComplete: controller.onDragComplete,
-                child: Container(
-                  height: 100.0,
-                  color: accentColor,
+                child: Expanded(
+                  child: ScrollConfiguration(
+                    behavior: NoGlowScrollBehavior(),
+                    child: ListView(
+                      padding: EdgeInsets.zero,
+                      children: [
+                        ListTile(
+                          title: Text('ListTile'),
+                        ),
+                        ListTile(
+                          title: Text('ListTile'),
+                        ),
+                        ListTile(
+                          title: Text('ListTile'),
+                        ),
+                        ListTile(
+                          title: Text('ListTile'),
+                        ),
+                        ListTile(
+                          title: Text('ListTile'),
+                        ),
+                        ListTile(
+                          title: Text('ListTile'),
+                        ),
+                        ListTile(
+                          title: Text('ListTile'),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               );
             },

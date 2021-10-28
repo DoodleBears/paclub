@@ -1,30 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:paclub/frontend/views/write_post/components/choose_pack_bottom_sheet.dart';
+import 'package:paclub/frontend/utils/gesture.dart';
+import 'package:paclub/frontend/views/write_post/components/draggable_scrollable_attachable_sheet.dart';
 import 'package:paclub/utils/logger.dart';
 
 class WritePostController extends GetxController {
   final TextEditingController textEditingController = TextEditingController();
-  final ScrollController scrollDragController = ScrollController();
+  final SheetController bottomSheetController = SheetController();
   bool isBottomSheetShow = false;
-  bool isDraging = false;
-  BottomSheetState bottomSheetState = BottomSheetState.close;
 
-  void onDragComplete(BottomSheetState bottomSheetState) {
-    this.bottomSheetState = bottomSheetState;
-    print(bottomSheetState);
-    if (bottomSheetState == BottomSheetState.close) {
-      toggleBottomSheet();
+  // MARK: 控制 bottomSheet 的相关 methods
+  void onDragComplete(SheetState bottomSheetState) {
+    // print(bottomSheetState);
+    if (bottomSheetState == SheetState.close) {
+      isBottomSheetShow = false;
+      update(['bottomSheet']);
+    } else {
+      isBottomSheetShow = true;
+      update(['bottomSheet']);
     }
   }
 
-  void toggleBottomSheet() {
-    if (isBottomSheetShow) {
-      isBottomSheetShow = false;
-      update();
-    } else {
+  void toggleBottomSheet(BuildContext context) {
+    hideKeyboard(context);
+    if (isBottomSheetShow == false) {
+      bottomSheetController.normalOpen();
       isBottomSheetShow = true;
-      update();
+      update(['bottomSheet']);
+    } else {
+      bottomSheetController.close();
+      isBottomSheetShow = false;
+      update(['bottomSheet']);
     }
   }
 
