@@ -1,7 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:paclub/frontend/constants/colors.dart';
-import 'package:paclub/frontend/widgets/widgets.dart';
 
 class DraggableScrollableAttachableSheet extends StatefulWidget {
   const DraggableScrollableAttachableSheet({
@@ -16,6 +14,8 @@ class DraggableScrollableAttachableSheet extends StatefulWidget {
     required this.onDragComplete,
     required this.onDrag,
     this.bottomSheetController,
+    this.backgroundColor,
+    this.handlerWidget,
   })  : assert(fullyOpenHeight != null || isAllowFullyOpen == false),
         super(key: key);
   final SheetController? bottomSheetController;
@@ -31,7 +31,9 @@ class DraggableScrollableAttachableSheet extends StatefulWidget {
   final double thresholdToNormal;
   final double thresholdToClose;
   final double height;
+  final Color? backgroundColor;
   final Widget child;
+  final Widget? handlerWidget;
   @override
   State<DraggableScrollableAttachableSheet> createState() =>
       _DraggableScrollableAttachableSheetState();
@@ -131,13 +133,13 @@ class _DraggableScrollableAttachableSheetState
       left: 0.0,
       right: 0.0,
       duration: const Duration(milliseconds: 300),
-      child: FadeInScaleContainer(
-        isShow: true,
-        scaleDuration: isDraging
-            ? const Duration(milliseconds: 1)
-            : const Duration(milliseconds: 150),
-        scaleCurve: Curves.ease,
+      child: AnimatedContainer(
+        height: bottomSheetHeight,
         width: double.infinity,
+        duration: isDraging
+            ? const Duration(microseconds: 1)
+            : const Duration(milliseconds: 150),
+        curve: Curves.ease,
         decoration: ShapeDecoration(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
@@ -145,9 +147,8 @@ class _DraggableScrollableAttachableSheetState
               topRight: Radius.circular(24.0),
             ),
           ),
-          color: AppColors.bottomSheetBackgoundColor,
+          color: widget.backgroundColor,
         ),
-        height: bottomSheetHeight,
         child: Column(
           // NOTE: 小把手
           children: [
@@ -164,32 +165,10 @@ class _DraggableScrollableAttachableSheetState
               onVerticalDragEnd: (DragEndDetails dragEndDetails) {
                 dragComplete(dragEndDetails.velocity.pixelsPerSecond.dy);
               },
-              child: DragHandler(),
+              child: widget.handlerWidget,
             ),
             widget.child,
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class DragHandler extends StatelessWidget {
-  const DragHandler({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Colors.transparent,
-      padding: EdgeInsets.symmetric(vertical: 20.0),
-      child: Center(
-        child: Container(
-          decoration: ShapeDecoration(
-            shape: StadiumBorder(),
-            color: AppColors.bottomSheetHandlerColor,
-          ),
-          height: 6.0,
-          width: 40.0,
         ),
       ),
     );

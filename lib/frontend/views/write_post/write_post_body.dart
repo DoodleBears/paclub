@@ -6,6 +6,7 @@ import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:paclub/frontend/constants/colors.dart';
 import 'package:paclub/frontend/utils/length_limit_textfield_formatter.dart';
 import 'package:paclub/frontend/views/main/app_controller.dart';
+import 'package:paclub/frontend/views/write_post/components/drag_handler.dart';
 import 'package:paclub/frontend/views/write_post/components/draggable_scrollable_attachable_sheet.dart';
 import 'package:paclub/frontend/views/write_post/write_post_controller.dart';
 import 'package:paclub/frontend/widgets/buttons/stadium_button.dart';
@@ -216,8 +217,10 @@ class WritePostBody extends GetView<WritePostController> {
               return DraggableScrollableAttachableSheet(
                 bottomSheetController: controller.bottomSheetController,
                 height: Get.height * 0.5,
+                backgroundColor: AppColors.bottomSheetBackgoundColor,
                 onDrag: (offset) {},
                 onDragComplete: controller.onDragComplete,
+                handlerWidget: DragHandler(),
                 child: Expanded(
                   child: ScrollConfiguration(
                     behavior: NoGlowScrollBehavior(),
