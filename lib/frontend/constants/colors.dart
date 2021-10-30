@@ -11,6 +11,7 @@ class AppColors {
   // NOTE: Avatar
   static Color? chatAvatarBackgroundColor = primaryColor;
   static Color? profileAvatarBackgroundColor = Colors.grey[100];
+  static Color? profileAvatarBorderColor = Colors.grey[400];
   // NOTE: Chatroom
   static Color? chatroomTileBackgroundColor = Colors.grey[50];
   static Color? chatroomMessageTimestampColor = Colors.grey;
@@ -27,17 +28,24 @@ class AppColors {
   static Color? bottomSheetHandlerColor = Colors.grey[300];
   static Color? bottomSheetBackgoundColor = Colors.white;
   // NOTE: General Widget
-  static Color? maskCurtainColor = Colors.grey.withAlpha(164);
+  static Color? containerBackground = Colors.white;
+  static Color? maskCurtainColor = Colors.black.withAlpha(164);
   static Color? circleButtonBackgoundColor = Colors.white;
   static Color? bottomNavigationBarTabColor = Colors.black;
   static Color? bottomNavigationBarBackgroundColor = Colors.white;
   static Color? refreshIndicatorColor = Colors.white;
   static Color? divideLineColor = Colors.grey[200];
+  // NOTE: Text
+  static Color? normalTextColor = Colors.black;
+  // NOTE: Shadow
+  static Color? normalShadowColor = Colors.grey;
+
   // MARK: lightMode - 通过调用 lightMode 和 UserController.update() 便可以进行App亮暗模式的调整
   static lightMode() {
     // NOTE: Avatar
     chatAvatarBackgroundColor = primaryColor;
     profileAvatarBackgroundColor = Colors.grey[100];
+    profileAvatarBorderColor = Colors.grey[400];
     // NOTE: Chatroom
     chatroomTileBackgroundColor = Colors.grey[50];
     chatroomMessageTimestampColor = Colors.grey;
@@ -54,18 +62,24 @@ class AppColors {
     bottomSheetHandlerColor = Colors.grey[300];
     bottomSheetBackgoundColor = Colors.white;
     // NOTE: General Widget
-    maskCurtainColor = Colors.grey.withAlpha(164);
+    containerBackground = Colors.white;
+    maskCurtainColor = Colors.black.withAlpha(164);
     circleButtonBackgoundColor = Colors.white;
     bottomNavigationBarTabColor = Colors.black;
     bottomNavigationBarBackgroundColor = Colors.white;
     refreshIndicatorColor = Colors.white;
     divideLineColor = Colors.grey[200];
+    // NOTE: Text
+    normalTextColor = Colors.black;
+    // NOTE: Shadow
+    normalShadowColor = Colors.grey;
   }
 
   static darkMode() {
     // NOTE: Avatar
     chatAvatarBackgroundColor = primaryDarkColor;
     profileAvatarBackgroundColor = Colors.grey[850];
+    profileAvatarBorderColor = Colors.grey[800];
     // NOTE: Chatroom
     chatroomTileBackgroundColor = Colors.grey[850];
     chatroomMessageTimestampColor = Colors.grey[700];
@@ -82,12 +96,17 @@ class AppColors {
     bottomSheetHandlerColor = Colors.grey[700];
     bottomSheetBackgoundColor = Colors.grey[900];
     // NOTE: General Widget
+    containerBackground = Colors.grey[850];
     maskCurtainColor = Colors.black.withAlpha(164);
     circleButtonBackgoundColor = Colors.grey[850];
     bottomNavigationBarTabColor = Colors.white;
     bottomNavigationBarBackgroundColor = Colors.black;
     refreshIndicatorColor = Colors.grey[900];
     divideLineColor = Colors.grey[850];
+    // NOTE: Text
+    normalTextColor = Colors.white;
+    // NOTE: Shadow
+    normalShadowColor = Colors.white;
   }
 }
 

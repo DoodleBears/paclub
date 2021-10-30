@@ -1,11 +1,10 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:paclub/frontend/constants/colors.dart';
 import 'package:paclub/frontend/routes/app_pages.dart';
 import 'package:paclub/frontend/views/main/app_controller.dart';
 import 'package:paclub/frontend/views/main/user/components/numbers_widget.dart';
 import 'package:paclub/frontend/views/main/user/user_controller.dart';
+import 'package:paclub/frontend/widgets/avatar/circle_avatar_container.dart';
 import 'package:paclub/utils/logger.dart';
 
 class MyProfilePage extends GetView<UserController> {
@@ -44,26 +43,10 @@ class MyProfilePage extends GetView<UserController> {
             builder: (_) {
               return GetBuilder<UserController>(
                 builder: (_) {
-                  return ClipOval(
-                    child: Material(
-                      color: AppColors.profileAvatarBackgroundColor,
-                      child: controller.myUserModel.avatarURL == ''
-                          ? Container(
-                              width: 128,
-                              height: 128,
-                            )
-                          : Ink.image(
-                              image: CachedNetworkImageProvider(
-                                  controller.myUserModel.avatarURL),
-                              fit: BoxFit.cover,
-                              width: 128,
-                              height: 128,
-                              child: InkWell(
-                                onTap: () async {},
-                              ),
-                            ),
-                    ),
-                  );
+                  return CircleAvatarContainer(
+                      avatarUrl: controller.myUserModel.avatarURL,
+                      width: 128,
+                      height: 128);
                 },
               );
             },

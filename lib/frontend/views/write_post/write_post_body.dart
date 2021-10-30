@@ -32,12 +32,13 @@ class WritePostBody extends GetView<WritePostController> {
           Scaffold(
             appBar: AppBar(
               toolbarHeight: 48.0,
-              elevation: 0.0,
+              elevation: 0.5,
+              leadingWidth: 64.0,
               leading: Padding(
                 padding: const EdgeInsets.only(left: 12.0),
                 child: Center(
                   child: Text(
-                    '取消',
+                    'Cancel',
                     style: TextStyle(
                       fontSize: 16.0,
                       fontWeight: FontWeight.bold,
@@ -48,12 +49,12 @@ class WritePostBody extends GetView<WritePostController> {
               actions: [
                 Padding(
                   padding: const EdgeInsets.symmetric(
-                      vertical: 10.0, horizontal: 8.0),
+                      vertical: 8.0, horizontal: 8.0),
                   child: StadiumButton(
                     onTap: () {},
                     buttonColor: accentColor,
                     child: Text(
-                      '收纳',
+                      '收納',
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 16.0,
@@ -98,7 +99,7 @@ class WritePostBody extends GetView<WritePostController> {
                       ),
                       textAlignVertical: TextAlignVertical.top,
                       decoration: InputDecoration(
-                        hintText: '标题',
+                        hintText: '標題',
                         border: InputBorder.none,
                       ),
                     ),
@@ -141,7 +142,7 @@ class WritePostBody extends GetView<WritePostController> {
                                 fontSize: 18.0,
                               ),
                               decoration: InputDecoration(
-                                hintText: '记下想法、情感？',
+                                hintText: '記下想法、感受',
                                 border: InputBorder.none,
                               ),
                             ),
@@ -170,7 +171,7 @@ class WritePostBody extends GetView<WritePostController> {
                 ),
                 // NOTE: 选择箱子
                 Container(
-                  height: 48.0,
+                  height: 64.0,
                   child: TextButton(
                     style: ButtonStyle(
                       minimumSize: MaterialStateProperty.all(Size.infinite),
@@ -179,7 +180,7 @@ class WritePostBody extends GetView<WritePostController> {
                       controller.toggleBottomSheet(context);
                     },
                     child: Text(
-                      'Choose Pack',
+                      '選擇收納盒',
                       style: TextStyle(
                         fontSize: 18.0,
                         fontWeight: FontWeight.bold,
@@ -190,6 +191,7 @@ class WritePostBody extends GetView<WritePostController> {
               ],
             ),
           ),
+          // NOTE: 点击 Choose Pack 后出现的顏色遮罩
           GetBuilder<AppController>(
             builder: (_) {
               return GetBuilder<WritePostController>(
@@ -201,7 +203,7 @@ class WritePostBody extends GetView<WritePostController> {
                       controller.toggleBottomSheet(context);
                     },
                     child: FadeInScaleContainer(
-                      opacityDuration: const Duration(milliseconds: 300),
+                      opacityDuration: const Duration(milliseconds: 500),
                       isShow: controller.isBottomSheetShow,
                       color: AppColors.maskCurtainColor,
                     ),
@@ -210,6 +212,7 @@ class WritePostBody extends GetView<WritePostController> {
               );
             },
           ),
+          // NOTE: 点击 Choose Pack 后出现的 Bottom Sheet, 用于选择要将 Post 收纳进哪一个 Pack
           GetBuilder<WritePostController>(
             assignId: true,
             id: 'bottomSheet',
@@ -217,6 +220,8 @@ class WritePostBody extends GetView<WritePostController> {
               return DraggableScrollableAttachableSheet(
                 bottomSheetController: controller.bottomSheetController,
                 height: Get.height * 0.5,
+                fullyOpenHeight: Get.height * 0.8,
+                isAllowFullyOpen: true,
                 backgroundColor: AppColors.bottomSheetBackgoundColor,
                 onDrag: (offset) {},
                 onDragComplete: controller.onDragComplete,
@@ -224,29 +229,71 @@ class WritePostBody extends GetView<WritePostController> {
                 child: Expanded(
                   child: ScrollConfiguration(
                     behavior: NoGlowScrollBehavior(),
-                    child: ListView(
-                      padding: EdgeInsets.zero,
+                    child: Stack(
+                      alignment: Alignment.bottomCenter,
                       children: [
-                        ListTile(
-                          title: Text('ListTile'),
+                        // 用户所创建的所有 Pack 的 List
+                        ListView.builder(
+                          controller: controller.bottomScrollController,
+                          padding: EdgeInsets.only(bottom: Get.height * 0.1),
+                          itemCount: 10,
+                          itemBuilder: (context, index) {
+                            return ListTile(
+                              title: Text('Pack-$index'),
+                            );
+                          },
                         ),
-                        ListTile(
-                          title: Text('ListTile'),
-                        ),
-                        ListTile(
-                          title: Text('ListTile'),
-                        ),
-                        ListTile(
-                          title: Text('ListTile'),
-                        ),
-                        ListTile(
-                          title: Text('ListTile'),
-                        ),
-                        ListTile(
-                          title: Text('ListTile'),
-                        ),
-                        ListTile(
-                          title: Text('ListTile'),
+                        // 创建 Pack 的 Button
+                        Container(
+                          decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppColors.normalShadowColor!,
+                                offset: Offset(0, 8.0),
+                                blurRadius: 10.0,
+                              ),
+                            ],
+                            color: AppColors.containerBackground,
+                          ),
+                          height: Get.height * 0.1,
+                          child: TextButton(
+                            style: ButtonStyle(
+                              minimumSize:
+                                  MaterialStateProperty.all(Size.infinite),
+                            ),
+                            onPressed: () {
+                              controller.navigateToCreatePackPage();
+                            },
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    margin: const EdgeInsets.only(right: 16.0),
+                                    padding: const EdgeInsets.all(5.0),
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: accentColor,
+                                    ),
+                                    child: Icon(
+                                      Icons.add,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  Text(
+                                    'Create New Pack',
+                                    style: TextStyle(
+                                      color: AppColors.normalTextColor,
+                                      fontSize: 20.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                         ),
                       ],
                     ),

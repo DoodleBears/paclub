@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import 'package:paclub/frontend/utils/transitions.dart';
 import 'package:paclub/frontend/views/auth/auth_binding.dart';
 import 'package:paclub/frontend/views/auth/auth_page.dart';
+import 'package:paclub/frontend/views/create_pack/create_pack_binding.dart';
+import 'package:paclub/frontend/views/create_pack/create_pack_page.dart';
 import 'package:paclub/frontend/views/main/card/card_binding.dart';
 import 'package:paclub/frontend/views/main/card/card_page.dart';
 import 'package:paclub/frontend/views/main/message/components/chatroom/chatroom_binding.dart';
@@ -64,7 +66,7 @@ abstract class AppPages {
             customTransition: ShiftLeftLinearTransitions(),
             popGesture: true,
             gestureWidth: gestureWidth(170),
-            transitionDuration: const Duration(milliseconds: 250),
+            transitionDuration: const Duration(milliseconds: 200),
           ),
           GetPage(
             name: Routes.REGISTER_FORM,
@@ -73,7 +75,7 @@ abstract class AppPages {
             customTransition: ShiftLeftLinearTransitions(),
             popGesture: true,
             gestureWidth: gestureWidth(170),
-            transitionDuration: const Duration(milliseconds: 250),
+            transitionDuration: const Duration(milliseconds: 200),
           ),
           GetPage(
             name: Routes.REGISTER_ACCOUNT,
@@ -82,7 +84,7 @@ abstract class AppPages {
             customTransition: ShiftLeftLinearTransitions(),
             popGesture: true,
             gestureWidth: gestureWidth(170),
-            transitionDuration: const Duration(milliseconds: 250),
+            transitionDuration: const Duration(milliseconds: 200),
           ),
         ]),
     GetPage(
@@ -90,7 +92,7 @@ abstract class AppPages {
       binding: TabsBinding(),
       page: () => Tabs(),
       customTransition: TopUpMaskBelowStayTransitions(),
-      transitionDuration: const Duration(milliseconds: 250),
+      transitionDuration: const Duration(milliseconds: 200),
       children: [
         GetPage(
           name: Routes.CARD,
@@ -115,7 +117,7 @@ abstract class AppPages {
                   binding: ChatroomBinding(),
                   page: () => ChatroomPage(),
                   customTransition: TopLeftMaskBelowLeftLinearTransitions(),
-                  transitionDuration: const Duration(milliseconds: 250),
+                  transitionDuration: const Duration(milliseconds: 200),
                   gestureWidth: gestureWidth(170),
                 ),
                 GetPage(
@@ -123,7 +125,7 @@ abstract class AppPages {
                   binding: UserSearchBinding(),
                   page: () => UserSearchPage(),
                   customTransition: TopLeftMaskBelowLeftLinearTransitions(),
-                  transitionDuration: const Duration(milliseconds: 250),
+                  transitionDuration: const Duration(milliseconds: 200),
                   gestureWidth: gestureWidth(170),
                 ),
               ],
@@ -143,7 +145,7 @@ abstract class AppPages {
           popGesture: true,
           gestureWidth: gestureWidth(170),
           customTransition: TopLeftMaskBelowLeftLinearTransitions(),
-          transitionDuration: const Duration(milliseconds: 250),
+          transitionDuration: const Duration(milliseconds: 200),
           children: [
             GetPage(
               name: Routes.EDIT_PROFILE,
@@ -152,7 +154,7 @@ abstract class AppPages {
               customTransition: TopLeftMaskBelowLeftLinearTransitions(),
               popGesture: true,
               gestureWidth: gestureWidth(170),
-              transitionDuration: const Duration(milliseconds: 250),
+              transitionDuration: const Duration(milliseconds: 200),
             ),
           ],
         ),
@@ -163,7 +165,7 @@ abstract class AppPages {
           popGesture: true,
           gestureWidth: gestureWidth(170),
           customTransition: TopLeftMaskBelowLeftLinearTransitions(),
-          transitionDuration: const Duration(milliseconds: 250),
+          transitionDuration: const Duration(milliseconds: 200),
         ),
       ],
     ),
@@ -173,6 +175,15 @@ abstract class AppPages {
       binding: WritePostBinding(),
       customTransition: TopUpMaskBelowStayTransitions(),
       transitionDuration: const Duration(milliseconds: 400),
+    ),
+    GetPage(
+      name: Routes.CREATEPACK,
+      page: () => CreatePackPage(),
+      binding: CreatePackBinding(),
+      customTransition: TopLeftMaskBelowLeftLinearTransitions(),
+      popGesture: true,
+      gestureWidth: gestureWidth(170),
+      transitionDuration: const Duration(milliseconds: 200),
     ),
   ];
 }

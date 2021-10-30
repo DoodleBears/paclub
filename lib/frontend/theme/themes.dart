@@ -82,6 +82,7 @@ class MyThemes {
     ),
     scaffoldBackgroundColor: Colors.white,
     colorScheme: ColorScheme.light(
+      background: Colors.white,
       secondary: accentColor,
       secondaryVariant: accentColor,
       primaryVariant: accentColor,
@@ -149,6 +150,7 @@ class MyThemes {
       },
     ),
     colorScheme: ColorScheme.dark(
+      background: Colors.black,
       secondary: accentColor,
       secondaryVariant: accentColor,
       primaryVariant: accentColor,

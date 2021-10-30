@@ -70,7 +70,7 @@ class _DraggableScrollableAttachableSheetState
     // print(velocity);
     if (bottomSheetState == SheetState.fullyOpen) {
       if (bottomSheetHeight < widget.height - widget.thresholdToClose ||
-          velocity > 1300.0) {
+          velocity > 1600.0) {
         closeBottomSheet();
       } else if (bottomSheetHeight <
               widget.fullyOpenHeight! - widget.thresholdToNormal ||

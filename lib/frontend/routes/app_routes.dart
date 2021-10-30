@@ -11,6 +11,7 @@ abstract class Routes {
   static const REGISTER_FORM = '/register/form';
   static const REGISTER_ACCOUNT = '/register/account';
   static const WRITEPOST = '/wtire_post';
+  static const CREATEPACK = '/create_pack';
   static const TABS = '/tabs';
   static const HOME = '/home';
   static const CARD = '/card';
