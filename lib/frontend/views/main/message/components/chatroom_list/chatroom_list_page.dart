@@ -26,8 +26,11 @@ class ChatroomListPage extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
               child: Text(
-                'Welcome ${AppConstants.userName}',
-                style: TextStyle(color: primaryColor),
+                '聊天',
+                style: TextStyle(
+                  fontSize: 24.0,
+                  fontWeight: FontWeight.bold,
+                ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
