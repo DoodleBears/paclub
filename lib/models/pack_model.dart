@@ -37,10 +37,10 @@ class PackModel {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['name'] = name;
     data['tags'] = tags;
-    data['bio'] = description;
-    data['avatarURL'] = photoURL;
+    data['description'] = description;
+    data['photoURL'] = photoURL;
     data['createdAt'] = FieldValue.serverTimestamp();
-    data['lastLoginAt'] = FieldValue.serverTimestamp();
+    data['lastUpdateAt'] = FieldValue.serverTimestamp();
 
     return data;
   }

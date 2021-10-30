@@ -26,7 +26,9 @@ class CreatePackBody extends GetView<CreatePackController> {
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
             child: StadiumButton(
-              onTap: () {},
+              onTap: () {
+                controller.createPack();
+              },
               buttonColor: accentColor,
               child: Text(
                 'Create',
@@ -42,11 +44,11 @@ class CreatePackBody extends GetView<CreatePackController> {
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24.0),
-        child: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
-          child: ScrollConfiguration(
-            behavior: NoGlowScrollBehavior(),
+        child: ScrollConfiguration(
+          behavior: NoGlowScrollBehavior(),
+          child: SingleChildScrollView(
             child: Column(
+              mainAxisSize: MainAxisSize.max,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // NOTE: Pack 封面
@@ -81,15 +83,23 @@ class CreatePackBody extends GetView<CreatePackController> {
                 // NOTE: Pack 名字
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: SimpleInputField(
-                    titleText: 'Pack Name',
-                    barColor: accentColor,
+                  child: GetBuilder<CreatePackController>(
+                    builder: (_) {
+                      return SimpleInputField(
+                        titleText: 'Pack Name',
+                        barColor: accentColor,
+                        onChanged: controller.onPackNameChanged,
+                        error: controller.isPackNameOK == false,
+                        errorText: controller.errorText,
+                      );
+                    },
                   ),
                 ),
                 // NOTE: Pack 简介
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: SimpleInputField(
+                    onChanged: controller.onDescriptionChanged,
                     titleText: 'Description',
                     maxLines: 5,
                     inputFormatters: [
@@ -98,15 +108,72 @@ class CreatePackBody extends GetView<CreatePackController> {
                   ),
                 ),
                 // NOTE: Pack tags
+
                 Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: SimpleInputField(
-                    titleText: 'Tags',
-                    inputFormatters: [
-                      LengthLimitingTextFieldFormatterFixed(256),
-                    ],
+                  padding: const EdgeInsets.only(top: 4.0),
+                  child: Text(
+                    'Tags',
+                    style: TextStyle(
+                      fontSize: 18.0,
+                    ),
                   ),
                 ),
+                GetBuilder<CreatePackController>(
+                  builder: (_) {
+                    return Wrap(
+                      spacing: 4.0,
+                      runSpacing: -8.0,
+                      children: controller.tags.map(
+                        (String tag) {
+                          return Chip(
+                            onDeleted: () {
+                              controller.deleteTag(tag);
+                            },
+                            label: Text(tag),
+                          );
+                        },
+                      ).toList(),
+                    );
+                  },
+                ),
+                GetBuilder<CreatePackController>(
+                  builder: (_) {
+                    return TextField(
+                      controller: controller.tagsTextEditingController,
+                      onChanged: controller.onTagsChanged,
+                      maxLines: 1,
+                      keyboardType: TextInputType.text,
+                      inputFormatters: [
+                        LengthLimitingTextFieldFormatterFixed(128)
+                      ],
+                      style: TextStyle(
+                        fontSize: 22.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      decoration: InputDecoration(
+                        suffixIconConstraints:
+                            BoxConstraints.tight(Size(32.0, 32.0)),
+                        suffixIcon: GestureDetector(
+                          onTap: controller.addTag,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: AppColors.circleButtonBackgoundColor,
+                            ),
+                            child: Icon(
+                              Icons.add,
+                              color: AppColors.normalTextColor,
+                            ),
+                          ),
+                        ),
+                        hintText: 'Add',
+                        errorText:
+                            controller.isTagOK ? null : controller.errorText,
+                      ),
+                    );
+                  },
+                ),
+
                 // NOTE: Pack 编辑者
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -142,6 +209,7 @@ class CreatePackBody extends GetView<CreatePackController> {
                     ),
                   ],
                 ),
+                const SizedBox(height: 50.0),
               ],
             ),
           ),

@@ -6,16 +6,22 @@ class SimpleInputField extends StatelessWidget {
   const SimpleInputField({
     Key? key,
     required this.titleText,
+    required this.onChanged,
+    this.inputFormatters,
     this.controller,
     this.barColor,
     this.maxLines,
-    this.inputFormatters,
+    this.error = false,
+    this.errorText,
   }) : super(key: key);
+  final ValueChanged<String> onChanged;
   final String titleText;
   final int? maxLines;
   final TextEditingController? controller;
   final List<TextInputFormatter>? inputFormatters;
   final Color? barColor;
+  final bool error;
+  final String? errorText;
   @override
   Widget build(BuildContext context) {
     return IntrinsicHeight(
@@ -31,7 +37,7 @@ class SimpleInputField extends StatelessWidget {
               width: 6.0,
               decoration: ShapeDecoration(
                 shape: StadiumBorder(),
-                color: barColor ?? Colors.grey,
+                color: error ? Colors.red : barColor ?? Colors.grey,
               ),
             ),
           ),
@@ -51,6 +57,7 @@ class SimpleInputField extends StatelessWidget {
                 ),
                 TextField(
                   controller: controller,
+                  onChanged: onChanged,
                   minLines: 1,
                   maxLines: maxLines,
                   inputFormatters: inputFormatters ??
@@ -64,6 +71,7 @@ class SimpleInputField extends StatelessWidget {
                   decoration: InputDecoration(
                     hintText: 'Add',
                     border: InputBorder.none,
+                    errorText: error ? errorText : null,
                   ),
                 )
               ],

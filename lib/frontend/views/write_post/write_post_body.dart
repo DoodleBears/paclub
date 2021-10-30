@@ -38,7 +38,7 @@ class WritePostBody extends GetView<WritePostController> {
                 padding: const EdgeInsets.only(left: 12.0),
                 child: Center(
                   child: Text(
-                    'Cancel',
+                    '取消',
                     style: TextStyle(
                       fontSize: 16.0,
                       fontWeight: FontWeight.bold,

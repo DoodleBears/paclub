@@ -2,8 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:paclub/frontend/constants/constants.dart';
 
-class UserInputField extends StatelessWidget {
-  const UserInputField({
+class AvatarsInputField extends StatelessWidget {
+  const AvatarsInputField({
     Key? key,
     required this.titleText,
     required this.avatarsUrl,
