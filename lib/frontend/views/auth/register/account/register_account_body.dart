@@ -13,7 +13,7 @@ const int countdownTime = 60;
 
 class RegisterAccountBody extends GetView<RegisterAccountController> {
   final AuthEmailController authController = Get.find();
-  final double inputFieldHeight = Get.height * 0.1;
+  final double inputFieldHeight = Get.height * 0.107;
   @override
   Widget build(BuildContext context) {
     return Container(
