@@ -54,6 +54,10 @@ const String kNoMoreHistoryMessage = 'no_more_history_message';
 const String kLoadHistoryMessageFail = 'load_history_message_fail';
 const String kLoadHistoryMessageSuccess = 'load_history_message_succeed';
 
+// MARK: ChatroomRepository 用到的 String
+const String kAddPackFail = 'add_pack_fail';
+const String kAddPackSuccess = 'add_pack_succeed';
+
 // MARK: FirebaseAuthRepository 用到的 String
 
 const String kSignInRequiredError = 'sign_in_required';

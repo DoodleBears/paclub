@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:paclub/frontend/constants/colors.dart';
 import 'package:paclub/frontend/utils/length_limit_textfield_formatter.dart';
 
 class SimpleInputField extends StatelessWidget {
@@ -37,7 +38,7 @@ class SimpleInputField extends StatelessWidget {
               width: 6.0,
               decoration: ShapeDecoration(
                 shape: StadiumBorder(),
-                color: error ? Colors.red : barColor ?? Colors.grey,
+                color: error ? Colors.red : barColor ?? AppColors.normalGrey,
               ),
             ),
           ),

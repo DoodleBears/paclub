@@ -1,9 +1,11 @@
 import 'dart:ui';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:paclub/frontend/constants/colors.dart';
+import 'package:paclub/frontend/constants/constants.dart';
 import 'package:paclub/frontend/utils/length_limit_textfield_formatter.dart';
 import 'package:paclub/frontend/views/main/app_controller.dart';
 import 'package:paclub/frontend/views/write_post/components/drag_handler.dart';
@@ -51,6 +53,8 @@ class WritePostBody extends GetView<WritePostController> {
                   padding: const EdgeInsets.symmetric(
                       vertical: 8.0, horizontal: 8.0),
                   child: StadiumButton(
+                    height: 40.0,
+                    isLoading: controller.isLoading,
                     onTap: () {},
                     buttonColor: accentColor,
                     child: Text(
@@ -213,92 +217,161 @@ class WritePostBody extends GetView<WritePostController> {
             },
           ),
           // NOTE: 点击 Choose Pack 后出现的 Bottom Sheet, 用于选择要将 Post 收纳进哪一个 Pack
-          GetBuilder<WritePostController>(
-            assignId: true,
-            id: 'bottomSheet',
+          GetBuilder<AppController>(
             builder: (_) {
-              return DraggableScrollableAttachableSheet(
-                bottomSheetController: controller.bottomSheetController,
-                height: Get.height * 0.5,
-                fullyOpenHeight: Get.height * 0.8,
-                isAllowFullyOpen: true,
-                backgroundColor: AppColors.bottomSheetBackgoundColor,
-                onDrag: (offset) {},
-                onDragComplete: controller.onDragComplete,
-                handlerWidget: DragHandler(),
-                child: Expanded(
-                  child: ScrollConfiguration(
-                    behavior: NoGlowScrollBehavior(),
-                    child: Stack(
-                      alignment: Alignment.bottomCenter,
-                      children: [
-                        // 用户所创建的所有 Pack 的 List
-                        ListView.builder(
-                          controller: controller.bottomScrollController,
-                          padding: EdgeInsets.only(bottom: Get.height * 0.1),
-                          itemCount: 10,
-                          itemBuilder: (context, index) {
-                            return ListTile(
-                              title: Text('Pack-$index'),
-                            );
-                          },
-                        ),
-                        // 创建 Pack 的 Button
-                        Container(
-                          decoration: BoxDecoration(
-                            boxShadow: [
-                              BoxShadow(
-                                color: AppColors.normalShadowColor!,
-                                offset: Offset(0, 8.0),
-                                blurRadius: 10.0,
-                              ),
-                            ],
-                            color: AppColors.containerBackground,
-                          ),
-                          height: Get.height * 0.1,
-                          child: TextButton(
-                            style: ButtonStyle(
-                              minimumSize:
-                                  MaterialStateProperty.all(Size.infinite),
+              return GetBuilder<WritePostController>(
+                assignId: true,
+                id: 'bottomSheet',
+                builder: (_) {
+                  return DraggableScrollableAttachableSheet(
+                    bottomSheetController: controller.bottomSheetController,
+                    height: Get.height * 0.5,
+                    fullyOpenHeight: Get.height * 0.8,
+                    isAllowFullyOpen: true,
+                    backgroundColor: AppColors.bottomSheetBackgoundColor,
+                    onDrag: (offset) {},
+                    onDragComplete: controller.onDragComplete,
+                    handlerWidget: DragHandler(),
+                    child: Expanded(
+                      child: ScrollConfiguration(
+                        behavior: NoGlowScrollBehavior(),
+                        child: Stack(
+                          alignment: Alignment.bottomCenter,
+                          children: [
+                            // 用户所创建的所有 Pack 的 List
+                            GetBuilder<WritePostController>(
+                              assignId: true,
+                              id: 'packList',
+                              builder: (_) {
+                                return ListView.builder(
+                                  controller: controller.bottomScrollController,
+                                  padding:
+                                      EdgeInsets.only(bottom: Get.height * 0.1),
+                                  itemCount: controller.packList.length,
+                                  itemBuilder: (context, index) {
+                                    return Container(
+                                      color: controller.packCheckedList[
+                                                  controller
+                                                      .packList[index].pid] ==
+                                              true
+                                          ? accentColor.withAlpha(32)
+                                          : null,
+                                      child: CheckboxListTile(
+                                        tileColor: accentColor,
+                                        selectedTileColor: accentColor,
+                                        title: Text(
+                                          controller.packList[index].packName,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 20.0,
+                                          ),
+                                        ),
+                                        subtitle: Text(
+                                          controller.packList[index].pid,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          style: TextStyle(
+                                            fontSize: 14.0,
+                                            color: AppColors.normalGrey,
+                                          ),
+                                        ),
+                                        activeColor: accentColor,
+                                        secondary: Material(
+                                          borderRadius:
+                                              BorderRadius.circular(8.0),
+                                          clipBehavior: Clip.antiAlias,
+                                          child: controller.packList[index]
+                                                      .photoURL ==
+                                                  ''
+                                              ? Container(
+                                                  width: 48.0,
+                                                  height: 48.0,
+                                                )
+                                              : Ink.image(
+                                                  image:
+                                                      CachedNetworkImageProvider(
+                                                          controller
+                                                              .packList[index]
+                                                              .photoURL),
+                                                  fit: BoxFit.cover,
+                                                  width: 48.0,
+                                                  height: 48.0,
+                                                ),
+                                        ),
+                                        onChanged: (value) {
+                                          return controller.checkBoxOnChange(
+                                              value,
+                                              controller.packList[index].pid);
+                                        },
+                                        value: controller.packCheckedList[
+                                            controller.packList[index].pid],
+                                      ),
+                                    );
+                                  },
+                                );
+                              },
                             ),
-                            onPressed: () {
-                              controller.navigateToCreatePackPage();
-                            },
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    margin: const EdgeInsets.only(right: 16.0),
-                                    padding: const EdgeInsets.all(5.0),
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: accentColor,
-                                    ),
-                                    child: Icon(
-                                      Icons.add,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  Text(
-                                    'Create New Pack',
-                                    style: TextStyle(
-                                      color: AppColors.normalTextColor,
-                                      fontSize: 20.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                            // 创建 Pack 的 Button
+                            Container(
+                              decoration: BoxDecoration(
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: AppColors.normalShadowColor!,
+                                    offset: Offset(0, 8.0),
+                                    blurRadius: 10.0,
                                   ),
                                 ],
+                                color: AppColors.containerBackground,
+                              ),
+                              height: Get.height * 0.1,
+                              child: TextButton(
+                                style: ButtonStyle(
+                                  minimumSize:
+                                      MaterialStateProperty.all(Size.infinite),
+                                ),
+                                onPressed: () {
+                                  controller.navigateToCreatePackPage();
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8.0),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        margin:
+                                            const EdgeInsets.only(right: 16.0),
+                                        padding: const EdgeInsets.all(5.0),
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: accentColor,
+                                        ),
+                                        child: Icon(
+                                          Icons.add,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      Text(
+                                        'Create New Pack',
+                                        style: TextStyle(
+                                          color: AppColors.normalTextColor,
+                                          fontSize: 20.0,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
+                          ],
                         ),
-                      ],
+                      ),
                     ),
-                  ),
-                ),
+                  );
+                },
               );
             },
           ),

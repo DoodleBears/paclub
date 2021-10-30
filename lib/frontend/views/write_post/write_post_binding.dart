@@ -1,4 +1,7 @@
 import 'package:get/get.dart';
+import 'package:paclub/backend/api/pack_api.dart';
+import 'package:paclub/backend/repository/remote/pack_repository.dart';
+import 'package:paclub/frontend/modules/pack_module.dart';
 import 'package:paclub/frontend/views/write_post/write_post_controller.dart';
 import 'package:paclub/utils/logger.dart';
 
@@ -11,9 +14,9 @@ class WritePostBinding implements Bindings {
     logger.wtf('[自动绑定]依赖注入 —— WritePostBinding');
 
     /// Controller 用到的 Module 和 API
-    // Get.lazyPut<FirebaseAuthRepository>(() => FirebaseAuthRepository());
-    // Get.lazyPut<FirebaseAuthApi>(() => FirebaseAuthApi());
-    // Get.lazyPut<AuthModule>(() => AuthModule());
+    Get.lazyPut<PackRepository>(() => PackRepository());
+    Get.lazyPut<PackApi>(() => PackApi());
+    Get.lazyPut<PackModule>(() => PackModule());
 
     Get.lazyPut<WritePostController>(() => WritePostController());
   }

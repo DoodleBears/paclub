@@ -183,7 +183,6 @@ class ChatroomRepository extends GetxController {
   // MARK: ADD 部分
 
   /// ## NOTE: 添加聊天室
-  /// TODO: 新增聊天室改为用 Document id 作为 document 的 field
   Future<AppResponse> addChatroom({
     required ChatroomModel chatroomModel,
   }) async {

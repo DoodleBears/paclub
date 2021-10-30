@@ -25,19 +25,25 @@ class CreatePackBody extends GetView<CreatePackController> {
         actions: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
-            child: StadiumButton(
-              onTap: () {
-                controller.createPack();
+            child: GetBuilder<CreatePackController>(
+              builder: (_) {
+                return StadiumButton(
+                  height: 18.0,
+                  isLoading: controller.isLoading,
+                  onTap: () {
+                    controller.createPack();
+                  },
+                  buttonColor: accentColor,
+                  child: Text(
+                    'Create',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                );
               },
-              buttonColor: accentColor,
-              child: Text(
-                'Create',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
             ),
           ),
         ],
@@ -55,6 +61,7 @@ class CreatePackBody extends GetView<CreatePackController> {
                 GestureDetector(
                   onTap: () {
                     // NOTE: 选择图片
+                    controller.setPackPhoto();
                   },
                   child: GetBuilder<AppController>(
                     builder: (_) {
@@ -63,18 +70,56 @@ class CreatePackBody extends GetView<CreatePackController> {
                           top: 24.0,
                           bottom: 12.0,
                         ),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.rectangle,
-                          borderRadius: BorderRadius.circular(borderRadius),
-                          color: AppColors.profileAvatarBackgroundColor,
-                        ),
-                        child: Container(
-                          width: 128,
-                          height: 128,
-                          child: Icon(
-                            Icons.add_a_photo_rounded,
-                            size: 32.0,
-                          ),
+                        child: GetBuilder<CreatePackController>(
+                          builder: (_) {
+                            return Stack(
+                              clipBehavior: Clip.none,
+                              children: [
+                                Material(
+                                  borderRadius:
+                                      BorderRadius.circular(borderRadius),
+                                  clipBehavior: Clip.antiAlias,
+                                  child: controller.imageFile == null
+                                      ? Container(
+                                          width: 128,
+                                          height: 128,
+                                          child: Icon(
+                                            Icons.add_a_photo_rounded,
+                                            size: 32.0,
+                                          ),
+                                        )
+                                      : Ink.image(
+                                          image:
+                                              FileImage(controller.imageFile!),
+                                          fit: BoxFit.cover,
+                                          width: 128,
+                                          height: 128,
+                                        ),
+                                ),
+                                controller.imageFile == null
+                                    ? SizedBox.shrink()
+                                    : Positioned(
+                                        right: -10.0,
+                                        bottom: -10.0,
+                                        child: GestureDetector(
+                                          onTap: () =>
+                                              controller.removePackPhoto(),
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: Colors.red,
+                                            ),
+                                            child: Icon(
+                                              Icons.remove,
+                                              color: AppColors.normalTextColor,
+                                              size: 28.0,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                              ],
+                            );
+                          },
                         ),
                       );
                     },
@@ -98,13 +143,17 @@ class CreatePackBody extends GetView<CreatePackController> {
                 // NOTE: Pack 简介
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: SimpleInputField(
-                    onChanged: controller.onDescriptionChanged,
-                    titleText: 'Description',
-                    maxLines: 5,
-                    inputFormatters: [
-                      LengthLimitingTextFieldFormatterFixed(2000),
-                    ],
+                  child: GetBuilder<CreatePackController>(
+                    builder: (_) {
+                      return SimpleInputField(
+                        onChanged: controller.onDescriptionChanged,
+                        titleText: 'Description',
+                        maxLines: 5,
+                        inputFormatters: [
+                          LengthLimitingTextFieldFormatterFixed(2000),
+                        ],
+                      );
+                    },
                   ),
                 ),
                 // NOTE: Pack tags
@@ -123,7 +172,7 @@ class CreatePackBody extends GetView<CreatePackController> {
                     return Wrap(
                       spacing: 4.0,
                       runSpacing: -8.0,
-                      children: controller.tags.map(
+                      children: controller.packModel.tags.map(
                         (String tag) {
                           return Chip(
                             onDeleted: () {

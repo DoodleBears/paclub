@@ -37,16 +37,18 @@ class MultiAvatarContainer extends StatelessWidget {
                   height: height,
                 ),
               ),
-              Positioned(
-                width: width,
-                left: offset * 1,
-                child: CircleAvatarContainer(
-                  isBorderShow: true,
-                  avatarUrl: avatarsUrl[1],
-                  width: width,
-                  height: height,
-                ),
-              ),
+              avatarsUrl.length > 1
+                  ? Positioned(
+                      width: width,
+                      left: offset * 1,
+                      child: CircleAvatarContainer(
+                        isBorderShow: true,
+                        avatarUrl: avatarsUrl[1],
+                        width: width,
+                        height: height,
+                      ),
+                    )
+                  : SizedBox.shrink(),
               avatarsUrl.length > 2
                   ? Positioned(
                       width: width,
