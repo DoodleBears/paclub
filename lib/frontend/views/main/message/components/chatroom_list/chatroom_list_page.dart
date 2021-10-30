@@ -1,6 +1,5 @@
 import 'package:paclub/frontend/constants/colors.dart';
 import 'package:paclub/frontend/routes/app_pages.dart';
-import 'package:paclub/helper/app_constants.dart';
 import 'package:paclub/r.dart';
 import 'package:paclub/utils/logger.dart';
 import 'package:paclub/frontend/views/main/message/components/chatroom_list/chatroom_list_body.dart';

@@ -48,10 +48,8 @@ class ChatroomModule extends GetxController {
 
   Future<AppResponse> addChatroom({
     required ChatroomModel chatroomModel,
-    required String chatroomId,
   }) async =>
-      _chatroomApi.addChatroom(
-          chatroomModel: chatroomModel, chatroomId: chatroomId);
+      _chatroomApi.addChatroom(chatroomModel: chatroomModel);
 
   Future<AppResponse> addMessage({
     required String chatroomId,

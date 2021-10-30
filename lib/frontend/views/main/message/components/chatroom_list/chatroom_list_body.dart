@@ -30,8 +30,7 @@ class ChatroomListBody extends GetView<ChatroomListController> {
                   lastMessageTime: friendModel.lastMessageTime,
                   lastMessage: friendModel.lastMessage,
                   messageNotRead: friendModel.messageNotRead,
-                  chatroomId:
-                      getChatRoomId(AppConstants.uuid, friendModel.friendUid),
+                  chatroomId: friendModel.chatroomId,
                   userUid: friendModel.friendUid,
                   userName: userName,
                 );

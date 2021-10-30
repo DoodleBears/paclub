@@ -39,6 +39,8 @@ class AppColors {
   static Color? normalTextColor = Colors.black;
   // NOTE: Shadow
   static Color? normalShadowColor = Colors.grey;
+  // NOTE: Color
+  static Color? normalGrey = Colors.grey[700];
 
   // MARK: lightMode - 通过调用 lightMode 和 UserController.update() 便可以进行App亮暗模式的调整
   static lightMode() {
@@ -73,6 +75,8 @@ class AppColors {
     normalTextColor = Colors.black;
     // NOTE: Shadow
     normalShadowColor = Colors.grey;
+    // NOTE: Color
+    normalGrey = Colors.grey[700];
   }
 
   static darkMode() {
@@ -107,6 +111,8 @@ class AppColors {
     normalTextColor = Colors.white;
     // NOTE: Shadow
     normalShadowColor = Colors.white;
+    // NOTE: Color
+    normalGrey = Colors.grey;
   }
 }
 

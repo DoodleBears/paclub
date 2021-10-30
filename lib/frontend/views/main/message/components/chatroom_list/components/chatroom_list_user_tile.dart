@@ -80,12 +80,14 @@ class ChatroomsListUserTile extends StatelessWidget {
                                 height: 54.0,
                                 child: Center(
                                   child: Text(
-                                      userName.substring(0, 1).toUpperCase(),
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 24.0,
-                                          fontWeight: FontWeight.bold)),
+                                    userName.substring(0, 1).toUpperCase(),
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 24.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
                                 ),
                               )
                             : Ink.image(
@@ -136,7 +138,7 @@ class ChatroomsListUserTile extends StatelessWidget {
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
                                 fontSize: 14,
-                                color: Colors.grey,
+                                color: AppColors.normalGrey,
                               ),
                             ),
                           ),

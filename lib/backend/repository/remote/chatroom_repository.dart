@@ -183,19 +183,18 @@ class ChatroomRepository extends GetxController {
   // MARK: ADD 部分
 
   /// ## NOTE: 添加聊天室
+  /// TODO: 新增聊天室改为用 Document id 作为 document 的 field
   Future<AppResponse> addChatroom({
     required ChatroomModel chatroomModel,
-    required String chatroomId,
   }) async {
-    logger.i('添加聊天室 id: $chatroomId');
-
-    return _chatroomsCollection
-        .doc(chatroomId)
-        .set(chatroomModel.toJson())
-        .then(
+    logger.i('开始添加聊天室');
+    Map<String, dynamic> dataMap = chatroomModel.toJson();
+    DocumentReference documentReference = _chatroomsCollection.doc();
+    dataMap['chatroomId'] = documentReference.id;
+    return documentReference.set(dataMap).then(
       (_) async {
-        logger.i('添加聊天室成功');
-        return AppResponse(kAddChatroomSuccess, chatroomId);
+        logger.i('添加聊天室成功: ${documentReference.id}');
+        return AppResponse(kAddChatroomSuccess, documentReference.id);
       },
       onError: (e) {
         logger.e('添加聊天室失败, error: ' + e.runtimeType.toString());

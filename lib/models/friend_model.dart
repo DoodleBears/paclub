@@ -4,6 +4,7 @@ class FriendModel {
   late int messageNotRead;
   late String avatarURL;
   late String friendName;
+  late String chatroomId;
   late String friendUid;
   late String lastMessage;
   late Timestamp lastMessageTime;
@@ -24,6 +25,7 @@ class FriendModel {
       messageNotRead = data['messageNotRead'];
       friendName = data['friendName'];
       friendUid = data['friendUid'];
+      chatroomId = data['chatroomId'];
       lastMessage = data['lastMessage'];
       lastMessageTime = data['lastMessageTime'] ?? Timestamp.now();
       friendType = data['friendType'];

@@ -5,8 +5,10 @@ class ChatroomModel {
   late Map<String, dynamic> usersName;
   late String chatroomId;
 
-  ChatroomModel(
-      {required this.users, required this.usersName, required this.chatroomId});
+  ChatroomModel({
+    required this.users,
+    required this.usersName,
+  });
 
   ChatroomModel.fromDoucumentSnapshot(DocumentSnapshot documentSnapshot) {
     if (documentSnapshot.data() != null) {
@@ -24,7 +26,6 @@ class ChatroomModel {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['users'] = users;
     data['usersName'] = usersName;
-    data['chatroomId'] = chatroomId;
 
     return data;
   }

@@ -102,10 +102,8 @@ class ChatroomApi extends GetxController {
   ///   - data: 成功: [List] 历史消息 [ChatMessageModel] | 失败: null
   Future<AppResponse> addChatroom({
     required ChatroomModel chatroomModel,
-    required String chatroomId,
   }) async =>
-      _chatroomRepository.addChatroom(
-          chatroomModel: chatroomModel, chatroomId: chatroomId);
+      _chatroomRepository.addChatroom(chatroomModel: chatroomModel);
 
   /// ## NOTE: 添加消息到聊天室（发送消息）
   /// ## 传入参数

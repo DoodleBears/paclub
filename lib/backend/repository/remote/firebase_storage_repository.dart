@@ -14,7 +14,7 @@ class FirebaseStorageRepository extends GetxController {
     required File imageFile,
     required String filePath,
   }) async {
-    logger.i('开始上传图像');
+    logger.i('开始上传图像到: $filePath');
 
     try {
       await _storage.ref(filePath).putFile(imageFile);

@@ -3,7 +3,6 @@ import 'package:paclub/frontend/modules/user_module.dart';
 import 'package:paclub/frontend/utils/gesture.dart';
 import 'package:paclub/frontend/widgets/widgets.dart';
 import 'package:paclub/helper/app_constants.dart';
-import 'package:paclub/helper/chatroom_helper.dart';
 import 'package:paclub/models/chatroom_model.dart';
 import 'package:paclub/models/user_model.dart';
 import 'package:paclub/utils/app_response.dart';
@@ -68,16 +67,9 @@ class UserSearchController extends GetxController {
       required String avatarURL,
       required bool isChatroomExist,
       required int index}) async {
-    String chatroomId = getChatRoomId(AppConstants.uuid, userUid);
-    Map<String, dynamic> chatroomInfo = {
-      "userUid": userUid,
-      "userName": userName,
-      "chatroomId": chatroomId,
-      "avatarURL": avatarURL,
-    };
     if (isChatroomExist) {
       logger.w('聊天室已存在');
-      return AppResponse('chatroom_already_exist', chatroomInfo);
+      return AppResponse('chatroom_already_exist', null);
     }
 
     isAddUserLoading[index] = true;
@@ -88,12 +80,12 @@ class UserSearchController extends GetxController {
     userNameMap[AppConstants.uuid] = AppConstants.userName;
     userNameMap[userUid] = userName;
     ChatroomModel chatroomModel = ChatroomModel(
-        users: [AppConstants.uuid, userUid],
-        usersName: userNameMap,
-        chatroomId: chatroomId);
+      users: [AppConstants.uuid, userUid],
+      usersName: userNameMap,
+    );
     // NOTE: 添加 聊天室
-    AppResponse appResponseChatroom = await chatroomModule.addChatroom(
-        chatroomModel: chatroomModel, chatroomId: chatroomId);
+    AppResponse appResponseChatroom =
+        await chatroomModule.addChatroom(chatroomModel: chatroomModel);
     isAddUserLoading[index] = false;
     update();
     // 如果添加 chatroom 失败, return
@@ -101,14 +93,17 @@ class UserSearchController extends GetxController {
       toastBottom('failed to add Chatroom');
       return AppResponse(appResponseChatroom.message, null);
     }
+
     // NOTE: AB加好友，添加 B 到 A 的好友列表
     AppResponse appResponseUser1 = await userModule.addFriend(
+      chatroomId: appResponseChatroom.data, // data 是 chatroomId
       uid: chatroomModel.users[0],
       friendUid: chatroomModel.users[1],
       friendName: chatroomModel.usersName['${chatroomModel.users[1]}'],
     );
     // NOTE: AB加好友，添加 A 到 B 的好友列表
     AppResponse appResponseUser2 = await userModule.addFriend(
+      chatroomId: appResponseChatroom.data, // data 是 chatroomId
       uid: chatroomModel.users[1],
       friendUid: chatroomModel.users[0],
       friendName: chatroomModel.usersName['${chatroomModel.users[0]}'],
@@ -121,6 +116,12 @@ class UserSearchController extends GetxController {
       return AppResponse(appResponseUser2.message, null);
     } else {
       logger.d(appResponseChatroom.message);
+      Map<String, dynamic> chatroomInfo = {
+        "userUid": userUid,
+        "userName": userName,
+        "chatroomId": appResponseChatroom.data,
+        "avatarURL": avatarURL,
+      };
       return AppResponse(appResponseChatroom.message, chatroomInfo);
     }
   }

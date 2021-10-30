@@ -115,12 +115,15 @@ class UserApi extends GetxController {
           {required String uid,
           required String friendUid,
           required String friendName,
+          required String chatroomId,
           String friendType = 'default'}) async =>
       _userRepository.addFriend(
-          uid: uid,
-          friendUid: friendUid,
-          friendName: friendName,
-          friendType: friendType);
+        uid: uid,
+        friendUid: friendUid,
+        friendName: friendName,
+        friendType: friendType,
+        chatroomId: chatroomId,
+      );
 
   // MARK: UPDATE 部分
   /// NOTE: 但有新 message 发送到聊天室时，需要更新更新双方的 messageNotRead 和 lastMessage, lastMessageTime

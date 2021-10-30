@@ -145,11 +145,13 @@ class UserRepository extends GetxController {
   }
 
   /// NOTE: 加某用户为好友
-  Future<AppResponse> addFriend(
-      {required String uid,
-      required String friendUid,
-      required String friendName,
-      required String friendType}) async {
+  Future<AppResponse> addFriend({
+    required String uid,
+    required String chatroomId,
+    required String friendUid,
+    required String friendName,
+    required String friendType,
+  }) async {
     Map<String, dynamic> map = Map();
     map['addAt'] = FieldValue.serverTimestamp();
     map['messageNotRead'] = 0;
@@ -160,6 +162,7 @@ class UserRepository extends GetxController {
     map['friendType'] = friendType;
     map['friendName'] = friendName;
     map['friendUid'] = friendUid;
+    map['chatroomId'] = chatroomId;
     return _usersCollection
         .doc(uid)
         .collection('friends')

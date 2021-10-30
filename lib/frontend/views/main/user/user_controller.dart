@@ -72,12 +72,15 @@ class UserController extends GetxController {
       Map<String, dynamic> newProfileData = appResponse.data;
       if (myUserModel.displayName != displayNameNew) {
         myUserModel.displayName = newProfileData['displayName'];
+        AppConstants.userName = newProfileData['displayName'];
       }
       if (myUserModel.bio != bioNew) {
         myUserModel.bio = newProfileData['bio'];
+        AppConstants.bio = newProfileData['bio'];
       }
       if (imageFile != null) {
         myUserModel.avatarURL = newProfileData['avatarURL'];
+        AppConstants.avatarURL = newProfileData['avatarURL'];
       }
     } else {
       toastCenter(appResponse.message);
@@ -119,6 +122,7 @@ class UserController extends GetxController {
   @override
   void onInit() async {
     logger.i('启用 UserController');
+    getUserProfile(isMe: true);
 
     FlutterAppBadger.isAppBadgeSupported();
     super.onInit();
@@ -131,30 +135,33 @@ class UserController extends GetxController {
     AppResponse appResponse =
         await _userModule.getUserProfile(uid: isMe ? AppConstants.uuid : uid);
     if (appResponse.data != null) {
-      UserModel friendModel = appResponse.data;
+      UserModel userModel = appResponse.data;
       // NOTE: 如果不是自己，则考虑更新 Friend 的头像 Link 和 displayName, 如果该 user 有更改过信息
       if (isMe == false) {
         Map<String, dynamic> updateMap = {};
-        if (otherUserModel.displayName != friendModel.displayName) {
-          updateMap['friendName'] = friendModel.displayName;
-          otherUserModel.displayName = friendModel.displayName;
+        if (otherUserModel.displayName != userModel.displayName) {
+          updateMap['friendName'] = userModel.displayName;
+          otherUserModel.displayName = userModel.displayName;
         }
-        if (otherUserModel.avatarURL != friendModel.avatarURL) {
-          updateMap['avatarURL'] = friendModel.avatarURL;
-          otherUserModel.avatarURL = friendModel.avatarURL;
+        if (otherUserModel.avatarURL != userModel.avatarURL) {
+          updateMap['avatarURL'] = userModel.avatarURL;
+          otherUserModel.avatarURL = userModel.avatarURL;
         }
         if (updateMap.isNotEmpty) {
           _userModule.updateFriendProfile(friendUid: uid, updateMap: updateMap);
         }
       }
 
-      otherUserModel.bio = friendModel.bio;
+      otherUserModel.bio = userModel.bio;
 
       if (isMe == true) {
         myUserModel = appResponse.data;
         bioNew = myUserModel.bio;
+        AppConstants.bio = myUserModel.bio;
         avatarURLNew = myUserModel.avatarURL;
+        AppConstants.avatarURL = myUserModel.avatarURL;
         displayNameNew = myUserModel.displayName;
+        AppConstants.userName = myUserModel.displayName;
         bioTextController.text = bioNew;
         displayNameTextController.text = displayNameNew;
       }

@@ -46,9 +46,11 @@ class UserModule extends GetxController {
           {required String uid,
           required String friendUid,
           required String friendName,
+          required String chatroomId,
           String friendType = 'default'}) async =>
       _userApi.addFriend(
           uid: uid,
+          chatroomId: chatroomId,
           friendUid: friendUid,
           friendName: friendName,
           friendType: friendType);
