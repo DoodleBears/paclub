@@ -8,6 +8,7 @@ class RegisterFormController extends GetxController {
   // HINT: Rx 即 Stream 类型的值，设定为 final 防止重复宣告 Stream
   // Stream 中的 value 是可以不断改变的，需要用 .value 去修改
   int page = 1; // 当前所在页面（初始为第一页）
+  List<String> pageInfo = ['Display Name', 'Biography'];
   bool isNameOK = true; // 名字是否不为空
   String name = '';
   String bio = '';
@@ -19,6 +20,7 @@ class RegisterFormController extends GetxController {
     if (check()) {
       if (page == 1) {
         page++;
+
         hideKeyboard(context);
         update(['form_1', 'form_2', 'progress_bar']);
       } else if (page == 2) {

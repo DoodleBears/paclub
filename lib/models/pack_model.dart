@@ -38,8 +38,8 @@ class PackModel {
       List<dynamic> tempTags = data['tags'];
       tags = tempTags.map((e) => e.toString()).toList();
       editorInfo = data['editorInfo'];
-      createdAt = data['createdAt'];
-      lastUpdateAt = data['lastUpdateAt'];
+      createdAt = data['createdAt'] ?? Timestamp.now();
+      lastUpdateAt = data['lastUpdateAt'] ?? Timestamp.now();
     } else {
       throw Exception('Null DocumentSnapshot');
     }

@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:paclub/frontend/modules/pack_module.dart';
-import 'package:paclub/frontend/widgets/widgets.dart';
 import 'package:paclub/helper/app_constants.dart';
 import 'package:paclub/helper/image_helper.dart';
 import 'package:paclub/models/pack_model.dart';
@@ -13,7 +12,13 @@ import 'package:paclub/utils/logger.dart';
 class CreatePackController extends GetxController {
   PackModule _packModule = Get.find<PackModule>();
   final List<String> avatarsUrl = [AppConstants.avatarURL];
-  PackModel packModel = PackModel(
+  final TextEditingController descriptionTextEditingController =
+      TextEditingController();
+  final TextEditingController packNameTextEditingController =
+      TextEditingController();
+  final TextEditingController tagsTextEditingController =
+      TextEditingController();
+  final PackModel packModel = PackModel(
     ownerUid: AppConstants.uuid,
     ownerName: AppConstants.userName,
     ownerAvatarURL: AppConstants.avatarURL,
@@ -25,20 +30,18 @@ class CreatePackController extends GetxController {
   File? imageFile;
 
   bool isLoading = false;
-  bool isPackInfoOK = false;
+  bool isPackOK = false;
   bool isPackNameOK = true;
   bool isTagOK = true;
-  String errorText = '';
   String tag = '';
-
-  final TextEditingController tagsTextEditingController =
-      TextEditingController();
+  String errorText = '';
+  int process = 0;
+  String processInfo = '';
 
   Future<void> setPackPhoto() async {
     File? imageFile = await pickImage();
     if (imageFile == null) return;
     this.imageFile = imageFile;
-    packModel.photoURL = imageFile.path;
     logger.i('设定 Pack Photo 成功');
     update();
   }
@@ -103,25 +106,72 @@ class CreatePackController extends GetxController {
       return;
     }
     if (checkPackInfo()) {
+      process = 0;
+      processInfo = 'Creating Pack...';
+      update(['progress_bar']);
+
       logger.d('开始创建 Pack');
 
       isLoading = true;
       update();
-      await Future.delayed(const Duration(seconds: 3));
-      AppResponse appResponse = await _packModule.setPack(
+      AppResponse appResponseSetPack = await _packModule.setPack(
         packModel: packModel,
-        imageFile: imageFile,
       );
 
-      toastTop(appResponse.message);
+      if (appResponseSetPack.data != null) {
+        if (imageFile != null) {
+          process = 1;
+          processInfo = 'Uploading Image...';
+          update(['progress_bar']);
+          AppResponse appResponseUploadPackPhoto =
+              await _packModule.uploadPackPhoto(
+                  imageFile: imageFile!, filePath: appResponseSetPack.data);
+          // NOTE: 成功上传 Pack 头图
+
+          if (appResponseUploadPackPhoto.data != null) {
+            process = 2;
+            update(['progress_bar']);
+            AppResponse appResponseUpdatePack = await _packModule.updatePack(
+              pid: appResponseSetPack.data,
+              updateMap: {
+                'photoURL': appResponseUploadPackPhoto.data,
+              },
+            );
+
+            if (appResponseUpdatePack.data != null) {
+              process = 3;
+              processInfo = '';
+              update(['progress_bar']);
+              cleanPackInfo();
+            }
+          }
+        }
+      } else {
+        processInfo = 'Create Fail';
+        process = 3;
+        update(['progress_bar']);
+      }
 
       isLoading = false;
       update();
     }
   }
 
+  void cleanPackInfo() {
+    tagsTextEditingController.clear();
+    packNameTextEditingController.clear();
+    descriptionTextEditingController.clear();
+    packModel.packName = '';
+    packModel.description = '';
+    packModel.tags.clear();
+    packModel.photoURL = '';
+    imageFile = null;
+    packModel.editorInfo.clear();
+    update();
+  }
+
   bool checkPackInfo() {
-    isPackInfoOK = false;
+    isPackOK = false;
     if (packModel.packName.isEmpty) {
       if (isPackNameOK) {
         errorText = 'pack name cannot be empty';
@@ -129,9 +179,9 @@ class CreatePackController extends GetxController {
         update();
       }
     } else {
-      isPackInfoOK = true;
+      isPackOK = true;
     }
-    return isPackInfoOK;
+    return isPackOK;
   }
 
   @override

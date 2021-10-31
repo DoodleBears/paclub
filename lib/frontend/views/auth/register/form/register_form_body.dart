@@ -36,6 +36,7 @@ class RegisterFormBody extends GetView<RegisterFormController> {
               ),
             ],
           ),
+          // NOTE: 进度条
           GetBuilder<RegisterFormController>(
             assignId: true,
             id: 'progress_bar',

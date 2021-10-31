@@ -19,7 +19,7 @@ class RegisterForm1 extends GetView<RegisterFormController> {
         logger.w('重新渲染 form_1');
         return FadeInScaleContainer(
           width: Get.width * 0.8,
-          height: controller.page == 1 ? 16 + Get.height * 0.08 : 0.0,
+          height: controller.page == 1 ? 16 + Get.height * 0.09 : 0.0,
           isShow: controller.page == 1,
           child: RoundedInputField(
             counterText: '${controller.name.length}/50',

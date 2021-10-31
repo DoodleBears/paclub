@@ -23,6 +23,13 @@ class RegisterFormPage extends GetView<RegisterFormController> {
           toolbarHeight: Get.height * 0.07,
           shadowColor: Colors.transparent,
           centerTitle: true,
+          title: GetBuilder<RegisterFormController>(
+            assignId: true,
+            id: 'progress_bar',
+            builder: (_) {
+              return Text(controller.pageInfo[controller.page - 1]);
+            },
+          ),
           leading: FittedBox(
             fit: BoxFit.contain,
             alignment: Alignment.center,

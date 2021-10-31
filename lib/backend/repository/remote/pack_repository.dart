@@ -67,11 +67,11 @@ class PackRepository extends GetxController {
         .then(
       (_) async {
         logger.i('更新Pack成功, pid: $pid');
-        return AppResponse(kAddPackSuccess, pid);
+        return AppResponse(kUpdatePackSuccess, pid);
       },
       onError: (e) {
         logger3.e('更新Pack失败, error: ' + e.runtimeType.toString());
-        return AppResponse(kAddPackFail, null);
+        return AppResponse(kUpdatePackFail, null);
       },
     );
   }

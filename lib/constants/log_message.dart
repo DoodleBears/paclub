@@ -57,6 +57,8 @@ const String kLoadHistoryMessageSuccess = 'load_history_message_succeed';
 // MARK: ChatroomRepository 用到的 String
 const String kAddPackFail = 'add_pack_fail';
 const String kAddPackSuccess = 'add_pack_succeed';
+const String kUpdatePackFail = 'update_pack_fail';
+const String kUpdatePackSuccess = 'update_pack_succeed';
 
 // MARK: FirebaseAuthRepository 用到的 String
 

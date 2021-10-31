@@ -41,39 +41,13 @@ class PackModule extends GetxController {
   // MARK: SET 部分
   Future<AppResponse> setPack({
     required PackModel packModel,
-    File? imageFile,
   }) async {
     AppResponse appResponseSetPack =
         await _packApi.setPack(packModel: packModel);
     if (appResponseSetPack.data == null) {
       return appResponseSetPack;
     }
-    // NOTE: 如果用户有设定 Pack 头图, 则上传头图
-    if (imageFile != null) {
-      AppResponse appResponseUploadPackPhoto = await uploadPackPhoto(
-          imageFile: imageFile, filePath: appResponseSetPack.data);
-      // NOTE: 成功上传 Pack 头图
-      if (appResponseUploadPackPhoto.data != null) {
-        AppResponse appResponseUpdatePack = await _packApi.updatePack(
-          pid: appResponseSetPack.data,
-          updateMap: {
-            'photoURL': appResponseUploadPackPhoto.data,
-          },
-        );
-        if (appResponseUpdatePack.data != null) {
-          return appResponseSetPack;
-        } else {
-          logger3.e(appResponseUpdatePack);
-          return appResponseUpdatePack;
-        }
-      } else {
-        // NOTE: 成功上传 Pack 头图
-        return AppResponse(kUploadImageFailed, null);
-      }
-    } else {
-      // NOTE: 用户没有设定 Pack 头图, 直接回传
-      return appResponseSetPack;
-    }
+    return appResponseSetPack;
   }
 
   // MARK: 初始化
