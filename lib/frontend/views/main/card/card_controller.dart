@@ -7,14 +7,14 @@ class CardController extends GetxController {
   final DragController dragController = DragController();
   final List imageList = [];
   final List imageData = [
-    'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fn.sinaimg.cn%2Fsinacn20%2F170%2Fw1024h1546%2F20180318%2Fa00d-fyshfur3814572.jpg&refer=http%3A%2F%2Fn.sinaimg.cn&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1613903060&t=651082a2ee0be03315c114381adaea8dhttps://gimg2.baidu.com/image_search/src=http%3A%2F%2Fn.sinaimg.cn%2Fsinacn20%2F170%2Fw1024h1546%2F20180318%2Fa00d-fyshfur3814572.jpg&refer=http%3A%2F%2Fn.sinaimg.cn&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1613903060&t=651082a2ee0be03315c114381adaea8d',
-    'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fn1.itc.cn%2Fimg8%2Fwb%2Frecom%2F2016%2F05%2F19%2F146364216575228138.JPEG&refer=http%3A%2F%2Fn1.itc.cn&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1614001788&t=3727c8bd4ef9b45d3749fa42a6f28081',
-    'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201302%2F17%2F20130217172444_rKtvc.jpeg&refer=http%3A%2F%2Fb-ssl.duitang.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1614001866&t=a54e01b85f08ceaff5511f8def64ef38',
-    'https://ss0.bdstatic.com/70cFuHSh_Q1YnxGkpoWK1HF6hhy/it/u=1220965489,466788603&fm=26&gp=0.jpg',
-    'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fp4.qhimg.com%2Ft01613ae824dd1edf73.jpg&refer=http%3A%2F%2Fp4.qhimg.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1614001866&t=4eee5185802274b50430200acd6fcbec',
-    'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fpic.jj20.com%2Fup%2Fallimg%2Fmn01%2F022319225536%2F1Z223225536-4.jpg&refer=http%3A%2F%2Fpic.jj20.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1614001866&t=dc5b44cf1f3581c1a787d1e4673ebc57',
-    'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fpic1.win4000.com%2Fwallpaper%2F2017-12-11%2F5a2e3dc01ae8c.jpg&refer=http%3A%2F%2Fpic1.win4000.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1614001866&t=f2eaf54e9c947e66a4ac87ccc4faa8dc',
-    'https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fphoto.meifajie.com%2Fpictures%2F2018-05%2F180507_152555_31502.jpg&refer=http%3A%2F%2Fphoto.meifajie.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=jpeg?sec=1614001866&t=7ffe32272026d19d863d4566ba675f31',
+    'https://pbs.twimg.com/profile_images/1334699705738129409/EulKSHSa_400x400.jpg',
+    'https://imgur.dcard.tw/SrKCxceh.jpg',
+    'https://a.ksd-i.com/a/2021-08-18/137064-916244.jpg',
+    'https://staticg.sportskeeda.com/editor/2021/10/fa8ca-16350181245645-1920.jpg',
+    'https://www.kpopn.com/upload/2897dd0a0a7f703f89d8.jpg',
+    'https://a.ksd-i.com/a/2020-08-24/129506-868318.jpg',
+    'https://www.voguehk.com/media/2021/03/91337426_241149467285324_685518477112998213_n-1024x1280.jpg',
+    'https://news.openpoint.com.tw/images/channel_article/994ee806c78e9b5e0f769e1bab24b950f500a8454d79271ba5245e6283b1e9fb.jpg',
   ];
 
   Future<void> removeImage() async {
