@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:paclub/frontend/modules/pack_module.dart';
@@ -5,13 +7,17 @@ import 'package:paclub/frontend/routes/app_pages.dart';
 import 'package:paclub/frontend/utils/gesture.dart';
 import 'package:paclub/frontend/views/write_post/components/draggable_scrollable_attachable_sheet.dart';
 import 'package:paclub/helper/app_constants.dart';
+import 'package:paclub/helper/image_helper.dart';
 import 'package:paclub/models/pack_model.dart';
 import 'package:paclub/models/post_model.dart';
 import 'package:paclub/utils/logger.dart';
+import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 class WritePostController extends GetxController {
   final PackModule _packModule = Get.find<PackModule>();
   final TextEditingController textEditingController = TextEditingController();
+  final TextEditingController textEditingControllerCopy =
+      TextEditingController();
   final SheetController bottomSheetController = SheetController();
   final ScrollController tagsScrollController = ScrollController();
   final TextEditingController tagsTextEditingController =
@@ -26,6 +32,14 @@ class WritePostController extends GetxController {
     editorInfo: {},
     tags: [],
   );
+  double imageBlockVerticalPadding = 8.0;
+  double imageBlockHeight = 160.0;
+  late EdgeInsets imageBlockPadding;
+  late double imageHeight;
+
+  List<AssetEntity>? assetEntities;
+  List<File> imageFiles = [];
+  List<double> imageFilesRatio = [];
   SheetState sheetState = SheetState.close;
   bool isPostOK = false;
   bool isTitleOK = true;
@@ -57,6 +71,60 @@ class WritePostController extends GetxController {
     }
   }
 
+  void pickImages(BuildContext context) async {
+    List<AssetEntity>? tempAssetEntities =
+        await pickMultiImage(context: context, selectedAssets: assetEntities);
+    if (tempAssetEntities != null) {
+      assetEntities = List.from(tempAssetEntities);
+      List<File?> tempFiles = [];
+      List<double> tempFilesRatio = [];
+      for (AssetEntity photo in assetEntities!) {
+        // logger.d(photo.relativePath);
+        File? file = await photo.file;
+        var decodedImage = await decodeImageFromList(file!.readAsBytesSync());
+        tempFilesRatio.add(decodedImage.width / decodedImage.height);
+        tempFiles.add(file);
+      }
+      imageFilesRatio = List.from(tempFilesRatio);
+      imageFiles = List.from(tempFiles);
+      // logger.d('imageFiles.length: ${imageFiles.length}');
+      if (imageFiles.length == 1) {
+        imageBlockVerticalPadding = Get.width * 0.85 / 20;
+        imageBlockHeight = Get.width * 0.85;
+      } else {
+        imageBlockVerticalPadding = Get.height * 0.2 / 20;
+        imageBlockHeight = Get.height * 0.2;
+      }
+      imageBlockPadding = EdgeInsets.symmetric(
+        vertical: imageBlockVerticalPadding,
+        horizontal: 8.0,
+      );
+      imageHeight = imageBlockHeight - imageBlockVerticalPadding * 2.0;
+      update();
+    }
+  }
+
+  void removePostPhoto(int index) {
+    // logger.d('移除 Pack Photo 成功');
+    imageFiles.removeAt(index);
+    imageFilesRatio.removeAt(index);
+    assetEntities!.removeAt(index);
+    if (imageFiles.length == 1) {
+      imageBlockVerticalPadding = Get.width * 0.85 / 20;
+      imageBlockHeight = Get.width * 0.85;
+    } else {
+      imageBlockVerticalPadding = Get.height * 0.2 / 20;
+      imageBlockHeight = Get.height * 0.2;
+    }
+    imageBlockPadding = EdgeInsets.symmetric(
+      vertical: imageBlockVerticalPadding,
+      horizontal: 8.0,
+    );
+    imageHeight = imageBlockHeight - imageBlockVerticalPadding * 2.0;
+
+    update();
+  }
+
   // NOTE: 当 title 被编辑的时候触发
   void onTitleChanged(String title) {
     postModel.title = title.trim();
@@ -69,6 +137,7 @@ class WritePostController extends GetxController {
   // NOTE: 当 packName 被编辑的时候触发
   void onContentChanged(String content) {
     postModel.content = content.trim();
+    textEditingControllerCopy.text = content;
     if (isContentOK == false) {
       isContentOK = true;
       update();
@@ -201,6 +270,11 @@ class WritePostController extends GetxController {
   @override
   void onInit() {
     logger.i('启用 WritePostController');
+    imageBlockPadding = EdgeInsets.symmetric(
+      vertical: imageBlockVerticalPadding,
+      horizontal: 8.0,
+    );
+    imageHeight = imageBlockHeight - imageBlockVerticalPadding * 2.0;
     contentFocusNode.addListener(listenContentInput);
     tagsFocusNode.addListener(listenTagsInput);
     packStream.listen((list) => listenPackStream(list));

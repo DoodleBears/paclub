@@ -30,7 +30,7 @@ class FullWidthTextButton extends StatelessWidget {
           backgroundColor:
               MaterialStateProperty.all(backgroundColor.withAlpha(48)),
           overlayColor:
-              MaterialStateProperty.all(backgroundColor.withAlpha(32)),
+              MaterialStateProperty.all(backgroundColor.withAlpha(128)),
           minimumSize: MaterialStateProperty.all(Size.infinite),
         ),
         onPressed: onPressed,

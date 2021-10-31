@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:paclub/frontend/constants/colors.dart';
+import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 Future<File?> pickImage() async {
   final XFile? pickedFile =
@@ -36,4 +37,18 @@ Future<File?> pickImage() async {
       ));
 
   return croppedFile;
+}
+
+Future<List<AssetEntity>?> pickMultiImage({
+  required BuildContext context,
+  required List<AssetEntity>? selectedAssets,
+  int maxAssets = 4,
+}) async {
+  final List<AssetEntity>? assets = await AssetPicker.pickAssets(
+    context,
+    maxAssets: maxAssets,
+    selectedAssets: selectedAssets,
+    themeColor: accentColor,
+  );
+  return assets;
 }
