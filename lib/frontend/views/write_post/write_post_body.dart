@@ -10,14 +10,28 @@ import 'package:paclub/frontend/utils/length_limit_textfield_formatter.dart';
 import 'package:paclub/frontend/views/main/app_controller.dart';
 import 'package:paclub/frontend/views/write_post/components/drag_handler.dart';
 import 'package:paclub/frontend/views/write_post/components/draggable_scrollable_attachable_sheet.dart';
+import 'package:paclub/frontend/views/write_post/components/full_width_text_button.dart';
 import 'package:paclub/frontend/views/write_post/write_post_controller.dart';
 import 'package:paclub/frontend/widgets/buttons/stadium_button.dart';
 import 'package:paclub/frontend/widgets/others/app_scroll_behavior.dart';
 import 'package:paclub/frontend/widgets/widgets.dart';
 import 'package:paclub/r.dart';
+import 'package:paclub/utils/logger.dart';
 
 class WritePostBody extends GetView<WritePostController> {
   const WritePostBody({Key? key}) : super(key: key);
+
+  // 每次 重建ListView（一般是有新消息进入，则会重新计算高度）
+  afterBuild() {
+    if (controller.tagsScrollController.hasClients) {
+      if (controller.isTagInputShow) {
+        controller.scrollToBottom();
+      }
+    } else {
+      logger.e('无法找到controller');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -70,6 +84,7 @@ class WritePostBody extends GetView<WritePostController> {
               ],
             ),
             body: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // NOTE: 标题
                 Container(
@@ -89,6 +104,7 @@ class WritePostBody extends GetView<WritePostController> {
                   child: ScrollConfiguration(
                     behavior: NoGlowScrollBehavior(),
                     child: TextField(
+                      onChanged: controller.onTagsChanged,
                       selectionHeightStyle:
                           BoxHeightStyle.includeLineSpacingBottom,
                       inputFormatters: [
@@ -156,39 +172,170 @@ class WritePostBody extends GetView<WritePostController> {
                     ),
                   ),
                 ),
-                // NOTE: Functions
+                // NOTE: tags
                 Container(
-                  color: Colors.grey[700],
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 12.0),
-                    child: Center(
-                      child: Text(
-                        'Functions',
-                        style: TextStyle(
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.bold,
-                        ),
+                  decoration: BoxDecoration(
+                    border: Border.symmetric(
+                      horizontal: BorderSide(
+                        color: Colors.grey,
+                        width: 0.2,
                       ),
                     ),
                   ),
-                  width: double.infinity,
-                ),
-                // NOTE: 选择箱子
-                Container(
-                  height: 64.0,
-                  child: TextButton(
-                    style: ButtonStyle(
-                      minimumSize: MaterialStateProperty.all(Size.infinite),
-                    ),
-                    onPressed: () {
-                      controller.toggleBottomSheet(context);
+                  child: GetBuilder<AppController>(
+                    builder: (_) {
+                      return FullWidthTextButton(
+                        alignment: Alignment.centerLeft,
+                        backgroundColor: AppColors.buttonLightBackgroundColor!,
+                        height: 64.0,
+                        onPressed: () {
+                          controller.toggleTagInput();
+                        },
+                        child: GetBuilder<WritePostController>(
+                          assignId: true,
+                          id: 'tags',
+                          builder: (_) {
+                            WidgetsBinding.instance!
+                                .addPostFrameCallback((_) => afterBuild());
+                            List<Widget> widgets = [
+                              Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 4.0),
+                                child: Chip(
+                                  backgroundColor: accentColor.withAlpha(128),
+                                  shadowColor: Colors.transparent,
+                                  label: Text(
+                                    'Tags:',
+                                    style: TextStyle(
+                                      fontSize: 18.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              )
+                            ];
+                            List<Widget> chips = controller.postModel.tags.map(
+                              (String tag) {
+                                return Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 3.0),
+                                  child: RawChip(
+                                    backgroundColor:
+                                        AppColors.profileAvatarBackgroundColor,
+                                    deleteIcon: Icon(Icons.close_rounded),
+                                    onDeleted: () {
+                                      controller.deleteTag(tag);
+                                    },
+                                    labelStyle: TextStyle(
+                                      fontSize: 18.0,
+                                    ),
+                                    label: Text(tag),
+                                  ),
+                                );
+                              },
+                            ).toList();
+
+                            widgets.addAll(chips);
+                            return ScrollConfiguration(
+                              behavior: NoGlowScrollBehavior(),
+                              child: SingleChildScrollView(
+                                controller: controller.tagsScrollController,
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8.0),
+                                physics: BouncingScrollPhysics(),
+                                clipBehavior: Clip.antiAliasWithSaveLayer,
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: widgets,
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      );
                     },
-                    child: Text(
-                      '選擇收納盒',
-                      style: TextStyle(
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.bold,
+                  ),
+                ),
+                // NOTE: tags 输入框
+                GetBuilder<WritePostController>(
+                  assignId: true,
+                  id: 'tags',
+                  builder: (_) {
+                    return Visibility(
+                      visible: controller.isTagInputShow,
+                      child: TextField(
+                        controller: controller.tagsTextEditingController,
+                        focusNode: controller.tagsTextFocusNode,
+                        onChanged: controller.onTagsChanged,
+                        maxLines: 1,
+                        keyboardType: TextInputType.text,
+                        inputFormatters: [
+                          LengthLimitingTextFieldFormatterFixed(128)
+                        ],
+                        style: TextStyle(
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        decoration: InputDecoration(
+                          contentPadding: EdgeInsets.all(8.0),
+                          suffix: GestureDetector(
+                            onTap: controller.addTag,
+                            child: GetBuilder<AppController>(
+                              builder: (_) {
+                                return Container(
+                                  padding: EdgeInsets.all(8.0),
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color:
+                                        AppColors.profileAvatarBackgroundColor,
+                                  ),
+                                  child: Icon(
+                                    Icons.add,
+                                    size: 28.0,
+                                    color: AppColors.normalTextColor,
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                          hintText: 'Add',
+                          errorText:
+                              controller.isTagOK ? null : controller.errorText,
+                        ),
                       ),
+                    );
+                  },
+                ),
+
+                // NOTE: Functions
+                // FullWidthTextButton(
+                //   height: 48.0,
+                //   backgroundColor: primaryLightColor,
+                //   onPressed: () {},
+                //   child: Text(
+                //     '文章編輯功能',
+                //     style: TextStyle(
+                //       color: AppColors.normalTextColor,
+                //       fontSize: 18.0,
+                //       fontWeight: FontWeight.bold,
+                //     ),
+                //   ),
+                // ),
+
+                // NOTE: 选择箱子
+                FullWidthTextButton(
+                  height: 64.0,
+                  backgroundColor: accentColor,
+                  onPressed: () {
+                    controller.toggleBottomSheet(context);
+                  },
+                  child: Text(
+                    '選擇收納盒',
+                    style: TextStyle(
+                      fontSize: 18.0,
+                      fontWeight: FontWeight.bold,
                     ),
                   ),
                 ),
@@ -244,7 +391,6 @@ class WritePostBody extends GetView<WritePostController> {
                               id: 'packList',
                               builder: (_) {
                                 return ListView.builder(
-                                  controller: controller.bottomScrollController,
                                   padding:
                                       EdgeInsets.only(bottom: Get.height * 0.1),
                                   itemCount: controller.packList.length,

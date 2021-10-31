@@ -37,6 +37,8 @@ class AppColors {
   static Color? divideLineColor = Colors.grey[200];
   // NOTE: Text
   static Color? normalTextColor = Colors.black;
+  // NOTE: Button
+  static Color? buttonLightBackgroundColor = Colors.grey[200];
   // NOTE: Shadow
   static Color? normalShadowColor = Colors.grey;
   // NOTE: Color
@@ -73,6 +75,8 @@ class AppColors {
     divideLineColor = Colors.grey[200];
     // NOTE: Text
     normalTextColor = Colors.black;
+    // NOTE: Button
+    buttonLightBackgroundColor = Colors.grey[200];
     // NOTE: Shadow
     normalShadowColor = Colors.grey;
     // NOTE: Color
@@ -109,6 +113,8 @@ class AppColors {
     divideLineColor = Colors.grey[850];
     // NOTE: Text
     normalTextColor = Colors.white;
+    // NOTE: Button
+    buttonLightBackgroundColor = Colors.grey[800];
     // NOTE: Shadow
     normalShadowColor = Colors.white;
     // NOTE: Color
