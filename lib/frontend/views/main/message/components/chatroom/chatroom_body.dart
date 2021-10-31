@@ -266,7 +266,7 @@ class _ChatroomBodyState extends State<ChatroomBody>
                                         chatroomController.messageNotRead - 1 &&
                                     chatroomController.messageNotRead > 12) {
                                   isDividerShow = true;
-                                  dividerText = '上次阅读位置';
+                                  dividerText = '上次閱讀位置';
                                 } else {
                                   dividerText = chatMessageDividerFormatTime(
                                     current: Timestamp.now(),
@@ -290,7 +290,7 @@ class _ChatroomBodyState extends State<ChatroomBody>
                                   }
                                 }
                                 if (isDividerShow) {
-                                  bool isLastTimeRead = dividerText == '上次阅读位置';
+                                  bool isLastTimeRead = dividerText == '上次閱讀位置';
                                   // 显示分隔日期
                                   return Column(
                                     children: [

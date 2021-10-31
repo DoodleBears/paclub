@@ -51,11 +51,22 @@ class DragCard extends StatelessWidget {
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 8.0),
                               child: Container(
-                                width: 125,
+                                width: 130,
                                 height: 30,
                                 decoration: BoxDecoration(
-                                  color: Colors.grey[600],
+                                  color: Colors.amber[300],
                                   borderRadius: BorderRadius.circular(12),
+                                ),
+                                child: Text(
+                                  "Pack name",
+                                  textAlign: TextAlign.center, //字行置中
+                                  maxLines: 1, //最多顯示行數
+                                  overflow: TextOverflow.ellipsis,
+                                  style: new TextStyle(
+                                    fontSize: 25.0,
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                             ),
@@ -68,50 +79,87 @@ class DragCard extends StatelessWidget {
                           width: 385,
                           height: 40,
                           decoration: BoxDecoration(
-                            color: Colors.grey[600],
+                            color: Colors.amber[300],
                             borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Text(
+                            "Pack 介紹",
+                            textAlign: TextAlign.center, //字行置中
+                            maxLines: 1, //最多顯示行數
+                            overflow: TextOverflow.ellipsis,
+                            style: new TextStyle(
+                              fontSize: 25.0,
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),
-                      Row(
-                        children: [
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: Container(
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          children: [
+                            Container(
                               width: 100,
                               height: 30,
                               decoration: BoxDecoration(
-                                color: Colors.lightBlueAccent,
+                                color: Colors.lightBlue[200],
                                 borderRadius: BorderRadius.circular(12),
                               ),
+                              child: Text(
+                                "Tag 1",
+                                textAlign: TextAlign.center, //字行置中
+                                maxLines: 1, //最多顯示行數
+                                overflow: TextOverflow.ellipsis,
+                                style: new TextStyle(
+                                  fontSize: 25.0,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ),
-                          ),
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: Container(
+                            SizedBox(width: 2),
+                            Container(
                               width: 100,
                               height: 30,
                               decoration: BoxDecoration(
-                                color: Colors.lightBlueAccent,
+                                color: Colors.lightBlue[200],
                                 borderRadius: BorderRadius.circular(12),
                               ),
+                              child: Text(
+                                "Tag 2",
+                                textAlign: TextAlign.center, //字行置中
+                                maxLines: 1, //最多顯示行數
+                                overflow: TextOverflow.ellipsis,
+                                style: new TextStyle(
+                                  fontSize: 25.0,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ),
-                          ),
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
-                            child: Container(
+                            SizedBox(width: 2),
+                            Container(
                               width: 100,
                               height: 30,
                               decoration: BoxDecoration(
-                                color: Colors.lightBlueAccent,
+                                color: Colors.lightBlue[200],
                                 borderRadius: BorderRadius.circular(12),
                               ),
+                              child: Text(
+                                "Tag 3",
+                                textAlign: TextAlign.center, //字行置中
+                                maxLines: 1, //最多顯示行數
+                                overflow: TextOverflow.ellipsis,
+                                style: new TextStyle(
+                                  fontSize: 25.0,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -119,8 +167,23 @@ class DragCard extends StatelessWidget {
                           width: 385,
                           height: 200,
                           decoration: BoxDecoration(
-                            color: Colors.grey[500],
+                            color: Colors.yellow[100],
                             borderRadius: BorderRadius.circular(5),
+                            border: Border.all(
+                              color: Colors.black,
+                              width: 2,
+                            ),
+                          ),
+                          child: Text(
+                            "各個 Tag 介紹",
+                            textAlign: TextAlign.center, //字行置中
+                            maxLines: 1, //最多顯示行數
+                            overflow: TextOverflow.ellipsis,
+                            style: new TextStyle(
+                              fontSize: 25.0,
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),
@@ -131,11 +194,17 @@ class DragCard extends StatelessWidget {
                                 const EdgeInsets.symmetric(horizontal: 5.0),
                             child: Container(
                               width: 90,
-                              height: 25,
+                              height: 40,
                               decoration: BoxDecoration(
                                 color: Colors.orange[200],
                                 borderRadius: BorderRadius.circular(5),
                               ),
+                              child: IconButton(
+                                  icon: Icon(
+                                    Icons.thumb_up,
+                                    color: Colors.black,
+                                  ),
+                                  onPressed: () {}),
                             ),
                           ),
                           Padding(
@@ -143,11 +212,17 @@ class DragCard extends StatelessWidget {
                                 const EdgeInsets.symmetric(horizontal: 5.0),
                             child: Container(
                               width: 90,
-                              height: 25,
+                              height: 40,
                               decoration: BoxDecoration(
                                 color: Colors.orange[200],
                                 borderRadius: BorderRadius.circular(5),
                               ),
+                              child: IconButton(
+                                  icon: Icon(
+                                    Icons.comment,
+                                    color: Colors.black,
+                                  ),
+                                  onPressed: () {}),
                             ),
                           ),
                         ],

@@ -34,7 +34,7 @@ class CardBody extends GetView<CardController> {
                       dragController: controller.dragController,
                       duration: Duration(milliseconds: 520),
                       child: controller.imageList.length <= 0
-                          ? Text('加载中...')
+                          ? Text('加載中...')
                           : ClipRRect(
                               borderRadius: BorderRadius.circular(10),
                               child: DragCard(src: controller.imageList[0])),

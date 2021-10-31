@@ -77,13 +77,13 @@ String chatroomListFormatTime(Timestamp timestamp) {
           dataTimestamp.millisecondsSinceEpoch) {
         if (currentTime.minute > dataTimestamp.minute) {
           // 现在 10:14, data 10:08
-          return '${currentTime.minute - dataTimestamp.minute}分钟前';
+          return '${currentTime.minute - dataTimestamp.minute}分鐘前';
         } else {
           if (currentTime.minute == dataTimestamp.minute) {
-            return '刚刚';
+            return '剛剛';
           } else {
             // 现在 10:05, data 9:58
-            return '${currentTime.minute + (60 - dataTimestamp.minute)}分钟前';
+            return '${currentTime.minute + (60 - dataTimestamp.minute)}分鐘前';
           }
         }
       }
@@ -155,6 +155,29 @@ bool isChatMessageDividerShow(
   if ((currentTime.day == previousTime.day &&
       currentTime.subtract(const Duration(days: 2)).millisecondsSinceEpoch <
           previousTime.millisecondsSinceEpoch)) {
+    return false;
+  }
+  return true;
+}
+
+bool isAvatarShow({
+  required Timestamp current,
+  required Timestamp previous,
+  required String currentSendByUid,
+  required String previousSendByUid,
+}) {
+  if (previousSendByUid != currentSendByUid) {
+    return true;
+  }
+  final currentTime = current.toDate().toLocal();
+  final DateTime previousTime = previous.toDate().toLocal();
+
+  // 如果是同一分钟
+  if ((currentTime.year == previousTime.year &&
+      currentTime.month == previousTime.month &&
+      currentTime.day == previousTime.day &&
+      currentTime.hour == previousTime.hour &&
+      currentTime.minute == previousTime.minute)) {
     return false;
   }
   return true;

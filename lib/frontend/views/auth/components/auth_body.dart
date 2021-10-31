@@ -57,7 +57,7 @@ class AuthBody extends StatelessWidget {
                     onPressed: () =>
                         Get.toNamed(Routes.AUTH + Routes.REGISTER_FORM),
                     child: Text(
-                      '创建账号',
+                      '創建帳號',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: Get.width * 0.06,
@@ -74,7 +74,7 @@ class AuthBody extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Text(
-                  '已经有账号了? ',
+                  '已經有帳號了? ',
                   style: TextStyle(
                     fontSize: Get.width * 0.043,
                     fontWeight: FontWeight.bold,
@@ -83,7 +83,7 @@ class AuthBody extends StatelessWidget {
                 GestureDetector(
                   onTap: () => Get.toNamed(Routes.AUTH + Routes.LOGIN),
                   child: Text(
-                    '登录',
+                    '登入',
                     style: TextStyle(
                       fontSize: Get.width * 0.043,
                       color: accentColor,
