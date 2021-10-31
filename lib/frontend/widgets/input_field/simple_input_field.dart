@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 import 'package:paclub/frontend/constants/colors.dart';
 import 'package:paclub/frontend/utils/length_limit_textfield_formatter.dart';
+import 'package:paclub/frontend/views/main/app_controller.dart';
 
 class SimpleInputField extends StatelessWidget {
   const SimpleInputField({
@@ -34,12 +36,17 @@ class SimpleInputField extends StatelessWidget {
               bottom: 8.0,
               right: 8.0,
             ),
-            child: Container(
-              width: 6.0,
-              decoration: ShapeDecoration(
-                shape: StadiumBorder(),
-                color: error ? Colors.red : barColor ?? AppColors.normalGrey,
-              ),
+            child: GetBuilder<AppController>(
+              builder: (_) {
+                return Container(
+                  width: 6.0,
+                  decoration: ShapeDecoration(
+                    shape: StadiumBorder(),
+                    color:
+                        error ? Colors.red : barColor ?? AppColors.normalGrey,
+                  ),
+                );
+              },
             ),
           ),
           Expanded(

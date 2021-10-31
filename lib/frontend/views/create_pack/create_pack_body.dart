@@ -83,6 +83,8 @@ class CreatePackBody extends GetView<CreatePackController> {
                                       ? Container(
                                           width: 128,
                                           height: 128,
+                                          color: AppColors
+                                              .profileAvatarBackgroundColor,
                                           child: Icon(
                                             Icons.add_a_photo_rounded,
                                             size: 32.0,
@@ -133,6 +135,7 @@ class CreatePackBody extends GetView<CreatePackController> {
                       return SimpleInputField(
                         titleText: 'Pack Name',
                         barColor: accentColor,
+                        maxLines: 3,
                         onChanged: controller.onPackNameChanged,
                         error: controller.isPackNameOK == false,
                         errorText: controller.errorText,
@@ -148,7 +151,7 @@ class CreatePackBody extends GetView<CreatePackController> {
                       return SimpleInputField(
                         onChanged: controller.onDescriptionChanged,
                         titleText: 'Description',
-                        maxLines: 5,
+                        maxLines: 8,
                         inputFormatters: [
                           LengthLimitingTextFieldFormatterFixed(2000),
                         ],
@@ -167,21 +170,28 @@ class CreatePackBody extends GetView<CreatePackController> {
                     ),
                   ),
                 ),
-                GetBuilder<CreatePackController>(
+                GetBuilder<AppController>(
                   builder: (_) {
-                    return Wrap(
-                      spacing: 4.0,
-                      runSpacing: -8.0,
-                      children: controller.packModel.tags.map(
-                        (String tag) {
-                          return Chip(
-                            onDeleted: () {
-                              controller.deleteTag(tag);
+                    return GetBuilder<CreatePackController>(
+                      builder: (_) {
+                        return Wrap(
+                          spacing: 4.0,
+                          runSpacing: -8.0,
+                          children: controller.packModel.tags.map(
+                            (String tag) {
+                              return RawChip(
+                                backgroundColor:
+                                    AppColors.profileAvatarBackgroundColor,
+                                deleteIcon: Icon(Icons.close_rounded),
+                                onDeleted: () {
+                                  controller.deleteTag(tag);
+                                },
+                                label: Text(tag),
+                              );
                             },
-                            label: Text(tag),
-                          );
-                        },
-                      ).toList(),
+                          ).toList(),
+                        );
+                      },
                     );
                   },
                 ),
@@ -200,19 +210,23 @@ class CreatePackBody extends GetView<CreatePackController> {
                         fontWeight: FontWeight.bold,
                       ),
                       decoration: InputDecoration(
-                        suffixIconConstraints:
-                            BoxConstraints.tight(Size(32.0, 32.0)),
-                        suffixIcon: GestureDetector(
+                        suffix: GestureDetector(
                           onTap: controller.addTag,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: AppColors.circleButtonBackgoundColor,
-                            ),
-                            child: Icon(
-                              Icons.add,
-                              color: AppColors.normalTextColor,
-                            ),
+                          child: GetBuilder<AppController>(
+                            builder: (_) {
+                              return Container(
+                                padding: EdgeInsets.all(8.0),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: AppColors.profileAvatarBackgroundColor,
+                                ),
+                                child: Icon(
+                                  Icons.add,
+                                  size: 28.0,
+                                  color: AppColors.normalTextColor,
+                                ),
+                              );
+                            },
                           ),
                         ),
                         hintText: 'Add',

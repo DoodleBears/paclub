@@ -10,7 +10,7 @@ import 'package:flutter/widgets.dart';
 class AppColors {
   // NOTE: Avatar
   static Color? chatAvatarBackgroundColor = primaryColor;
-  static Color? profileAvatarBackgroundColor = Colors.grey[100];
+  static Color? profileAvatarBackgroundColor = Colors.grey[200];
   static Color? profileAvatarBorderColor = Colors.grey[400];
   // NOTE: Chatroom
   static Color? chatroomTileBackgroundColor = Colors.grey[50];
@@ -46,7 +46,7 @@ class AppColors {
   static lightMode() {
     // NOTE: Avatar
     chatAvatarBackgroundColor = primaryColor;
-    profileAvatarBackgroundColor = Colors.grey[100];
+    profileAvatarBackgroundColor = Colors.grey[200];
     profileAvatarBorderColor = Colors.grey[400];
     // NOTE: Chatroom
     chatroomTileBackgroundColor = Colors.grey[50];
