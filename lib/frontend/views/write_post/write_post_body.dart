@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -50,14 +51,19 @@ class WritePostBody extends GetView<WritePostController> {
               toolbarHeight: 48.0,
               elevation: 0.5,
               leadingWidth: 64.0,
-              leading: Padding(
-                padding: const EdgeInsets.only(left: 12.0),
-                child: Center(
-                  child: Text(
-                    '取消',
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.bold,
+              leading: GestureDetector(
+                onTap: () {
+                  Get.back();
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 12.0),
+                  child: Center(
+                    child: Text(
+                      '取消',
+                      style: TextStyle(
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
@@ -473,7 +479,7 @@ class WritePostBody extends GetView<WritePostController> {
 
           // NOTE: Functions
           Positioned(
-            bottom: 48.0,
+            bottom: Platform.isIOS ? 64.0 : 48.0,
             left: 0.0,
             right: 0.0,
             child: Container(
@@ -519,7 +525,7 @@ class WritePostBody extends GetView<WritePostController> {
             child: Container(
               color: AppColors.containerBackground,
               child: FullWidthTextButton(
-                height: 48.0,
+                height: Platform.isIOS ? 64.0 : 48.0,
                 backgroundColor: accentColor,
                 onPressed: () {
                   controller.toggleBottomSheet(context);
