@@ -1,6 +1,4 @@
 import 'dart:ui';
-
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
@@ -11,8 +9,9 @@ import 'package:paclub/frontend/views/main/app_controller.dart';
 import 'package:paclub/frontend/views/write_post/components/drag_handler.dart';
 import 'package:paclub/frontend/views/write_post/components/draggable_scrollable_attachable_sheet.dart';
 import 'package:paclub/frontend/views/write_post/components/full_width_text_button.dart';
+import 'package:paclub/frontend/views/write_post/components/pack_tile.dart';
 import 'package:paclub/frontend/views/write_post/write_post_controller.dart';
-import 'package:paclub/frontend/widgets/buttons/stadium_button.dart';
+import 'package:paclub/frontend/widgets/buttons/stadium_loading_button.dart';
 import 'package:paclub/frontend/widgets/others/app_scroll_behavior.dart';
 import 'package:paclub/frontend/widgets/widgets.dart';
 import 'package:paclub/r.dart';
@@ -66,7 +65,7 @@ class WritePostBody extends GetView<WritePostController> {
                 Padding(
                   padding: const EdgeInsets.symmetric(
                       vertical: 8.0, horizontal: 8.0),
-                  child: StadiumButton(
+                  child: StadiumLoadingButton(
                     height: 40.0,
                     isLoading: controller.isLoading,
                     onTap: () {},
@@ -182,80 +181,76 @@ class WritePostBody extends GetView<WritePostController> {
                       ),
                     ),
                   ),
-                  child: GetBuilder<AppController>(
-                    builder: (_) {
-                      return FullWidthTextButton(
-                        alignment: Alignment.centerLeft,
-                        backgroundColor: AppColors.buttonLightBackgroundColor!,
-                        height: 64.0,
-                        onPressed: () {
-                          controller.toggleTagInput();
-                        },
-                        child: GetBuilder<WritePostController>(
-                          assignId: true,
-                          id: 'tags',
-                          builder: (_) {
-                            WidgetsBinding.instance!
-                                .addPostFrameCallback((_) => afterBuild());
-                            List<Widget> widgets = [
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 4.0),
-                                child: Chip(
-                                  backgroundColor: accentColor.withAlpha(128),
-                                  shadowColor: Colors.transparent,
-                                  label: Text(
-                                    'Tags:',
-                                    style: TextStyle(
-                                      fontSize: 18.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
+                  child: FullWidthTextButton(
+                    alignment: Alignment.centerLeft,
+                    backgroundColor: AppColors.buttonLightBackgroundColor!,
+                    height: 64.0,
+                    onPressed: () {
+                      controller.toggleTagInput();
+                    },
+                    child: GetBuilder<WritePostController>(
+                      assignId: true,
+                      id: 'tags',
+                      builder: (_) {
+                        WidgetsBinding.instance!
+                            .addPostFrameCallback((_) => afterBuild());
+                        List<Widget> widgets = [
+                          Padding(
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 4.0),
+                            child: Chip(
+                              backgroundColor: accentColor.withAlpha(128),
+                              shadowColor: Colors.transparent,
+                              label: Text(
+                                'Tags:',
+                                style: TextStyle(
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.bold,
                                 ),
-                              )
-                            ];
-                            List<Widget> chips = controller.postModel.tags.map(
-                              (String tag) {
-                                return Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 3.0),
-                                  child: RawChip(
-                                    backgroundColor:
-                                        AppColors.profileAvatarBackgroundColor,
-                                    deleteIcon: Icon(Icons.close_rounded),
-                                    onDeleted: () {
-                                      controller.deleteTag(tag);
-                                    },
-                                    labelStyle: TextStyle(
-                                      fontSize: 18.0,
-                                    ),
-                                    label: Text(tag),
-                                  ),
-                                );
-                              },
-                            ).toList();
-
-                            widgets.addAll(chips);
-                            return ScrollConfiguration(
-                              behavior: NoGlowScrollBehavior(),
-                              child: SingleChildScrollView(
-                                controller: controller.tagsScrollController,
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8.0),
-                                physics: BouncingScrollPhysics(),
-                                clipBehavior: Clip.antiAliasWithSaveLayer,
-                                scrollDirection: Axis.horizontal,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: widgets,
+                              ),
+                            ),
+                          )
+                        ];
+                        List<Widget> chips = controller.postModel.tags.map(
+                          (String tag) {
+                            return Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 3.0),
+                              child: RawChip(
+                                backgroundColor:
+                                    AppColors.profileAvatarBackgroundColor,
+                                deleteIcon: Icon(Icons.close_rounded),
+                                onDeleted: () {
+                                  controller.deleteTag(tag);
+                                },
+                                labelStyle: TextStyle(
+                                  fontSize: 18.0,
                                 ),
+                                label: Text(tag),
                               ),
                             );
                           },
-                        ),
-                      );
-                    },
+                        ).toList();
+
+                        widgets.addAll(chips);
+                        return ScrollConfiguration(
+                          behavior: NoGlowScrollBehavior(),
+                          child: SingleChildScrollView(
+                            controller: controller.tagsScrollController,
+                            padding:
+                                const EdgeInsets.symmetric(horizontal: 8.0),
+                            physics: BouncingScrollPhysics(),
+                            clipBehavior: Clip.antiAliasWithSaveLayer,
+                            scrollDirection: Axis.horizontal,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: widgets,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 ),
                 // NOTE: tags 输入框
@@ -343,181 +338,116 @@ class WritePostBody extends GetView<WritePostController> {
             ),
           ),
           // NOTE: 点击 Choose Pack 后出现的顏色遮罩
-          GetBuilder<AppController>(
+          GetBuilder<WritePostController>(
+            assignId: true,
+            id: 'bottomSheet',
             builder: (_) {
-              return GetBuilder<WritePostController>(
-                assignId: true,
-                id: 'bottomSheet',
-                builder: (_) {
-                  return GestureDetector(
-                    onTap: () {
-                      controller.toggleBottomSheet(context);
-                    },
-                    child: FadeInScaleContainer(
-                      opacityDuration: const Duration(milliseconds: 500),
-                      isShow: controller.isBottomSheetShow,
-                      color: AppColors.maskCurtainColor,
-                    ),
-                  );
+              return GestureDetector(
+                onTap: () {
+                  controller.toggleBottomSheet(context);
                 },
+                child: FadeInScaleContainer(
+                  opacityDuration: const Duration(milliseconds: 500),
+                  isShow: controller.isBottomSheetShow,
+                  color: AppColors.maskCurtainColor,
+                ),
               );
             },
           ),
           // NOTE: 点击 Choose Pack 后出现的 Bottom Sheet, 用于选择要将 Post 收纳进哪一个 Pack
-          GetBuilder<AppController>(
+          GetBuilder<WritePostController>(
+            assignId: true,
+            id: 'bottomSheet',
             builder: (_) {
-              return GetBuilder<WritePostController>(
-                assignId: true,
-                id: 'bottomSheet',
-                builder: (_) {
-                  return DraggableScrollableAttachableSheet(
-                    bottomSheetController: controller.bottomSheetController,
-                    height: Get.height * 0.5,
-                    fullyOpenHeight: Get.height * 0.8,
-                    isAllowFullyOpen: true,
-                    backgroundColor: AppColors.bottomSheetBackgoundColor,
-                    onDrag: (offset) {},
-                    onDragComplete: controller.onDragComplete,
-                    handlerWidget: DragHandler(),
-                    child: Expanded(
-                      child: ScrollConfiguration(
-                        behavior: NoGlowScrollBehavior(),
-                        child: Stack(
-                          alignment: Alignment.bottomCenter,
-                          children: [
-                            // 用户所创建的所有 Pack 的 List
-                            GetBuilder<WritePostController>(
-                              assignId: true,
-                              id: 'packList',
-                              builder: (_) {
-                                return ListView.builder(
-                                  padding:
-                                      EdgeInsets.only(bottom: Get.height * 0.1),
-                                  itemCount: controller.packList.length,
-                                  itemBuilder: (context, index) {
-                                    return Container(
-                                      color: controller.packCheckedList[
-                                                  controller
-                                                      .packList[index].pid] ==
-                                              true
-                                          ? accentColor.withAlpha(32)
-                                          : null,
-                                      child: CheckboxListTile(
-                                        tileColor: accentColor,
-                                        selectedTileColor: accentColor,
-                                        title: Text(
-                                          controller.packList[index].packName,
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 20.0,
-                                          ),
-                                        ),
-                                        subtitle: Text(
-                                          controller.packList[index].pid,
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                            fontSize: 14.0,
-                                            color: AppColors.normalGrey,
-                                          ),
-                                        ),
-                                        activeColor: accentColor,
-                                        secondary: Material(
-                                          borderRadius:
-                                              BorderRadius.circular(8.0),
-                                          clipBehavior: Clip.antiAlias,
-                                          child: controller.packList[index]
-                                                      .photoURL ==
-                                                  ''
-                                              ? Container(
-                                                  width: 48.0,
-                                                  height: 48.0,
-                                                )
-                                              : Ink.image(
-                                                  image:
-                                                      CachedNetworkImageProvider(
-                                                          controller
-                                                              .packList[index]
-                                                              .photoURL),
-                                                  fit: BoxFit.cover,
-                                                  width: 48.0,
-                                                  height: 48.0,
-                                                ),
-                                        ),
-                                        onChanged: (value) {
-                                          return controller.checkBoxOnChange(
-                                              value,
-                                              controller.packList[index].pid);
-                                        },
-                                        value: controller.packCheckedList[
-                                            controller.packList[index].pid],
-                                      ),
-                                    );
-                                  },
-                                );
-                              },
+              return DraggableScrollableAttachableSheet(
+                bottomSheetController: controller.bottomSheetController,
+                height: Get.height * 0.5,
+                fullyOpenHeight: Get.height * 0.8,
+                isAllowFullyOpen: true,
+                backgroundColor: AppColors.bottomSheetBackgoundColor,
+                onDrag: (offset) {},
+                onDragComplete: controller.onDragComplete,
+                handlerWidget: DragHandler(),
+                child: Expanded(
+                  child: ScrollConfiguration(
+                    behavior: NoGlowScrollBehavior(),
+                    child: Stack(
+                      alignment: Alignment.bottomCenter,
+                      children: [
+                        // 用户所创建的所有 Pack 的 List
+                        ListView.builder(
+                          padding: EdgeInsets.only(bottom: Get.height * 0.1),
+                          itemCount: controller.packList.length,
+                          itemBuilder: (context, index) {
+                            return PackTile(
+                              photoURL: controller.packList[index].photoURL,
+                              pid: controller.packList[index].pid,
+                              packName: controller.packList[index].packName,
+                              color: accentColor.withAlpha(32),
+                              onChanged: (value) =>
+                                  controller.onPackTileChanged(value, index),
+                              value: controller.packCheckedList[
+                                  controller.packList[index].pid],
+                            );
+                          },
+                        ),
+
+                        // 创建 Pack 的 Button
+                        Container(
+                          decoration: BoxDecoration(
+                            boxShadow: [
+                              BoxShadow(
+                                color: AppColors.normalShadowColor!,
+                                offset: Offset(0, 8.0),
+                                blurRadius: 10.0,
+                              ),
+                            ],
+                            color: AppColors.containerBackground,
+                          ),
+                          height: Get.height * 0.1,
+                          child: TextButton(
+                            style: ButtonStyle(
+                              minimumSize:
+                                  MaterialStateProperty.all(Size.infinite),
                             ),
-                            // 创建 Pack 的 Button
-                            Container(
-                              decoration: BoxDecoration(
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: AppColors.normalShadowColor!,
-                                    offset: Offset(0, 8.0),
-                                    blurRadius: 10.0,
+                            onPressed: () {
+                              controller.navigateToCreatePackPage();
+                            },
+                            child: Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    margin: const EdgeInsets.only(right: 16.0),
+                                    padding: const EdgeInsets.all(5.0),
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: accentColor,
+                                    ),
+                                    child: Icon(
+                                      Icons.add,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  Text(
+                                    'Create New Pack',
+                                    style: TextStyle(
+                                      color: AppColors.normalTextColor,
+                                      fontSize: 20.0,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ],
-                                color: AppColors.containerBackground,
-                              ),
-                              height: Get.height * 0.1,
-                              child: TextButton(
-                                style: ButtonStyle(
-                                  minimumSize:
-                                      MaterialStateProperty.all(Size.infinite),
-                                ),
-                                onPressed: () {
-                                  controller.navigateToCreatePackPage();
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 8.0),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Container(
-                                        margin:
-                                            const EdgeInsets.only(right: 16.0),
-                                        padding: const EdgeInsets.all(5.0),
-                                        decoration: BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          color: accentColor,
-                                        ),
-                                        child: Icon(
-                                          Icons.add,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                      Text(
-                                        'Create New Pack',
-                                        style: TextStyle(
-                                          color: AppColors.normalTextColor,
-                                          fontSize: 20.0,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
                               ),
                             ),
-                          ],
+                          ),
                         ),
-                      ),
+                      ],
                     ),
-                  );
-                },
+                  ),
+                ),
               );
             },
           ),

@@ -3,10 +3,10 @@ import 'package:get/get.dart';
 import 'package:paclub/frontend/constants/colors.dart';
 import 'package:paclub/frontend/constants/numbers.dart';
 import 'package:paclub/frontend/utils/length_limit_textfield_formatter.dart';
+import 'package:paclub/frontend/views/create_pack/components/multi_line_tags.dart';
 import 'package:paclub/frontend/views/create_pack/create_pack_controller.dart';
-import 'package:paclub/frontend/views/main/app_controller.dart';
 import 'package:paclub/frontend/widgets/avatar/multi_avatar_container.dart';
-import 'package:paclub/frontend/widgets/buttons/stadium_button.dart';
+import 'package:paclub/frontend/widgets/buttons/stadium_loading_button.dart';
 import 'package:paclub/frontend/widgets/containers/fade_in_scale_container.dart';
 import 'package:paclub/frontend/widgets/input_field/simple_input_field.dart';
 import 'package:paclub/frontend/widgets/others/app_scroll_behavior.dart';
@@ -41,7 +41,7 @@ class CreatePackBody extends GetView<CreatePackController> {
             padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
             child: GetBuilder<CreatePackController>(
               builder: (_) {
-                return StadiumButton(
+                return StadiumLoadingButton(
                   height: 18.0,
                   isLoading: controller.isLoading,
                   onTap: () {
@@ -79,69 +79,64 @@ class CreatePackBody extends GetView<CreatePackController> {
                         // NOTE: 选择图片
                         controller.setPackPhoto();
                       },
-                      child: GetBuilder<AppController>(
-                        builder: (_) {
-                          return Container(
-                            margin: EdgeInsets.only(
-                              top: 24.0,
-                              bottom: 12.0,
-                            ),
-                            child: GetBuilder<CreatePackController>(
-                              builder: (_) {
-                                return Stack(
-                                  clipBehavior: Clip.none,
-                                  children: [
-                                    Material(
-                                      borderRadius:
-                                          BorderRadius.circular(borderRadius),
-                                      clipBehavior: Clip.antiAlias,
-                                      child: controller.imageFile == null
-                                          ? Container(
-                                              width: 128,
-                                              height: 128,
-                                              color: AppColors
-                                                  .profileAvatarBackgroundColor,
-                                              child: Icon(
-                                                Icons.add_a_photo_rounded,
-                                                size: 32.0,
-                                              ),
-                                            )
-                                          : Ink.image(
-                                              image: FileImage(
-                                                  controller.imageFile!),
-                                              fit: BoxFit.cover,
-                                              width: 128,
-                                              height: 128,
+                      child: Container(
+                        margin: EdgeInsets.only(
+                          top: 24.0,
+                          bottom: 12.0,
+                        ),
+                        child: GetBuilder<CreatePackController>(
+                          builder: (_) {
+                            return Stack(
+                              clipBehavior: Clip.none,
+                              children: [
+                                Material(
+                                  borderRadius:
+                                      BorderRadius.circular(borderRadius),
+                                  clipBehavior: Clip.antiAlias,
+                                  child: controller.imageFile == null
+                                      ? Container(
+                                          width: 128,
+                                          height: 128,
+                                          color: AppColors
+                                              .profileAvatarBackgroundColor,
+                                          child: Icon(
+                                            Icons.add_a_photo_rounded,
+                                            size: 32.0,
+                                          ),
+                                        )
+                                      : Ink.image(
+                                          image:
+                                              FileImage(controller.imageFile!),
+                                          fit: BoxFit.cover,
+                                          width: 128,
+                                          height: 128,
+                                        ),
+                                ),
+                                controller.imageFile == null
+                                    ? SizedBox.shrink()
+                                    : Positioned(
+                                        right: -10.0,
+                                        bottom: -10.0,
+                                        child: GestureDetector(
+                                          onTap: () =>
+                                              controller.removePackPhoto(),
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              color: Colors.red,
                                             ),
-                                    ),
-                                    controller.imageFile == null
-                                        ? SizedBox.shrink()
-                                        : Positioned(
-                                            right: -10.0,
-                                            bottom: -10.0,
-                                            child: GestureDetector(
-                                              onTap: () =>
-                                                  controller.removePackPhoto(),
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                  shape: BoxShape.circle,
-                                                  color: Colors.red,
-                                                ),
-                                                child: Icon(
-                                                  Icons.remove,
-                                                  color:
-                                                      AppColors.normalTextColor,
-                                                  size: 28.0,
-                                                ),
-                                              ),
+                                            child: Icon(
+                                              Icons.remove,
+                                              color: AppColors.normalTextColor,
+                                              size: 28.0,
                                             ),
                                           ),
-                                  ],
-                                );
-                              },
-                            ),
-                          );
-                        },
+                                        ),
+                                      ),
+                              ],
+                            );
+                          },
+                        ),
                       ),
                     ),
                     // NOTE: Pack 名字
@@ -191,27 +186,14 @@ class CreatePackBody extends GetView<CreatePackController> {
                         ),
                       ),
                     ),
-                    GetBuilder<AppController>(
+                    GetBuilder<CreatePackController>(
                       builder: (_) {
-                        return GetBuilder<CreatePackController>(
-                          builder: (_) {
-                            return Wrap(
-                              spacing: 4.0,
-                              runSpacing: -8.0,
-                              children: controller.packModel.tags.map(
-                                (String tag) {
-                                  return RawChip(
-                                    backgroundColor:
-                                        AppColors.profileAvatarBackgroundColor,
-                                    deleteIcon: Icon(Icons.close_rounded),
-                                    onDeleted: () {
-                                      controller.deleteTag(tag);
-                                    },
-                                    label: Text(tag),
-                                  );
-                                },
-                              ).toList(),
-                            );
+                        return MultiLineTags(
+                          backgroundColor:
+                              AppColors.profileAvatarBackgroundColor,
+                          tags: controller.packModel.tags,
+                          onDeleted: (tag) {
+                            controller.deleteTag(tag);
                           },
                         );
                       },
@@ -234,22 +216,17 @@ class CreatePackBody extends GetView<CreatePackController> {
                             contentPadding: EdgeInsets.only(bottom: 8.0),
                             suffix: GestureDetector(
                               onTap: controller.addTag,
-                              child: GetBuilder<AppController>(
-                                builder: (_) {
-                                  return Container(
-                                    padding: EdgeInsets.all(8.0),
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: AppColors
-                                          .profileAvatarBackgroundColor,
-                                    ),
-                                    child: Icon(
-                                      Icons.add,
-                                      size: 28.0,
-                                      color: AppColors.normalTextColor,
-                                    ),
-                                  );
-                                },
+                              child: Container(
+                                padding: EdgeInsets.all(8.0),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: AppColors.profileAvatarBackgroundColor,
+                                ),
+                                child: Icon(
+                                  Icons.add,
+                                  size: 28.0,
+                                  color: AppColors.normalTextColor,
+                                ),
                               ),
                             ),
                             hintText: 'Add',
@@ -280,19 +257,15 @@ class CreatePackBody extends GetView<CreatePackController> {
                             height: 48.0,
                           ),
                         ),
-                        GetBuilder<AppController>(
-                          builder: (_) {
-                            return Container(
-                              padding: const EdgeInsets.all(14.0),
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: AppColors.profileAvatarBackgroundColor,
-                              ),
-                              child: Icon(
-                                Icons.person_add_rounded,
-                              ),
-                            );
-                          },
+                        Container(
+                          padding: const EdgeInsets.all(14.0),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: AppColors.profileAvatarBackgroundColor,
+                          ),
+                          child: Icon(
+                            Icons.person_add_rounded,
+                          ),
                         ),
                       ],
                     ),

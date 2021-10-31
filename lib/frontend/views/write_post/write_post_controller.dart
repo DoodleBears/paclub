@@ -158,7 +158,7 @@ class WritePostController extends GetxController {
   void checkBoxOnChange(bool? value, String pid) {
     if (value != null) {
       packCheckedList[pid] = value;
-      update(['packList']);
+      update(['bottomSheet']);
     }
   }
 
@@ -198,7 +198,11 @@ class WritePostController extends GetxController {
       }
     }
     packList.sort(sortPack);
-    update(['packList']);
+    update(['bottomSheet']);
+  }
+
+  void onPackTileChanged(bool? value, int index) {
+    checkBoxOnChange(value, packList[index].pid);
   }
 
   @override

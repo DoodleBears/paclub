@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:paclub/frontend/widgets/containers/opacity_change_container.dart';
 
-class StadiumButton extends StatelessWidget {
-  const StadiumButton({
+class StadiumLoadingButton extends StatelessWidget {
+  const StadiumLoadingButton({
     Key? key,
     required this.buttonColor,
     required this.child,
