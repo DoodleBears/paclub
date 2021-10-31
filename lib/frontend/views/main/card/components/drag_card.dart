@@ -39,34 +39,37 @@ class DragCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 5.0),
+                        padding: const EdgeInsets.symmetric(vertical: 3.0),
                         child: Row(
                           children: [
                             Icon(
                               Icons.account_circle_rounded,
                               size: 60,
-                              color: Colors.grey[600],
+                              color: Colors.blue[600],
                             ),
                             Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 8.0),
                               child: Container(
-                                width: 130,
-                                height: 30,
-                                decoration: BoxDecoration(
-                                  color: Colors.amber[300],
-                                  borderRadius: BorderRadius.circular(12),
-                                ),
-                                child: Text(
-                                  "Pack name",
-                                  textAlign: TextAlign.center, //字行置中
-                                  maxLines: 1, //最多顯示行數
-                                  overflow: TextOverflow.ellipsis,
-                                  style: new TextStyle(
-                                    fontSize: 25.0,
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                                child: Row(
+                                  mainAxisSize:
+                                      MainAxisSize.min, //讓底色的色塊能夠跟隨字數變化
+                                  children: [
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.amber[200],
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: Text(
+                                        "Author name",
+                                        style: new TextStyle(
+                                          fontSize: 25.0,
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
@@ -74,21 +77,21 @@ class DragCard extends StatelessWidget {
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 10.0),
+                        padding: const EdgeInsets.symmetric(vertical: 8.0),
                         child: Container(
                           width: 385,
                           height: 40,
                           decoration: BoxDecoration(
-                            color: Colors.amber[300],
+                            color: Colors.pink[100],
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: Text(
-                            "Pack 介紹",
+                            "Pack name",
                             textAlign: TextAlign.center, //字行置中
                             maxLines: 1, //最多顯示行數
                             overflow: TextOverflow.ellipsis,
                             style: new TextStyle(
-                              fontSize: 25.0,
+                              fontSize: 30.0,
                               color: Colors.black,
                               fontWeight: FontWeight.bold,
                             ),
@@ -98,12 +101,13 @@ class DragCard extends StatelessWidget {
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Container(
                               width: 100,
                               height: 30,
                               decoration: BoxDecoration(
-                                color: Colors.lightBlue[200],
+                                color: Colors.lightGreen[100],
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: Text(
@@ -123,7 +127,7 @@ class DragCard extends StatelessWidget {
                               width: 100,
                               height: 30,
                               decoration: BoxDecoration(
-                                color: Colors.lightBlue[200],
+                                color: Colors.lightGreen[100],
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: Text(
@@ -143,7 +147,7 @@ class DragCard extends StatelessWidget {
                               width: 100,
                               height: 30,
                               decoration: BoxDecoration(
-                                color: Colors.lightBlue[200],
+                                color: Colors.lightGreen[100],
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: Text(
@@ -175,24 +179,22 @@ class DragCard extends StatelessWidget {
                             ),
                           ),
                           child: Text(
-                            "各個 Tag 介紹",
-                            textAlign: TextAlign.center, //字行置中
-                            maxLines: 1, //最多顯示行數
-                            overflow: TextOverflow.ellipsis,
+                            "Package Description",
+                            textAlign: TextAlign.center,
                             style: new TextStyle(
-                              fontSize: 25.0,
+                              fontSize: 20.0, //描述內容，故字體較小
                               color: Colors.black,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                         ),
                       ),
-                      Row(
-                        children: [
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 5.0),
-                            child: Container(
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Container(
                               width: 90,
                               height: 40,
                               decoration: BoxDecoration(
@@ -204,13 +206,12 @@ class DragCard extends StatelessWidget {
                                     Icons.thumb_up,
                                     color: Colors.black,
                                   ),
-                                  onPressed: () {}),
+                                  onPressed: () {
+                                    print('按讚');
+                                  }),
                             ),
-                          ),
-                          Padding(
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 5.0),
-                            child: Container(
+                            SizedBox(width: 5.0),
+                            Container(
                               width: 90,
                               height: 40,
                               decoration: BoxDecoration(
@@ -222,10 +223,29 @@ class DragCard extends StatelessWidget {
                                     Icons.comment,
                                     color: Colors.black,
                                   ),
-                                  onPressed: () {}),
+                                  onPressed: () {
+                                    print('留言');
+                                  }),
                             ),
-                          ),
-                        ],
+                            SizedBox(width: 5.0),
+                            Container(
+                              width: 90,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                color: Colors.orange[200],
+                                borderRadius: BorderRadius.circular(5),
+                              ),
+                              child: IconButton(
+                                  icon: Icon(
+                                    Icons.bookmark_add,
+                                    color: Colors.black,
+                                  ),
+                                  onPressed: () {
+                                    print('收藏人數');
+                                  }),
+                            ),
+                          ],
+                        ),
                       ),
                     ],
                   ),
