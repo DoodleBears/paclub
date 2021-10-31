@@ -18,6 +18,6 @@ class WritePostBinding implements Bindings {
     Get.lazyPut<PackApi>(() => PackApi());
     Get.lazyPut<PackModule>(() => PackModule());
 
-    Get.lazyPut<WritePostController>(() => WritePostController());
+    Get.put<WritePostController>(WritePostController());
   }
 }

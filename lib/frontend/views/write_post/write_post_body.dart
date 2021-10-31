@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
@@ -14,12 +15,11 @@ import 'package:paclub/frontend/views/write_post/write_post_controller.dart';
 import 'package:paclub/frontend/widgets/buttons/stadium_loading_button.dart';
 import 'package:paclub/frontend/widgets/others/app_scroll_behavior.dart';
 import 'package:paclub/frontend/widgets/widgets.dart';
+import 'package:paclub/helper/app_constants.dart';
 import 'package:paclub/r.dart';
 import 'package:paclub/utils/logger.dart';
 
 class WritePostBody extends GetView<WritePostController> {
-  const WritePostBody({Key? key}) : super(key: key);
-
   // 每次 重建ListView（一般是有新消息进入，则会重新计算高度）
   afterBuild() {
     if (controller.tagsScrollController.hasClients) {
@@ -65,276 +65,338 @@ class WritePostBody extends GetView<WritePostController> {
                 Padding(
                   padding: const EdgeInsets.symmetric(
                       vertical: 8.0, horizontal: 8.0),
-                  child: StadiumLoadingButton(
-                    height: 40.0,
-                    isLoading: controller.isLoading,
-                    onTap: () {},
-                    buttonColor: accentColor,
-                    child: Text(
-                      '收納',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                  child: GetBuilder<WritePostController>(
+                    builder: (_) {
+                      return StadiumLoadingButton(
+                        height: 18.0,
+                        isLoading: controller.isLoading,
+                        onTap: () {
+                          controller.createPost();
+                        },
+                        buttonColor: accentColor,
+                        child: Text(
+                          '收納',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 ),
               ],
             ),
-            body: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // NOTE: 标题
-                Container(
-                  decoration: BoxDecoration(
-                    border: Border.symmetric(
-                      horizontal: BorderSide(
-                        color: Colors.grey,
-                        width: 0.2,
-                      ),
-                    ),
-                  ),
-                  padding: const EdgeInsets.only(
-                    left: 20.0,
-                    right: 20.0,
-                    bottom: 2.0,
-                  ),
-                  child: ScrollConfiguration(
-                    behavior: NoGlowScrollBehavior(),
-                    child: TextField(
-                      onChanged: controller.onTagsChanged,
-                      selectionHeightStyle:
-                          BoxHeightStyle.includeLineSpacingBottom,
-                      inputFormatters: [
-                        LengthLimitingTextFieldFormatterFixed(128),
-                      ],
-                      minLines: 1,
-                      maxLines: 2,
-                      keyboardType: TextInputType.multiline,
-                      style: TextStyle(
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      textAlignVertical: TextAlignVertical.top,
-                      decoration: InputDecoration(
-                        hintText: '標題',
-                        border: InputBorder.none,
-                      ),
-                    ),
-                  ),
-                ),
-                // NOTE: 输入内容
-                Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.only(
-                      left: 20.0,
-                      right: 20.0,
-                    ),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Flexible(
-                          flex: 5,
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                              top: 14.0,
-                            ),
-                            child: Image.asset(
-                              R.appIcon, //使用Class调用内置图片地址
-                              fit: BoxFit.fitWidth,
+            body: GestureDetector(
+              onVerticalDragEnd: (details) {
+                double velocity = details.velocity.pixelsPerSecond.dy;
+                if (velocity < -1600.0) {
+                  controller.toggleBottomSheet(context);
+                }
+              },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // NOTE: 标题
+                  GetBuilder<WritePostController>(
+                    builder: (_) {
+                      return Visibility(
+                        maintainState: true,
+                        visible: controller.isContentFocused == false,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border: Border.symmetric(
+                              horizontal: BorderSide(
+                                color: Colors.grey,
+                                width: 0.2,
+                              ),
                             ),
                           ),
-                        ),
-                        Flexible(child: SizedBox.expand()),
-                        Flexible(
-                          flex: 40,
+                          padding: const EdgeInsets.only(
+                            left: 20.0,
+                            right: 20.0,
+                            bottom: 2.0,
+                          ),
                           child: ScrollConfiguration(
                             behavior: NoGlowScrollBehavior(),
                             child: TextField(
+                              onChanged: controller.onTitleChanged,
+                              selectionHeightStyle:
+                                  BoxHeightStyle.includeLineSpacingBottom,
+                              inputFormatters: [
+                                LengthLimitingTextFieldFormatterFixed(128),
+                              ],
                               minLines: 1,
-                              maxLines: null,
-                              maxLength: 2000,
-                              controller: controller.textEditingController,
+                              maxLines: 2,
                               keyboardType: TextInputType.multiline,
                               style: TextStyle(
                                 fontSize: 18.0,
+                                fontWeight: FontWeight.bold,
                               ),
+                              textAlignVertical: TextAlignVertical.top,
                               decoration: InputDecoration(
-                                hintText: '記下想法、感受',
+                                errorText: controller.isTitleOK == false
+                                    ? controller.errorText
+                                    : null,
+                                hintText: '標題',
                                 border: InputBorder.none,
                               ),
                             ),
                           ),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-                // NOTE: tags
-                Container(
-                  decoration: BoxDecoration(
-                    border: Border.symmetric(
-                      horizontal: BorderSide(
-                        color: Colors.grey,
-                        width: 0.2,
-                      ),
-                    ),
-                  ),
-                  child: FullWidthTextButton(
-                    alignment: Alignment.centerLeft,
-                    backgroundColor: AppColors.buttonLightBackgroundColor!,
-                    height: 64.0,
-                    onPressed: () {
-                      controller.toggleTagInput();
+                        ),
+                      );
                     },
-                    child: GetBuilder<WritePostController>(
-                      assignId: true,
-                      id: 'tags',
-                      builder: (_) {
-                        WidgetsBinding.instance!
-                            .addPostFrameCallback((_) => afterBuild());
-                        List<Widget> widgets = [
-                          Padding(
+                  ),
+                  // NOTE: tags
+                  GetBuilder<WritePostController>(
+                    builder: (_) {
+                      if (controller.isContentFocused) {
+                        return SizedBox.shrink();
+                      }
+                      WidgetsBinding.instance!
+                          .addPostFrameCallback((_) => afterBuild());
+                      List<Widget> widgets = [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                          child: Chip(
+                            backgroundColor: accentColor.withAlpha(128),
+                            shadowColor: Colors.transparent,
+                            label: Text(
+                              'Tags:',
+                              style: TextStyle(
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        )
+                      ];
+                      List<Widget> chips = controller.postModel.tags.map(
+                        (String tag) {
+                          return Padding(
                             padding:
-                                const EdgeInsets.symmetric(horizontal: 4.0),
-                            child: Chip(
-                              backgroundColor: accentColor.withAlpha(128),
-                              shadowColor: Colors.transparent,
-                              label: Text(
-                                'Tags:',
-                                style: TextStyle(
-                                  fontSize: 18.0,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                const EdgeInsets.symmetric(horizontal: 3.0),
+                            child: RawChip(
+                              backgroundColor:
+                                  AppColors.profileAvatarBackgroundColor,
+                              deleteIcon: Icon(Icons.close_rounded),
+                              onDeleted: () {
+                                controller.deleteTag(tag);
+                              },
+                              labelStyle: TextStyle(
+                                fontSize: 18.0,
+                              ),
+                              label: Text(tag),
+                            ),
+                          );
+                        },
+                      ).toList();
+
+                      widgets.addAll(chips);
+                      return Container(
+                        decoration: BoxDecoration(
+                          border: Border.symmetric(
+                            horizontal: BorderSide(
+                              color: Colors.grey,
+                              width: 0.2,
+                            ),
+                          ),
+                        ),
+                        child: FullWidthTextButton(
+                          alignment: Alignment.centerLeft,
+                          backgroundColor:
+                              AppColors.buttonLightBackgroundColor!,
+                          height: 48.0,
+                          onPressed: () {
+                            controller.toggleTagInput();
+                          },
+                          child: ScrollConfiguration(
+                            behavior: NoGlowScrollBehavior(),
+                            child: SingleChildScrollView(
+                              controller: controller.tagsScrollController,
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              physics: BouncingScrollPhysics(),
+                              clipBehavior: Clip.antiAliasWithSaveLayer,
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: widgets,
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                  // NOTE: tags 输入框
+                  GetBuilder<WritePostController>(
+                    builder: (_) {
+                      return Visibility(
+                        visible: controller.isTagInputShow,
+                        child: TextField(
+                          controller: controller.tagsTextEditingController,
+                          focusNode: controller.tagsFocusNode,
+                          onChanged: controller.onTagsChanged,
+                          maxLines: 1,
+                          keyboardType: TextInputType.text,
+                          inputFormatters: [
+                            LengthLimitingTextFieldFormatterFixed(128)
+                          ],
+                          style: TextStyle(
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          decoration: InputDecoration(
+                            contentPadding: EdgeInsets.all(8.0),
+                            suffix: GestureDetector(
+                              onTap: controller.addTag,
+                              child: GetBuilder<AppController>(
+                                builder: (_) {
+                                  return Container(
+                                    padding: EdgeInsets.all(8.0),
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: AppColors
+                                          .profileAvatarBackgroundColor,
+                                    ),
+                                    child: Icon(
+                                      Icons.add,
+                                      size: 28.0,
+                                      color: AppColors.normalTextColor,
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+                            hintText: 'Add',
+                            errorText: controller.isTagOK
+                                ? null
+                                : controller.errorText,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+
+                  // NOTE: 输入内容
+                  Expanded(
+                    child: Container(
+                      color: Colors.transparent,
+                      padding: const EdgeInsets.only(
+                        left: 20.0,
+                        right: 20.0,
+                        bottom: 10.0,
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: 42.0,
+                            height: 42.0,
+                            margin: const EdgeInsets.only(
+                              top: 14.0,
+                              right: 8.0,
+                            ),
+                            child: AppConstants.avatarURL == ''
+                                ? Image.asset(
+                                    R.appIcon, //使用Class调用内置图片地址
+                                    fit: BoxFit.fitWidth,
+                                  )
+                                : Align(
+                                    alignment: Alignment.topCenter,
+                                    child: Material(
+                                      shape: CircleBorder(),
+                                      clipBehavior: Clip.antiAlias,
+                                      child: Ink.image(
+                                        fit: BoxFit.fitWidth,
+                                        image: CachedNetworkImageProvider(
+                                            AppConstants.avatarURL),
+                                      ),
+                                    ),
+                                  ),
+                          ),
+                          Expanded(
+                            child: ScrollConfiguration(
+                              behavior: NoGlowScrollBehavior(),
+                              child: GetBuilder<WritePostController>(
+                                builder: (_) {
+                                  return TextField(
+                                    minLines: 1,
+                                    maxLines: null,
+                                    maxLength: 2000,
+                                    focusNode: controller.contentFocusNode,
+                                    onChanged: controller.onContentChanged,
+                                    controller:
+                                        controller.textEditingController,
+                                    textAlignVertical: TextAlignVertical.center,
+                                    keyboardType: TextInputType.multiline,
+                                    style: TextStyle(
+                                      fontSize: 18.0,
+                                    ),
+                                    decoration: InputDecoration(
+                                      errorText: controller.isContentOK == false
+                                          ? controller.errorText
+                                          : null,
+                                      contentPadding: EdgeInsets.only(top: 8.0),
+                                      hintText: '記下想法、感受',
+                                      hintStyle: TextStyle(
+                                        fontSize: 18.0,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                      border: InputBorder.none,
+                                    ),
+                                  );
+                                },
                               ),
                             ),
                           )
-                        ];
-                        List<Widget> chips = controller.postModel.tags.map(
-                          (String tag) {
-                            return Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 3.0),
-                              child: RawChip(
-                                backgroundColor:
-                                    AppColors.profileAvatarBackgroundColor,
-                                deleteIcon: Icon(Icons.close_rounded),
-                                onDeleted: () {
-                                  controller.deleteTag(tag);
-                                },
-                                labelStyle: TextStyle(
-                                  fontSize: 18.0,
-                                ),
-                                label: Text(tag),
-                              ),
-                            );
-                          },
-                        ).toList();
-
-                        widgets.addAll(chips);
-                        return ScrollConfiguration(
-                          behavior: NoGlowScrollBehavior(),
-                          child: SingleChildScrollView(
-                            controller: controller.tagsScrollController,
-                            padding:
-                                const EdgeInsets.symmetric(horizontal: 8.0),
-                            physics: BouncingScrollPhysics(),
-                            clipBehavior: Clip.antiAliasWithSaveLayer,
-                            scrollDirection: Axis.horizontal,
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: widgets,
-                            ),
-                          ),
-                        );
-                      },
+                        ],
+                      ),
                     ),
                   ),
-                ),
-                // NOTE: tags 输入框
-                GetBuilder<WritePostController>(
-                  assignId: true,
-                  id: 'tags',
-                  builder: (_) {
-                    return Visibility(
-                      visible: controller.isTagInputShow,
-                      child: TextField(
-                        controller: controller.tagsTextEditingController,
-                        focusNode: controller.tagsTextFocusNode,
-                        onChanged: controller.onTagsChanged,
-                        maxLines: 1,
-                        keyboardType: TextInputType.text,
-                        inputFormatters: [
-                          LengthLimitingTextFieldFormatterFixed(128)
-                        ],
-                        style: TextStyle(
-                          fontSize: 20.0,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.all(8.0),
-                          suffix: GestureDetector(
-                            onTap: controller.addTag,
-                            child: GetBuilder<AppController>(
-                              builder: (_) {
-                                return Container(
-                                  padding: EdgeInsets.all(8.0),
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color:
-                                        AppColors.profileAvatarBackgroundColor,
-                                  ),
-                                  child: Icon(
-                                    Icons.add,
-                                    size: 28.0,
-                                    color: AppColors.normalTextColor,
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
-                          hintText: 'Add',
-                          errorText:
-                              controller.isTagOK ? null : controller.errorText,
+                  // NOTE: Functions
+                  Container(
+                    height: 48.0,
+                    width: double.infinity,
+                    padding: EdgeInsets.symmetric(horizontal: 12.0),
+                    decoration: BoxDecoration(
+                      border: Border.symmetric(
+                        horizontal: BorderSide(
+                          color: Colors.grey,
+                          width: 0.2,
                         ),
                       ),
-                    );
-                  },
-                ),
-
-                // NOTE: Functions
-                // FullWidthTextButton(
-                //   height: 48.0,
-                //   backgroundColor: primaryLightColor,
-                //   onPressed: () {},
-                //   child: Text(
-                //     '文章編輯功能',
-                //     style: TextStyle(
-                //       color: AppColors.normalTextColor,
-                //       fontSize: 18.0,
-                //       fontWeight: FontWeight.bold,
-                //     ),
-                //   ),
-                // ),
-
-                // NOTE: 选择箱子
-                FullWidthTextButton(
-                  height: 64.0,
-                  backgroundColor: accentColor,
-                  onPressed: () {
-                    controller.toggleBottomSheet(context);
-                  },
-                  child: Text(
-                    '選擇收納盒',
-                    style: TextStyle(
-                      fontSize: 18.0,
-                      fontWeight: FontWeight.bold,
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.photo_outlined,
+                          size: 32.0,
+                        ),
+                      ],
                     ),
                   ),
-                ),
-              ],
+
+                  // NOTE: 选择箱子
+                  FullWidthTextButton(
+                    height: 48.0,
+                    backgroundColor: accentColor,
+                    onPressed: () {
+                      controller.toggleBottomSheet(context);
+                    },
+                    child: Text(
+                      '選擇收納盒',
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           // NOTE: 点击 Choose Pack 后出现的顏色遮罩

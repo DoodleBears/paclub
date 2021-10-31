@@ -16,7 +16,8 @@ class WritePostController extends GetxController {
   final ScrollController tagsScrollController = ScrollController();
   final TextEditingController tagsTextEditingController =
       TextEditingController();
-  final FocusNode tagsTextFocusNode = FocusNode();
+  final FocusNode tagsFocusNode = FocusNode();
+  final FocusNode contentFocusNode = FocusNode();
   final PostModel postModel = PostModel(
     ownerUid: AppConstants.uuid,
     ownerName: AppConstants.userName,
@@ -27,7 +28,9 @@ class WritePostController extends GetxController {
   );
   SheetState sheetState = SheetState.close;
   bool isPostOK = false;
-  bool isPostTitleOK = true;
+  bool isTitleOK = true;
+  bool isContentOK = true;
+  bool isContentFocused = false;
   bool isTagInputShow = false;
   bool isBottomSheetShow = false;
   bool isLoading = false;
@@ -40,20 +43,52 @@ class WritePostController extends GetxController {
   Map<String, bool> packCheckedList = {};
 
   // MARK: 创建 Post 相关 Methods
-  void onPackNameChanged(String title) {
-    postModel.title = title.trim();
-    if (isPostTitleOK == false) {
-      isPostTitleOK = true;
+  void createPost() async {
+    logger.d('createPost');
+    if (isLoading) {
+      return;
+    }
+    if (checkPackInfo()) {
+      isLoading = true;
+      update();
+      await Future.delayed(const Duration(seconds: 2));
+      isLoading = false;
       update();
     }
   }
 
+  // NOTE: 当 title 被编辑的时候触发
+  void onTitleChanged(String title) {
+    postModel.title = title.trim();
+    if (isTitleOK == false) {
+      isTitleOK = true;
+      update();
+    }
+  }
+
+  // NOTE: 当 packName 被编辑的时候触发
+  void onContentChanged(String content) {
+    postModel.content = content.trim();
+    if (isContentOK == false) {
+      isContentOK = true;
+      update();
+    }
+  }
+
+  // NOTE: 当 packName 被编辑的时候触发
   bool checkPackInfo() {
     isPostOK = false;
     if (postModel.title.isEmpty) {
-      if (isPostTitleOK) {
+      if (isTitleOK) {
         errorText = 'title cannot be empty';
-        isPostTitleOK = false;
+        logger.d(errorText);
+        isTitleOK = false;
+        update();
+      }
+    } else if (postModel.content.isEmpty) {
+      if (isContentOK) {
+        errorText = 'content cannot be empty';
+        isContentOK = false;
         update();
       }
     } else {
@@ -74,14 +109,14 @@ class WritePostController extends GetxController {
   void toggleTagInput() {
     isTagInputShow = !isTagInputShow;
     if (isTagInputShow == true) {
-      tagsTextFocusNode.requestFocus();
+      tagsFocusNode.requestFocus();
       scrollToBottom();
     } else {
-      if (tagsTextFocusNode.hasPrimaryFocus) {
-        tagsTextFocusNode.unfocus();
+      if (tagsFocusNode.hasPrimaryFocus) {
+        tagsFocusNode.unfocus();
       }
     }
-    update(['tags']);
+    update();
   }
 
   // NOTE: 监听 Tag 变化
@@ -89,7 +124,7 @@ class WritePostController extends GetxController {
     this.tag = tag;
     if (isTagOK == false) {
       isTagOK = true;
-      update(['tags']);
+      update();
     }
   }
 
@@ -101,16 +136,16 @@ class WritePostController extends GetxController {
         if (isTagOK) {
           isTagOK = false;
           errorText = 'Tag already exist';
-          update(['tags']);
+          update();
         }
       } else if (postModel.tags.length > 9) {
         isTagOK = false;
         errorText = 'At most 10 tags';
-        update(['tags']);
+        update();
       } else {
         tagsTextEditingController.clear();
         postModel.tags.add(tag);
-        update(['tags']);
+        update();
       }
     }
   }
@@ -118,7 +153,7 @@ class WritePostController extends GetxController {
   // NOTE: 删除 Tag
   void deleteTag(String tag) {
     postModel.tags.remove(tag);
-    update(['tags']);
+    update();
   }
 
   // MARK: BottomSheet 相关的 Methods
@@ -149,40 +184,59 @@ class WritePostController extends GetxController {
     }
   }
 
+  // NOTE: 当 PackTile 的 Checked 状态改变的时候
+  void onPackTileChanged(bool? value, int index) {
+    if (value != null) {
+      packCheckedList[packList[index].pid] = value;
+      update(['bottomSheet']);
+    }
+  }
+
+  // MARK: 页面跳转
   // NOTE: 前往 CreatePackPage
   void navigateToCreatePackPage() {
     Get.toNamed(Routes.CREATEPACK);
   }
 
-  // NOTE: CheckBox Checked 状态变化
-  void checkBoxOnChange(bool? value, String pid) {
-    if (value != null) {
-      packCheckedList[pid] = value;
-      update(['bottomSheet']);
-    }
-  }
-
   @override
   void onInit() {
     logger.i('启用 WritePostController');
+    contentFocusNode.addListener(listenContentInput);
+    tagsFocusNode.addListener(listenTagsInput);
+    packStream.listen((list) => listenPackStream(list));
     super.onInit();
   }
 
   @override
   void onReady() {
     super.onReady();
-    tagsTextFocusNode.addListener(listenTagsInput);
-    packStream.listen((list) => listenPackStream(list));
     packStream.bindStream(_packModule.getPackStream(
       uid: AppConstants.uuid,
     ));
   }
 
+  // NOTE: 监听是否聚焦 Content Input
+  void listenContentInput() {
+    // logger.d(
+    //     'contentFocusNode.hasPrimaryFocus: ${contentFocusNode.hasPrimaryFocus}');
+    if (contentFocusNode.hasPrimaryFocus) {
+      if (isContentFocused == false) {
+        isContentFocused = true;
+        update();
+      }
+    } else {
+      if (isContentFocused == true) {
+        isContentFocused = false;
+        update();
+      }
+    }
+  }
+
   void listenTagsInput() {
     // NOTE: 当 Tags Input Field 失去焦点的时候, 如果 Field 在显示, 则自动关闭
-    if (tagsTextFocusNode.hasFocus == false && isTagInputShow) {
+    if (tagsFocusNode.hasFocus == false && isTagInputShow) {
       isTagInputShow = false;
-      update(['tags']);
+      update();
     }
   }
 
@@ -192,22 +246,19 @@ class WritePostController extends GetxController {
 
   void listenPackStream(List<PackModel> list) {
     packList = List.from(list);
-    for (var i = 0; i < list.length; i++) {
-      if (packCheckedList[list[i].pid] == null) {
-        packCheckedList[list[i].pid] = false;
+    for (PackModel pack in packList) {
+      if (packCheckedList[pack.pid] == null) {
+        packCheckedList[pack.pid] = false;
       }
     }
     packList.sort(sortPack);
     update(['bottomSheet']);
   }
 
-  void onPackTileChanged(bool? value, int index) {
-    checkBoxOnChange(value, packList[index].pid);
-  }
-
   @override
   void onClose() {
-    tagsTextFocusNode.removeListener(listenTagsInput);
+    contentFocusNode.removeListener(listenContentInput);
+    tagsFocusNode.removeListener(listenTagsInput);
     packStream.close();
     logger.w('关闭 WritePostController');
     super.onClose();
