@@ -90,23 +90,20 @@ class CreatePackBody extends GetView<CreatePackController> {
                               clipBehavior: Clip.none,
                               children: [
                                 Material(
-                                  borderRadius:
-                                      BorderRadius.circular(borderRadius),
+                                  borderRadius: BorderRadius.circular(borderRadius),
                                   clipBehavior: Clip.antiAlias,
                                   child: controller.imageFile == null
                                       ? Container(
                                           width: 128,
                                           height: 128,
-                                          color: AppColors
-                                              .profileAvatarBackgroundColor,
+                                          color: AppColors.profileAvatarBackgroundColor,
                                           child: Icon(
-                                            Icons.add_a_photo_rounded,
-                                            size: 32.0,
+                                            Icons.add_photo_alternate_rounded,
+                                            size: 36.0,
                                           ),
                                         )
                                       : Ink.image(
-                                          image:
-                                              FileImage(controller.imageFile!),
+                                          image: FileImage(controller.imageFile!),
                                           fit: BoxFit.cover,
                                           width: 128,
                                           height: 128,
@@ -115,20 +112,20 @@ class CreatePackBody extends GetView<CreatePackController> {
                                 controller.imageFile == null
                                     ? SizedBox.shrink()
                                     : Positioned(
-                                        right: -10.0,
-                                        bottom: -10.0,
+                                        right: 10.0,
+                                        top: 10.0,
                                         child: GestureDetector(
-                                          onTap: () =>
-                                              controller.removePackPhoto(),
+                                          onTap: () => controller.removePackPhoto(),
                                           child: Container(
+                                            padding: EdgeInsets.all(3.0),
                                             decoration: BoxDecoration(
                                               shape: BoxShape.circle,
-                                              color: Colors.red,
+                                              color: Colors.black.withAlpha(128),
                                             ),
                                             child: Icon(
-                                              Icons.remove,
+                                              Icons.close_rounded,
                                               color: AppColors.normalTextColor,
-                                              size: 28.0,
+                                              size: 24.0,
                                             ),
                                           ),
                                         ),
@@ -145,8 +142,7 @@ class CreatePackBody extends GetView<CreatePackController> {
                       child: GetBuilder<CreatePackController>(
                         builder: (_) {
                           return SimpleInputField(
-                            controller:
-                                controller.packNameTextEditingController,
+                            controller: controller.packNameTextEditingController,
                             titleText: 'Pack Name',
                             barColor: accentColor,
                             maxLines: 3,
@@ -163,8 +159,7 @@ class CreatePackBody extends GetView<CreatePackController> {
                       child: GetBuilder<CreatePackController>(
                         builder: (_) {
                           return SimpleInputField(
-                            controller:
-                                controller.descriptionTextEditingController,
+                            controller: controller.descriptionTextEditingController,
                             onChanged: controller.onDescriptionChanged,
                             titleText: 'Description',
                             maxLines: 8,
@@ -189,8 +184,7 @@ class CreatePackBody extends GetView<CreatePackController> {
                     GetBuilder<CreatePackController>(
                       builder: (_) {
                         return MultiLineTags(
-                          backgroundColor:
-                              AppColors.profileAvatarBackgroundColor,
+                          backgroundColor: AppColors.profileAvatarBackgroundColor,
                           tags: controller.packModel.tags,
                           onDeleted: (tag) {
                             controller.deleteTag(tag);
@@ -204,10 +198,12 @@ class CreatePackBody extends GetView<CreatePackController> {
                           controller: controller.tagsTextEditingController,
                           onChanged: controller.onTagsChanged,
                           maxLines: 1,
+                          onEditingComplete: () {
+                            controller.addTag();
+                          },
+                          textInputAction: TextInputAction.send,
                           keyboardType: TextInputType.text,
-                          inputFormatters: [
-                            LengthLimitingTextFieldFormatterFixed(128)
-                          ],
+                          inputFormatters: [LengthLimitingTextFieldFormatterFixed(128)],
                           style: TextStyle(
                             fontSize: 22.0,
                             fontWeight: FontWeight.bold,
@@ -230,9 +226,7 @@ class CreatePackBody extends GetView<CreatePackController> {
                               ),
                             ),
                             hintText: 'Add',
-                            errorText: controller.isTagOK
-                                ? null
-                                : controller.errorText,
+                            errorText: controller.isTagOK ? null : controller.errorText,
                           ),
                         );
                       },
@@ -284,9 +278,7 @@ class CreatePackBody extends GetView<CreatePackController> {
                 alignment: Alignment.topLeft,
                 child: FadeInScaleContainer(
                   isShow: controller.processInfo != '',
-                  color: controller.processInfo == 'Create Fail'
-                      ? Colors.red
-                      : accentColor,
+                  color: controller.processInfo == 'Create Fail' ? Colors.red : accentColor,
                   height: 4.0,
                   width: Get.width * (controller.process / 3),
                 ),

@@ -13,6 +13,7 @@ import 'package:paclub/frontend/views/write_post/components/draggable_scrollable
 import 'package:paclub/frontend/views/write_post/components/full_width_text_button.dart';
 import 'package:paclub/frontend/views/write_post/components/pack_tile.dart';
 import 'package:paclub/frontend/views/write_post/write_post_controller.dart';
+import 'package:paclub/frontend/widgets/buttons/animated_scale_floating_action_button.dart';
 import 'package:paclub/frontend/widgets/buttons/stadium_loading_button.dart';
 import 'package:paclub/frontend/widgets/others/app_scroll_behavior.dart';
 import 'package:paclub/frontend/widgets/widgets.dart';
@@ -56,7 +57,7 @@ class WritePostBody extends GetView<WritePostController> {
                 id: 'progress_bar',
                 builder: (_) {
                   return controller.processInfo == ''
-                      ? Text('Create Post')
+                      ? Text('Post')
                       : Text(
                           controller.processInfo,
                           style: TextStyle(
@@ -77,7 +78,7 @@ class WritePostBody extends GetView<WritePostController> {
                       '取消',
                       style: TextStyle(
                         fontSize: 16.0,
-                        fontWeight: FontWeight.bold,
+                        // fontWeight: FontWeight.bold,
                       ),
                     ),
                   ),
@@ -100,7 +101,7 @@ class WritePostBody extends GetView<WritePostController> {
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 16.0,
-                            fontWeight: FontWeight.bold,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
                       );
@@ -126,8 +127,8 @@ class WritePostBody extends GetView<WritePostController> {
                               visible: controller.isContentFocused == false,
                               child: Container(
                                 decoration: BoxDecoration(
-                                  border: Border.symmetric(
-                                    horizontal: BorderSide(
+                                  border: Border(
+                                    bottom: BorderSide(
                                       color: Colors.grey,
                                       width: 0.2,
                                     ),
@@ -141,18 +142,20 @@ class WritePostBody extends GetView<WritePostController> {
                                 child: ScrollConfiguration(
                                   behavior: NoGlowScrollBehavior(),
                                   child: TextField(
+                                    focusNode: controller.titleFocusNode,
                                     controller: controller.titleTextController,
                                     onChanged: controller.onTitleChanged,
+                                    onEditingComplete: () {
+                                      controller.finishTitle();
+                                    },
                                     selectionHeightStyle: BoxHeightStyle.includeLineSpacingBottom,
                                     inputFormatters: [
                                       LengthLimitingTextFieldFormatterFixed(128),
                                     ],
-                                    minLines: 1,
-                                    maxLines: 2,
-                                    keyboardType: TextInputType.multiline,
+                                    textInputAction: TextInputAction.done,
+                                    keyboardType: TextInputType.text,
                                     style: TextStyle(
                                       fontSize: 18.0,
-                                      fontWeight: FontWeight.bold,
                                     ),
                                     textAlignVertical: TextAlignVertical.top,
                                     decoration: InputDecoration(
@@ -179,7 +182,7 @@ class WritePostBody extends GetView<WritePostController> {
                               Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 4.0),
                                 child: Chip(
-                                  backgroundColor: accentColor.withAlpha(128),
+                                  // backgroundColor: accentColor.withAlpha(128),
                                   shadowColor: Colors.transparent,
                                   label: Text(
                                     'Tags:',
@@ -251,8 +254,12 @@ class WritePostBody extends GetView<WritePostController> {
                                 controller: controller.tagsTextEditingController,
                                 focusNode: controller.tagsFocusNode,
                                 onChanged: controller.onTagsChanged,
-                                maxLines: 1,
-                                keyboardType: TextInputType.text,
+                                onEditingComplete: () {
+                                  controller.addTag();
+                                },
+                                // textInputAction: TextInputAction.done,
+                                // maxLines: 1,
+                                // keyboardType: TextInputType.text,
                                 inputFormatters: [LengthLimitingTextFieldFormatterFixed(128)],
                                 style: TextStyle(
                                   fontSize: 20.0,
@@ -347,7 +354,6 @@ class WritePostBody extends GetView<WritePostController> {
                                           hintText: '記下想法、感受',
                                           hintStyle: TextStyle(
                                             fontSize: 18.0,
-                                            fontWeight: FontWeight.bold,
                                           ),
                                           border: InputBorder.none,
                                         ),
@@ -400,14 +406,23 @@ class WritePostBody extends GetView<WritePostController> {
                                         top: 8.0,
                                         child: GestureDetector(
                                           onTap: () => controller.removePostPhoto(index),
-                                          child: Container(
+                                          child: FadeInScaleContainer(
+                                            isShow: true,
+                                            opacityDuration: const Duration(milliseconds: 300),
                                             padding: EdgeInsets.all(4.0),
                                             decoration: BoxDecoration(
                                               shape: BoxShape.circle,
-                                              color: Colors.black.withAlpha(192),
+                                              color: controller.isUploadProcessesFinish[index]
+                                                  ? accentColor
+                                                  : Colors.black.withAlpha(192),
+                                              border: controller.isUploadProcessesFinish[index]
+                                                  ? Border.all(color: Colors.white, width: 2.0)
+                                                  : null,
                                             ),
                                             child: Icon(
-                                              Icons.close_rounded,
+                                              controller.isUploadProcessesFinish[index]
+                                                  ? Icons.check_rounded
+                                                  : Icons.close_rounded,
                                               color: Colors.white,
                                               size: 28.0,
                                             ),
@@ -493,6 +508,102 @@ class WritePostBody extends GetView<WritePostController> {
               ],
             ),
           ),
+          GetBuilder<WritePostController>(
+            builder: (_) {
+              return AnimatedPositioned(
+                duration: const Duration(milliseconds: 400),
+                curve: Curves.easeOutCubic,
+                bottom: Platform.isIOS ? 112.0 : 96.0,
+                left: controller.process > 0 ? 0.0 : -140.0,
+                right: 0.0,
+                child: OpacityChangeContainer(
+                  isShow: controller.process > 0,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    verticalDirection: VerticalDirection.up,
+                    children: [
+                      FadeInScaleContainer(
+                        isShow: true,
+                        padding: EdgeInsets.all(8.0),
+                        child: Row(
+                          children: [
+                            // 上传图片进程
+                            Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: controller.process > 0
+                                    ? accentColor
+                                    : Colors.black.withAlpha(192),
+                                border: Border.all(color: Colors.white, width: 2.0),
+                              ),
+                              child: Icon(
+                                Icons.check_rounded,
+                                color: Colors.white,
+                                size: 28.0,
+                              ),
+                            ),
+                            const SizedBox(width: 10.0),
+                            Text('设定 Post'),
+                          ],
+                        ),
+                      ),
+                      FadeInScaleContainer(
+                        isShow: controller.imageFiles.length > 0,
+                        padding: EdgeInsets.all(8.0),
+                        child: Row(
+                          children: [
+                            // 上传图片进程
+                            Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: controller.isUploadProcessesFinish
+                                        .every((element) => element == true)
+                                    ? accentColor
+                                    : Colors.black.withAlpha(192),
+                                border: Border.all(color: Colors.white, width: 2.0),
+                              ),
+                              child: Icon(
+                                Icons.check_rounded,
+                                color: Colors.white,
+                                size: 28.0,
+                              ),
+                            ),
+                            const SizedBox(width: 10.0),
+                            Text('上传图片'),
+                          ],
+                        ),
+                      ),
+                      FadeInScaleContainer(
+                        isShow: true,
+                        padding: EdgeInsets.all(8.0),
+                        child: Row(
+                          children: [
+                            // 上传图片进程
+                            Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: controller.process == controller.imageFiles.length + 2
+                                    ? accentColor
+                                    : Colors.black.withAlpha(192),
+                                border: Border.all(color: Colors.white, width: 2.0),
+                              ),
+                              child: Icon(
+                                Icons.check_rounded,
+                                color: Colors.white,
+                                size: 28.0,
+                              ),
+                            ),
+                            const SizedBox(width: 10.0),
+                            Text('完成创建 Post'),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
           // NOTE: Functions
           Positioned(
             bottom: Platform.isIOS ? 64.0 : 48.0,
@@ -524,11 +635,26 @@ class WritePostBody extends GetView<WritePostController> {
                   ),
                   IconButton(
                     onPressed: () {
-                      controller.toggleTag();
+                      controller.openTag();
                     },
                     icon: Icon(
                       Icons.tag_rounded,
                       size: 28.0,
+                    ),
+                  ),
+                  Expanded(child: SizedBox()),
+                  GestureDetector(
+                    onTap: () {
+                      controller.cleanPostInfo();
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: Text(
+                        '清空',
+                        style: TextStyle(
+                          fontSize: 16.0,
+                        ),
+                      ),
                     ),
                   ),
                 ],
@@ -544,7 +670,7 @@ class WritePostBody extends GetView<WritePostController> {
               color: AppColors.containerBackground,
               child: FullWidthTextButton(
                 height: Platform.isIOS ? 64.0 : 48.0,
-                backgroundColor: accentColor,
+                backgroundColor: AppColors.buttonLightBackgroundColor!,
                 onPressed: () {
                   controller.toggleBottomSheet(context);
                 },
@@ -552,7 +678,7 @@ class WritePostBody extends GetView<WritePostController> {
                   '選擇收納盒',
                   style: TextStyle(
                     fontSize: 18.0,
-                    fontWeight: FontWeight.bold,
+                    color: AppColors.normalTextColor!,
                   ),
                 ),
               ),
@@ -588,7 +714,37 @@ class WritePostBody extends GetView<WritePostController> {
                 backgroundColor: AppColors.bottomSheetBackgoundColor,
                 onDrag: (offset) {},
                 onDragComplete: controller.onDragComplete,
-                handlerWidget: DragHandler(),
+                handlerWidget: Container(
+                  color: Colors.transparent,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Flexible(
+                        fit: FlexFit.tight,
+                        child: SizedBox(),
+                      ),
+                      Expanded(
+                        flex: 2,
+                        child: DragHandler(),
+                      ),
+                      Flexible(
+                        fit: FlexFit.tight,
+                        child: Align(
+                          alignment: Alignment.centerRight,
+                          child: IconButton(
+                            iconSize: 36.0,
+                            onPressed: controller.navigateToCreatePackPage,
+                            icon: Icon(
+                              Icons.add_circle_outline_rounded,
+                              size: 36.0,
+                              color: AppColors.normalGrey,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
                 child: Expanded(
                   child: ScrollConfiguration(
                     behavior: NoGlowScrollBehavior(),
@@ -597,12 +753,13 @@ class WritePostBody extends GetView<WritePostController> {
                       children: [
                         // 用户所创建的所有 Pack 的 List
                         ListView.builder(
-                          padding: EdgeInsets.only(bottom: Get.height * 0.1),
+                          physics: BouncingScrollPhysics(),
+                          padding: EdgeInsets.only(bottom: 20.0),
                           itemCount: controller.packList.length,
                           itemBuilder: (context, index) {
                             return PackTile(
                               photoURL: controller.packList[index].photoURL,
-                              pid: controller.packList[index].pid,
+                              description: controller.packList[index].description,
                               packName: controller.packList[index].packName,
                               color: accentColor.withAlpha(32),
                               onChanged: (value) => controller.onPackTileChanged(value, index),
@@ -611,55 +768,26 @@ class WritePostBody extends GetView<WritePostController> {
                           },
                         ),
 
-                        // 创建 Pack 的 Button
-                        Container(
-                          decoration: BoxDecoration(
-                            boxShadow: [
-                              BoxShadow(
-                                color: AppColors.normalShadowColor!,
-                                offset: Offset(0, 8.0),
-                                blurRadius: 10.0,
+                        // NOTE: 收納 Pack 的 Button
+                        GetBuilder<WritePostController>(
+                          builder: (_) {
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 20.0),
+                              child: AnimatedScaleFloatingActionButton(
+                                isButtonShow: controller.postModel.title.isNotEmpty &&
+                                    controller.postModel.belongPids.isNotEmpty,
+                                onPressed: () {
+                                  controller.toggleBottomSheet(context);
+                                  controller.createPost(context);
+                                },
+                                child: Icon(
+                                  Icons.move_to_inbox,
+                                  color: Colors.white,
+                                  size: 32.0,
+                                ),
                               ),
-                            ],
-                            color: AppColors.containerBackground,
-                          ),
-                          height: Get.height * 0.1,
-                          child: TextButton(
-                            style: ButtonStyle(
-                              minimumSize: MaterialStateProperty.all(Size.infinite),
-                            ),
-                            onPressed: () {
-                              controller.navigateToCreatePackPage();
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    margin: const EdgeInsets.only(right: 16.0),
-                                    padding: const EdgeInsets.all(5.0),
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: accentColor,
-                                    ),
-                                    child: Icon(
-                                      Icons.add,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  Text(
-                                    'Create New Pack',
-                                    style: TextStyle(
-                                      color: AppColors.normalTextColor,
-                                      fontSize: 20.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
+                            );
+                          },
                         ),
                       ],
                     ),

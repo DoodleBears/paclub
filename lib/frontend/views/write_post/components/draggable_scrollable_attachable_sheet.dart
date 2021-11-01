@@ -39,8 +39,7 @@ class DraggableScrollableAttachableSheet extends StatefulWidget {
       _DraggableScrollableAttachableSheetState();
 }
 
-class _DraggableScrollableAttachableSheetState
-    extends State<DraggableScrollableAttachableSheet> {
+class _DraggableScrollableAttachableSheetState extends State<DraggableScrollableAttachableSheet> {
   bool isDraging = false;
   SheetState bottomSheetState = SheetState.close;
   double bottomSheetHeight = 0.0;
@@ -69,22 +68,18 @@ class _DraggableScrollableAttachableSheetState
   void dragComplete(double velocity) {
     // print(velocity);
     if (bottomSheetState == SheetState.fullyOpen) {
-      if (bottomSheetHeight < widget.height - widget.thresholdToClose ||
-          velocity > 1600.0) {
+      if (bottomSheetHeight < widget.height - widget.thresholdToClose || velocity > 1600.0) {
         closeBottomSheet();
-      } else if (bottomSheetHeight <
-              widget.fullyOpenHeight! - widget.thresholdToNormal ||
+      } else if (bottomSheetHeight < widget.fullyOpenHeight! - widget.thresholdToNormal ||
           velocity > 600.0) {
         toNormalBottomSheet();
       } else {
         toFullyOpenBottomSheet();
       }
     } else if (bottomSheetState == SheetState.normal) {
-      if (bottomSheetHeight < widget.height - widget.thresholdToClose ||
-          velocity > 600.0) {
+      if (bottomSheetHeight < widget.height - widget.thresholdToClose || velocity > 600.0) {
         closeBottomSheet();
-      } else if (bottomSheetHeight >
-              widget.height + widget.thresholdToFullyOpen ||
+      } else if (bottomSheetHeight > widget.height + widget.thresholdToFullyOpen ||
           velocity < -600.0) {
         if (widget.isAllowFullyOpen!) {
           toFullyOpenBottomSheet();
@@ -136,9 +131,7 @@ class _DraggableScrollableAttachableSheetState
       child: AnimatedContainer(
         height: bottomSheetHeight,
         width: double.infinity,
-        duration: isDraging
-            ? const Duration(microseconds: 1)
-            : const Duration(milliseconds: 150),
+        duration: isDraging ? const Duration(microseconds: 1) : const Duration(milliseconds: 150),
         curve: Curves.ease,
         decoration: ShapeDecoration(
           shape: RoundedRectangleBorder(
@@ -183,8 +176,7 @@ enum SheetState {
 
 class SheetController {
   _DraggableScrollableAttachableSheetState? bottomSheetState;
-  void controlerInit(
-      _DraggableScrollableAttachableSheetState _choosePackBottomSheetState) {
+  void controlerInit(_DraggableScrollableAttachableSheetState _choosePackBottomSheetState) {
     this.bottomSheetState = _choosePackBottomSheetState;
   }
 

@@ -8,7 +8,7 @@ class DragHandler extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: Colors.transparent,
-      padding: EdgeInsets.symmetric(vertical: 20.0),
+      padding: EdgeInsets.symmetric(vertical: 24.0),
       child: Center(
         child: Container(
           decoration: ShapeDecoration(

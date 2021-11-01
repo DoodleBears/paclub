@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 
-class ScaleFloatingActionButton extends StatefulWidget {
-  const ScaleFloatingActionButton({Key? key, required this.onPressed, required this.child})
+class AnimatedScaleFloatingActionButton extends StatefulWidget {
+  const AnimatedScaleFloatingActionButton(
+      {Key? key, required this.onPressed, required this.child, this.isButtonShow = true})
       : super(key: key);
   final Function onPressed;
+  final bool isButtonShow;
   final Widget child;
   @override
-  State<ScaleFloatingActionButton> createState() {
-    return _ScaleFloatingActionButtonState();
+  State<AnimatedScaleFloatingActionButton> createState() {
+    return _AnimatedScaleFloatingActionButtonState();
   }
 }
 
-class _ScaleFloatingActionButtonState extends State<ScaleFloatingActionButton> {
+class _AnimatedScaleFloatingActionButtonState extends State<AnimatedScaleFloatingActionButton> {
   bool isButtonPressed = false;
 
   @override
@@ -36,6 +38,7 @@ class _ScaleFloatingActionButtonState extends State<ScaleFloatingActionButton> {
         widget.onPressed();
       },
       child: AnimatedContainer(
+        width: widget.isButtonShow ? 60.0 : 0.0,
         duration: const Duration(milliseconds: 250),
         curve: Curves.easeOutCubic,
         transform: Matrix4.identity()
@@ -46,11 +49,27 @@ class _ScaleFloatingActionButtonState extends State<ScaleFloatingActionButton> {
           ..scale(isButtonPressed ? 0.82 : 1.0, isButtonPressed ? 0.82 : 1.0),
         child: FloatingActionButton(
           onPressed: () {},
-          elevation: 4.0,
+          elevation: widget.isButtonShow ? 4.0 : 0.0,
+          clipBehavior: Clip.hardEdge,
           hoverElevation: 0.0,
           highlightElevation: 2.0,
           focusElevation: 0.0,
-          child: widget.child,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeOutCirc,
+            transform: widget.isButtonShow
+                ? (Matrix4.identity()
+                  ..translate(
+                    0.0,
+                    -50.0,
+                  ))
+                : Matrix4.identity()
+              ..translate(
+                0.0,
+                50.0,
+              ),
+            child: widget.child,
+          ),
         ),
       ),
     );

@@ -26,6 +26,7 @@ class WritePostController extends GetxController {
   final TextEditingController tagsTextEditingController = TextEditingController();
   final SheetController bottomSheetController = SheetController();
   final ScrollController tagsScrollController = ScrollController();
+  final FocusNode titleFocusNode = FocusNode();
   final FocusNode tagsFocusNode = FocusNode();
   final FocusNode contentFocusNode = FocusNode();
   final PostModel postModel = PostModel(
@@ -62,6 +63,7 @@ class WritePostController extends GetxController {
   final packStream = <PackModel>[].obs;
   List<PackModel> packList = <PackModel>[];
   Map<String, bool> packCheckedList = {};
+  List<bool> isUploadProcessesFinish = [];
 
   // MARK: 创建 Post 相关 Methods
   void createPost(BuildContext context) async {
@@ -71,6 +73,7 @@ class WritePostController extends GetxController {
 
     if (checkPostInfo(context)) {
       process = 0;
+      isUploadProcessesFinish = List.filled(imageFiles.length, false);
       processInfo = 'Creating Post...';
       update(['progress_bar']);
       isLoading = true;
@@ -79,36 +82,38 @@ class WritePostController extends GetxController {
       AppResponse appResponseSetPost = await _postModule.setPost(postModel: postModel);
 
       if (appResponseSetPost.data != null) {
+        List<Future<AppResponse>> uploadProcesses = [];
         process = 1;
         if (imageFiles.isNotEmpty) {
           // NOTE: 如果 imageFiles 不为空 更新 Post PhotoURLs
-          processInfo = 'Uploading Image $process';
+          update();
+          processInfo = 'Uploading Images';
           update(['progress_bar']);
           bool isUploadSuccess = true;
-          final List<String> tempPhotoURLs = List.filled(imageFiles.length, '');
 
+          final List<String> tempPhotoURLs = List.filled(imageFiles.length, '');
           for (int imageIndex = 0; imageIndex < imageFiles.length; imageIndex++) {
-            AppResponse appResponseUploadPostPhoto = await _postModule.uploadPostImage(
-              imageFile: imageFiles[imageIndex],
-              postId: appResponseSetPost.data,
-              imageIndex: imageIndex,
-            );
-            if (appResponseUploadPostPhoto.data != null) {
-              // 添加上传成功的 URL
-              tempPhotoURLs[imageIndex] = appResponseUploadPostPhoto.data;
-              if (imageIndex == imageFiles.length - 1) {
-                break;
-              }
-              process++;
-              processInfo = 'Uploading Image $process';
-              update(['progress_bar']);
+            var uploadProcess = uploadImageProcess(imageIndex, appResponseSetPost.data);
+            uploadProcesses.add(uploadProcess);
+          }
+          for (int imageIndex = 0; imageIndex < imageFiles.length; imageIndex++) {
+            AppResponse appResponse = await uploadProcesses[imageIndex];
+            if (appResponse.data != null) {
+              tempPhotoURLs[imageIndex] = appResponse.data;
             } else {
               isUploadSuccess = false;
-              break;
             }
           }
+          // logger3.wtf(tempPhotoURLs);
 
-          // NOTE: 如果成功上传 Post 图片
+          // // NOTE: 如果成功上传 Post 图片
+          // if (isUploadSuccess) {
+          //   AppResponse appResponseUpdatePack = await _postModule.updatePost(
+          //     postId: appResponseSetPost.data,
+          //     updateMap: {
+          //       'photoURLs': tempPhotoURLs,
+          //     },
+          //   );
           if (isUploadSuccess) {
             AppResponse appResponseUpdatePack = await _postModule.updatePost(
               postId: appResponseSetPost.data,
@@ -116,15 +121,14 @@ class WritePostController extends GetxController {
                 'photoURLs': tempPhotoURLs,
               },
             );
-
             if (appResponseUpdatePack.data != null) {
-              cleanPostInfo();
+              createSucceed();
             }
           } else {
             createFail();
           }
         } else {
-          cleanPostInfo();
+          createSucceed();
         }
       } else {
         createFail();
@@ -134,6 +138,19 @@ class WritePostController extends GetxController {
     update();
   }
 
+  Future<AppResponse> uploadImageProcess(int imageIndex, String postId) async {
+    AppResponse appResponse = await _postModule.uploadPostImage(
+      imageFile: imageFiles[imageIndex],
+      postId: postId,
+      imageIndex: imageIndex,
+    );
+    isUploadProcessesFinish[imageIndex] = true;
+    update();
+    process++;
+    update(['progress_bar']);
+    return appResponse;
+  }
+
   // NOTE: 上传失败后的报错
   void createFail() {
     processInfo = 'Create Fail';
@@ -141,10 +158,19 @@ class WritePostController extends GetxController {
     update(['progress_bar']);
   }
 
+  // NOTE: 上传失败后的报错
+  void createSucceed() async {
+    processInfo = 'Create Success';
+    process = 2 + imageFiles.length;
+    update();
+    update(['progress_bar']);
+    await Future.delayed(const Duration(milliseconds: 300));
+    Get.back();
+    toastTop('發佈成功');
+  }
+
   // NOTE: 上传成功后清空
   void cleanPostInfo() {
-    process++;
-    processInfo = 'Create Post';
     packCheckedList.updateAll((key, _) => false);
     titleTextController.clear();
     tagsTextEditingController.clear();
@@ -158,7 +184,6 @@ class WritePostController extends GetxController {
     imageFiles.clear();
     update();
     update(['bottomSheet']);
-    update(['progress_bar']);
   }
 
   // NOTE: 挑选多张图片
@@ -179,6 +204,7 @@ class WritePostController extends GetxController {
       }
       imageFilesRatio = List.from(tempFilesRatio);
       imageFiles = List.from(tempFiles);
+      isUploadProcessesFinish = List.filled(imageFiles.length, false);
       // logger.d('imageFiles.length: ${imageFiles.length}');
       if (imageFiles.length == 1) {
         imageBlockVerticalPadding = Get.width * 0.85 / 20;
@@ -198,6 +224,9 @@ class WritePostController extends GetxController {
 
   // NOTE: 删除特定图片
   void removePostPhoto(int index) {
+    if (isLoading == true) {
+      return;
+    }
     // logger.d('移除 Pack Photo 成功');
     imageFiles.removeAt(index);
     imageFilesRatio.removeAt(index);
@@ -227,6 +256,12 @@ class WritePostController extends GetxController {
     }
   }
 
+  void finishTitle() {
+    if (postModel.title.isNotEmpty) {
+      contentFocusNode.requestFocus();
+    }
+  }
+
   // NOTE: 当 content 被编辑的时候触发
   void onContentChanged(String content) {
     postModel.content = content.trim();
@@ -244,12 +279,6 @@ class WritePostController extends GetxController {
       if (isTitleOK) {
         errorText = 'title cannot be empty';
         isTitleOK = false;
-        update();
-      }
-    } else if (postModel.content.isEmpty) {
-      if (isContentOK) {
-        errorText = 'content cannot be empty';
-        isContentOK = false;
         update();
       }
     } else if (postModel.belongPids.isEmpty) {
@@ -274,23 +303,11 @@ class WritePostController extends GetxController {
   }
 
   // NOTE: 开关 tag 显示
-  void toggleTag() {
-    if (isTagShow) {
-      isTagShow = false;
-      if (tagsFocusNode.hasPrimaryFocus) {
-        tagsFocusNode.unfocus();
-        isTagInputShow = false;
-      }
-      if (contentFocusNode.hasPrimaryFocus) {
-        contentFocusNode.unfocus();
-        isTagShow = true;
-      }
-    } else {
-      if (contentFocusNode.hasPrimaryFocus) {
-        contentFocusNode.unfocus();
-      }
-      isTagShow = true;
-    }
+  void openTag() {
+    isTagShow = true;
+    isTagInputShow = true;
+    update();
+    tagsFocusNode.requestFocus();
 
     update();
   }
@@ -336,6 +353,7 @@ class WritePostController extends GetxController {
       } else {
         tagsTextEditingController.clear();
         postModel.tags.add(tag);
+        tag = '';
         update();
       }
     }
@@ -420,6 +438,7 @@ class WritePostController extends GetxController {
     packStream.bindStream(_packModule.getPackStream(
       uid: AppConstants.uuid,
     ));
+    titleFocusNode.requestFocus();
   }
 
   // NOTE: 监听是否聚焦 Content Input

@@ -6,6 +6,7 @@ import 'package:paclub/frontend/views/main/home/home_controller.dart';
 import 'package:paclub/frontend/views/main/home/home_follow/home_follow_page.dart';
 import 'package:paclub/frontend/views/main/home/home_hot/home_hot_page.dart';
 import 'package:paclub/frontend/views/main/app_controller.dart';
+import 'package:paclub/frontend/widgets/buttons/animated_scale_floating_action_button.dart';
 import 'package:paclub/frontend/widgets/buttons/scale_floating_action_button.dart';
 
 class HomeBody extends GetView<HomeController> {
@@ -54,15 +55,13 @@ class HomeBody extends GetView<HomeController> {
                     Tab(
                       child: Text(
                         '熱門',
-                        style: TextStyle(
-                            fontSize: 16.0, fontWeight: FontWeight.bold),
+                        style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
                       ),
                     ),
                     Tab(
                       child: Text(
                         '追蹤',
-                        style: TextStyle(
-                            fontSize: 16.0, fontWeight: FontWeight.bold),
+                        style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
                       ),
                     ),
                   ],
@@ -86,6 +85,11 @@ class HomeBody extends GetView<HomeController> {
           onPressed: () {
             controller.navigateToPostPage();
           },
+          child: Icon(
+            Icons.post_add,
+            color: Colors.white,
+            size: 32.0,
+          ),
         ),
       ),
     );

@@ -7,7 +7,7 @@ class PackTile extends StatelessWidget {
     Key? key,
     this.color,
     required this.packName,
-    required this.pid,
+    required this.description,
     required this.photoURL,
     this.onChanged,
     this.value,
@@ -16,7 +16,7 @@ class PackTile extends StatelessWidget {
   final bool? value;
   final Color? color;
   final String packName;
-  final String pid;
+  final String description;
   final String photoURL;
   final Function(bool?)? onChanged;
 
@@ -25,7 +25,6 @@ class PackTile extends StatelessWidget {
     return Container(
       color: value == true ? color : null,
       child: CheckboxListTile(
-        tileColor: accentColor,
         selectedTileColor: accentColor,
         title: Text(
           packName,
@@ -37,7 +36,7 @@ class PackTile extends StatelessWidget {
           ),
         ),
         subtitle: Text(
-          pid,
+          description,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
           style: TextStyle(

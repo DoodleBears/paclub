@@ -12,12 +12,9 @@ import 'package:paclub/utils/logger.dart';
 class CreatePackController extends GetxController {
   PackModule _packModule = Get.find<PackModule>();
   final List<String> avatarsUrl = [AppConstants.avatarURL];
-  final TextEditingController descriptionTextEditingController =
-      TextEditingController();
-  final TextEditingController packNameTextEditingController =
-      TextEditingController();
-  final TextEditingController tagsTextEditingController =
-      TextEditingController();
+  final TextEditingController descriptionTextEditingController = TextEditingController();
+  final TextEditingController packNameTextEditingController = TextEditingController();
+  final TextEditingController tagsTextEditingController = TextEditingController();
   final PackModel packModel = PackModel(
     ownerUid: AppConstants.uuid,
     ownerName: AppConstants.userName,
@@ -123,9 +120,8 @@ class CreatePackController extends GetxController {
           process = 1;
           processInfo = 'Uploading Image...';
           update(['progress_bar']);
-          AppResponse appResponseUploadPackPhoto =
-              await _packModule.uploadPackPhoto(
-                  imageFile: imageFile!, filePath: appResponseSetPack.data);
+          AppResponse appResponseUploadPackPhoto = await _packModule.uploadPackPhoto(
+              imageFile: imageFile!, filePath: appResponseSetPack.data);
           // NOTE: 成功上传 Pack 头图
 
           if (appResponseUploadPackPhoto.data != null) {
@@ -142,7 +138,8 @@ class CreatePackController extends GetxController {
               process = 3;
               processInfo = '';
               update(['progress_bar']);
-              cleanPackInfo();
+              // cleanPackInfo();
+              Get.back();
             }
           }
         }
