@@ -15,13 +15,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 // TODO: Pack Repository
 class PackRepository extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final CollectionReference _packsCollection =
-      FirebaseFirestore.instance.collection('packs');
+  final CollectionReference _packsCollection = FirebaseFirestore.instance.collection('packs');
   // MARK: 初始化
   @override
   void onInit() {
-    logger3.i('初始化 PackRepository' +
-        (useFirestoreEmulator ? '(useFirestoreEmulator)' : ''));
+    logger3.i('初始化 PackRepository' + (useFirestoreEmulator ? '(useFirestoreEmulator)' : ''));
     // 设定是否使用 Firebase Emulator
     if (useFirestoreEmulator) {
       _firestore.useFirestoreEmulator(localhost, firestorePort);
@@ -36,8 +34,7 @@ class PackRepository extends GetxController {
 
   @override
   void onClose() {
-    logger.w('关闭 PackRepository' +
-        (useFirestoreEmulator ? '(useFirestoreEmulator)' : ''));
+    logger.w('关闭 PackRepository' + (useFirestoreEmulator ? '(useFirestoreEmulator)' : ''));
     super.onClose();
   }
 
@@ -47,9 +44,8 @@ class PackRepository extends GetxController {
     required String uid,
   }) {
     return _packsCollection.where('ownerUid', isEqualTo: uid).snapshots().map(
-        (QuerySnapshot querySnapshot) => querySnapshot.docs
-            .map((doc) => PackModel.fromDoucumentSnapshot(doc))
-            .toList());
+        (QuerySnapshot querySnapshot) =>
+            querySnapshot.docs.map((doc) => PackModel.fromDoucumentSnapshot(doc)).toList());
   }
 
   // MARK: UPDATE 部分
@@ -58,13 +54,9 @@ class PackRepository extends GetxController {
     required String pid,
     required Map<String, dynamic> updateMap,
   }) async {
-    logger.i('更新Pack: $updateMap');
+    logger.i('更新Pack: $pid\n$updateMap');
 
-    return _packsCollection
-        .doc(pid)
-        .update(updateMap)
-        .timeout(const Duration(seconds: 10))
-        .then(
+    return _packsCollection.doc(pid).update(updateMap).timeout(const Duration(seconds: 10)).then(
       (_) async {
         logger.i('更新Pack成功, pid: $pid');
         return AppResponse(kUpdatePackSuccess, pid);
@@ -78,8 +70,6 @@ class PackRepository extends GetxController {
 
   // MARK: SET 部分
 
-  // TODO: Add Post to Pack 添加贴文到收纳盒
-
   /// ## NOTE: 添加 Pack 收纳盒
   Future<AppResponse> setPack({
     required PackModel packModel,
@@ -90,10 +80,7 @@ class PackRepository extends GetxController {
     logger.i('添加Pack : ${packModel.toJson()}');
     dataMap['pid'] = documentReference.id;
 
-    return documentReference
-        .set(dataMap)
-        .timeout(const Duration(seconds: 10))
-        .then(
+    return documentReference.set(dataMap).timeout(const Duration(seconds: 10)).then(
       (_) async {
         logger.i('添加箱子成功, pid: ${documentReference.id}');
         return AppResponse(kAddPackSuccess, documentReference.id);

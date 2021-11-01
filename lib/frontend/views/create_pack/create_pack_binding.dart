@@ -16,8 +16,9 @@ class CreatePackBinding implements Bindings {
     logger.wtf('[自动绑定]依赖注入 —— CreatePackBinding');
 
     /// Controller 用到的 Module 和 API
-    Get.lazyPut<FirebaseStorageRepository>(() => FirebaseStorageRepository());
-    Get.lazyPut<FirebaseStorageApi>(() => FirebaseStorageApi());
+    Get.put<FirebaseStorageRepository>(FirebaseStorageRepository());
+    Get.put<FirebaseStorageApi>(FirebaseStorageApi());
+
     Get.lazyPut<PackRepository>(() => PackRepository());
     Get.lazyPut<PackApi>(() => PackApi());
     Get.lazyPut<PackModule>(() => PackModule());

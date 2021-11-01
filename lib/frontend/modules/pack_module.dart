@@ -22,17 +22,6 @@ class PackModule extends GetxController {
         imageFile: imageFile, filePath: 'packPhoto/$filePath');
   }
 
-  Future<AppResponse> uploadPostImage({
-    required File imageFile,
-    required String filePath,
-  }) async {
-    final FirebaseStorageApi _firebaseStorageApi =
-        Get.find<FirebaseStorageApi>();
-
-    return _firebaseStorageApi.uploadImage(
-        imageFile: imageFile, filePath: 'packPhoto/$filePath');
-  }
-
   // MARK: GET 部分
   /// ## NOTE: 获取 Pack 的 Stream
   Stream<List<PackModel>> getPackStream({

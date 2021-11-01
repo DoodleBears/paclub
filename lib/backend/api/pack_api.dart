@@ -9,6 +9,13 @@ class PackApi extends GetxController {
 
   // MARK: GET 部分
   /// ## NOTE: 获取 Pack 的 Stream
+  /// ## 传入参数
+  /// - [uid] user id
+  ///
+  /// ## 回传值
+  /// - [AppResponse]
+  ///   - message: [String] 错误代码
+  ///   - data: 成功: [Stream] Packs Stream 收纳盒的流 | 失败: null
   Stream<List<PackModel>> getPackStream({
     required String uid,
   }) =>
@@ -16,6 +23,14 @@ class PackApi extends GetxController {
 
   // MARK: UPDATE 部分
   /// ## NOTE: 更新 Pack 收纳盒
+  /// ## 传入参数
+  /// - [pid] Pack Id
+  /// - [updateMap] Pack 更新的 Map - key:value
+  ///
+  /// ## 回传值
+  /// - [AppResponse]
+  ///   - message: [String] 错误代码
+  ///   - data: 成功: [String] Pack ID 收纳盒 ID | 失败: null
   Future<AppResponse> updatePack({
     required String pid,
     required Map<String, dynamic> updateMap,

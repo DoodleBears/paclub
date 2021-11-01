@@ -3,25 +3,29 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:paclub/frontend/modules/pack_module.dart';
+import 'package:paclub/frontend/modules/post_module.dart';
 import 'package:paclub/frontend/routes/app_pages.dart';
 import 'package:paclub/frontend/utils/gesture.dart';
 import 'package:paclub/frontend/views/write_post/components/draggable_scrollable_attachable_sheet.dart';
+import 'package:paclub/frontend/widgets/widgets.dart';
 import 'package:paclub/helper/app_constants.dart';
 import 'package:paclub/helper/image_helper.dart';
 import 'package:paclub/models/pack_model.dart';
 import 'package:paclub/models/post_model.dart';
+import 'package:paclub/utils/app_response.dart';
 import 'package:paclub/utils/logger.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
 
 class WritePostController extends GetxController {
   final PackModule _packModule = Get.find<PackModule>();
-  final TextEditingController textEditingController = TextEditingController();
-  final TextEditingController textEditingControllerCopy =
-      TextEditingController();
+  final PostModule _postModule = Get.find<PostModule>();
+
+  final TextEditingController titleTextController = TextEditingController();
+  final TextEditingController contentTextController = TextEditingController();
+  final TextEditingController contentTextControllerCopy = TextEditingController();
+  final TextEditingController tagsTextEditingController = TextEditingController();
   final SheetController bottomSheetController = SheetController();
   final ScrollController tagsScrollController = ScrollController();
-  final TextEditingController tagsTextEditingController =
-      TextEditingController();
   final FocusNode tagsFocusNode = FocusNode();
   final FocusNode contentFocusNode = FocusNode();
   final PostModel postModel = PostModel(
@@ -29,7 +33,7 @@ class WritePostController extends GetxController {
     ownerName: AppConstants.userName,
     ownerAvatarURL: AppConstants.avatarURL,
     title: '',
-    editorInfo: {},
+    content: '',
     tags: [],
   );
   double imageBlockVerticalPadding = 8.0;
@@ -52,29 +56,116 @@ class WritePostController extends GetxController {
   bool isTagOK = true;
   String tag = '';
   String errorText = '';
+  int process = 0;
+  String processInfo = '';
 
   final packStream = <PackModel>[].obs;
   List<PackModel> packList = <PackModel>[];
   Map<String, bool> packCheckedList = {};
 
   // MARK: 创建 Post 相关 Methods
-  void createPost() async {
-    logger.d('createPost');
+  void createPost(BuildContext context) async {
     if (isLoading) {
       return;
     }
-    if (checkPackInfo()) {
+
+    if (checkPostInfo(context)) {
+      process = 0;
+      processInfo = 'Creating Post...';
+      update(['progress_bar']);
       isLoading = true;
       update();
-      await Future.delayed(const Duration(seconds: 2));
-      isLoading = false;
-      update();
+      // NOTE: 创建 Post
+      AppResponse appResponseSetPost = await _postModule.setPost(postModel: postModel);
+
+      if (appResponseSetPost.data != null) {
+        process = 1;
+        if (imageFiles.isNotEmpty) {
+          // NOTE: 如果 imageFiles 不为空 更新 Post PhotoURLs
+          processInfo = 'Uploading Image $process';
+          update(['progress_bar']);
+          bool isUploadSuccess = true;
+          final List<String> tempPhotoURLs = List.filled(imageFiles.length, '');
+
+          for (int imageIndex = 0; imageIndex < imageFiles.length; imageIndex++) {
+            AppResponse appResponseUploadPostPhoto = await _postModule.uploadPostImage(
+              imageFile: imageFiles[imageIndex],
+              postId: appResponseSetPost.data,
+              imageIndex: imageIndex,
+            );
+            if (appResponseUploadPostPhoto.data != null) {
+              // 添加上传成功的 URL
+              tempPhotoURLs[imageIndex] = appResponseUploadPostPhoto.data;
+              if (imageIndex == imageFiles.length - 1) {
+                break;
+              }
+              process++;
+              processInfo = 'Uploading Image $process';
+              update(['progress_bar']);
+            } else {
+              isUploadSuccess = false;
+              break;
+            }
+          }
+
+          // NOTE: 如果成功上传 Post 图片
+          if (isUploadSuccess) {
+            AppResponse appResponseUpdatePack = await _postModule.updatePost(
+              postId: appResponseSetPost.data,
+              updateMap: {
+                'photoURLs': tempPhotoURLs,
+              },
+            );
+
+            if (appResponseUpdatePack.data != null) {
+              cleanPostInfo();
+            }
+          } else {
+            createFail();
+          }
+        } else {
+          cleanPostInfo();
+        }
+      } else {
+        createFail();
+      }
     }
+    isLoading = false;
+    update();
   }
 
+  // NOTE: 上传失败后的报错
+  void createFail() {
+    processInfo = 'Create Fail';
+    process = 2 + imageFiles.length;
+    update(['progress_bar']);
+  }
+
+  // NOTE: 上传成功后清空
+  void cleanPostInfo() {
+    process++;
+    processInfo = 'Create Post';
+    packCheckedList.updateAll((key, _) => false);
+    titleTextController.clear();
+    tagsTextEditingController.clear();
+    contentTextController.clear();
+    contentTextControllerCopy.clear();
+    postModel.title = '';
+    postModel.tags.clear();
+    postModel.content = '';
+    postModel.belongPids.clear();
+    assetEntities?.clear();
+    imageFiles.clear();
+    update();
+    update(['bottomSheet']);
+    update(['progress_bar']);
+  }
+
+  // NOTE: 挑选多张图片
   void pickImages(BuildContext context) async {
     List<AssetEntity>? tempAssetEntities =
         await pickMultiImage(context: context, selectedAssets: assetEntities);
+    // NOTE: 当挑选的图片有变动的时候才重新渲染
     if (tempAssetEntities != null) {
       assetEntities = List.from(tempAssetEntities);
       List<File?> tempFiles = [];
@@ -105,6 +196,7 @@ class WritePostController extends GetxController {
     }
   }
 
+  // NOTE: 删除特定图片
   void removePostPhoto(int index) {
     // logger.d('移除 Pack Photo 成功');
     imageFiles.removeAt(index);
@@ -135,23 +227,22 @@ class WritePostController extends GetxController {
     }
   }
 
-  // NOTE: 当 packName 被编辑的时候触发
+  // NOTE: 当 content 被编辑的时候触发
   void onContentChanged(String content) {
     postModel.content = content.trim();
-    textEditingControllerCopy.text = content;
+    contentTextControllerCopy.text = content;
     if (isContentOK == false) {
       isContentOK = true;
       update();
     }
   }
 
-  // NOTE: 当 packName 被编辑的时候触发
-  bool checkPackInfo() {
+  // NOTE: 当要创建 Post 的时候触发
+  bool checkPostInfo(BuildContext context) {
     isPostOK = false;
     if (postModel.title.isEmpty) {
       if (isTitleOK) {
         errorText = 'title cannot be empty';
-        logger.d(errorText);
         isTitleOK = false;
         update();
       }
@@ -161,6 +252,11 @@ class WritePostController extends GetxController {
         isContentOK = false;
         update();
       }
+    } else if (postModel.belongPids.isEmpty) {
+      toastTop('Select at least one Pack');
+      if (isBottomSheetShow == false) {
+        toggleBottomSheet(context);
+      }
     } else {
       isPostOK = true;
     }
@@ -168,7 +264,8 @@ class WritePostController extends GetxController {
   }
 
   // MARK: Tag 相关的 Methods
-  void scrollToBottom() {
+  // NOTE: 滚动 tag row 的最后（知道可以看到最后一个 Tag）
+  void scrollToTagsRowBottom() {
     tagsScrollController.animateTo(
       tagsScrollController.position.maxScrollExtent,
       duration: const Duration(milliseconds: 300),
@@ -176,6 +273,7 @@ class WritePostController extends GetxController {
     );
   }
 
+  // NOTE: 开关 tag 显示
   void toggleTag() {
     if (isTagShow) {
       isTagShow = false;
@@ -197,11 +295,12 @@ class WritePostController extends GetxController {
     update();
   }
 
+  // NOTE: 开关 tag input 标签输入显示
   void toggleTagInput() {
     isTagInputShow = !isTagInputShow;
     if (isTagInputShow == true) {
       tagsFocusNode.requestFocus();
-      scrollToBottom();
+      scrollToTagsRowBottom();
     } else {
       if (tagsFocusNode.hasPrimaryFocus) {
         tagsFocusNode.unfocus();
@@ -223,6 +322,7 @@ class WritePostController extends GetxController {
   void addTag() {
     tag = tag.trim();
     if (tag.isNotEmpty) {
+      // logger.d('添加 Tag: $tag');
       if (postModel.tags.any((element) => element == tag)) {
         if (isTagOK) {
           isTagOK = false;
@@ -243,6 +343,7 @@ class WritePostController extends GetxController {
 
   // NOTE: 删除 Tag
   void deleteTag(String tag) {
+    // logger.d('删除 Tag: $tag');
     postModel.tags.remove(tag);
     update();
   }
@@ -280,6 +381,13 @@ class WritePostController extends GetxController {
     if (value != null) {
       packCheckedList[packList[index].pid] = value;
       update(['bottomSheet']);
+      if (value == true) {
+        // logger.d('添加 pid: ${packList[index].pid}');
+        postModel.belongPids.add(packList[index].pid);
+      } else if (value == false) {
+        // logger.d('删除 pid: ${packList[index].pid}');
+        postModel.belongPids.remove(packList[index].pid);
+      }
     }
   }
 
@@ -289,6 +397,8 @@ class WritePostController extends GetxController {
     Get.toNamed(Routes.CREATEPACK);
   }
 
+  // MARK: 初始化
+  // NOTE: Controller 初始化
   @override
   void onInit() {
     logger.i('启用 WritePostController');
@@ -303,6 +413,7 @@ class WritePostController extends GetxController {
     super.onInit();
   }
 
+  // NOTE: Controller 初始化完成之后
   @override
   void onReady() {
     super.onReady();
@@ -328,6 +439,7 @@ class WritePostController extends GetxController {
     }
   }
 
+  // NOTE: 监听是否聚焦 Tags Input
   void listenTagsInput() {
     // NOTE: 当 Tags Input Field 失去焦点的时候, 如果 Field 在显示, 则自动关闭
     if (tagsFocusNode.hasFocus == false && isTagInputShow) {
@@ -336,10 +448,12 @@ class WritePostController extends GetxController {
     }
   }
 
+  // NOTE: 排序 Pack —— 按最后一次更新时间排序，最近更新过的排在前面
   int sortPack(PackModel a, PackModel b) {
     return b.lastUpdateAt.compareTo(a.lastUpdateAt);
   }
 
+  // NOTE: 监听 Pack 的 Stream
   void listenPackStream(List<PackModel> list) {
     packList = List.from(list);
     for (PackModel pack in packList) {
@@ -351,6 +465,7 @@ class WritePostController extends GetxController {
     update(['bottomSheet']);
   }
 
+  // NOTE: Controller 关闭
   @override
   void onClose() {
     contentFocusNode.removeListener(listenContentInput);

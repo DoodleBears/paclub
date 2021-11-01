@@ -1,28 +1,29 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-// TODO: Post 的内容
 class PostModel {
   late String postId;
   late String ownerUid;
   late String ownerName;
   late String ownerAvatarURL;
   late String title;
-  late String content;
-  late String photoURL;
   late List<String> tags = <String>[];
-  late Map<String, dynamic> editorInfo; // key: uid, value: ~~~
-  late Timestamp createdAt;
-  late Timestamp lastUpdateAt;
+  late String content;
+  late List<String> photoURLs = <String>[];
+  late List<String> belongPids = <String>[]; // 所属的 packs (pack >= 1)
+  late Timestamp createdAt; // Post 创建时间
+  late Timestamp lastEditedAt; // Post 上次修改时间
+  late int thumbUpCount;
+  late int favoriteCount;
+  late int shareCount;
+  late int commentCount;
 
   PostModel({
     required this.ownerUid,
     required this.ownerName,
+    required this.ownerAvatarURL,
     required this.title,
-    this.ownerAvatarURL = '',
-    required this.editorInfo,
+    required this.content,
     required this.tags,
-    this.content = '',
-    this.photoURL = '',
   });
 
   PostModel.fromDoucumentSnapshot(DocumentSnapshot documentSnapshot) {
@@ -33,31 +34,38 @@ class PostModel {
       ownerName = data['ownerName'];
       ownerAvatarURL = data['ownerAvatarURL'];
       title = data['title'];
-      content = data['content'];
-      photoURL = data['photoURL'];
       List<dynamic> tempTags = data['tags'];
-      tags = tempTags.map((e) => e.toString()).toList();
-      editorInfo = data['editorInfo'];
+      tags = tempTags.map((tag) => tag.toString()).toList();
+      content = data['content'];
+      List<dynamic> tempPhotoURLs = data['photoURLs'];
+      photoURLs = tempPhotoURLs.map((url) => url.toString()).toList();
+      List<dynamic> tempBelongPids = data['belongPids'];
+      belongPids = tempBelongPids.map((url) => url.toString()).toList();
       createdAt = data['createdAt'];
-      lastUpdateAt = data['lastUpdateAt'];
+      lastEditedAt = data['lastEditedAt'];
     } else {
       throw Exception('Null DocumentSnapshot');
     }
   }
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toJson({required String postId}) {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    // NOTE: 之所以没有 pid 是因为 pid 是在存入 Firestore 的时候生成的
+    // NOTE: 之所以没有 postId 是因为 postId 是在存入 Firestore 的时候生成的
+    data['postId'] = postId;
     data['ownerUid'] = ownerUid;
     data['ownerName'] = ownerName;
     data['ownerAvatarURL'] = ownerAvatarURL;
     data['title'] = title;
-    data['content'] = content;
-    data['photoURL'] = photoURL;
     data['tags'] = tags;
-    data['editorInfo'] = editorInfo;
+    data['content'] = content;
+    data['photoURLs'] = photoURLs;
+    data['belongPids'] = belongPids;
     data['createdAt'] = FieldValue.serverTimestamp();
-    data['lastUpdateAt'] = FieldValue.serverTimestamp();
+    data['lastEditedAt'] = FieldValue.serverTimestamp();
+    data['thumbUpCount'] = 0;
+    data['collectCount'] = 0;
+    data['shareCount'] = 0;
+    data['commentCount'] = 0;
 
     return data;
   }

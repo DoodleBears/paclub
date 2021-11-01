@@ -19,7 +19,7 @@ class FirebaseStorageRepository extends GetxController {
     try {
       await _storage.ref(filePath).putFile(imageFile);
       String avatarURL = await _storage.ref(filePath).getDownloadURL();
-      logger.i('图像上传成功, URL: $avatarURL');
+      logger.i('图像上传成功, URL: $filePath/$avatarURL');
       return AppResponse(kUploadImageSuccess, avatarURL);
     } on FirebaseException catch (e) {
       logger3.e('上传图像失败, 错误代码: ${e.code}');

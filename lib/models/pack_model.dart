@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-// TODO: Recent Post 的内容
 class PackModel {
   late String pid;
   late String ownerUid;
@@ -13,6 +12,11 @@ class PackModel {
   late Map<String, dynamic> editorInfo; // key: uid, value: ~~~
   late Timestamp createdAt;
   late Timestamp lastUpdateAt;
+  late int thumbUpCount;
+  late int favoriteCount;
+  late int shareCount;
+  late int commentCount;
+  // TODO: 在 Pack 中添加 Recent Posts
 
   PackModel({
     required this.ownerUid,
@@ -58,6 +62,10 @@ class PackModel {
     data['editorInfo'] = editorInfo;
     data['createdAt'] = FieldValue.serverTimestamp();
     data['lastUpdateAt'] = FieldValue.serverTimestamp();
+    data['thumbUpCount'] = 0;
+    data['collectCount'] = 0;
+    data['shareCount'] = 0;
+    data['commentCount'] = 0;
 
     return data;
   }
