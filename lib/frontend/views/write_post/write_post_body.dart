@@ -156,7 +156,8 @@ class WritePostBody extends GetView<WritePostController> {
                       // NOTE: tags
                       GetBuilder<WritePostController>(
                         builder: (_) {
-                          if (controller.isContentFocused) {
+                          if (controller.isContentFocused ||
+                              controller.isTagShow == false) {
                             return SizedBox.shrink();
                           }
                           WidgetsBinding.instance!
@@ -368,11 +369,13 @@ class WritePostBody extends GetView<WritePostController> {
                             return SizedBox.shrink();
                           }
                           final List<Widget> widgets = [];
+                          double height = 0.0;
+                          double width = 0.0;
                           for (int index = 0;
                               index < controller.imageFiles.length;
                               index++) {
-                            double height = controller.imageHeight;
-                            double width = controller.imageHeight *
+                            height = controller.imageHeight;
+                            width = controller.imageHeight *
                                 controller.imageFilesRatio[index];
                             if (controller.imageFiles.length == 1 &&
                                 controller.imageFilesRatio[index] > 1) {
@@ -380,6 +383,7 @@ class WritePostBody extends GetView<WritePostController> {
                                   controller.imageFilesRatio[index];
                               width = controller.imageHeight;
                             }
+
                             widgets.add(
                               Padding(
                                 padding: controller.imageBlockPadding,
@@ -426,7 +430,8 @@ class WritePostBody extends GetView<WritePostController> {
                             );
                           }
                           return FadeInScaleContainer(
-                            height: controller.imageBlockHeight + 10.0,
+                            height: height +
+                                controller.imageBlockVerticalPadding * 2,
                             isShow: controller.imageFiles.length > 0,
                             scaleDuration: const Duration(milliseconds: 300),
                             scaleCurve: Curves.easeOutCubic,
@@ -476,7 +481,6 @@ class WritePostBody extends GetView<WritePostController> {
               ),
             ),
           ),
-
           // NOTE: Functions
           Positioned(
             bottom: Platform.isIOS ? 64.0 : 48.0,
@@ -507,9 +511,11 @@ class WritePostBody extends GetView<WritePostController> {
                     ),
                   ),
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      controller.toggleTag();
+                    },
                     icon: Icon(
-                      Icons.timer,
+                      Icons.tag_rounded,
                       size: 28.0,
                     ),
                   ),

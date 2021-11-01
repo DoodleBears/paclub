@@ -45,6 +45,7 @@ class WritePostController extends GetxController {
   bool isTitleOK = true;
   bool isContentOK = true;
   bool isContentFocused = false;
+  bool isTagShow = false;
   bool isTagInputShow = false;
   bool isBottomSheetShow = false;
   bool isLoading = false;
@@ -173,6 +174,27 @@ class WritePostController extends GetxController {
       duration: const Duration(milliseconds: 300),
       curve: Curves.easeOutCubic,
     );
+  }
+
+  void toggleTag() {
+    if (isTagShow) {
+      isTagShow = false;
+      if (tagsFocusNode.hasPrimaryFocus) {
+        tagsFocusNode.unfocus();
+        isTagInputShow = false;
+      }
+      if (contentFocusNode.hasPrimaryFocus) {
+        contentFocusNode.unfocus();
+        isTagShow = true;
+      }
+    } else {
+      if (contentFocusNode.hasPrimaryFocus) {
+        contentFocusNode.unfocus();
+      }
+      isTagShow = true;
+    }
+
+    update();
   }
 
   void toggleTagInput() {
