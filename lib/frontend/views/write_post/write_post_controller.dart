@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:paclub/frontend/modules/pack_module.dart';
 import 'package:paclub/frontend/modules/post_module.dart';
@@ -70,6 +71,8 @@ class WritePostController extends GetxController {
     if (isLoading) {
       return;
     }
+    logger.i('createPost');
+    HapticFeedback.lightImpact();
 
     if (checkPostInfo(context)) {
       process = 0;
@@ -396,6 +399,7 @@ class WritePostController extends GetxController {
 
   // NOTE: 当 PackTile 的 Checked 状态改变的时候
   void onPackTileChanged(bool? value, int index) {
+    HapticFeedback.selectionClick();
     if (value != null) {
       packCheckedList[packList[index].pid] = value;
       update(['bottomSheet']);

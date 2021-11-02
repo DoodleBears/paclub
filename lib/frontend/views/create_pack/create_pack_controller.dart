@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:paclub/frontend/modules/pack_module.dart';
 import 'package:paclub/helper/app_constants.dart';
@@ -102,6 +103,9 @@ class CreatePackController extends GetxController {
     if (isLoading) {
       return;
     }
+    logger.i('createPack');
+    HapticFeedback.lightImpact();
+
     if (checkPackInfo()) {
       process = 0;
       processInfo = 'Creating Pack...';

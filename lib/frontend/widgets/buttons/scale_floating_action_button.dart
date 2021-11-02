@@ -41,18 +41,23 @@ class _ScaleFloatingActionButtonState extends State<ScaleFloatingActionButton> {
         curve: Curves.easeOutCubic,
         transform: Matrix4.identity()
           ..translate(
-            isButtonPressed ? 4.0 : 0.0,
-            isButtonPressed ? 4.0 : 0.0,
+            isButtonPressed ? 5.4 : 0.0,
+            isButtonPressed ? 5.4 : 0.0,
           )
           ..scale(isButtonPressed ? 0.82 : 1.0, isButtonPressed ? 0.82 : 1.0),
         child: ElevatedButton(
           onPressed: () {},
           clipBehavior: Clip.hardEdge,
-          style: ElevatedButton.styleFrom(
-            primary: accentColor,
-            padding: EdgeInsets.all(12.0),
-            shape: CircleBorder(),
-            elevation: 4.0,
+          style: ButtonStyle(
+            backgroundColor: MaterialStateProperty.all(accentColor),
+            padding: MaterialStateProperty.all(EdgeInsets.all(12.0)),
+            shape: MaterialStateProperty.all(CircleBorder()),
+            elevation: MaterialStateProperty.resolveWith((states) {
+              if (states.contains(MaterialState.pressed)) {
+                return 2.0;
+              }
+              return 4.0;
+            }),
             splashFactory: NoSplash.splashFactory,
           ),
           child: widget.child,
