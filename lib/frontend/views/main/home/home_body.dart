@@ -6,7 +6,6 @@ import 'package:paclub/frontend/views/main/home/home_controller.dart';
 import 'package:paclub/frontend/views/main/home/home_follow/home_follow_page.dart';
 import 'package:paclub/frontend/views/main/home/home_hot/home_hot_page.dart';
 import 'package:paclub/frontend/views/main/app_controller.dart';
-import 'package:paclub/frontend/widgets/buttons/animated_scale_floating_action_button.dart';
 import 'package:paclub/frontend/widgets/buttons/scale_floating_action_button.dart';
 
 class HomeBody extends GetView<HomeController> {

@@ -44,8 +44,7 @@ class Tabs extends GetView<TabsController> {
             child: GetBuilder<TabsController>(builder: (_) {
               return Scaffold(
                 backgroundColor: AppColors.bottomNavigationBarBackgroundColor,
-                body: pageList[
-                    controller.currentIndex], // 从controller 得知当前应该显示哪个page
+                body: pageList[controller.currentIndex], // 从controller 得知当前应该显示哪个page
                 bottomNavigationBar: Stack(
                   children: [
                     BottomNavigationBar(
@@ -54,19 +53,13 @@ class Tabs extends GetView<TabsController> {
                       currentIndex: controller.currentIndex,
                       elevation: 0.0,
                       backgroundColor: Colors.transparent,
-
                       onTap: (int index) {
                         controller.setIndex(index);
                       },
-
                       showSelectedLabels: false,
                       selectedItemColor: AppColors.bottomNavigationBarTabColor,
                       type: BottomNavigationBarType.fixed,
                       iconSize: Get.width * 0.07,
-                      // unselectedLabelStyle:
-                      //     TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
-                      // selectedLabelStyle:
-                      //     TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
                       items: [
                         BottomNavigationBarItem(
                           icon: Icon(Icons.home_outlined),

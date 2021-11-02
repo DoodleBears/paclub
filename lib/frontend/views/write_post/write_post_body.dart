@@ -772,7 +772,7 @@ class WritePostBody extends GetView<WritePostController> {
                         GetBuilder<WritePostController>(
                           builder: (_) {
                             return Padding(
-                              padding: const EdgeInsets.only(bottom: 20.0),
+                              padding: EdgeInsets.only(bottom: Platform.isIOS ? 32.0 : 20.0),
                               child: AnimatedScaleFloatingActionButton(
                                 isButtonShow: controller.postModel.title.isNotEmpty &&
                                     controller.postModel.belongPids.isNotEmpty,

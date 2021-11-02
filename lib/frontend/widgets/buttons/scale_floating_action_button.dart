@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:paclub/frontend/constants/colors.dart';
 
 class ScaleFloatingActionButton extends StatefulWidget {
   const ScaleFloatingActionButton({Key? key, required this.onPressed, required this.child})
@@ -44,12 +45,16 @@ class _ScaleFloatingActionButtonState extends State<ScaleFloatingActionButton> {
             isButtonPressed ? 4.0 : 0.0,
           )
           ..scale(isButtonPressed ? 0.82 : 1.0, isButtonPressed ? 0.82 : 1.0),
-        child: FloatingActionButton(
+        child: ElevatedButton(
           onPressed: () {},
-          elevation: 4.0,
-          hoverElevation: 0.0,
-          highlightElevation: 2.0,
-          focusElevation: 0.0,
+          clipBehavior: Clip.hardEdge,
+          style: ElevatedButton.styleFrom(
+            primary: accentColor,
+            padding: EdgeInsets.all(12.0),
+            shape: CircleBorder(),
+            elevation: 4.0,
+            splashFactory: NoSplash.splashFactory,
+          ),
           child: widget.child,
         ),
       ),

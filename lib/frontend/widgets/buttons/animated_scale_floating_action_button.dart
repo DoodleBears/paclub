@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:paclub/frontend/constants/colors.dart';
 
 class AnimatedScaleFloatingActionButton extends StatefulWidget {
   const AnimatedScaleFloatingActionButton(
@@ -38,7 +39,7 @@ class _AnimatedScaleFloatingActionButtonState extends State<AnimatedScaleFloatin
         widget.onPressed();
       },
       child: AnimatedContainer(
-        width: widget.isButtonShow ? 60.0 : 0.0,
+        height: widget.isButtonShow ? 60.0 : 0.0,
         duration: const Duration(milliseconds: 250),
         curve: Curves.easeOutCubic,
         transform: Matrix4.identity()
@@ -47,13 +48,16 @@ class _AnimatedScaleFloatingActionButtonState extends State<AnimatedScaleFloatin
             isButtonPressed ? 4.0 : 0.0,
           )
           ..scale(isButtonPressed ? 0.82 : 1.0, isButtonPressed ? 0.82 : 1.0),
-        child: FloatingActionButton(
+        child: ElevatedButton(
           onPressed: () {},
-          elevation: widget.isButtonShow ? 4.0 : 0.0,
           clipBehavior: Clip.hardEdge,
-          hoverElevation: 0.0,
-          highlightElevation: 2.0,
-          focusElevation: 0.0,
+          style: ElevatedButton.styleFrom(
+            primary: accentColor,
+            padding: EdgeInsets.all(12.0),
+            shape: CircleBorder(),
+            elevation: widget.isButtonShow ? 4.0 : 0.0,
+            splashFactory: NoSplash.splashFactory,
+          ),
           child: AnimatedContainer(
             duration: const Duration(milliseconds: 300),
             curve: Curves.easeOutCirc,
