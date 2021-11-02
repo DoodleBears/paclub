@@ -128,6 +128,7 @@ const accentLightColor = Color(0xFFB3D270);
 const accentDarkColor = Color(0xFF75D118);
 const primaryColor = Color(0xFFb8966f);
 const primaryLightColor = Color(0xFFd9b890);
+const primarySuperLightColor = Color(0xFFFCF4E9);
 const primaryDarkColor = Color(0xFF9c835b);
 const black = Colors.black;
 const grey100 = Color(0xFFF5F5F5);
@@ -143,7 +144,6 @@ Color hexToColor(String hex) {
       'hex color must be #rrggbb or #rrggbbaa');
 
   return Color(
-    int.parse(hex.substring(1), radix: 16) +
-        (hex.length == 7 ? 0xff000000 : 0x00000000),
+    int.parse(hex.substring(1), radix: 16) + (hex.length == 7 ? 0xff000000 : 0x00000000),
   );
 }

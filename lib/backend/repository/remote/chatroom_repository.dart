@@ -21,8 +21,7 @@ class ChatroomRepository extends GetxController {
   // MARK: 初始化
   @override
   void onInit() {
-    logger3.i('初始化 ChatroomRepository' +
-        (useFirestoreEmulator ? '(useFirestoreEmulator)' : ''));
+    logger3.i('初始化 ChatroomRepository' + (useFirestoreEmulator ? '(useFirestoreEmulator)' : ''));
     // 设定是否使用 Firebase Emulator
     if (useFirestoreEmulator) {
       _firestore.useFirestoreEmulator(localhost, firestorePort);
@@ -37,8 +36,7 @@ class ChatroomRepository extends GetxController {
 
   @override
   void onClose() {
-    logger.w('关闭 ChatroomRepository' +
-        (useFirestoreEmulator ? '(useFirestoreEmulator)' : ''));
+    logger.w('关闭 ChatroomRepository' + (useFirestoreEmulator ? '(useFirestoreEmulator)' : ''));
     super.onClose();
   }
 
@@ -55,9 +53,8 @@ class ChatroomRepository extends GetxController {
         .where('time', isGreaterThanOrEqualTo: enterRoomTimestamp)
         .orderBy('time')
         .snapshots()
-        .map((QuerySnapshot querySnapshot) => querySnapshot.docs
-            .map((doc) => ChatMessageModel.fromDoucumentSnapshot(doc))
-            .toList());
+        .map((QuerySnapshot querySnapshot) =>
+            querySnapshot.docs.map((doc) => ChatMessageModel.fromDoucumentSnapshot(doc)).toList());
   }
 
   /// ## NOTE: 获取聊天室历史消息
@@ -71,11 +68,9 @@ class ChatroomRepository extends GetxController {
     DocumentSnapshot? firstMessageDoc,
     Timestamp? enterRoomTimestamp,
   }) async {
-    assert(
-        (firstTime == true && enterRoomTimestamp != null) ||
-            firstMessageDoc != null ||
-            limit < 0,
+    assert((firstTime == true && enterRoomTimestamp != null) || firstMessageDoc != null,
         '请求更多历史消息需要有传入最旧(first)的消息做 pagination'); // 请求更多历史消息需要有传入最旧(first)的消息做 pagination
+    assert(limit > 0, 'limit must > 0');
 
     // 基础 query, 参考教程: https://youtu.be/poqTHxtDXwU
     final baseQuery = _chatroomsCollection
@@ -96,24 +91,21 @@ class ChatroomRepository extends GetxController {
                 .map((doc) => ChatMessageModel.fromDoucumentSnapshot(doc))
                 .toList());
         return AppResponse(
-            list.length < limit
-                ? kNoMoreHistoryMessage
-                : kLoadHistoryMessageSuccess,
-            list);
+            list.length < limit ? kNoMoreHistoryMessage : kLoadHistoryMessageSuccess, list);
       } on FirebaseException catch (e) {
-        AppResponse appResponse = AppResponse(
-            kLoadHistoryMessageFail, null, e.runtimeType.toString());
+        AppResponse appResponse =
+            AppResponse(kLoadHistoryMessageFail, null, e.runtimeType.toString());
         logger3.w('errorCode: ${e.code}' + appResponse.toString());
         return appResponse;
       } catch (e) {
-        AppResponse appResponse = AppResponse(
-            kLoadHistoryMessageFail, null, e.runtimeType.toString());
+        AppResponse appResponse =
+            AppResponse(kLoadHistoryMessageFail, null, e.runtimeType.toString());
         logger3.w(appResponse.toString());
         return appResponse;
       }
     }
 
-    /// ## NOTE: 如果不是第一次拉取历史消息，如：加载更多历史消息（需要startbefore，所以区别开）
+    /// ## NOTE: 如果不是第一次拉取历史消息，如:加载更多历史消息, 需要 [startAfterDocument]
     try {
       List<ChatMessageModel> list = await baseQuery
           .startAfterDocument(firstMessageDoc!)
@@ -124,14 +116,13 @@ class ChatroomRepository extends GetxController {
               .toList());
       // 获取成功，回传
       return AppResponse(
-          list.length < limit
-              ? kNoMoreHistoryMessage
-              : kLoadHistoryMessageSuccess,
-          list);
+          list.length < limit ? kNoMoreHistoryMessage : kLoadHistoryMessageSuccess, list);
     } on FirebaseException catch (e) {
       AppResponse appResponse =
           AppResponse(kLoadHistoryMessageFail, null, e.runtimeType.toString());
       logger3.w('errorCode: ${e.code}' + appResponse.toString());
+      logger3.w(e.plugin);
+      logger3.w(e.message);
       return appResponse;
     } catch (e) {
       AppResponse appResponse =
@@ -151,8 +142,7 @@ class ChatroomRepository extends GetxController {
       (doc) {
         logger.i('成功获取聊天室 Profile');
 
-        return AppResponse(
-            kGetChatroomInfoSuccess, ChatroomModel.fromDoucumentSnapshot(doc));
+        return AppResponse(kGetChatroomInfoSuccess, ChatroomModel.fromDoucumentSnapshot(doc));
       },
       onError: (e) {
         logger3.e('获取聊天室 Profile 失败');

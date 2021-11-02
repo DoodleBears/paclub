@@ -57,6 +57,14 @@ const String kAddPostSuccess = 'add_post_succeed';
 const String kUpdatePostFail = 'update_post_fail';
 const String kUpdatePostSuccess = 'update_post_succeed';
 
+const String kNoMoreHistoryPost = 'no_more_history_post';
+const String kLoadHistoryPostFail = 'load_history_post_fail';
+const String kLoadHistoryPostSuccess = 'load_history_post_succeed';
+
+const String kNoMoreNewPost = 'no_more_new_post';
+const String kLoadNewPostFail = 'load_new_post_fail';
+const String kLoadNewPostSuccess = 'load_new_post_succeed';
+
 // MARK: PackRepository 用到的 String
 const String kAddPackFail = 'add_pack_fail';
 const String kAddPackSuccess = 'add_pack_succeed';
@@ -64,6 +72,14 @@ const String kUpdatePackFail = 'update_pack_fail';
 const String kUpdatePackSuccess = 'update_pack_succeed';
 const String kAddPostToPackFail = 'add_post_to_pack_fail';
 const String kAddPostToPackSuccess = 'add_post_to_pack_succeed';
+
+const String kNoMoreHistoryPack = 'no_more_history_pack';
+const String kLoadHistoryPackFail = 'load_history_pack_fail';
+const String kLoadHistoryPackSuccess = 'load_history_pack_succeed';
+
+const String kNoMoreNewPack = 'no_more_new_pack';
+const String kLoadNewPackFail = 'load_new_pack_fail';
+const String kLoadNewPackSuccess = 'load_new_pack_succeed';
 // MARK: FirebaseAuthRepository 用到的 String
 
 const String kSignInRequiredError = 'sign_in_required';

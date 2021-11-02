@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:paclub/models/feed_model.dart';
 
-class PostModel {
+class PostModel implements FeedModel {
+  late DocumentSnapshot documentSnapshot;
   late String postId;
   late String ownerUid;
   late String ownerName;
@@ -10,11 +12,19 @@ class PostModel {
   late String content;
   late List<String> photoURLs = <String>[];
   late List<String> belongPids = <String>[]; // 所属的 packs (pack >= 1)
-  late Timestamp createdAt; // Post 创建时间
-  late Timestamp lastEditedAt; // Post 上次修改时间
+  @override
+  late Timestamp createdAt;
+  @override
+  late Timestamp lastUpdateAt;
+  @override
+  int feedType = 1;
+  @override
   late int thumbUpCount;
+  @override
   late int favoriteCount;
+  @override
   late int shareCount;
+  @override
   late int commentCount;
 
   PostModel({
@@ -29,6 +39,7 @@ class PostModel {
   PostModel.fromDoucumentSnapshot(DocumentSnapshot documentSnapshot) {
     if (documentSnapshot.data() != null) {
       Map data = documentSnapshot.data() as Map;
+      this.documentSnapshot = documentSnapshot;
       postId = documentSnapshot.id;
       ownerUid = data['ownerUid'];
       ownerName = data['ownerName'];
@@ -42,7 +53,11 @@ class PostModel {
       List<dynamic> tempBelongPids = data['belongPids'];
       belongPids = tempBelongPids.map((url) => url.toString()).toList();
       createdAt = data['createdAt'];
-      lastEditedAt = data['lastEditedAt'];
+      lastUpdateAt = data['lastUpdateAt'];
+      thumbUpCount = data['thumbUpCount'];
+      favoriteCount = data['favoriteCount'];
+      shareCount = data['shareCount'];
+      commentCount = data['commentCount'];
     } else {
       throw Exception('Null DocumentSnapshot');
     }
@@ -61,9 +76,9 @@ class PostModel {
     data['photoURLs'] = photoURLs;
     data['belongPids'] = belongPids;
     data['createdAt'] = FieldValue.serverTimestamp();
-    data['lastEditedAt'] = FieldValue.serverTimestamp();
+    data['lastUpdateAt'] = FieldValue.serverTimestamp();
     data['thumbUpCount'] = 0;
-    data['collectCount'] = 0;
+    data['favoriteCount'] = 0;
     data['shareCount'] = 0;
     data['commentCount'] = 0;
 

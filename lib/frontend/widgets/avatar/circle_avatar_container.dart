@@ -9,11 +9,13 @@ class CircleAvatarContainer extends StatelessWidget {
     required this.width,
     required this.height,
     this.isBorderShow = false,
+    this.replaceWidget,
   }) : super(key: key);
   final String avatarUrl;
   final double width;
   final double height;
   final bool isBorderShow;
+  final Widget? replaceWidget;
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +35,7 @@ class CircleAvatarContainer extends StatelessWidget {
                         )
                       : null,
                 ),
+                child: replaceWidget,
               )
             : Ink.image(
                 image: CachedNetworkImageProvider(avatarUrl),

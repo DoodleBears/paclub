@@ -10,9 +10,6 @@ import 'package:paclub/frontend/widgets/buttons/scale_floating_action_button.dar
 
 class HomeBody extends GetView<HomeController> {
   const HomeBody({Key? key}) : super(key: key);
-  Future<Null> getRefresh() async {
-    await Future.delayed(Duration(seconds: 2));
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,6 +17,7 @@ class HomeBody extends GetView<HomeController> {
       length: 2,
       child: Scaffold(
         body: NestedScrollView(
+          controller: controller.scrollController,
           floatHeaderSlivers: true,
           headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) {
             return <Widget>[
@@ -39,9 +37,25 @@ class HomeBody extends GetView<HomeController> {
                 // flexibleSpace: Placeholder(),
                 forceElevated: true,
                 elevation: 1.0,
-                title: Text(
-                  'Paclub',
-                  style: TextStyle(fontSize: 24.0, color: accentColor),
+                centerTitle: false,
+                title: Row(
+                  children: [
+                    Text(
+                      'Paclub',
+                      style: TextStyle(fontSize: 24.0, color: accentColor),
+                    ),
+                    Expanded(
+                      child: GestureDetector(
+                        onTap: () {
+                          controller.jumpToTop();
+                        },
+                        child: Container(
+                          color: Colors.transparent,
+                          height: 40.0,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
                 bottom: TabBar(
                   overlayColor: MaterialStateProperty.resolveWith(

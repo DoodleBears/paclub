@@ -1,70 +1,63 @@
 import 'package:flutter/material.dart';
+import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:paclub/frontend/constants/colors.dart';
-import 'package:paclub/frontend/constants/numbers.dart';
+import 'package:paclub/frontend/views/main/home/components/pack_feed_tile.dart';
+import 'package:paclub/frontend/views/main/home/components/post_feed_tile.dart';
+import 'package:paclub/frontend/views/main/home/home_hot/home_hot_controller.dart';
+import 'package:paclub/models/pack_model.dart';
+import 'package:paclub/models/post_model.dart';
+import 'package:paclub/utils/logger.dart';
 
-class HomeHotPage extends StatelessWidget {
+class HomeHotPage extends GetView<HomeHotController> {
   const HomeHotPage({Key? key}) : super(key: key);
-
-  Future<Null> getRefresh() async {
-    await Future.delayed(Duration(seconds: 2));
-  }
 
   @override
   Widget build(BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: getRefresh,
-      backgroundColor: accentColor,
-      color: Colors.white,
-      child: Container(
-        color: AppColors.homeListViewBackgroundColor,
-        child: ListView.builder(
-          physics: BouncingScrollPhysics(),
-          padding: EdgeInsets.zero,
-          itemCount: 40,
-          itemBuilder: (context, index) {
-            return GestureDetector(
-              onTap: () {
-                print('点击了 $index');
-              },
-              child: Card(
-                margin: EdgeInsets.symmetric(horizontal: 14.0, vertical: 8.0),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(borderRadius)),
-                elevation: 1.0,
-                child: Container(
-                  height: index % 2 == 0 ? 200 : null,
-                  alignment: Alignment.center,
-                  padding: EdgeInsets.symmetric(vertical: 20.0),
-                  child: ListTile(
-                    title: Text(
-                      'Paclub Hot $index',
-                      style: Theme.of(context).textTheme.headline1!.copyWith(
-                            fontSize: 25,
-                            fontWeight: FontWeight.bold,
-                          ),
+    return GetBuilder<HomeHotController>(
+      builder: (_) {
+        return RefreshIndicator(
+          backgroundColor: accentColor,
+          color: Colors.white,
+          onRefresh: controller.loadMoreNewFeed,
+          child: Container(
+            padding: EdgeInsets.zero,
+            color: AppColors.homeListViewBackgroundColor,
+            child: ListView.builder(
+              physics: BouncingScrollPhysics(),
+              padding: EdgeInsets.zero,
+              itemCount: controller.feedList.length,
+              itemBuilder: (context, index) {
+                // logger.d('build index: $index');
+                if (index + 1 == controller.feedList.length) {
+                  controller.loadMoreOldFeed(index + 1);
+                }
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 12.0),
+                  child: TextButton(
+                    style: ButtonStyle(
+                      shape: MaterialStateProperty.all(BeveledRectangleBorder()),
+                      padding: MaterialStateProperty.all(EdgeInsets.only(
+                        top: 12.0,
+                        left: 12.0,
+                        right: 12.0,
+                      )),
+                      backgroundColor: MaterialStateProperty.all(AppColors.containerBackground),
                     ),
-                    subtitle: Text(
-                      'Little Subtitle Test $index and $index',
-                      maxLines: 1, //最多顯示行數
-                      overflow: TextOverflow.ellipsis, //以...顯示沒顯示的文字,,
-                      style: TextStyle(fontSize: 15),
-                    ),
-                    leading: Icon(
-                      Icons.account_box,
-                      size: 40,
-                      color: Colors.blue,
-                    ),
-                    trailing: Icon(
-                      Icons.chevron_right,
-                      size: 40,
-                    ),
+                    onPressed: () {
+                      print('点击了 $index');
+                    },
+                    child: controller.feedList[index].feedType == 0
+                        ? PackFeedTile(
+                            packModel: controller.feedList[index] as PackModel,
+                          )
+                        : PostFeedTile(postModel: controller.feedList[index] as PostModel),
                   ),
-                ),
-              ),
-            );
-          },
-        ),
-      ),
+                );
+              },
+            ),
+          ),
+        );
+      },
     );
   }
 }

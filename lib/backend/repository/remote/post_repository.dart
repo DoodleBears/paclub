@@ -39,7 +39,100 @@ class PostRepository extends GetxController {
   }
 
   // MARK: GET 部分
-  /// ## NOTE: 获取 Pack 的 Stream
+  /// ## NOTE: 获取刚新发布的 Post 流 （比当前第一条 Post Feed，更加新的）
+  Future<AppResponse> getNewFeedPosts({
+    required DocumentSnapshot firstPostDoc,
+  }) async {
+    logger.i('开始 getNewFeedPosts');
+
+    /// ## NOTE: 如果不是第一次拉取 Post，如:加载更多 Post 需要 [startAfterDocument]
+    try {
+      List<PostModel> newPostList = await _postsCollection
+          .orderBy('lastUpdateAt', descending: true)
+          .endBeforeDocument(firstPostDoc) // 这里在目前的 第一条 Post Feed 前截止
+          .get(GetOptions(source: Source.server))
+          .timeout(const Duration(seconds: 15)) // 15秒钟超时限制
+          .then((QuerySnapshot querySnapshot) =>
+              querySnapshot.docs.map((doc) => PostModel.fromDoucumentSnapshot(doc)).toList());
+      // 获取成功，回传
+      return AppResponse(kLoadNewPostSuccess, newPostList);
+    } on FirebaseException catch (e) {
+      AppResponse appResponse = AppResponse(kLoadNewPostFail, null, e.runtimeType.toString());
+      logger3.w('errorCode: ${e.code}' + appResponse.toString());
+      logger3.w(e.plugin);
+      logger3.w(e.message);
+      return appResponse;
+    } catch (e) {
+      AppResponse appResponse = AppResponse(kLoadNewPostFail, null, e.runtimeType.toString());
+      logger3.e(appResponse.toString());
+      e.printError();
+      return appResponse;
+    }
+  }
+
+  /// ## NOTE: 获取首页 Post 流
+  Future<AppResponse> getFeedPosts({
+    required int limit,
+    required bool firstTime,
+    DocumentSnapshot? lastPostDoc,
+  }) async {
+    assert(firstTime == true || lastPostDoc != null,
+        'if firstTime == false then lastPostDoc cannot be null'); // 请求更多历史消息需要有传入最旧(first)的消息做 pagination
+    assert(limit > 0, 'limit must > 0');
+    logger.i('getFeedPosts');
+
+    // 基础 query, 参考教程: https://youtu.be/poqTHxtDXwU
+    final baseQuery = _postsCollection.orderBy('lastUpdateAt', descending: true).limit(limit);
+
+    /// NOTE: 如果是第一次拉取 Post ，如：刚进入首页（可以不用startbefore，所以区别开）
+    /// NOTE: 或者说当前没有历史消息的话（比如没有网络，重连后，刷新加载的结果）
+    if (firstTime) {
+      try {
+        List<PostModel> postList = await baseQuery
+            .get(GetOptions(source: Source.server))
+            .timeout(const Duration(seconds: 15)) // 15秒钟超时限制
+            .then((QuerySnapshot querySnapshot) =>
+                querySnapshot.docs.map((doc) => PostModel.fromDoucumentSnapshot(doc)).toList());
+        return AppResponse(
+            postList.length < limit ? kNoMoreHistoryPost : kLoadHistoryPostSuccess, postList);
+      } on FirebaseException catch (e) {
+        AppResponse appResponse = AppResponse(kLoadHistoryPostFail, null, e.runtimeType.toString());
+        logger3.w('errorCode: ${e.code}' + appResponse.toString());
+        logger3.w(e.plugin);
+        logger3.w(e.message);
+        return appResponse;
+      } catch (e) {
+        AppResponse appResponse = AppResponse(kLoadHistoryPostFail, null, e.runtimeType.toString());
+        logger3.w(appResponse.toString());
+        e.printError();
+        return appResponse;
+      }
+    }
+
+    /// ## NOTE: 如果不是第一次拉取 Post，如:加载更多 Post 需要 [startAfterDocument]
+    try {
+      List<PostModel> postList = await baseQuery
+          .startAfterDocument(lastPostDoc!)
+          .get(GetOptions(source: Source.server))
+          .timeout(const Duration(seconds: 15)) // 15秒钟超时限制
+          .then((QuerySnapshot querySnapshot) =>
+              querySnapshot.docs.map((doc) => PostModel.fromDoucumentSnapshot(doc)).toList());
+      // 获取成功，回传
+      return AppResponse(
+          postList.length < limit ? kNoMoreHistoryPost : kLoadHistoryPostSuccess, postList);
+    } on FirebaseException catch (e) {
+      AppResponse appResponse = AppResponse(kLoadHistoryPostFail, null, e.runtimeType.toString());
+      logger3.w('errorCode: ${e.code}' + appResponse.toString());
+      logger3.w(e.plugin);
+      logger3.w(e.message);
+      return appResponse;
+    } catch (e) {
+      AppResponse appResponse = AppResponse(kLoadHistoryPostFail, null, e.runtimeType.toString());
+      logger3.e(appResponse.toString());
+      e.printError();
+      return appResponse;
+    }
+  }
 
   // MARK: UPDATE 部分
   /// ## NOTE: 更新 Post 收纳盒

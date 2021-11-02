@@ -1,18 +1,21 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:paclub/frontend/routes/app_pages.dart';
 import 'package:paclub/utils/logger.dart';
 
 class HomeController extends GetxController {
-  // FIXME: AuthModule 在完成认证后关闭了，为什么还能再这里被find到？
-  // 既然关闭了，又怎么能使用？内存中是怎么样的
-  // 感觉是在新页面跳转的时候，find先获取到了object，之后AuthModule 才关闭的
-  // 算是获取到了一个临时的？ AuthModule 的 object，在切换到其他tab再切换回主页时就会报错
-  // final AuthModule authModule = Get.find();
-  String testString = '这是从controller获得的string';
+  final ScrollController scrollController = ScrollController();
 
   Future<void> navigateToPostPage() async {
     await Future.delayed(const Duration(milliseconds: 100));
     Get.toNamed(Routes.WRITEPOST);
+  }
+
+  void jumpToTop() {
+    print('jumpToTop');
+    if (scrollController.hasClients) {
+      scrollController.position.moveTo(0.0);
+    }
   }
 
   @override

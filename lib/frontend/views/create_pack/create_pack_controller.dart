@@ -23,6 +23,7 @@ class CreatePackController extends GetxController {
     packName: '',
     editorInfo: {},
     tags: [],
+    recentPosts: [],
   );
 
   File? imageFile;
@@ -146,6 +147,11 @@ class CreatePackController extends GetxController {
               Get.back();
             }
           }
+        } else {
+          process = 0;
+          isLoading = false;
+          update();
+          Get.back();
         }
       } else {
         processInfo = 'Create Fail';

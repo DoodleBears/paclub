@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:paclub/backend/repository/remote/pack_repository.dart';
 import 'package:paclub/models/pack_model.dart';
@@ -8,6 +9,54 @@ class PackApi extends GetxController {
   final PackRepository _packRepository = Get.find<PackRepository>();
 
   // MARK: GET 部分
+  /// ## NOTE: 获取刚新发布的 Pack 流
+  /// ## 传入参数
+  /// - [firstPackDoc] 当前第一条 Pack Feed
+  ///
+  /// ## 回传值
+  /// - [AppResponse]
+  ///   - message: [String] 错误代码
+  ///   - data: 成功: [List] 历史消息 [PackModel] | 失败: null
+  Future<AppResponse> getNewFeedPacks({
+    required DocumentSnapshot firstPackDoc,
+  }) async =>
+      _packRepository.getNewFeedPacks(firstPackDoc: firstPackDoc);
+
+  /// ## NOTE: 第一次获取 Pack
+  /// ## 传入参数
+  /// - [limit] 获取 Pack 数量
+  ///
+  /// ## 回传值
+  /// - [AppResponse]
+  ///   - message: [String] 错误代码
+  ///   - data: 成功: [List] 历史消息 [PackModel] | 失败: null
+  Future<AppResponse> getPacksFirstTime({
+    int limit = 30,
+  }) async =>
+      _packRepository.getOldFeedPacks(
+        limit: limit,
+        firstTime: true,
+      );
+
+  /// ## NOTE: 获取更多 Pack
+  /// ## 传入参数
+  /// - [limit] 获取 Pack 数量
+  /// - [lastPackDoc] 最早的历史消息的Doc, 用最早的历史消息作为起点拉取更早的历史消息
+  ///
+  /// ## 回传值
+  /// - [AppResponse]
+  ///   - message: [String] 错误代码
+  ///   - data: 成功: [List] 历史消息 [PackModel] | 失败: null
+  Future<AppResponse> getMorePacks({
+    int limit = 30,
+    required DocumentSnapshot lastPackDoc,
+  }) async =>
+      _packRepository.getOldFeedPacks(
+        limit: limit,
+        firstTime: false,
+        lastPackDoc: lastPackDoc,
+      );
+
   /// ## NOTE: 获取 Pack 的 Stream
   /// ## 传入参数
   /// - [uid] user id

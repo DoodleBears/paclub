@@ -39,6 +39,103 @@ class PackRepository extends GetxController {
   }
 
   // MARK: GET 部分
+  /// ## NOTE: 获取刚新发布的 Pack 流 （比当前第一条 Pack Feed，更加新的）
+  Future<AppResponse> getNewFeedPacks({
+    required DocumentSnapshot firstPackDoc,
+  }) async {
+    logger.i('开始 getNewFeedPacks');
+
+    /// ## NOTE: 如果不是第一次拉取 Pack，如:加载更多 Pack 需要 [startAfterDocument]
+    try {
+      List<PackModel> newPackList = await _packsCollection
+          .orderBy('lastUpdateAt', descending: true)
+          .endBeforeDocument(firstPackDoc) // 这里在目前的 第一条 Pack Feed 前截止
+          .get(GetOptions(source: Source.server))
+          .timeout(const Duration(seconds: 15)) // 15秒钟超时限制
+          .then((QuerySnapshot querySnapshot) =>
+              querySnapshot.docs.map((doc) => PackModel.fromDoucumentSnapshot(doc)).toList());
+      // 获取成功，回传
+      return AppResponse(kLoadNewPackSuccess, newPackList);
+    } on FirebaseException catch (e) {
+      AppResponse appResponse = AppResponse(kLoadNewPackFail, null, e.runtimeType.toString());
+      logger3.w('errorCode: ${e.code}' + appResponse.toString());
+      logger3.w(e.plugin);
+      logger3.w(e.message);
+      return appResponse;
+    } catch (e) {
+      AppResponse appResponse = AppResponse(kLoadNewPackFail, null, e.runtimeType.toString());
+      logger3.e(appResponse.toString());
+      e.printError();
+      return appResponse;
+    }
+  }
+
+  /// ## NOTE: 获取首页 Pack 流
+  Future<AppResponse> getOldFeedPacks({
+    required int limit,
+    required bool firstTime,
+    DocumentSnapshot? lastPackDoc,
+  }) async {
+    assert(firstTime == true || lastPackDoc != null,
+        'if firstTime == false then lastPackDoc cannot be null'); // 请求更多历史消息需要有传入最旧(first)的消息做 pagination
+    assert(limit > 0, 'limit must > 0');
+    logger.i('getFeedPacks');
+
+    // 基础 query, 参考教程: https://youtu.be/poqTHxtDXwU
+    final baseQuery = _packsCollection.orderBy('lastUpdateAt', descending: true);
+
+    /// NOTE: 如果是第一次拉取 Pack ，如：刚进入首页（可以不用startbefore，所以区别开）
+    /// NOTE: 或者说当前没有历史消息的话（比如没有网络，重连后，刷新加载的结果）
+    if (firstTime) {
+      try {
+        List<PackModel> packList = await baseQuery
+            .limit(limit)
+            .get(GetOptions(source: Source.server))
+            .timeout(const Duration(seconds: 15)) // 15秒钟超时限制
+            .then((QuerySnapshot querySnapshot) =>
+                querySnapshot.docs.map((doc) => PackModel.fromDoucumentSnapshot(doc)).toList());
+        return AppResponse(
+            packList.length < limit ? kNoMoreHistoryPack : kLoadHistoryPackSuccess, packList);
+      } on FirebaseException catch (e) {
+        AppResponse appResponse = AppResponse(kLoadHistoryPackFail, null, e.runtimeType.toString());
+        logger3.w('errorCode: ${e.code}' + appResponse.toString());
+        logger3.w(e.plugin);
+        logger3.w(e.message);
+        return appResponse;
+      } catch (e) {
+        AppResponse appResponse = AppResponse(kLoadHistoryPackFail, null, e.runtimeType.toString());
+        logger3.w(appResponse.toString());
+        e.printError();
+        return appResponse;
+      }
+    }
+
+    /// ## NOTE: 如果不是第一次拉取 Pack，如:加载更多 Pack 需要 [startAfterDocument]
+    try {
+      List<PackModel> packList = await baseQuery
+          .startAfterDocument(lastPackDoc!)
+          .limit(limit)
+          .get(GetOptions(source: Source.server))
+          .timeout(const Duration(seconds: 15)) // 15秒钟超时限制
+          .then((QuerySnapshot querySnapshot) =>
+              querySnapshot.docs.map((doc) => PackModel.fromDoucumentSnapshot(doc)).toList());
+      // 获取成功，回传
+      return AppResponse(
+          packList.length < limit ? kNoMoreHistoryPack : kLoadHistoryPackSuccess, packList);
+    } on FirebaseException catch (e) {
+      AppResponse appResponse = AppResponse(kLoadHistoryPackFail, null, e.runtimeType.toString());
+      logger3.w('errorCode: ${e.code}' + appResponse.toString());
+      logger3.w(e.plugin);
+      logger3.w(e.message);
+      return appResponse;
+    } catch (e) {
+      AppResponse appResponse = AppResponse(kLoadHistoryPackFail, null, e.runtimeType.toString());
+      logger3.e(appResponse.toString());
+      e.printError();
+      return appResponse;
+    }
+  }
+
   /// ## NOTE: 获取 Pack 的 Stream
   Stream<List<PackModel>> getPackStream({
     required String uid,

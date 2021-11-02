@@ -1,13 +1,15 @@
+import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 /// [toast提示信息在顶部]
 ///
 /// [传入参数]
 /// - [message] 提示信息
-void toastTop(String message) {
+void toastTop(String message, {Color? backgroundColor}) {
   Fluttertoast.showToast(
     msg: message,
     toastLength: Toast.LENGTH_LONG,
+    backgroundColor: backgroundColor,
     gravity: ToastGravity.TOP,
     timeInSecForIosWeb: 2,
     fontSize: 18.0,
