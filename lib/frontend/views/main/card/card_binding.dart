@@ -22,8 +22,8 @@ class CardBinding implements Bindings {
     Get.lazyPut<PostModule>(() => PostModule());
 
     /// View 用到的 Controller
-    // Get.put<CardController>(CardController());
+    Get.put<CardController>(CardController());
     // 如果希望是懒加载，则用下面一行（会导致每次打开页面重新刷新内容，因为 Controller 重建了）
-    Get.lazyPut<CardController>(() => CardController());
+    // Get.lazyPut<CardController>(() => CardController());
   }
 }

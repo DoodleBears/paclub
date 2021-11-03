@@ -46,6 +46,8 @@ class AppColors {
   // NOTE: Shadow
   static Color? normalShadowColor = Colors.grey;
   static Color? cardShadowColor = Colors.grey[200];
+  // NOTE: Overlay
+  static Color? normalOverlayColor = Colors.grey[300];
   // NOTE: Color
   static Color? normalGrey = Colors.grey[700];
 
@@ -89,6 +91,8 @@ class AppColors {
     // NOTE: Shadow
     normalShadowColor = Colors.grey;
     cardShadowColor = Colors.grey[200];
+    // NOTE: Overlay
+    normalOverlayColor = Colors.grey[300];
     // NOTE: Color
     normalGrey = Colors.grey[700];
   }
@@ -132,6 +136,8 @@ class AppColors {
     // NOTE: Shadow
     normalShadowColor = Colors.white;
     cardShadowColor = Colors.grey[800];
+    // NOTE: Overlay
+    normalOverlayColor = Colors.grey[700];
     // NOTE: Color
     normalGrey = Colors.grey;
   }

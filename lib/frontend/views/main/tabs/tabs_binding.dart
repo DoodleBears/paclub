@@ -20,7 +20,7 @@ class TabsBinding implements Bindings {
     Get.put<ChatroomRepository>(ChatroomRepository());
 
     // 具体 5个Tab 的依赖
-    CardBinding().dependencies();
+    // CardBinding().dependencies();
     HomeBinding().dependencies();
     MessageBinding().dependencies();
     NotificationBinding().dependencies();

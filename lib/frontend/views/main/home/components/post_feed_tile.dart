@@ -17,9 +17,7 @@ class PostFeedTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return TextButton(
       style: ButtonStyle(
-        overlayColor: MaterialStateProperty.all(
-          Colors.grey[300],
-        ),
+        overlayColor: MaterialStateProperty.all(AppColors.normalOverlayColor),
         shape: MaterialStateProperty.all(BeveledRectangleBorder()),
         padding: MaterialStateProperty.all(EdgeInsets.zero),
         backgroundColor: MaterialStateProperty.all(AppColors.containerBackground),
