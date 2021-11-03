@@ -24,11 +24,9 @@ class ChatroomBody extends StatefulWidget {
   _ChatroomBodyState createState() => _ChatroomBodyState();
 }
 
-class _ChatroomBodyState extends State<ChatroomBody>
-    with WidgetsBindingObserver {
+class _ChatroomBodyState extends State<ChatroomBody> with WidgetsBindingObserver {
   final ChatroomController chatroomController = Get.find<ChatroomController>();
-  final ChatroomScrollController chatroomScrollController =
-      Get.find<ChatroomScrollController>();
+  final ChatroomScrollController chatroomScrollController = Get.find<ChatroomScrollController>();
   @override
   void initState() {
     super.initState();
@@ -111,8 +109,7 @@ class _ChatroomBodyState extends State<ChatroomBody>
                             .toString());
 
                     // 有新消息的时候才会触发，因为ListView.itemCount改变，导致GetBuilder重新渲染
-                    WidgetsBinding.instance!
-                        .addPostFrameCallback((_) => afterBuild());
+                    WidgetsBinding.instance!.addPostFrameCallback((_) => afterBuild());
                     return chatroomController.isOnInit
                         ? Center(
                             child: Container(
@@ -135,8 +132,7 @@ class _ChatroomBodyState extends State<ChatroomBody>
                               ),
                               enablePullUp: true,
                               controller: chatroomController.refreshController,
-                              onLoading:
-                                  chatroomController.loadMoreHistoryMessages,
+                              onLoading: chatroomController.loadMoreHistoryMessages,
                               footer: ClassicFooter(
                                 textStyle: TextStyle(
                                   fontSize: 18.0,
@@ -165,24 +161,21 @@ class _ChatroomBodyState extends State<ChatroomBody>
                                 physics: chatroomController.isLoadingHistory
                                     ? const NeverScrollableScrollPhysics() // 防止加载历史记录时候滚动跳动
                                     : const BouncingScrollPhysics(),
-                                controller:
-                                    chatroomScrollController.scrollController,
+                                controller: chatroomScrollController.scrollController,
                                 slivers: <Widget>[
                                   SliverList(
                                     // 新消息
-                                    delegate: SliverChildBuilderDelegate(
-                                        (_, index) {
+                                    delegate: SliverChildBuilderDelegate((_, index) {
                                       // logger0.d('newindex: $index');
 
                                       bool isSendByMe = AppConstants.uuid ==
-                                          chatroomController
-                                              .newMessageList[index].sendByUid;
+                                          chatroomController.newMessageList[index].sendByUid;
 
                                       // 如果两条消息之间跨度大
                                       Timestamp previous;
                                       String previousSendByUid;
-                                      Timestamp sendTime = chatroomController
-                                          .newMessageList[index].time;
+                                      Timestamp sendTime =
+                                          chatroomController.newMessageList[index].time;
                                       bool isDividerShow = false;
 
                                       // 是否总消息数量超过阈值
@@ -191,92 +184,70 @@ class _ChatroomBodyState extends State<ChatroomBody>
                                         // 是第一条新消息
                                         if (index == 0) {
                                           // 有历史消息
-                                          if (chatroomController
-                                              .oldMessageList.isNotEmpty) {
-                                            previous = chatroomController
-                                                .oldMessageList[0].time;
+                                          if (chatroomController.oldMessageList.isNotEmpty) {
+                                            previous = chatroomController.oldMessageList[0].time;
                                             previousSendByUid =
-                                                chatroomController
-                                                    .oldMessageList[0]
-                                                    .sendByUid;
+                                                chatroomController.oldMessageList[0].sendByUid;
                                           } else {
                                             // 没有历史消息
-                                            previous = chatroomController
-                                                .newMessageList[index].time;
+                                            previous =
+                                                chatroomController.newMessageList[index].time;
                                             previousSendByUid =
-                                                chatroomController
-                                                    .newMessageList[index]
-                                                    .sendByUid;
+                                                chatroomController.newMessageList[index].sendByUid;
                                             isDividerShow = true;
                                           }
                                         } else {
-                                          previous = chatroomController
-                                              .newMessageList[index - 1].time;
+                                          previous =
+                                              chatroomController.newMessageList[index - 1].time;
                                           previousSendByUid = chatroomController
-                                              .newMessageList[index - 1]
-                                              .sendByUid;
+                                              .newMessageList[index - 1].sendByUid;
                                         }
                                       } else {
                                         // 是第一条新消息
-                                        if (index + 1 ==
-                                            chatroomController
-                                                .newMessageList.length) {
+                                        if (index + 1 == chatroomController.newMessageList.length) {
                                           // 有历史消息
-                                          if (chatroomController
-                                              .oldMessageList.isNotEmpty) {
-                                            previous = chatroomController
-                                                .oldMessageList[0].time;
+                                          if (chatroomController.oldMessageList.isNotEmpty) {
+                                            previous = chatroomController.oldMessageList[0].time;
                                             previousSendByUid =
-                                                chatroomController
-                                                    .oldMessageList[0]
-                                                    .sendByUid;
+                                                chatroomController.oldMessageList[0].sendByUid;
                                           } else {
                                             // 没有历史消息
-                                            previous = chatroomController
-                                                .newMessageList[index].time;
+                                            previous =
+                                                chatroomController.newMessageList[index].time;
                                             previousSendByUid = '';
                                             isDividerShow = true;
                                           }
                                         } else {
-                                          previous = chatroomController
-                                              .newMessageList[index + 1].time;
+                                          previous =
+                                              chatroomController.newMessageList[index + 1].time;
                                           previousSendByUid = chatroomController
-                                              .newMessageList[index + 1]
-                                              .sendByUid;
+                                              .newMessageList[index + 1].sendByUid;
                                         }
                                       }
 
                                       if (isDividerShow == false) {
-                                        isDividerShow =
-                                            isChatMessageDividerShow(
-                                          current: chatroomController
-                                              .newMessageList[index].time,
+                                        isDividerShow = isChatMessageDividerShow(
+                                          current: chatroomController.newMessageList[index].time,
                                           previous: previous,
                                         );
                                       }
                                       bool isAvatarShowValue = isAvatarShow(
                                           current: sendTime,
                                           previous: previous,
-                                          currentSendByUid: chatroomController
-                                              .newMessageList[index].sendByUid,
+                                          currentSendByUid:
+                                              chatroomController.newMessageList[index].sendByUid,
                                           previousSendByUid: previousSendByUid);
 
                                       Widget child = ChatroomMessageTile(
                                         isAvatarShow: isAvatarShowValue,
-                                        friendUid:
-                                            chatroomController.chatWithUserUid,
-                                        friendAvatarURL:
-                                            chatroomController.avatarURL,
+                                        friendUid: chatroomController.chatWithUserUid,
+                                        friendAvatarURL: chatroomController.avatarURL,
                                         sendTime: sendTime,
                                         senderName: isSendByMe
                                             ? AppConstants.userName
-                                            : chatroomController
-                                                    .chatroomModel.usersName[
-                                                chatroomController
-                                                    .newMessageList[index]
-                                                    .sendByUid],
-                                        message: chatroomController
-                                            .newMessageList[index].message,
+                                            : chatroomController.chatroomModel.usersName[
+                                                chatroomController.newMessageList[index].sendByUid],
+                                        message: chatroomController.newMessageList[index].message,
                                         sendByMe: isSendByMe,
                                       );
 
@@ -285,20 +256,16 @@ class _ChatroomBodyState extends State<ChatroomBody>
                                         return Column(
                                           children: [
                                             Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 24.0),
+                                              padding: const EdgeInsets.symmetric(vertical: 24.0),
                                               child: LineDivider(
                                                 lineColor: Colors.grey,
                                                 padding:
-                                                    const EdgeInsets.symmetric(
-                                                        horizontal: 20.0),
+                                                    const EdgeInsets.symmetric(horizontal: 20.0),
                                                 child: Text(
                                                   chatMessageDividerFormatTime(
                                                     current: Timestamp.now(),
                                                     previous: chatroomController
-                                                        .newMessageList[index]
-                                                        .time,
+                                                        .newMessageList[index].time,
                                                   ),
                                                   style: TextStyle(
                                                     color: Colors.grey,
@@ -312,9 +279,7 @@ class _ChatroomBodyState extends State<ChatroomBody>
                                         );
                                       }
                                       return child;
-                                    },
-                                        childCount: chatroomController
-                                            .newMessageList.length),
+                                    }, childCount: chatroomController.newMessageList.length),
                                   ),
                                   SliverList(
                                     // 历史消息
@@ -322,104 +287,77 @@ class _ChatroomBodyState extends State<ChatroomBody>
                                     delegate: SliverChildBuilderDelegate(
                                       (_, index) {
                                         bool isSendByMe = AppConstants.uuid ==
-                                            chatroomController
-                                                .oldMessageList[index]
-                                                .sendByUid;
+                                            chatroomController.oldMessageList[index].sendByUid;
 
                                         // 如果两条消息之间跨度大
                                         Timestamp previous;
                                         bool isDividerShow = false;
                                         String previousSendByUid;
                                         String dividerText = '';
-                                        if (index ==
-                                                chatroomController
-                                                        .messageNotRead -
-                                                    1 &&
-                                            chatroomController.messageNotRead >
-                                                12) {
+                                        if (index == chatroomController.messageNotRead - 1 &&
+                                            chatroomController.messageNotRead > 12) {
                                           isDividerShow = true;
                                           dividerText = '上次阅读位置';
                                           previousSendByUid = '';
-                                          previous = chatroomController
-                                              .oldMessageList[index].time;
+                                          previous = chatroomController.oldMessageList[index].time;
                                         } else {
-                                          dividerText =
-                                              chatMessageDividerFormatTime(
+                                          dividerText = chatMessageDividerFormatTime(
                                             current: Timestamp.now(),
-                                            previous: chatroomController
-                                                .oldMessageList[index].time,
+                                            previous: chatroomController.oldMessageList[index].time,
                                           );
 
                                           if (index + 1 <
-                                              chatroomController
-                                                  .oldMessageList.length) {
-                                            isDividerShow =
-                                                isChatMessageDividerShow(
-                                              current: chatroomController
-                                                  .oldMessageList[index].time,
-                                              previous: chatroomController
-                                                  .oldMessageList[index + 1]
-                                                  .time,
+                                              chatroomController.oldMessageList.length) {
+                                            isDividerShow = isChatMessageDividerShow(
+                                              current:
+                                                  chatroomController.oldMessageList[index].time,
+                                              previous:
+                                                  chatroomController.oldMessageList[index + 1].time,
                                             );
-                                            previous = chatroomController
-                                                .oldMessageList[index + 1].time;
-                                            previousSendByUid =
-                                                chatroomController
-                                                    .oldMessageList[index + 1]
-                                                    .sendByUid;
+                                            previous =
+                                                chatroomController.oldMessageList[index + 1].time;
+                                            previousSendByUid = chatroomController
+                                                .oldMessageList[index + 1].sendByUid;
                                           } else {
                                             // 如果没有历史记录了，则显示最旧消息的Time
                                             isDividerShow = true;
-                                            previous = chatroomController
-                                                .oldMessageList[index].time;
+                                            previous =
+                                                chatroomController.oldMessageList[index].time;
                                             previousSendByUid = '';
                                           }
                                         }
                                         bool isAvatarShowValue = isAvatarShow(
-                                            current: chatroomController
-                                                .oldMessageList[index].time,
+                                            current: chatroomController.oldMessageList[index].time,
                                             previous: previous,
-                                            currentSendByUid: chatroomController
-                                                .oldMessageList[index]
-                                                .sendByUid,
-                                            previousSendByUid:
-                                                previousSendByUid);
+                                            currentSendByUid:
+                                                chatroomController.oldMessageList[index].sendByUid,
+                                            previousSendByUid: previousSendByUid);
 
                                         Widget child = ChatroomMessageTile(
                                           isAvatarShow: isAvatarShowValue,
-                                          friendUid: chatroomController
-                                              .chatWithUserUid,
-                                          friendAvatarURL:
-                                              chatroomController.avatarURL,
-                                          sendTime: chatroomController
-                                              .oldMessageList[index].time,
+                                          friendUid: chatroomController.chatWithUserUid,
+                                          friendAvatarURL: chatroomController.avatarURL,
+                                          sendTime: chatroomController.oldMessageList[index].time,
                                           senderName: isSendByMe
                                               ? AppConstants.userName
-                                              : chatroomController
-                                                      .chatroomModel.usersName[
+                                              : chatroomController.chatroomModel.usersName[
                                                   chatroomController
-                                                      .oldMessageList[index]
-                                                      .sendByUid],
-                                          message: chatroomController
-                                              .oldMessageList[index].message,
+                                                      .oldMessageList[index].sendByUid],
+                                          message: chatroomController.oldMessageList[index].message,
                                           sendByMe: isSendByMe,
                                         );
 
                                         if (isDividerShow) {
-                                          bool isLastTimeRead =
-                                              dividerText == '上次阅读位置';
+                                          bool isLastTimeRead = dividerText == '上次阅读位置';
                                           // 显示分隔日期
                                           return Column(
                                             children: [
                                               Padding(
-                                                padding: EdgeInsets.symmetric(
-                                                    vertical: 24.0),
+                                                padding: EdgeInsets.symmetric(vertical: 24.0),
                                                 child: LineDivider(
-                                                  lineColor: isLastTimeRead
-                                                      ? accentColor
-                                                      : Colors.grey,
-                                                  padding: EdgeInsets.symmetric(
-                                                      horizontal: 20.0),
+                                                  lineColor:
+                                                      isLastTimeRead ? accentColor : Colors.grey,
+                                                  padding: EdgeInsets.symmetric(horizontal: 20.0),
                                                   child: Text(
                                                     dividerText,
                                                     style: TextStyle(
@@ -427,9 +365,8 @@ class _ChatroomBodyState extends State<ChatroomBody>
                                                           ? accentColor
                                                           : Colors.grey,
                                                       fontSize: 12.0,
-                                                      fontWeight: isLastTimeRead
-                                                          ? FontWeight.bold
-                                                          : null,
+                                                      fontWeight:
+                                                          isLastTimeRead ? FontWeight.bold : null,
                                                     ),
                                                   ),
                                                 ),
@@ -441,8 +378,7 @@ class _ChatroomBodyState extends State<ChatroomBody>
 
                                         return child;
                                       },
-                                      childCount: chatroomController
-                                          .oldMessageList.length,
+                                      childCount: chatroomController.oldMessageList.length,
                                     ),
                                   ),
                                 ],
@@ -459,8 +395,7 @@ class _ChatroomBodyState extends State<ChatroomBody>
                   return AnimatedPositioned(
                     duration: const Duration(milliseconds: 300),
                     curve: Curves.ease,
-                    bottom:
-                        chatroomScrollController.isReadHistory ? 4.0 : -60.0,
+                    bottom: chatroomScrollController.isReadHistory ? 4.0 : -60.0,
                     right: 16.0,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
@@ -472,10 +407,7 @@ class _ChatroomBodyState extends State<ChatroomBody>
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 300),
                         curve: Curves.ease,
-                        width:
-                            chatroomScrollController.currentMessageNotRead == 0
-                                ? 36.0
-                                : 70.0,
+                        width: chatroomScrollController.currentMessageNotRead == 0 ? 36.0 : 70.0,
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -489,16 +421,12 @@ class _ChatroomBodyState extends State<ChatroomBody>
                               ),
                             ),
                             Visibility(
-                              visible: chatroomScrollController
-                                      .currentMessageNotRead !=
-                                  0,
+                              visible: chatroomScrollController.currentMessageNotRead != 0,
                               child: Flexible(
                                 flex: 2,
                                 child: Center(
                                   child: Text(
-                                    chatroomScrollController
-                                                .currentMessageNotRead >
-                                            99
+                                    chatroomScrollController.currentMessageNotRead > 99
                                         ? '99+'
                                         : '${chatroomScrollController.currentMessageNotRead}',
                                     maxLines: 1,
@@ -610,24 +538,20 @@ class _ChatroomBodyState extends State<ChatroomBody>
               ]),
               child: Container(
                 color: AppColors.messageSendingContainerBackgroundColor,
-                padding: const EdgeInsets.only(
-                    left: 16.0, right: 16.0, top: 18.0, bottom: 28.0),
+                padding: const EdgeInsets.only(left: 16.0, right: 16.0, top: 18.0, bottom: 28.0),
                 alignment: Alignment.topCenter,
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Expanded(
                       child: ConstrainedBox(
-                        constraints: BoxConstraints(
-                            minHeight: Get.height * 0.07 //最小高度为50像素
+                        constraints: BoxConstraints(minHeight: Get.height * 0.07 //最小高度为50像素
                             ),
                         child: Container(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: 12.0, vertical: 2.0),
+                          padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 2.0),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(14.0),
-                            color: AppColors
-                                .messageSendingTextFieldBackgroundColor,
+                            color: AppColors.messageSendingTextFieldBackgroundColor,
 
                             // border: Border.all(
                             //     width: 1.0, color: AppColors.messageBoxContainerBackground!),
@@ -639,8 +563,7 @@ class _ChatroomBodyState extends State<ChatroomBody>
                             focusNode: chatroomScrollController.focusNode,
                             cursorColor: accentColor,
                             cursorHeight: 24.0,
-                            controller:
-                                chatroomController.messageTextFieldController,
+                            controller: chatroomController.messageTextFieldController,
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 18.0,
@@ -668,8 +591,7 @@ class _ChatroomBodyState extends State<ChatroomBody>
                               primary: accentColor,
                               elevation: 0,
                               shape: RoundedRectangleBorder(
-                                borderRadius:
-                                    BorderRadius.circular(borderRadius),
+                                borderRadius: BorderRadius.circular(borderRadius),
                               ),
                               padding: EdgeInsets.symmetric(
                                 horizontal: 12.0,

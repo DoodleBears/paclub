@@ -77,13 +77,13 @@ String chatroomListFormatTime(Timestamp timestamp) {
           dataTimestamp.millisecondsSinceEpoch) {
         if (currentTime.minute > dataTimestamp.minute) {
           // 现在 10:14, data 10:08
-          return '${currentTime.minute - dataTimestamp.minute}分钟前';
+          return '${currentTime.minute - dataTimestamp.minute}分鐘前';
         } else {
           if (currentTime.minute == dataTimestamp.minute) {
-            return '刚刚';
+            return '剛剛';
           } else {
             // 现在 10:05, data 9:58
-            return '${currentTime.minute + (60 - dataTimestamp.minute)}分钟前';
+            return '${currentTime.minute + (60 - dataTimestamp.minute)}分鐘前';
           }
         }
       }

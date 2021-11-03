@@ -12,7 +12,6 @@ class HomeController extends GetxController {
   }
 
   void jumpToTop() {
-    print('jumpToTop');
     if (scrollController.hasClients) {
       scrollController.position.moveTo(0.0);
     }

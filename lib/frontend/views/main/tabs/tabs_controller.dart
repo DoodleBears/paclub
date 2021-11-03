@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:paclub/frontend/views/main/card/card_binding.dart';
 import 'package:paclub/frontend/views/main/home/home_binding.dart';
+import 'package:paclub/frontend/views/main/home/home_controller.dart';
 import 'package:paclub/frontend/views/main/message/components/chatroom_list/chatroom_list_controller.dart';
 import 'package:paclub/frontend/views/main/message/message_binding.dart';
 import 'package:paclub/frontend/views/main/notification/notification_binding.dart';
@@ -26,7 +27,13 @@ class TabsController extends GetxController {
   }
 
   void setIndex(int index) {
-    if (currentIndex == index) return;
+    if (currentIndex == index) {
+      if (currentIndex == 0) {
+        final HomeController homeController = Get.find<HomeController>();
+        homeController.jumpToTop();
+      }
+      return;
+    }
     currentIndex = index;
     // logger.i('当前index是：' + currentIndex.toString());
     tabsDependencyInjection(index);
@@ -35,8 +42,6 @@ class TabsController extends GetxController {
 
   @override
   void onInit() {
-    currentIndex = 0;
-
     logger.i('启用 TabsController');
     super.onInit();
   }
@@ -44,8 +49,7 @@ class TabsController extends GetxController {
   @override
   void onClose() {
     logger.w('关闭 TabsController');
-    ChatroomListController chatroomListController =
-        Get.find<ChatroomListController>();
+    ChatroomListController chatroomListController = Get.find<ChatroomListController>();
     chatroomListController.friendsStream.close();
     super.onClose();
   }

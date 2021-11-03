@@ -7,18 +7,27 @@ class TagsBlock extends StatelessWidget {
     required this.tags,
     required this.tagsNumber,
     this.alignment = WrapAlignment.start,
+    this.fontSize = 12.0,
+    this.spacing = -2.0,
+    this.runSpacing = -4.0,
+    this.runAlignment = WrapAlignment.start,
   }) : super(key: key);
 
   final List<String> tags;
   final int tagsNumber;
   final WrapAlignment alignment;
+  final WrapAlignment runAlignment;
+  final double fontSize;
+  final double spacing;
+  final double runSpacing;
 
   @override
   Widget build(BuildContext context) {
     return Wrap(
-      spacing: -2.0,
-      runSpacing: -4.0,
+      spacing: spacing,
+      runSpacing: runSpacing,
       alignment: alignment,
+      runAlignment: runAlignment,
       children: tags.getRange(0, tagsNumber).map(
         (tag) {
           return Padding(
@@ -34,10 +43,15 @@ class TagsBlock extends StatelessWidget {
               padding: EdgeInsets.zero,
               backgroundColor: primaryColor,
               labelStyle: TextStyle(
-                fontSize: 12.0,
+                fontSize: fontSize,
                 fontWeight: FontWeight.w600,
               ),
-              label: Text(tag),
+              label: Text(
+                tag,
+                style: TextStyle(
+                  color: Colors.white,
+                ),
+              ),
             ),
           );
         },

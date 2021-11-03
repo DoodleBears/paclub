@@ -6,7 +6,6 @@ import 'package:paclub/frontend/views/main/home/components/post_feed_tile.dart';
 import 'package:paclub/frontend/views/main/home/home_hot/home_hot_controller.dart';
 import 'package:paclub/models/pack_model.dart';
 import 'package:paclub/models/post_model.dart';
-import 'package:paclub/utils/logger.dart';
 
 class HomeHotPage extends GetView<HomeHotController> {
   const HomeHotPage({Key? key}) : super(key: key);
@@ -33,21 +32,11 @@ class HomeHotPage extends GetView<HomeHotController> {
                 }
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 12.0),
-                  child: TextButton(
-                    style: ButtonStyle(
-                      shape: MaterialStateProperty.all(BeveledRectangleBorder()),
-                      padding: MaterialStateProperty.all(EdgeInsets.zero),
-                      backgroundColor: MaterialStateProperty.all(AppColors.containerBackground),
-                    ),
-                    onPressed: () {
-                      print('点击了 $index');
-                    },
-                    child: controller.feedList[index].feedType == 0
-                        ? PackFeedTile(
-                            packModel: controller.feedList[index] as PackModel,
-                          )
-                        : PostFeedTile(postModel: controller.feedList[index] as PostModel),
-                  ),
+                  child: controller.feedList[index].feedType == 0
+                      ? PackFeedTile(
+                          packModel: controller.feedList[index] as PackModel,
+                        )
+                      : PostFeedTile(postModel: controller.feedList[index] as PostModel),
                 );
               },
             ),

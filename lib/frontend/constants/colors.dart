@@ -9,7 +9,7 @@ import 'package:flutter/widgets.dart';
 
 class AppColors {
   // NOTE: Avatar
-  static Color? chatAvatarBackgroundColor = primaryColor;
+  static Color chatAvatarBackgroundColor = primaryColor;
   static Color? profileAvatarBackgroundColor = Colors.grey[200];
   static Color? profileAvatarBorderColor = Colors.grey[400];
   // NOTE: Chatroom
@@ -28,11 +28,15 @@ class AppColors {
   static Color? bottomSheetHandlerColor = Colors.grey[300];
   static Color? bottomSheetBackgoundColor = Colors.white;
   // NOTE: General Widget
+  static Color? packOverlayColor = primaryColor;
+  static Color? packBackgroundColor = primarySuperLightColor.withAlpha(128);
+  static Color? packContainerBackgroundColor = primaryLightColor;
   static Color? containerBackground = Colors.white;
+  static Color loadingCurtainColor = Color(0xe9ffffff);
   static Color? maskCurtainColor = Colors.black.withAlpha(164);
   static Color? circleButtonBackgoundColor = Colors.white;
-  static Color? bottomNavigationBarTabColor = Colors.black;
-  static Color? bottomNavigationBarBackgroundColor = Colors.white;
+  static Color bottomNavigationBarTabColor = Colors.black;
+  static Color bottomNavigationBarBackgroundColor = Colors.white;
   static Color? refreshIndicatorColor = Colors.white;
   static Color? divideLineColor = Colors.grey[200];
   // NOTE: Text
@@ -41,6 +45,7 @@ class AppColors {
   static Color? buttonLightBackgroundColor = Colors.grey[200];
   // NOTE: Shadow
   static Color? normalShadowColor = Colors.grey;
+  static Color? cardShadowColor = Colors.grey[200];
   // NOTE: Color
   static Color? normalGrey = Colors.grey[700];
 
@@ -66,7 +71,11 @@ class AppColors {
     bottomSheetHandlerColor = Colors.grey[300];
     bottomSheetBackgoundColor = Colors.white;
     // NOTE: General Widget
+    packOverlayColor = primaryColor;
+    packBackgroundColor = primarySuperLightColor.withAlpha(128);
+    packContainerBackgroundColor = primaryLightColor;
     containerBackground = Colors.white;
+    loadingCurtainColor = Color(0xe9ffffff);
     maskCurtainColor = Colors.black.withAlpha(164);
     circleButtonBackgoundColor = Colors.white;
     bottomNavigationBarTabColor = Colors.black;
@@ -79,6 +88,7 @@ class AppColors {
     buttonLightBackgroundColor = Colors.grey[200];
     // NOTE: Shadow
     normalShadowColor = Colors.grey;
+    cardShadowColor = Colors.grey[200];
     // NOTE: Color
     normalGrey = Colors.grey[700];
   }
@@ -104,7 +114,11 @@ class AppColors {
     bottomSheetHandlerColor = Colors.grey[700];
     bottomSheetBackgoundColor = Colors.grey[900];
     // NOTE: General Widget
+    packOverlayColor = primaryDarkColor.withAlpha(128);
+    packBackgroundColor = primaryDarkColor.withAlpha(128);
+    packContainerBackgroundColor = primarySuperDarkColor;
     containerBackground = Colors.grey[850];
+    loadingCurtainColor = Color(0xe9222222);
     maskCurtainColor = Colors.black.withAlpha(164);
     circleButtonBackgoundColor = Colors.grey[850];
     bottomNavigationBarTabColor = Colors.white;
@@ -117,6 +131,7 @@ class AppColors {
     buttonLightBackgroundColor = Colors.grey[800];
     // NOTE: Shadow
     normalShadowColor = Colors.white;
+    cardShadowColor = Colors.grey[800];
     // NOTE: Color
     normalGrey = Colors.grey;
   }
@@ -128,8 +143,9 @@ const accentLightColor = Color(0xFFB3D270);
 const accentDarkColor = Color(0xFF75D118);
 const primaryColor = Color(0xFFb8966f);
 const primaryLightColor = Color(0xFFd9b890);
-const primarySuperLightColor = Color(0xFFFCF4E9);
+const primarySuperLightColor = Color(0xFFE9D4C1);
 const primaryDarkColor = Color(0xFF9c835b);
+const primarySuperDarkColor = Color(0xFF554332);
 const black = Colors.black;
 const grey100 = Color(0xFFF5F5F5);
 const grey700 = Color(0xFF333333);

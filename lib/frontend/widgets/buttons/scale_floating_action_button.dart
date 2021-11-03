@@ -2,10 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:paclub/frontend/constants/colors.dart';
 
 class ScaleFloatingActionButton extends StatefulWidget {
-  const ScaleFloatingActionButton({Key? key, required this.onPressed, required this.child})
-      : super(key: key);
+  const ScaleFloatingActionButton({
+    Key? key,
+    required this.onPressed,
+    required this.child,
+    this.shift = 5.4,
+    this.backgroundColor = accentColor,
+  }) : super(key: key);
   final Function onPressed;
   final Widget child;
+  final double shift;
+  final Color backgroundColor;
   @override
   State<ScaleFloatingActionButton> createState() {
     return _ScaleFloatingActionButtonState();
@@ -41,15 +48,15 @@ class _ScaleFloatingActionButtonState extends State<ScaleFloatingActionButton> {
         curve: Curves.easeOutCubic,
         transform: Matrix4.identity()
           ..translate(
-            isButtonPressed ? 5.4 : 0.0,
-            isButtonPressed ? 5.4 : 0.0,
+            isButtonPressed ? widget.shift : 0.0,
+            isButtonPressed ? widget.shift : 0.0,
           )
           ..scale(isButtonPressed ? 0.82 : 1.0, isButtonPressed ? 0.82 : 1.0),
         child: ElevatedButton(
           onPressed: () {},
           clipBehavior: Clip.hardEdge,
           style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all(accentColor),
+            backgroundColor: MaterialStateProperty.all(widget.backgroundColor),
             padding: MaterialStateProperty.all(EdgeInsets.all(12.0)),
             shape: MaterialStateProperty.all(CircleBorder()),
             elevation: MaterialStateProperty.resolveWith((states) {

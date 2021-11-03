@@ -5,13 +5,15 @@ class FullWidthTextButton extends StatelessWidget {
     Key? key,
     required this.onPressed,
     required this.child,
-    required this.backgroundColor,
+    this.backgroundColor = Colors.transparent,
     this.height,
     this.alignment,
+    required this.overlayColor,
   }) : super(key: key);
 
   final VoidCallback onPressed;
   final Color backgroundColor;
+  final Color overlayColor;
   final Widget child;
   final double? height;
   final Alignment? alignment;
@@ -20,6 +22,7 @@ class FullWidthTextButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: height,
+      color: Colors.transparent,
       child: TextButton(
         style: ButtonStyle(
           alignment: alignment,
@@ -27,10 +30,8 @@ class FullWidthTextButton extends StatelessWidget {
           shape: MaterialStateProperty.all(RoundedRectangleBorder(
             borderRadius: BorderRadius.zero,
           )),
-          backgroundColor:
-              MaterialStateProperty.all(backgroundColor.withAlpha(48)),
-          overlayColor:
-              MaterialStateProperty.all(backgroundColor.withAlpha(128)),
+          backgroundColor: MaterialStateProperty.all(backgroundColor),
+          overlayColor: MaterialStateProperty.all(overlayColor),
           minimumSize: MaterialStateProperty.all(Size.infinite),
         ),
         onPressed: onPressed,

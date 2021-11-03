@@ -11,7 +11,7 @@ import 'package:paclub/frontend/views/main/app_controller.dart';
 import 'package:paclub/frontend/views/write_post/components/drag_handler.dart';
 import 'package:paclub/frontend/views/write_post/components/draggable_scrollable_attachable_sheet.dart';
 import 'package:paclub/frontend/views/write_post/components/full_width_text_button.dart';
-import 'package:paclub/frontend/views/write_post/components/pack_tile.dart';
+import 'package:paclub/frontend/views/write_post/components/select_pack_tile.dart';
 import 'package:paclub/frontend/views/write_post/write_post_controller.dart';
 import 'package:paclub/frontend/widgets/buttons/animated_scale_floating_action_button.dart';
 import 'package:paclub/frontend/widgets/buttons/stadium_loading_button.dart';
@@ -215,9 +215,10 @@ class WritePostBody extends GetView<WritePostController> {
 
                             widgets.addAll(chips);
                             return Container(
+                              color: Colors.transparent,
                               child: FullWidthTextButton(
                                 alignment: Alignment.centerLeft,
-                                backgroundColor: AppColors.buttonLightBackgroundColor!,
+                                overlayColor: Colors.grey.withAlpha(24),
                                 height: 48.0,
                                 onPressed: () {
                                   controller.toggleTagInput();
@@ -257,9 +258,6 @@ class WritePostBody extends GetView<WritePostController> {
                                 onEditingComplete: () {
                                   controller.addTag();
                                 },
-                                // textInputAction: TextInputAction.done,
-                                // maxLines: 1,
-                                // keyboardType: TextInputType.text,
                                 inputFormatters: [LengthLimitingTextFieldFormatterFixed(128)],
                                 style: TextStyle(
                                   fontSize: 20.0,
@@ -670,7 +668,7 @@ class WritePostBody extends GetView<WritePostController> {
               color: AppColors.containerBackground,
               child: FullWidthTextButton(
                 height: Platform.isIOS ? 64.0 : 48.0,
-                backgroundColor: AppColors.buttonLightBackgroundColor!,
+                overlayColor: Colors.grey.withAlpha(24),
                 onPressed: () {
                   controller.toggleBottomSheet(context);
                 },
@@ -757,11 +755,11 @@ class WritePostBody extends GetView<WritePostController> {
                           padding: EdgeInsets.only(bottom: 20.0),
                           itemCount: controller.packList.length,
                           itemBuilder: (context, index) {
-                            return PackTile(
+                            return SelectPackTile(
                               photoURL: controller.packList[index].photoURL,
                               description: controller.packList[index].description,
                               packName: controller.packList[index].packName,
-                              color: accentColor.withAlpha(32),
+                              color: primaryColor.withAlpha(48),
                               onChanged: (value) => controller.onPackTileChanged(value, index),
                               value: controller.packCheckedList[controller.packList[index].pid],
                             );

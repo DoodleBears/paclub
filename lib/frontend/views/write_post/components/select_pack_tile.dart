@@ -2,8 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:paclub/frontend/constants/colors.dart';
 
-class PackTile extends StatelessWidget {
-  const PackTile({
+class SelectPackTile extends StatelessWidget {
+  const SelectPackTile({
     Key? key,
     this.color,
     required this.packName,
@@ -25,7 +25,7 @@ class PackTile extends StatelessWidget {
     return Container(
       color: value == true ? color : null,
       child: CheckboxListTile(
-        selectedTileColor: accentColor,
+        selectedTileColor: primaryColor,
         title: Text(
           packName,
           maxLines: 1,
@@ -44,7 +44,7 @@ class PackTile extends StatelessWidget {
             color: AppColors.normalGrey,
           ),
         ),
-        activeColor: accentColor,
+        activeColor: primaryDarkColor,
         secondary: Material(
           borderRadius: BorderRadius.circular(8.0),
           clipBehavior: Clip.antiAlias,
