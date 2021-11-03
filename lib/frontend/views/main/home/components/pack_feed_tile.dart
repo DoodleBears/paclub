@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:paclub/frontend/constants/constants.dart';
 import 'package:paclub/frontend/views/main/home/components/status_button.dart';
@@ -33,7 +34,22 @@ class PackFeedTile extends StatelessWidget {
                   flex: 6,
                   child: Align(
                     alignment: Alignment.topCenter,
-                    child: Image.asset(R.appIcon),
+                    child: packModel.photoURL == ''
+                        ? Image.asset(R.appIcon)
+                        : Material(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            clipBehavior: Clip.antiAlias,
+                            child: Ink.image(
+                              image: CachedNetworkImageProvider(
+                                packModel.photoURL,
+                              ),
+                              fit: BoxFit.cover,
+                              height: 58.0,
+                              width: 58.0,
+                            ),
+                          ),
                   ),
                 ),
                 Flexible(

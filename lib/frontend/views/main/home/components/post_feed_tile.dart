@@ -1,4 +1,6 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:paclub/frontend/constants/constants.dart';
 import 'package:paclub/frontend/views/main/home/components/status_button.dart';
 import 'package:paclub/frontend/views/main/home/components/tags_block.dart';
@@ -92,17 +94,64 @@ class PostFeedTile extends StatelessWidget {
                       ),
                     ),
                     // NOTE: Post Content
-                    Text(
-                      postModel.content,
-                      maxLines: 10,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: 16.0,
-                        color: AppColors.normalTextColor,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: Text(
+                        postModel.content,
+                        maxLines: 10,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          color: AppColors.normalTextColor,
+                        ),
                       ),
                     ),
                     // NOTE: Post Tags
                     // TagsBlock(tags: postModel.tags),
+                    postModel.photoURLs.length > 0
+                        ? Stack(
+                            children: [
+                              Material(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                                clipBehavior: Clip.antiAlias,
+                                child: Ink.image(
+                                  image: CachedNetworkImageProvider(
+                                    postModel.photoURLs[0],
+                                  ),
+                                  fit: BoxFit.cover,
+                                  height: 300,
+                                ),
+                              ),
+                              postModel.photoURLs.length > 1
+                                  ? Positioned(
+                                      right: 8.0,
+                                      top: 8.0,
+                                      child: Container(
+                                        width: 40.0,
+                                        height: 40.0,
+                                        alignment: Alignment.center,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.rectangle,
+                                          borderRadius: BorderRadius.circular(8.0),
+                                          color: Colors.black.withAlpha(192),
+                                          border: Border.all(color: Colors.white, width: 2.0),
+                                        ),
+                                        child: Text(
+                                          '${postModel.photoURLs.length}',
+                                          style: TextStyle(
+                                            fontSize: 20.0,
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    )
+                                  : SizedBox.shrink(),
+                            ],
+                          )
+                        : SizedBox.shrink(),
                   ],
                 ),
               ),
