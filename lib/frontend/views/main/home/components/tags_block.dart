@@ -5,16 +5,21 @@ class TagsBlock extends StatelessWidget {
   const TagsBlock({
     Key? key,
     required this.tags,
+    required this.tagsNumber,
+    this.alignment = WrapAlignment.start,
   }) : super(key: key);
 
   final List<String> tags;
+  final int tagsNumber;
+  final WrapAlignment alignment;
 
   @override
   Widget build(BuildContext context) {
     return Wrap(
       spacing: -2.0,
       runSpacing: -4.0,
-      children: tags.getRange(0, tags.length >= 6 ? 6 : tags.length).map(
+      alignment: alignment,
+      children: tags.getRange(0, tagsNumber).map(
         (tag) {
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 3.0),

@@ -36,11 +36,7 @@ class HomeHotPage extends GetView<HomeHotController> {
                   child: TextButton(
                     style: ButtonStyle(
                       shape: MaterialStateProperty.all(BeveledRectangleBorder()),
-                      padding: MaterialStateProperty.all(EdgeInsets.only(
-                        top: 12.0,
-                        left: 12.0,
-                        right: 12.0,
-                      )),
+                      padding: MaterialStateProperty.all(EdgeInsets.zero),
                       backgroundColor: MaterialStateProperty.all(AppColors.containerBackground),
                     ),
                     onPressed: () {

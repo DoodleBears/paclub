@@ -18,10 +18,26 @@ class PackFeedTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        packModel.photoURL == ''
+            ? SizedBox.shrink()
+            : Material(
+                child: Ink.image(
+                  image: CachedNetworkImageProvider(
+                    packModel.photoURL,
+                  ),
+                  fit: BoxFit.cover,
+                  height: 200.0,
+                ),
+              ),
         Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(borderRadius),
             color: primaryLightColor.withAlpha(64),
+          ),
+          margin: EdgeInsets.only(
+            top: 12.0,
+            left: 12.0,
+            right: 12.0,
           ),
           padding: const EdgeInsets.all(12.0),
           child: IntrinsicHeight(
@@ -34,22 +50,7 @@ class PackFeedTile extends StatelessWidget {
                   flex: 6,
                   child: Align(
                     alignment: Alignment.topCenter,
-                    child: packModel.photoURL == ''
-                        ? Image.asset(R.appIcon)
-                        : Material(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
-                            clipBehavior: Clip.antiAlias,
-                            child: Ink.image(
-                              image: CachedNetworkImageProvider(
-                                packModel.photoURL,
-                              ),
-                              fit: BoxFit.cover,
-                              height: 58.0,
-                              width: 58.0,
-                            ),
-                          ),
+                    child: Image.asset(R.appIcon),
                   ),
                 ),
                 Flexible(
@@ -113,7 +114,10 @@ class PackFeedTile extends StatelessWidget {
                         ),
                       ),
                       // NOTE: Pack Tags
-                      TagsBlock(tags: packModel.tags),
+                      TagsBlock(
+                        tags: packModel.tags,
+                        tagsNumber: packModel.tags.length,
+                      ),
                     ],
                   ),
                 ),
