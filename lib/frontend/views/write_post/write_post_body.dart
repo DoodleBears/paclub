@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
@@ -511,7 +512,7 @@ class WritePostBody extends GetView<WritePostController> {
               return AnimatedPositioned(
                 duration: const Duration(milliseconds: 400),
                 curve: Curves.easeOutCubic,
-                bottom: Platform.isIOS ? 112.0 : 96.0,
+                bottom: defaultTargetPlatform == TargetPlatform.iOS ? 112.0 : 96.0,
                 left: controller.process > 0 ? 0.0 : -140.0,
                 right: 0.0,
                 child: OpacityChangeContainer(
@@ -604,7 +605,7 @@ class WritePostBody extends GetView<WritePostController> {
           ),
           // NOTE: Functions
           Positioned(
-            bottom: Platform.isIOS ? 64.0 : 48.0,
+            bottom: defaultTargetPlatform == TargetPlatform.iOS ? 64.0 : 48.0,
             left: 0.0,
             right: 0.0,
             child: Container(
@@ -667,7 +668,7 @@ class WritePostBody extends GetView<WritePostController> {
             child: Container(
               color: AppColors.containerBackground,
               child: FullWidthTextButton(
-                height: Platform.isIOS ? 64.0 : 48.0,
+                height: defaultTargetPlatform == TargetPlatform.iOS ? 64.0 : 48.0,
                 overlayColor: Colors.grey.withAlpha(24),
                 onPressed: () {
                   controller.toggleBottomSheet(context);
@@ -770,7 +771,9 @@ class WritePostBody extends GetView<WritePostController> {
                         GetBuilder<WritePostController>(
                           builder: (_) {
                             return Padding(
-                              padding: EdgeInsets.only(bottom: Platform.isIOS ? 32.0 : 20.0),
+                              padding: EdgeInsets.only(
+                                  bottom:
+                                      defaultTargetPlatform == TargetPlatform.iOS ? 32.0 : 20.0),
                               child: AnimatedScaleFloatingActionButton(
                                 isButtonShow: controller.postModel.title.isNotEmpty &&
                                     controller.postModel.belongPids.isNotEmpty,

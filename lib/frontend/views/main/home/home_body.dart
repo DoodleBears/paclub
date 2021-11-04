@@ -1,9 +1,11 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:paclub/frontend/constants/colors.dart';
 import 'package:paclub/frontend/views/main/home/home_controller.dart';
 import 'package:paclub/frontend/views/main/home/home_follow/home_follow_page.dart';
+import 'package:paclub/frontend/views/main/home/home_hot/home_hot_controller.dart';
 import 'package:paclub/frontend/views/main/home/home_hot/home_hot_page.dart';
 import 'package:paclub/frontend/views/main/app_controller.dart';
 import 'package:paclub/frontend/widgets/buttons/scale_floating_action_button.dart';
@@ -23,14 +25,28 @@ class HomeBody extends GetView<HomeController> {
             return <Widget>[
               SliverAppBar(
                 actions: <Widget>[
+                  kIsWeb
+                      ? IconButton(
+                          icon: Icon(
+                            Icons.refresh,
+                            size: 28.0,
+                          ),
+                          onPressed: () {
+                            final HomeHotController homeHotController =
+                                Get.find<HomeHotController>();
+                            homeHotController.loadMoreNewFeed();
+                          },
+                        )
+                      : SizedBox.shrink(),
                   IconButton(
-                      icon: Icon(
-                        Icons.search,
-                        size: 28.0,
-                      ),
-                      onPressed: () {
-                        print('点击了搜索按钮');
-                      }),
+                    icon: Icon(
+                      Icons.search,
+                      size: 28.0,
+                    ),
+                    onPressed: () {
+                      print('点击了搜索按钮');
+                    },
+                  ),
                 ],
                 pinned: true,
                 floating: true,
