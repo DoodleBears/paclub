@@ -26,7 +26,7 @@ dependencies:
   flutter:
     sdk: flutter
   animations: ^2.0.1
-  flutter_svg: ^0.22.0
+  flutter_svg: ^0.23.0+1 
   cupertino_icons: ^1.0.3
   # Firebase
   firebase_analytics: ^8.3.4

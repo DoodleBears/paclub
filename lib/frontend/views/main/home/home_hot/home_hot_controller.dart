@@ -255,33 +255,35 @@ class HomeHotController extends GetxController {
     }
     final DateTime createdAtA = a.createdAt.toDate().toLocal();
     final DateTime createdAtB = b.createdAt.toDate().toLocal();
+    final DateTime lastUpdateAtA = a.lastUpdateAt.toDate().toLocal();
+    final DateTime lastUpdateAtB = b.lastUpdateAt.toDate().toLocal();
     final DateTime now = DateTime.now();
     // NOTICE: 按照天数，距离现在越久，在拥有同样评价时候，效果越差
     double ratioA = 1.0;
-    if (now.subtract(const Duration(days: 90)).isAfter(createdAtA)) {
+    if (now.subtract(const Duration(days: 90)).isAfter(lastUpdateAtA)) {
       // 如果是 90天 以前的
       ratioA = 0.5;
-    } else if (now.subtract(const Duration(days: 30)).isAfter(createdAtA)) {
+    } else if (now.subtract(const Duration(days: 30)).isAfter(lastUpdateAtA)) {
       // 如果是 30天 以前的
       ratioA = 0.6;
-    } else if (now.subtract(const Duration(days: 7)).isAfter(createdAtA)) {
+    } else if (now.subtract(const Duration(days: 7)).isAfter(lastUpdateAtA)) {
       // 如果是 7天 以前的
       ratioA = 0.9;
     }
     double ratioB = 1.0;
-    if (now.subtract(const Duration(days: 90)).isAfter(createdAtB)) {
+    if (now.subtract(const Duration(days: 90)).isAfter(lastUpdateAtB)) {
       // 如果是 90天 以前的
       ratioB = 0.5;
-    } else if (now.subtract(const Duration(days: 30)).isAfter(createdAtB)) {
+    } else if (now.subtract(const Duration(days: 30)).isAfter(lastUpdateAtB)) {
       // 如果是 30天 以前的
       ratioB = 0.6;
-    } else if (now.subtract(const Duration(days: 7)).isAfter(createdAtB)) {
+    } else if (now.subtract(const Duration(days: 7)).isAfter(lastUpdateAtB)) {
       // 如果是 7天 以前的
       ratioB = 0.9;
     }
     int compare = (sumA * ratioA).compareTo(sumB * ratioB);
     if (compare != 0) {
-      return compare;
+      return -compare;
     } else {
       return -a.lastUpdateAt.compareTo(b.lastUpdateAt);
     }

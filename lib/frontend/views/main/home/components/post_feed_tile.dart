@@ -6,6 +6,7 @@ import 'package:paclub/frontend/views/main/home/components/tags_block.dart';
 import 'package:paclub/frontend/widgets/avatar/circle_avatar_container.dart';
 import 'package:paclub/models/post_model.dart';
 
+// FIXME: 修复排版样式
 class PostFeedTile extends StatelessWidget {
   const PostFeedTile({
     Key? key,

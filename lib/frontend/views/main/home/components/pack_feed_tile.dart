@@ -7,6 +7,7 @@ import 'package:paclub/frontend/widgets/avatar/circle_avatar_container.dart';
 import 'package:paclub/models/pack_model.dart';
 import 'package:paclub/r.dart';
 
+// FIXME: 修复排版样式
 class PackFeedTile extends StatelessWidget {
   const PackFeedTile({
     Key? key,
