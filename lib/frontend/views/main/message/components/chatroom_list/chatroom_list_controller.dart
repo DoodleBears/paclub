@@ -1,8 +1,9 @@
-import 'package:paclub/frontend/modules/chatroom_module.dart';
 import 'package:paclub/frontend/modules/user_module.dart';
 import 'package:paclub/frontend/views/main/app_controller.dart';
 import 'package:paclub/helper/app_constants.dart';
 import 'package:paclub/models/friend_model.dart';
+import 'package:paclub/models/user_model.dart';
+import 'package:paclub/utils/app_response.dart';
 import 'package:paclub/utils/logger.dart';
 import 'package:get/get.dart';
 
@@ -11,8 +12,8 @@ class ChatroomListController extends GetxController {
   final friendsStream = List<FriendModel>.empty().obs;
   List<FriendModel> friendList = <FriendModel>[];
 
-  final ChatroomModule chatroomModule = Get.find<ChatroomModule>();
-  final UserModule userModule = Get.find<UserModule>();
+  // final ChatroomModule _chatroomModule = Get.find<ChatroomModule>();
+  final UserModule _userModule = Get.find<UserModule>();
 
   final AppController userController = Get.find<AppController>();
 
@@ -22,11 +23,41 @@ class ChatroomListController extends GetxController {
     // chatroomRepository.getChatroomList(Constants.myUid);
 
     friendsStream.listen((_) => listenFriendStream(_));
-    friendsStream
-        .bindStream(userModule.getFriendChatroomListStream(AppConstants.uuid));
+    friendsStream.bindStream(_userModule.getFriendChatroomListStream(AppConstants.uuid));
     update();
 
     super.onInit();
+  }
+
+  // NOTE: 当图片加载失败的时候，考虑到可能是用户更新了图像
+  Future<void> updateFriendProfile({
+    required FriendModel friendModel,
+  }) async {
+    logger.d('updateFriendProfile');
+    AppResponse appResponseUserProfile =
+        await _userModule.getUserProfile(uid: friendModel.friendUid);
+
+    if (appResponseUserProfile.data != null) {
+      UserModel updateFriendModel = appResponseUserProfile.data;
+      Map<String, dynamic> updateMap = {};
+      if (friendModel.avatarURL != updateFriendModel.avatarURL) {
+        friendModel.avatarURL = updateFriendModel.avatarURL;
+        updateMap['avatarURL'] = updateFriendModel.avatarURL;
+      }
+      if (friendModel.friendName != updateFriendModel.displayName) {
+        friendModel.friendName = updateFriendModel.displayName;
+        updateMap['displayName'] = updateFriendModel.displayName;
+      }
+      if (updateMap.isNotEmpty) {
+        AppResponse appResponseUpdateFriendProfile = await _userModule.updateFriendProfile(
+            friendUid: friendModel.friendUid, updateMap: updateMap);
+        if (appResponseUpdateFriendProfile.data == null) {
+          logger.d('FriendProfile 更新失败');
+        }
+      } else {
+        logger.d('FriendProfile 无需更新');
+      }
+    }
   }
 
   int sortFriendList(FriendModel a, FriendModel b) {

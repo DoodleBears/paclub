@@ -38,7 +38,7 @@ class TagsBlock extends StatelessWidget {
               ),
               visualDensity: VisualDensity(
                 horizontal: VisualDensity.minimumDensity,
-                vertical: VisualDensity.minimumDensity,
+                vertical: -1.0,
               ),
               padding: EdgeInsets.zero,
               backgroundColor: primaryColor,

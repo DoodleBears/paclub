@@ -15,8 +15,7 @@ import 'package:paclub/utils/logger.dart';
 class UserController extends GetxController {
   final UserModule _userModule = Get.find<UserModule>();
   final AuthModule _authModule = Get.find<AuthModule>();
-  final TextEditingController displayNameTextController =
-      TextEditingController();
+  final TextEditingController displayNameTextController = TextEditingController();
   final TextEditingController bioTextController = TextEditingController();
   String uid = '';
   UserModel myUserModel = UserModel(uid: '', displayName: '', email: '');
@@ -132,8 +131,7 @@ class UserController extends GetxController {
     if (await _getPageParameter(isMe: isMe) == false) {
       return;
     }
-    AppResponse appResponse =
-        await _userModule.getUserProfile(uid: isMe ? AppConstants.uuid : uid);
+    AppResponse appResponse = await _userModule.getUserProfile(uid: isMe ? AppConstants.uuid : uid);
     if (appResponse.data != null) {
       UserModel userModel = appResponse.data;
       // NOTE: 如果不是自己，则考虑更新 Friend 的头像 Link 和 displayName, 如果该 user 有更改过信息
@@ -155,6 +153,7 @@ class UserController extends GetxController {
       otherUserModel.bio = userModel.bio;
 
       if (isMe == true) {
+        logger.wtf('设定个人信息');
         myUserModel = appResponse.data;
         bioNew = myUserModel.bio;
         AppConstants.bio = myUserModel.bio;
@@ -173,6 +172,8 @@ class UserController extends GetxController {
 
   Future<bool> _getPageParameter({required bool isMe}) async {
     // NOTE: 如果是个人页面
+    logger.wtf('获得个人信息');
+
     if (isMe) {
       if (myUserModel.avatarURL == '') {
         return true;

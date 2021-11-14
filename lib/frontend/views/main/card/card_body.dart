@@ -8,7 +8,7 @@ import 'package:paclub/frontend/views/main/card/components/pack_card.dart';
 import 'package:paclub/frontend/views/main/card/components/post_card.dart';
 import 'package:paclub/frontend/widgets/buttons/animated_scale_floating_action_button.dart';
 import 'package:paclub/frontend/widgets/buttons/scale_floating_action_button.dart';
-import 'package:paclub/frontend/widgets/others/app_scroll_behavior.dart';
+import 'package:paclub/frontend/widgets/others/no_glow_scroll_behavior.dart';
 import 'package:paclub/frontend/widgets/widgets.dart';
 import 'package:paclub/models/pack_model.dart';
 import 'package:paclub/models/post_model.dart';
@@ -68,64 +68,66 @@ class CardBody extends GetView<CardController> {
                           child: GetBuilder<CardController>(
                             builder: (_) {
                               logger0.d('重新渲染 DragLike');
-                              return ScrollConfiguration(
-                                behavior: NoGlowScrollBehavior(),
-                                child: DragLike(
-                                  dragController: controller.dragController,
-                                  duration: Duration(milliseconds: 520),
-                                  child: controller.feedList.length <= 0
-                                      ? Center(
-                                          child: Column(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: [
-                                              Image.asset(
-                                                R.appIcon,
-                                                height: 80.0,
-                                                width: 80.0,
-                                              ),
-                                              Padding(
-                                                padding: const EdgeInsets.symmetric(vertical: 24.0),
-                                                child: Text(
-                                                  '沒有更多卡片了',
-                                                  style: TextStyle(
-                                                    fontSize: 20.0,
-                                                    fontWeight: FontWeight.w600,
-                                                  ),
+
+                              return DragLike(
+                                dragController: controller.dragController,
+                                duration: Duration(milliseconds: 520),
+                                child: controller.feedList.length <= 0
+                                    ? Center(
+                                        child: Column(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Image.asset(
+                                              R.appIcon,
+                                              height: 80.0,
+                                              width: 80.0,
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.symmetric(vertical: 24.0),
+                                              child: Text(
+                                                '沒有更多卡片了',
+                                                style: TextStyle(
+                                                  fontSize: 20.0,
+                                                  fontWeight: FontWeight.w600,
                                                 ),
                                               ),
-                                            ],
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    : controller.feedList[0].feedType == 0
+                                        ? PackCard(
+                                            scrollController: controller.scrollController1,
+                                            height: Get.height * 0.6,
+                                            packModel: controller.feedList[0] as PackModel,
+                                          )
+                                        : PostCard(
+                                            scrollController: controller.scrollController1,
+                                            height: Get.height * 0.6,
+                                            postModel: controller.feedList[0] as PostModel,
                                           ),
-                                        )
-                                      : controller.feedList[0].feedType == 0
-                                          ? PackCard(
-                                              height: Get.height * 0.6,
-                                              packModel: controller.feedList[0] as PackModel,
-                                            )
-                                          : PostCard(
-                                              height: Get.height * 0.6,
-                                              postModel: controller.feedList[0] as PostModel,
-                                            ),
-                                  secondChild: controller.feedList.length <= 1
-                                      ? Container()
-                                      : controller.feedList[1].feedType == 0
-                                          ? PackCard(
-                                              height: Get.height * 0.6,
-                                              packModel: controller.feedList[1] as PackModel,
-                                            )
-                                          : PostCard(
-                                              height: Get.height * 0.6,
-                                              postModel: controller.feedList[1] as PostModel,
-                                            ),
-                                  screenWidth: Get.width,
-                                  outValue: 0.8,
-                                  dragSpeed: 1000,
-                                  onChangeDragDistance: (distance) {},
-                                  onOutComplete: (type) {
-                                    print(type);
-                                  },
-                                  onScaleComplete: () async => controller.popFeedList(),
-                                  onPointerUp: () {},
-                                ),
+                                secondChild: controller.feedList.length <= 1
+                                    ? Container()
+                                    : controller.feedList[1].feedType == 0
+                                        ? PackCard(
+                                            scrollController: controller.scrollController2,
+                                            height: Get.height * 0.6,
+                                            packModel: controller.feedList[1] as PackModel,
+                                          )
+                                        : PostCard(
+                                            scrollController: controller.scrollController2,
+                                            height: Get.height * 0.6,
+                                            postModel: controller.feedList[1] as PostModel,
+                                          ),
+                                screenWidth: Get.width,
+                                outValue: 0.8,
+                                dragSpeed: 1000,
+                                onChangeDragDistance: (distance) {},
+                                onOutComplete: (type) {
+                                  print(type);
+                                },
+                                onScaleComplete: () async => controller.popFeedList(),
+                                onPointerUp: () {},
                               );
                             },
                           ),

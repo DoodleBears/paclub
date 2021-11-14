@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:paclub/frontend/constants/colors.dart';
 import 'package:paclub/frontend/views/main/home/components/pack_feed_tile.dart';
@@ -23,10 +24,9 @@ class HomeHotPage extends GetView<HomeHotController> {
             color: AppColors.homeListViewBackgroundColor,
             child: ListView.builder(
               physics: BouncingScrollPhysics(),
-              padding: EdgeInsets.zero,
+              padding: EdgeInsets.only(top: 8.0),
               itemCount: controller.feedList.length,
               itemBuilder: (context, index) {
-                // logger.d('build index: $index');
                 if (index + 1 == controller.feedList.length) {
                   controller.loadMoreOldFeed(index + 1);
                 }

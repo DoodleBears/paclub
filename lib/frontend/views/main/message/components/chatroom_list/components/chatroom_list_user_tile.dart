@@ -1,31 +1,20 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:paclub/frontend/constants/colors.dart';
 import 'package:paclub/frontend/modules/user_module.dart';
 import 'package:paclub/frontend/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:paclub/frontend/views/main/app_controller.dart';
+import 'package:paclub/frontend/views/main/message/components/chatroom_list/chatroom_list_controller.dart';
 import 'package:paclub/frontend/widgets/badges/badges.dart';
 import 'package:paclub/helper/chatroom_helper.dart';
+import 'package:paclub/models/friend_model.dart';
 
-class ChatroomsListUserTile extends StatelessWidget {
-  final String avatarURL;
-  final String userUid;
-  final String userName;
-  final String chatroomId;
-  final String lastMessage;
-  final Timestamp lastMessageTime;
-  final int messageNotRead;
+class ChatroomsListUserTile extends GetView<ChatroomListController> {
+  final FriendModel friendModel;
 
   ChatroomsListUserTile({
-    required this.userName,
-    required this.chatroomId,
-    required this.userUid,
-    required this.lastMessage,
-    required this.messageNotRead,
-    required this.lastMessageTime,
-    required this.avatarURL,
+    required this.friendModel,
   });
 
   @override
@@ -36,16 +25,16 @@ class ChatroomsListUserTile extends StatelessWidget {
         await Get.toNamed(
           Routes.TABS + Routes.MESSAGE + Routes.CHATROOMLIST + Routes.CHATROOM,
           arguments: {
-            'userName': userName,
-            'chatroomId': chatroomId,
-            'userUid': userUid,
-            'messageNotRead': messageNotRead,
-            'avatarURL': avatarURL,
+            'userName': friendModel.friendName,
+            'chatroomId': friendModel.chatroomId,
+            'userUid': friendModel.friendUid,
+            'messageNotRead': friendModel.messageNotRead,
+            'avatarURL': friendModel.avatarURL,
           },
         );
         // 离开房间
         final UserModule userModule = Get.find<UserModule>();
-        userModule.leaveUserRoom(friendUid: userUid);
+        userModule.leaveUserRoom(friendUid: friendModel.friendUid);
       },
 
       ///每位用戶顯示於名單上的UI介面
@@ -64,38 +53,40 @@ class ChatroomsListUserTile extends StatelessWidget {
                   child: GestureDetector(
                     onTap: () {
                       Get.toNamed(
-                        Routes.TABS + Routes.USER + userUid,
+                        Routes.TABS + Routes.USER + friendModel.friendUid,
                         arguments: {
-                          'userName': userName,
-                          'avatarURL': avatarURL,
+                          'userName': friendModel.friendName,
+                          'avatarURL': friendModel.avatarURL,
                         },
                       );
                     },
-                    child: ClipOval(
-                      child: Material(
-                        color: AppColors.chatAvatarBackgroundColor,
-                        child: avatarURL == ''
-                            ? Container(
-                                width: 54.0,
-                                height: 54.0,
-                                child: Center(
-                                  child: Text(
-                                    userName.substring(0, 1).toUpperCase(),
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 24.0,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              )
-                            : Ink.image(
-                                image: CachedNetworkImageProvider(avatarURL),
-                                fit: BoxFit.cover,
-                                width: 54.0,
-                                height: 54.0,
+                    child: Material(
+                      shape: CircleBorder(),
+                      clipBehavior: Clip.antiAlias,
+                      color: AppColors.chatAvatarBackgroundColor,
+                      child: CachedNetworkImage(
+                        fit: BoxFit.cover,
+                        width: 54.0,
+                        height: 54.0,
+                        maxWidthDiskCache: 192,
+                        memCacheWidth: 128,
+                        imageUrl: friendModel.avatarURL,
+                        cacheKey: friendModel.avatarURL,
+                        errorWidget: (context, url, error) {
+                          // FIXME: 当头像没正确加载的时候，
+                          controller.updateFriendProfile(friendModel: friendModel);
+                          return Center(
+                            child: Text(
+                              friendModel.friendName.substring(0, 1).toUpperCase(),
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 24.0,
+                                fontWeight: FontWeight.bold,
                               ),
+                            ),
+                          );
+                        },
                       ),
                     ),
                   ),
@@ -109,15 +100,14 @@ class ChatroomsListUserTile extends StatelessWidget {
                         children: [
                           Expanded(
                             child: Text(
-                              '$userName',
+                              '${friendModel.friendName}',
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.bold),
+                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                             ),
                           ),
                           Text(
-                            '${chatroomListFormatTime(lastMessageTime)}',
+                            '${chatroomListFormatTime(friendModel.lastMessageTime)}',
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: TextStyle(
@@ -133,7 +123,7 @@ class ChatroomsListUserTile extends StatelessWidget {
                           // 最后消息 lastMessage
                           Expanded(
                             child: Text(
-                              lastMessage,
+                              friendModel.lastMessage,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style: TextStyle(
@@ -146,7 +136,7 @@ class ChatroomsListUserTile extends StatelessWidget {
                           Padding(
                             padding: const EdgeInsets.only(left: 12.0),
                             child: NumberBadge(
-                              number: messageNotRead,
+                              number: friendModel.messageNotRead,
                             ),
                           )
                         ],

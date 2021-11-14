@@ -50,7 +50,7 @@ class PackRepository extends GetxController {
       List<PackModel> newPackList = await _packsCollection
           .orderBy('lastUpdateAt', descending: true)
           .endBeforeDocument(firstPackDoc) // 这里在目前的 第一条 Pack Feed 前截止
-          .get(GetOptions(source: Source.server))
+          .get()
           .timeout(const Duration(seconds: 15)) // 15秒钟超时限制
           .then((QuerySnapshot querySnapshot) =>
               querySnapshot.docs.map((doc) => PackModel.fromDoucumentSnapshot(doc)).toList());
@@ -90,7 +90,7 @@ class PackRepository extends GetxController {
       try {
         List<PackModel> packList = await baseQuery
             .limit(limit)
-            .get(GetOptions(source: Source.server))
+            .get()
             .timeout(const Duration(seconds: 15)) // 15秒钟超时限制
             .then((QuerySnapshot querySnapshot) =>
                 querySnapshot.docs.map((doc) => PackModel.fromDoucumentSnapshot(doc)).toList());
@@ -115,7 +115,7 @@ class PackRepository extends GetxController {
       List<PackModel> packList = await baseQuery
           .startAfterDocument(lastPackDoc!)
           .limit(limit)
-          .get(GetOptions(source: Source.server))
+          .get()
           .timeout(const Duration(seconds: 15)) // 15秒钟超时限制
           .then((QuerySnapshot querySnapshot) =>
               querySnapshot.docs.map((doc) => PackModel.fromDoucumentSnapshot(doc)).toList());

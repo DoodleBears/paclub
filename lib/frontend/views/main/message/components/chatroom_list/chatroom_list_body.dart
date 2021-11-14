@@ -1,4 +1,4 @@
-import 'package:paclub/frontend/widgets/others/app_scroll_behavior.dart';
+import 'package:paclub/frontend/widgets/others/no_glow_scroll_behavior.dart';
 import 'package:paclub/models/friend_model.dart';
 import 'package:paclub/utils/logger.dart';
 import 'package:paclub/frontend/views/main/message/components/chatroom_list/chatroom_list_controller.dart';
@@ -22,15 +22,8 @@ class ChatroomListBody extends GetView<ChatroomListController> {
               itemBuilder: (context, index) {
                 FriendModel friendModel = controller.friendList[index];
 
-                final userName = friendModel.friendName;
                 return ChatroomsListUserTile(
-                  avatarURL: friendModel.avatarURL,
-                  lastMessageTime: friendModel.lastMessageTime,
-                  lastMessage: friendModel.lastMessage,
-                  messageNotRead: friendModel.messageNotRead,
-                  chatroomId: friendModel.chatroomId,
-                  userUid: friendModel.friendUid,
-                  userName: userName,
+                  friendModel: friendModel,
                 );
               },
             ),

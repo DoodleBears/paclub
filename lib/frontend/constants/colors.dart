@@ -39,6 +39,8 @@ class AppColors {
   static Color bottomNavigationBarBackgroundColor = Colors.white;
   static Color? refreshIndicatorColor = Colors.white;
   static Color? divideLineColor = Colors.grey[200];
+  // NOTE: Image
+  static Color? normalImageBackgroundColor = Colors.grey[200];
   // NOTE: Text
   static Color? normalTextColor = Colors.black;
   // NOTE: Button
@@ -84,6 +86,8 @@ class AppColors {
     bottomNavigationBarBackgroundColor = Colors.white;
     refreshIndicatorColor = Colors.white;
     divideLineColor = Colors.grey[200];
+    // NOTE: Image
+    normalImageBackgroundColor = Colors.grey[200];
     // NOTE: Text
     normalTextColor = Colors.black;
     // NOTE: Button
@@ -129,6 +133,8 @@ class AppColors {
     bottomNavigationBarBackgroundColor = Colors.black;
     refreshIndicatorColor = Colors.grey[900];
     divideLineColor = Colors.grey[850];
+    // NOTE: Image
+    normalImageBackgroundColor = Colors.grey[800];
     // NOTE: Text
     normalTextColor = Colors.white;
     // NOTE: Button

@@ -50,7 +50,7 @@ class PostRepository extends GetxController {
       List<PostModel> newPostList = await _postsCollection
           .orderBy('lastUpdateAt', descending: true)
           .endBeforeDocument(firstPostDoc) // 这里在目前的 第一条 Post Feed 前截止
-          .get(GetOptions(source: Source.server))
+          .get()
           .timeout(const Duration(seconds: 15)) // 15秒钟超时限制
           .then((QuerySnapshot querySnapshot) =>
               querySnapshot.docs.map((doc) => PostModel.fromDoucumentSnapshot(doc)).toList());
@@ -89,7 +89,7 @@ class PostRepository extends GetxController {
     if (firstTime) {
       try {
         List<PostModel> postList = await baseQuery
-            .get(GetOptions(source: Source.server))
+            .get()
             .timeout(const Duration(seconds: 15)) // 15秒钟超时限制
             .then((QuerySnapshot querySnapshot) =>
                 querySnapshot.docs.map((doc) => PostModel.fromDoucumentSnapshot(doc)).toList());
@@ -113,7 +113,7 @@ class PostRepository extends GetxController {
     try {
       List<PostModel> postList = await baseQuery
           .startAfterDocument(lastPostDoc!)
-          .get(GetOptions(source: Source.server))
+          .get()
           .timeout(const Duration(seconds: 15)) // 15秒钟超时限制
           .then((QuerySnapshot querySnapshot) =>
               querySnapshot.docs.map((doc) => PostModel.fromDoucumentSnapshot(doc)).toList());

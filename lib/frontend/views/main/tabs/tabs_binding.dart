@@ -1,6 +1,5 @@
 import 'package:get/get.dart';
 import 'package:paclub/backend/repository/remote/chatroom_repository.dart';
-import 'package:paclub/frontend/views/main/card/card_binding.dart';
 import 'package:paclub/frontend/views/main/home/home_binding.dart';
 import 'package:paclub/frontend/views/main/message/message_binding.dart';
 import 'package:paclub/frontend/views/main/notification/notification_binding.dart';

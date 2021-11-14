@@ -1,10 +1,13 @@
 import 'package:get/get.dart';
 import 'package:paclub/backend/api/pack_api.dart';
 import 'package:paclub/backend/api/post_api.dart';
+import 'package:paclub/backend/api/user_api.dart';
 import 'package:paclub/backend/repository/remote/pack_repository.dart';
 import 'package:paclub/backend/repository/remote/post_repository.dart';
+import 'package:paclub/backend/repository/remote/user_repository.dart';
 import 'package:paclub/frontend/modules/pack_module.dart';
 import 'package:paclub/frontend/modules/post_module.dart';
+import 'package:paclub/frontend/modules/user_module.dart';
 import 'package:paclub/frontend/views/main/home/home_controller.dart';
 import 'package:paclub/frontend/views/main/home/home_follow/home_follow_controller.dart';
 import 'package:paclub/frontend/views/main/home/home_hot/home_hot_controller.dart';
@@ -17,6 +20,9 @@ class HomeBinding implements Bindings {
     logger.wtf('[自动绑定]依赖注入 —— HomeBinding');
 
     /// Controller 用到的 Module 和 API
+    Get.lazyPut<UserRepository>(() => UserRepository());
+    Get.lazyPut<UserApi>(() => UserApi());
+    Get.lazyPut<UserModule>(() => UserModule());
     Get.lazyPut<PackRepository>(() => PackRepository());
     Get.lazyPut<PackApi>(() => PackApi());
     Get.lazyPut<PackModule>(() => PackModule());

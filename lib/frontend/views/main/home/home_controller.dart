@@ -5,6 +5,7 @@ import 'package:paclub/utils/logger.dart';
 
 class HomeController extends GetxController {
   final ScrollController scrollController = ScrollController();
+  double lastScrollOffset = 0.0;
 
   Future<void> navigateToPostPage() async {
     await Future.delayed(const Duration(milliseconds: 100));

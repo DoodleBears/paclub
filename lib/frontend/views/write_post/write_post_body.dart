@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:ui';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
@@ -16,7 +15,7 @@ import 'package:paclub/frontend/views/write_post/components/select_pack_tile.dar
 import 'package:paclub/frontend/views/write_post/write_post_controller.dart';
 import 'package:paclub/frontend/widgets/buttons/animated_scale_floating_action_button.dart';
 import 'package:paclub/frontend/widgets/buttons/stadium_loading_button.dart';
-import 'package:paclub/frontend/widgets/others/app_scroll_behavior.dart';
+import 'package:paclub/frontend/widgets/others/no_glow_scroll_behavior.dart';
 import 'package:paclub/frontend/widgets/widgets.dart';
 import 'package:paclub/helper/app_constants.dart';
 import 'package:paclub/r.dart';

@@ -4,8 +4,11 @@ import 'package:paclub/models/feed_model.dart';
 class PackModel implements FeedModel {
   late DocumentSnapshot documentSnapshot;
   late String pid;
+  @override
   late String ownerUid;
+  @override
   late String ownerName;
+  @override
   late String ownerAvatarURL;
   late String packName;
   late String description;

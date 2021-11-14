@@ -4,8 +4,11 @@ import 'package:paclub/models/feed_model.dart';
 class PostModel implements FeedModel {
   late DocumentSnapshot documentSnapshot;
   late String postId;
+  @override
   late String ownerUid;
+  @override
   late String ownerName;
+  @override
   late String ownerAvatarURL;
   late String title;
   late List<String> tags = <String>[];

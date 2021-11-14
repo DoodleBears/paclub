@@ -9,7 +9,7 @@ import 'package:paclub/frontend/widgets/avatar/multi_avatar_container.dart';
 import 'package:paclub/frontend/widgets/buttons/stadium_loading_button.dart';
 import 'package:paclub/frontend/widgets/containers/fade_in_scale_container.dart';
 import 'package:paclub/frontend/widgets/input_field/simple_input_field.dart';
-import 'package:paclub/frontend/widgets/others/app_scroll_behavior.dart';
+import 'package:paclub/frontend/widgets/others/no_glow_scroll_behavior.dart';
 
 class CreatePackBody extends GetView<CreatePackController> {
   const CreatePackBody({Key? key}) : super(key: key);

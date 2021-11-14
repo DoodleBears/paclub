@@ -1,12 +1,15 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:paclub/frontend/constants/colors.dart';
 import 'package:paclub/frontend/modules/pack_module.dart';
 import 'package:paclub/frontend/modules/post_module.dart';
+import 'package:paclub/frontend/modules/user_module.dart';
 import 'package:paclub/frontend/widgets/notifications/toast.dart';
 import 'package:paclub/models/feed_model.dart';
 import 'package:paclub/models/pack_model.dart';
 import 'package:paclub/models/post_model.dart';
+import 'package:paclub/models/user_model.dart';
 import 'package:paclub/utils/app_response.dart';
 import 'package:paclub/utils/logger.dart';
 
@@ -15,8 +18,11 @@ enum LoadState { firstTime, moreOld, moreNew }
 class HomeHotController extends GetxController {
   final PackModule _packModule = Get.find<PackModule>();
   final PostModule _postModule = Get.find<PostModule>();
+  final UserModule _userModule = Get.find<UserModule>();
 
-  // final RefreshController refreshController = RefreshController();
+  double lastScrollOffset = 0.0;
+  AxisDirection lastScrollDirection = AxisDirection.left;
+  bool isAllowHeaderChange = false;
 
   List<PackModel> packList = <PackModel>[];
   List<PostModel> postList = <PostModel>[];
@@ -34,6 +40,84 @@ class HomeHotController extends GetxController {
   bool isMoreOldPackExist = true;
   bool isMoreOldPostExist = true;
   int lastLength = 0;
+  List<String> updatedPost = <String>[];
+  List<String> updatedPack = <String>[];
+
+  // MARK: 更新 Feed 信息
+  // NOTE: 更新 Pack Feed
+  Future<void> updatePackUserInfo({
+    required PackModel packModel,
+  }) async {
+    // NOTE: 已经更新过返回
+    if (updatedPack.contains(packModel.pid)) {
+      logger.d('已更新过 Pack');
+      return;
+    }
+    updatedPack.add(packModel.pid);
+    logger.d('updatePackUserInfo');
+    AppResponse appResponseUserProfile = await _userModule.getUserProfile(uid: packModel.ownerUid);
+
+    if (appResponseUserProfile.data != null) {
+      UserModel userModel = appResponseUserProfile.data;
+      Map<String, dynamic> updateMap = {};
+
+      if (packModel.ownerAvatarURL != userModel.avatarURL) {
+        packModel.ownerAvatarURL = userModel.avatarURL;
+        updateMap['ownerAvatarURL'] = userModel.avatarURL;
+      }
+      if (packModel.ownerName != userModel.displayName) {
+        packModel.ownerName = userModel.displayName;
+        updateMap['ownerName'] = userModel.displayName;
+      }
+
+      if (updateMap.isNotEmpty) {
+        AppResponse appResponseUpdatePackProfile =
+            await _packModule.updatePack(pid: packModel.pid, updateMap: updateMap);
+        if (appResponseUpdatePackProfile.data == null) {
+          logger.d('PackUserInfo 更新失败');
+        }
+      } else {
+        logger.d('PackUserInfo 无需更新');
+      }
+    }
+  }
+
+  // NOTE: 更新 Post Feed
+  Future<void> updatePostUserInfo({
+    required PostModel postModel,
+  }) async {
+    if (updatedPost.contains(postModel.postId)) {
+      logger.d('已更新过 Post');
+      return;
+    }
+    updatedPost.add(postModel.postId);
+    logger.d('updatePostUserInfo');
+    AppResponse appResponseUserProfile = await _userModule.getUserProfile(uid: postModel.ownerUid);
+
+    if (appResponseUserProfile.data != null) {
+      UserModel userModel = appResponseUserProfile.data;
+      Map<String, dynamic> updateMap = {};
+
+      if (postModel.ownerAvatarURL != userModel.avatarURL) {
+        postModel.ownerAvatarURL = userModel.avatarURL;
+        updateMap['ownerAvatarURL'] = userModel.avatarURL;
+      }
+      if (postModel.ownerName != userModel.displayName) {
+        postModel.ownerName = userModel.displayName;
+        updateMap['ownerName'] = userModel.displayName;
+      }
+
+      if (updateMap.isNotEmpty) {
+        AppResponse appResponseUpdatePackProfile =
+            await _postModule.updatePost(postId: postModel.postId, updateMap: updateMap);
+        if (appResponseUpdatePackProfile.data == null) {
+          logger.d('PostUserInfo 更新失败');
+        }
+      } else {
+        logger.d('PostUserInfo 无需更新');
+      }
+    }
+  }
 
   // MARK: 首次加载 Feed
   Future<void> firstLoadFeed() async {
@@ -42,7 +126,7 @@ class HomeHotController extends GetxController {
     }
     logger.d('开始 firstLoadFeed');
     isRefresh = true;
-    var processPack = _packModule.getPacksFirstTime(limit: 10);
+    var processPack = _packModule.getPacksFirstTime(limit: 5);
     var processPost = _postModule.getPostsFirstTime(limit: 20);
 
     AppResponse appResponsePack = await processPack;
@@ -185,7 +269,7 @@ class HomeHotController extends GetxController {
   }
 
   // NOTE: 加载更多历史 Pack
-  Future<void> loadMoreOldPacks({int limit = 10}) async {
+  Future<void> loadMoreOldPacks({int limit = 5}) async {
     if (isMoreOldPackExist == false) return;
     logger.i('开始加载 loadMorePacks');
     AppResponse appResponse;
@@ -253,8 +337,8 @@ class HomeHotController extends GetxController {
     if (sumB <= 0.5) {
       sumB = 0.5;
     }
-    final DateTime createdAtA = a.createdAt.toDate().toLocal();
-    final DateTime createdAtB = b.createdAt.toDate().toLocal();
+    // final DateTime createdAtA = a.createdAt.toDate().toLocal();
+    // final DateTime createdAtB = b.createdAt.toDate().toLocal();
     final DateTime lastUpdateAtA = a.lastUpdateAt.toDate().toLocal();
     final DateTime lastUpdateAtB = b.lastUpdateAt.toDate().toLocal();
     final DateTime now = DateTime.now();

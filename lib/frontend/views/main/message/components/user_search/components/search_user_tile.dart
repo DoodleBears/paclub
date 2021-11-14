@@ -31,8 +31,7 @@ class SearchUserTile extends GetView<UserSearchController> {
   Widget build(BuildContext context) {
     return GestureDetector(onTap: () {
       Get.toNamed(
-        Routes.TABS + Routes.OTHERUSER,
-        parameters: {'uid': userUid},
+        Routes.TABS + Routes.USER + userUid,
         arguments: {
           'userName': userName,
           'avatarURL': userAvatarURL,
@@ -55,9 +54,7 @@ class SearchUserTile extends GetView<UserSearchController> {
                           child: Center(
                             child: Text(userName.substring(0, 1).toUpperCase(),
                                 textAlign: TextAlign.center,
-                                style: TextStyle(
-                                    fontSize: 24.0,
-                                    fontWeight: FontWeight.bold)),
+                                style: TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold)),
                           ),
                         )
                       : Ink.image(
@@ -100,8 +97,7 @@ class SearchUserTile extends GetView<UserSearchController> {
                         padding: const EdgeInsets.all(12.0),
                         child: CircularProgressIndicator(
                           // 设置为白色（保持不变的 Animation，一直为白色
-                          valueColor:
-                              AlwaysStoppedAnimation<Color>(Colors.white),
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                           // 进度条背后背景的颜色（圆圈底下的部分）
                           // backgroundColor: Colors.grey[300],
                           strokeWidth: 5.0,
@@ -121,10 +117,7 @@ class SearchUserTile extends GetView<UserSearchController> {
                         if (appResponse.data != null) {
                           Map<String, dynamic> chatroomInfo = appResponse.data;
                           await Get.toNamed(
-                              Routes.TABS +
-                                  Routes.MESSAGE +
-                                  Routes.CHATROOMLIST +
-                                  Routes.CHATROOM,
+                              Routes.TABS + Routes.MESSAGE + Routes.CHATROOMLIST + Routes.CHATROOM,
                               arguments: chatroomInfo);
                           // 离开房间
                           final UserModule userModule = Get.find<UserModule>();

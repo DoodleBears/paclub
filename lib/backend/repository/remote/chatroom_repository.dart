@@ -85,7 +85,7 @@ class ChatroomRepository extends GetxController {
       try {
         List<ChatMessageModel> list = await baseQuery
             .where('time', isLessThan: enterRoomTimestamp)
-            .get(GetOptions(source: Source.server))
+            .get()
             .timeout(const Duration(seconds: 10)) // 10秒钟超时限制
             .then((QuerySnapshot querySnapshot) => querySnapshot.docs
                 .map((doc) => ChatMessageModel.fromDoucumentSnapshot(doc))
@@ -109,7 +109,7 @@ class ChatroomRepository extends GetxController {
     try {
       List<ChatMessageModel> list = await baseQuery
           .startAfterDocument(firstMessageDoc!)
-          .get(GetOptions(source: Source.server))
+          .get()
           .timeout(const Duration(seconds: 10)) // 10秒钟超时限制
           .then((QuerySnapshot querySnapshot) => querySnapshot.docs
               .map((doc) => ChatMessageModel.fromDoucumentSnapshot(doc))

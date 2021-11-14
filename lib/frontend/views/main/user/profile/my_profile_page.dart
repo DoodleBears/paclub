@@ -1,5 +1,7 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:paclub/frontend/constants/colors.dart';
 import 'package:paclub/frontend/routes/app_pages.dart';
 import 'package:paclub/frontend/views/main/app_controller.dart';
 import 'package:paclub/frontend/views/main/user/components/numbers_widget.dart';
@@ -43,23 +45,31 @@ class MyProfilePage extends GetView<UserController> {
             builder: (_) {
               return GetBuilder<UserController>(
                 builder: (_) {
-                  return CircleAvatarContainer(
-                      avatarUrl: controller.myUserModel.avatarURL,
-                      width: 128,
-                      height: 128);
+                  return Material(
+                    shape: CircleBorder(),
+                    clipBehavior: Clip.antiAlias,
+                    color: AppColors.chatAvatarBackgroundColor,
+                    child: CachedNetworkImage(
+                      fit: BoxFit.cover,
+                      width: 128.0,
+                      height: 128.0,
+                      imageUrl: controller.myUserModel.avatarURL,
+                      cacheKey: controller.myUserModel.avatarURL,
+                      maxHeightDiskCache: 512,
+                      memCacheHeight: 256,
+                    ),
+                  );
                 },
               );
             },
           ),
           const SizedBox(height: 24),
           GetBuilder<UserController>(
-              builder: (_) =>
-                  buildDisplayName(controller.myUserModel.displayName)),
+              builder: (_) => buildDisplayName(controller.myUserModel.displayName)),
           const SizedBox(height: 24),
           NumbersWidget(),
           const SizedBox(height: 48),
-          GetBuilder<UserController>(
-              builder: (_) => buildAbout(controller.myUserModel.bio)),
+          GetBuilder<UserController>(builder: (_) => buildAbout(controller.myUserModel.bio)),
         ],
       ),
     );

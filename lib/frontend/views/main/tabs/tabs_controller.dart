@@ -34,6 +34,7 @@ class TabsController extends GetxController {
       }
       return;
     }
+
     currentIndex = index;
     // logger.i('当前index是：' + currentIndex.toString());
     tabsDependencyInjection(index);

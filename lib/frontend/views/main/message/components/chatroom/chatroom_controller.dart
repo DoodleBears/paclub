@@ -16,8 +16,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 class ChatroomController extends GetxController {
   final UserModule _userModule = Get.find<UserModule>();
   final ChatroomModule _chatroomModule = Get.find<ChatroomModule>();
-  final ChatroomScrollController chatroomScroller =
-      Get.find<ChatroomScrollController>();
+  final ChatroomScrollController chatroomScroller = Get.find<ChatroomScrollController>();
   final RefreshController refreshController = RefreshController();
   static final switchMessageNum = 12;
   late final ChatroomModel chatroomModel;
@@ -71,9 +70,7 @@ class ChatroomController extends GetxController {
     messageStream.listen((list) => listenNewMessageStream(list));
 
     await loadMoreHistoryMessages(
-        limit: messageNotRead > switchMessageNum
-            ? messageNotRead
-            : 30); // 首次加载历史记录
+        limit: messageNotRead > switchMessageNum ? messageNotRead : 30); // 首次加载历史记录
     messageStream.bindStream(_chatroomModule.getNewMessageStream(
       chatroomId: chatroomId,
       enterRoomTimestamp: enterRoomTimestamp,
@@ -98,8 +95,8 @@ class ChatroomController extends GetxController {
       messageNotRead = chatroomInfo['messageNotRead'];
     } else {
       // MARK: 当从 搜索 界面进入聊天室的时候，需要从 server 获取未读消息数量
-      AppResponse appResponseNotRead = await _userModule
-          .getFriendChatroomNotRead(chatUserUid: chatWithUserUid);
+      AppResponse appResponseNotRead =
+          await _userModule.getFriendChatroomNotRead(chatUserUid: chatWithUserUid);
       if (appResponseNotRead.data != null) {
         messageNotRead = appResponseNotRead.data;
       }
@@ -111,8 +108,7 @@ class ChatroomController extends GetxController {
   // NOTE: 是因为当用户 A 更新用户名的时候，理论上需要更新 A 的朋友的 friends Collection 下面对应的 displayName, 这个 SQL 会非常耗时且消耗大、
   // NOTE: 通过是A的好友的用户进入聊天室
   Future<void> _updateFriendProfile() async {
-    AppResponse appResponseUserProfile =
-        await _userModule.getUserProfile(uid: chatWithUserUid);
+    AppResponse appResponseUserProfile = await _userModule.getUserProfile(uid: chatWithUserUid);
 
     if (appResponseUserProfile.data != null) {
       UserModel friendModel = appResponseUserProfile.data;
@@ -131,8 +127,7 @@ class ChatroomController extends GetxController {
         avatarURL = friendModel.avatarURL;
       }
       AppResponse appResponseUpdateFriendProfile =
-          await _userModule.updateFriendProfile(
-              friendUid: chatWithUserUid, updateMap: updateMap);
+          await _userModule.updateFriendProfile(friendUid: chatWithUserUid, updateMap: updateMap);
       if (appResponseUpdateFriendProfile.data == null) {
         update();
         toastTop(appResponseUpdateFriendProfile.message);
@@ -150,8 +145,7 @@ class ChatroomController extends GetxController {
       Map<String, dynamic> updateMap = {
         'usersName': usersName,
       };
-      _chatroomModule.updateChatroom(
-          chatroomId: chatroomId, updateMap: updateMap);
+      _chatroomModule.updateChatroom(chatroomId: chatroomId, updateMap: updateMap);
     }
   }
 
@@ -173,8 +167,7 @@ class ChatroomController extends GetxController {
       newMessageList = List.from(messageStream.skip(skipMessageNum));
     }
     if (oldMessageList.length + messageStream.length >= switchMessageNum) {
-      newMessageNum =
-          oldMessageList.length + newMessageList.length - allMessageNum;
+      newMessageNum = oldMessageList.length + newMessageList.length - allMessageNum;
     }
     allMessageNum = oldMessageList.length + newMessageList.length;
 
@@ -221,8 +214,7 @@ class ChatroomController extends GetxController {
       if (appResponse.message == 'no_more_history_message') {
         isHistoryExist = false;
       }
-      List<ChatMessageModel> list =
-          List<ChatMessageModel>.from(appResponse.data);
+      List<ChatMessageModel> list = List<ChatMessageModel>.from(appResponse.data);
       oldMessageList.addAll(list);
       if (oldMessageList.length >= switchMessageNum) {
         isOver12 = true;
@@ -230,8 +222,7 @@ class ChatroomController extends GetxController {
       // 更新总消息长度
       allMessageNum = oldMessageList.length + newMessageList.length;
       refreshController.loadComplete();
-      if (messageNotRead >= oldMessageList.length &&
-          messageNotRead > switchMessageNum) {
+      if (messageNotRead >= oldMessageList.length && messageNotRead > switchMessageNum) {
         isJumpBackShow = true;
       } else {
         isJumpBackShow = false;
@@ -258,8 +249,7 @@ class ChatroomController extends GetxController {
     if (message.isNotEmpty) {
       AppResponse appResponse = await _chatroomModule.addMessage(
         chatroomId: chatroomId,
-        chatMessageModel:
-            ChatMessageModel(message: message, sendByUid: AppConstants.uuid),
+        chatMessageModel: ChatMessageModel(message: message, sendByUid: AppConstants.uuid),
         chatWithUserUid: chatWithUserUid,
       );
 

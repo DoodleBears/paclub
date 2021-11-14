@@ -1,9 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:paclub/frontend/constants/colors.dart';
 import 'package:paclub/frontend/views/main/app_controller.dart';
 import 'package:paclub/frontend/views/main/user/components/numbers_widget.dart';
 import 'package:paclub/frontend/views/main/user/user_controller.dart';
-import 'package:paclub/frontend/widgets/avatar/circle_avatar_container.dart';
 import 'package:paclub/utils/logger.dart';
 
 class ProfilePage extends GetView<UserController> {
@@ -23,10 +24,19 @@ class ProfilePage extends GetView<UserController> {
             builder: (_) {
               return GetBuilder<UserController>(
                 builder: (_) {
-                  return CircleAvatarContainer(
-                    avatarUrl: controller.otherUserModel.avatarURL,
-                    width: 128,
-                    height: 128,
+                  return Material(
+                    shape: CircleBorder(),
+                    clipBehavior: Clip.antiAlias,
+                    color: AppColors.chatAvatarBackgroundColor,
+                    child: CachedNetworkImage(
+                      fit: BoxFit.cover,
+                      width: 128.0,
+                      height: 128.0,
+                      imageUrl: controller.otherUserModel.avatarURL,
+                      cacheKey: controller.otherUserModel.avatarURL,
+                      maxHeightDiskCache: 512,
+                      memCacheHeight: 256,
+                    ),
                   );
                 },
               );
@@ -34,13 +44,11 @@ class ProfilePage extends GetView<UserController> {
           ),
           const SizedBox(height: 24),
           GetBuilder<UserController>(
-              builder: (_) =>
-                  buildDisplayName(controller.otherUserModel.displayName)),
+              builder: (_) => buildDisplayName(controller.otherUserModel.displayName)),
           const SizedBox(height: 24),
           NumbersWidget(),
           const SizedBox(height: 48),
-          GetBuilder<UserController>(
-              builder: (_) => buildAbout(controller.otherUserModel.bio)),
+          GetBuilder<UserController>(builder: (_) => buildAbout(controller.otherUserModel.bio)),
         ],
       ),
     );
