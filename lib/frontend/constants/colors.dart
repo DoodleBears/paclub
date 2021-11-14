@@ -31,6 +31,7 @@ class AppColors {
   static Color? packOverlayColor = primaryColor;
   static Color? packBackgroundColor = primarySuperLightColor.withAlpha(128);
   static Color? packContainerBackgroundColor = primaryLightColor;
+  static Color? pageBackground = Colors.grey[100];
   static Color? containerBackground = Colors.white;
   static Color loadingCurtainColor = Color(0xe9ffffff);
   static Color? maskCurtainColor = Colors.black.withAlpha(164);
@@ -79,6 +80,7 @@ class AppColors {
     packBackgroundColor = primarySuperLightColor.withAlpha(128);
     packContainerBackgroundColor = primaryLightColor;
     containerBackground = Colors.white;
+    pageBackground = Colors.grey[100];
     loadingCurtainColor = Color(0xe9ffffff);
     maskCurtainColor = Colors.black.withAlpha(164);
     circleButtonBackgoundColor = Colors.white;
@@ -126,6 +128,7 @@ class AppColors {
     packBackgroundColor = primaryDarkColor.withAlpha(128);
     packContainerBackgroundColor = primarySuperDarkColor;
     containerBackground = Colors.grey[850];
+    pageBackground = Colors.grey[900];
     loadingCurtainColor = Color(0xe9222222);
     maskCurtainColor = Colors.black.withAlpha(164);
     circleButtonBackgoundColor = Colors.grey[850];

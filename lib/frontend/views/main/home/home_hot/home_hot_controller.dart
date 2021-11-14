@@ -12,6 +12,7 @@ import 'package:paclub/models/post_model.dart';
 import 'package:paclub/models/user_model.dart';
 import 'package:paclub/utils/app_response.dart';
 import 'package:paclub/utils/logger.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 enum LoadState { firstTime, moreOld, moreNew }
 
@@ -19,6 +20,8 @@ class HomeHotController extends GetxController {
   final PackModule _packModule = Get.find<PackModule>();
   final PostModule _postModule = Get.find<PostModule>();
   final UserModule _userModule = Get.find<UserModule>();
+
+  final RefreshController refreshController = RefreshController();
 
   double lastScrollOffset = 0.0;
   AxisDirection lastScrollDirection = AxisDirection.left;
@@ -37,6 +40,8 @@ class HomeHotController extends GetxController {
 
   bool isLoading = false;
   bool isRefresh = false;
+  bool isLoadMoreSucceed = true;
+  bool isRefreshSucceed = true;
   bool isMoreOldPackExist = true;
   bool isMoreOldPostExist = true;
   int lastLength = 0;
@@ -126,7 +131,7 @@ class HomeHotController extends GetxController {
     }
     logger.d('开始 firstLoadFeed');
     isRefresh = true;
-    var processPack = _packModule.getPacksFirstTime(limit: 5);
+    var processPack = _packModule.getPacksFirstTime(limit: 12);
     var processPost = _postModule.getPostsFirstTime(limit: 20);
 
     AppResponse appResponsePack = await processPack;
@@ -194,6 +199,7 @@ class HomeHotController extends GetxController {
           isPackUpdate = false;
         }
       } else {
+        refreshController.refreshFailed();
         toastTop('Fetch Pack Fail');
         return;
       }
@@ -208,11 +214,13 @@ class HomeHotController extends GetxController {
           isPostUpdate = false;
         }
       } else {
+        refreshController.refreshFailed();
         toastTop('Fetch Post Fail');
         return;
       }
       if (isPackUpdate == false && isPostUpdate == false) {
         toastTop('No New Post & Pack');
+        refreshController.refreshCompleted();
       } else {
         genreateFeed(loadState: LoadState.moreNew);
       }
@@ -220,24 +228,33 @@ class HomeHotController extends GetxController {
   }
 
   // MARK: 加载更多 历史Feed
-  Future<void> loadMoreOldFeed(int length) async {
+  Future<void> loadMoreOldFeed({int? length}) async {
     // NOTICE: 注意因为采用接触底部自动加载，所以需要判断是否是首次接触底部
     // 是首次接触底部才需要加载，否则不需要（防止无限加载）
     if (isLoading) return;
-    if (length == lastLength) {
-      return;
-    }
-    lastLength = length;
 
+    isLoadMoreSucceed = true;
     var processPack = loadMoreOldPacks();
     var processPost = loadMoreOldPosts();
     isLoading = true;
+    if (length != null) {
+      if (length == lastLength) {
+        return;
+      }
+      lastLength = length;
+    } else {
+      // NOTE: 当不是自动加载的时候，组织用户下拉
+      update();
+    }
     await processPack;
     await processPost;
 
-    if (moreOldPackList.isEmpty && moreOldPostList.isEmpty) {
+    if (isLoadMoreSucceed == false) {
+      refreshController.loadFailed();
+    } else if (moreOldPackList.isEmpty && moreOldPostList.isEmpty) {
       toastTop('No More Data');
       logger.w('No More Data');
+      refreshController.loadNoData();
     } else {
       genreateFeed(loadState: LoadState.moreOld);
     }
@@ -265,11 +282,13 @@ class HomeHotController extends GetxController {
       }
       moreOldPostList = List<PostModel>.from(appResponse.data);
       postList.addAll(moreOldPostList); // 更新 postList, 将更旧的 post 加到最后
+    } else {
+      isLoadMoreSucceed = false;
     }
   }
 
   // NOTE: 加载更多历史 Pack
-  Future<void> loadMoreOldPacks({int limit = 5}) async {
+  Future<void> loadMoreOldPacks({int limit = 12}) async {
     if (isMoreOldPackExist == false) return;
     logger.i('开始加载 loadMorePacks');
     AppResponse appResponse;
@@ -289,6 +308,8 @@ class HomeHotController extends GetxController {
       }
       moreOldPackList = List<PackModel>.from(appResponse.data);
       packList.addAll(moreOldPackList); // 更新 packList, 将更旧的 pack 加到最后
+    } else {
+      isLoadMoreSucceed = false;
     }
   }
 
@@ -300,6 +321,7 @@ class HomeHotController extends GetxController {
       logger.wtf(
           '首次加载了: ${feedList.length} 条 feeds\n${packList.length} 条 Pack\n${postList.length} 条 Post');
       isRefresh = false;
+      refreshController.refreshCompleted();
     } else if (loadState == LoadState.moreOld) {
       List<FeedModel> temp = List.from(moreOldPostList);
       temp.addAll(moreOldPackList); // 合并 Post 和 Pack
@@ -311,6 +333,7 @@ class HomeHotController extends GetxController {
       moreOldPostList.clear();
       moreOldPackList.clear();
       isLoading = false;
+      refreshController.loadComplete();
     } else if (loadState == LoadState.moreNew) {
       List<FeedModel> temp = List.from(moreNewPostList);
       temp.addAll(moreNewPackList); // 合并 Post 和 Pack
@@ -324,6 +347,7 @@ class HomeHotController extends GetxController {
         '${temp.length} new feeds',
         backgroundColor: accentColor,
       );
+      refreshController.refreshCompleted();
     }
     update();
   }

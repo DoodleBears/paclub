@@ -11,7 +11,8 @@ import 'package:paclub/frontend/views/main/app_controller.dart';
 import 'package:paclub/frontend/widgets/buttons/scale_floating_action_button.dart';
 
 class HomeBody extends GetView<HomeController> {
-  const HomeBody({Key? key}) : super(key: key);
+  HomeBody({Key? key}) : super(key: key);
+  final HomeHotController homeHotController = Get.find<HomeHotController>();
 
   @override
   Widget build(BuildContext context) {
