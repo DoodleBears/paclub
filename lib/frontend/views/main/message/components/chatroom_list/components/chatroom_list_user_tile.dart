@@ -73,7 +73,6 @@ class ChatroomsListUserTile extends GetView<ChatroomListController> {
                         imageUrl: friendModel.avatarURL,
                         cacheKey: friendModel.avatarURL,
                         errorWidget: (context, url, error) {
-                          // FIXME: 当头像没正确加载的时候，
                           controller.updateFriendProfile(friendModel: friendModel);
                           return Center(
                             child: Text(

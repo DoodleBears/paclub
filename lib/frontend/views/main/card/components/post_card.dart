@@ -6,7 +6,6 @@ import 'package:paclub/frontend/views/main/card/card_controller.dart';
 import 'package:paclub/frontend/views/main/home/components/tags_block.dart';
 import 'package:paclub/helper/app_constants.dart';
 import 'package:paclub/models/post_model.dart';
-// FIXME: 修复排版样式
 
 class PostCard extends GetView<CardController> {
   final PostModel postModel;

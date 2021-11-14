@@ -9,8 +9,6 @@ import 'package:paclub/helper/app_constants.dart';
 import 'package:paclub/models/pack_model.dart';
 import 'package:paclub/r.dart';
 
-// FIXME: 修复排版样式
-
 class PackCard extends GetView<CardController> {
   final ScrollController scrollController;
   final PackModel packModel;
@@ -179,7 +177,6 @@ class PackCard extends GetView<CardController> {
                             ),
                           ),
                           errorWidget: (context, url, error) {
-                            // FIXME: 当Pack封面没正确加载的时候，
                             return Icon(Icons.error);
                           },
                         ),

@@ -12,7 +12,6 @@ import 'package:paclub/helper/app_constants.dart';
 import 'package:paclub/models/post_model.dart';
 import 'package:paclub/utils/logger.dart';
 
-// FIXME: 修复排版样式
 class PostFeedTile extends GetView<HomeHotController> {
   const PostFeedTile({
     Key? key,
@@ -81,7 +80,6 @@ class PostFeedTile extends GetView<HomeHotController> {
                         maxHeightDiskCache: 192,
                         memCacheHeight: 128,
                         errorWidget: (context, url, error) {
-                          // FIXME: 当头像没正确加载的时候，
                           controller.updatePostUserInfo(postModel: postModel);
                           return Center(
                             child: Text(
@@ -196,8 +194,6 @@ class PostFeedTile extends GetView<HomeHotController> {
                               ),
                             ),
                             errorWidget: (context, url, error) {
-                              logger3.e('加载Post图像失败');
-                              // FIXME: 当头像没正确加载的时候，
                               controller.updatePostUserInfo(postModel: postModel);
                               return Icon(Icons.error);
                             },

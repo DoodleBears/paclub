@@ -10,7 +10,6 @@ import 'package:paclub/models/pack_model.dart';
 import 'package:paclub/r.dart';
 import 'package:paclub/utils/logger.dart';
 
-// FIXME: 修复排版样式
 class PackFeedTile extends GetView<HomeHotController> {
   const PackFeedTile({
     Key? key,
@@ -75,7 +74,6 @@ class PackFeedTile extends GetView<HomeHotController> {
                           ),
                         ),
                         errorWidget: (context, url, error) {
-                          // FIXME: 当Pack封面没正确加载的时候，
                           return Icon(Icons.error);
                         },
                       ),
