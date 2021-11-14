@@ -7,7 +7,6 @@ import 'package:paclub/frontend/views/main/home/components/post_feed_tile.dart';
 import 'package:paclub/frontend/views/main/home/home_hot/home_hot_controller.dart';
 import 'package:paclub/models/pack_model.dart';
 import 'package:paclub/models/post_model.dart';
-import 'package:paclub/utils/logger.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class HomeHotPage extends GetView<HomeHotController> {
@@ -22,6 +21,7 @@ class HomeHotPage extends GetView<HomeHotController> {
           child: RefreshConfiguration(
             enableBallisticLoad: true,
             child: SmartRefresher(
+              cacheExtent: 3000.0,
               controller: controller.refreshController,
               enablePullDown: true,
               enablePullUp: true,
@@ -30,15 +30,15 @@ class HomeHotPage extends GetView<HomeHotController> {
                   ? const NeverScrollableScrollPhysics() // 防止加载历史记录时候滚动跳动
                   : const BouncingScrollPhysics(),
               onRefresh: controller.loadMoreNewFeed,
-              onLoading: controller.loadMoreOldFeed,
+              onLoading: () => controller.loadMoreOldFeed(),
               child: ListView.builder(
                 physics: BouncingScrollPhysics(),
                 padding: EdgeInsets.only(top: 8.0),
                 itemCount: controller.feedList.length,
                 itemBuilder: (context, index) {
-                  // if (index + 1 == controller.feedList.length) {
-                  //   controller.loadMoreOldFeed(index + 1);
-                  // }
+                  if (index + 1 == controller.feedList.length) {
+                    controller.loadMoreOldFeed(length: index + 1);
+                  }
                   return RepaintBoundary(
                     child: Padding(
                       padding: const EdgeInsets.only(bottom: 12.0),

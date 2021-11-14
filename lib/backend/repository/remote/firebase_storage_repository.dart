@@ -2,7 +2,9 @@ import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
+import 'package:heic_to_jpg/heic_to_jpg.dart';
 import 'package:paclub/constants/log_message.dart';
+import 'package:paclub/helper/image_helper.dart';
 import 'package:paclub/utils/app_response.dart';
 import 'package:paclub/utils/logger.dart';
 
@@ -15,6 +17,16 @@ class FirebaseStorageRepository extends GetxController {
     required String filePath,
   }) async {
     logger.i('开始上传图像到: $filePath');
+    if (imageFile.path.endsWith('.heic')) {
+      String? newPath = await HeicToJpg.convert(imageFile.path);
+      if (newPath != null) {
+        imageFile = File(newPath);
+      }
+    }
+    File? compressedImageFile = await testCompressAndGetFile(imageFile, imageFile.path);
+    if (compressedImageFile != null) {
+      imageFile = compressedImageFile;
+    }
 
     try {
       await _storage.ref(filePath).putFile(imageFile);

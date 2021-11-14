@@ -59,6 +59,9 @@ dependencies:
   # cache image
   cached_network_image: ^3.1.0
   flutter_cache_manager: ^3.1.3
+  heic_to_jpg: ^0.2.0
+  flutter_image_compress: ^1.1.0
+  uuid: ^3.0.5
   # store image
   path_provider: ^2.0.5
   # timestamp

@@ -1,14 +1,30 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:paclub/frontend/constants/colors.dart';
 import 'package:wechat_assets_picker/wechat_assets_picker.dart';
+import 'package:path/path.dart' as path;
+import 'package:uuid/uuid.dart';
+
+var uuid = Uuid();
+// 2. compress file and get file.
+Future<File?> testCompressAndGetFile(File file, String targetPath) async {
+  String dir = path.dirname(file.path);
+  String newPath = path.join(dir, uuid.v1());
+  var result = await FlutterImageCompress.compressAndGetFile(
+    file.absolute.path,
+    newPath,
+    quality: 88,
+  );
+
+  return result;
+}
 
 Future<File?> pickImage() async {
-  final XFile? pickedFile =
-      await ImagePicker().pickImage(source: ImageSource.gallery);
+  final XFile? pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
   if (pickedFile == null) {
     return null;
   }

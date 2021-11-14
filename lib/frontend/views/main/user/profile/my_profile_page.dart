@@ -6,7 +6,6 @@ import 'package:paclub/frontend/routes/app_pages.dart';
 import 'package:paclub/frontend/views/main/app_controller.dart';
 import 'package:paclub/frontend/views/main/user/components/numbers_widget.dart';
 import 'package:paclub/frontend/views/main/user/user_controller.dart';
-import 'package:paclub/frontend/widgets/avatar/circle_avatar_container.dart';
 import 'package:paclub/utils/logger.dart';
 
 class MyProfilePage extends GetView<UserController> {
